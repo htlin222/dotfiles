@@ -1,0 +1,16 @@
+cask "font-genryumin"
+cask "font-gensekigothic"
+cask "font-gensenrounded"
+cask "font-genwanmin"
+cask "font-genyomin"
+cask "font-hack-nerd-font"
+cask "font-jf-open-huninn"
+# Available as kosugi
+cask "font-kosugi-maru"
+cask "font-noto-emoji"
+cask "font-noto-sans-cjk"
+cask "font-noto-sans-cjk-tc"
+cask "font-noto-serif-cjk"
+cask "font-roboto-mono-for-powerline"
+# large file size
+cask "font-hanamina"

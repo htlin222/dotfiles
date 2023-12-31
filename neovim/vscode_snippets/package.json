@@ -1,0 +1,91 @@
+{
+  "name": "my-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": [
+          "all"
+        ],
+        "path": "./all.json"
+      },
+      {
+        "language": [
+          "all"
+        ],
+        "path": "./prompts.json"
+      },
+      {
+        "language": [
+          "all"
+        ],
+        "path": "./symbol.json"
+      },
+      {
+        "language": [
+          "mermaid"
+        ],
+        "path": "./mmd.json"
+      },
+      {
+        "language": [
+          "dot"
+        ],
+        "path": "./gv_elements.json"
+      },
+      {
+        "language": [
+          "dot"
+        ],
+        "path": "./gv_templates.json"
+      },
+      {
+        "language": [
+          "lua"
+        ],
+        "path": "./lua.json"
+      },
+      {
+        "language": [
+          "python"
+        ],
+        "path": "./python.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "./md.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "./garden.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "./abbr.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "./marp.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "/Users/htlin/Dropbox/Medical/snippets.json"
+      },
+      {
+        "language": [
+          "sh"
+        ],
+        "path": "./shell.json"
+      }
+    ]
+  }
+}

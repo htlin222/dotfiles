@@ -1,0 +1,75 @@
+
+matches:
+  - trigger: "blogmeta"
+    replace: |
+              ---
+              template: post
+              title: $|$ 未命名的文章
+              slug: slug-is-something-like-this
+              socialImage: /media/htlin.site.png
+              draft: true
+              date: {{mydate}}
+              description: 這個人很懶不想打介紹
+              category: tutorial
+              ---
+
+              ## 背景
+
+              ## 方法
+
+              ## 結果
+
+              ## 討論
+
+              ## 結論
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%Y-%m-%d"
+  - trigger: ".mermaid"
+    replace: |
+              ```mermaid
+              %%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
+              flowchart TD
+                  A-->B
+                  A-->C
+                  B-- good morning -->D
+                  C-->E
+                  A(hellow)
+                  click B "https://www.github.com" "hover message" _blank
+              ```
+  - trigger: "ccard"
+    replace: "#🧠 *Q&A* $|$ →→ "
+  - trigger: "blogoutline "
+    replace: |
+              ## 摘要
+              ## 背景
+              $|$
+              ## 方法
+
+              ## 結果
+
+              ## 討論
+
+              ## 結論
+  - trigger: ":twocol"
+    replace: |
+              :::: {.columns}
+              ::: {.column}
+
+              Left
+
+              - Bullet
+
+              :::
+              ::: {.column}
+
+              Left
+
+              - Bullet
+
+              :::
+              ::::
+  - trigger: ":img"
+    replace: "![]($|$)"

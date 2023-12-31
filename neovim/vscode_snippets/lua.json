@@ -1,0 +1,103 @@
+{
+  "dependencies": {
+    "prefix": "dep",
+    "body": [
+      "dependencies = {",
+      "  '${1:YOUR_PLUGIN_HERE}'",
+      "},"
+    ],
+    "description": "dependencies"
+  },
+  "load_mapping": {
+    "prefix": "load-map",
+    "body": [
+      "require(\"core.utils\").load_mappings(\"${1:PLUGIN_NAME}\")",
+      ""
+    ],
+    "description": "by insert this code in the plugin setup, will make the keymap showup in the custom.keymap showup in the whichkey"
+  },
+  "runpythonfx": {
+    "prefix": "runpy",
+    "body": [
+      "function()",
+      "  local file_name = vim.fn.expand(\"%:p\")",
+      "  vim.cmd(\"write\")",
+      "  local cmd = string.format(\"python ${1:YOUR_SCRIPT_HERE} '%s'\", file_name)",
+      "  vim.fn.system(cmd)",
+      "  vim.cmd(\"e\")",
+      "  vim.cmd(\"echohl Identifier\")",
+      "  vim.cmd(\"echomsg '${2:YOUR_MESSAGE_HERE}'\")",
+      "  vim.cmd(\"echohl None\")",
+      "end,",
+      ""
+    ],
+    "description": "create a function, which will take the current buffer path as the inpt arguemnt of a any script"
+  },
+  "autocmd": {
+    "prefix": "au",
+    "body": [
+      "autocmd(\"${1:e.g. BufWritePre}\", {",
+      "\tgroup = augroup(\"${2:auname}\", { clear = true }),",
+      "\tcallback = function()",
+      "\t-- ${1:code here}",
+      "\tend,",
+      "})",
+      ""
+    ],
+    "description": "autocmd to call a lua function"
+  },
+  "BufNewFileTemp": {
+    "prefix": "template",
+    "body": [
+      "autocmd(\"BufNewFile\", {",
+      "\tgroup = augroup(\"Shell\", { clear = true }),",
+      "\tpattern = \"*.${1:filetype}\",",
+      "\tcallback = function()",
+      "\t\tlocal title = vim.fn.fnamemodify(vim.fn.expand(\"%:r\"), \":t\")",
+      "\t\tlocal date = os.date(\"%Y-%m-%d\")",
+      "\t\tlocal lines = {",
+      "\t\t\t\"#!/bin/bash\",",
+      "\t\t\t\"# Author: Hsieh-Ting Lin\",",
+      "\t\t\t'# title: \"' .. title .. '\"',",
+      "\t\t\t'# date: \"' .. date .. '\"',",
+      "\t\t\t\"\",",
+      "\t\t}",
+      "\t\tvim.api.nvim_buf_set_lines(0, 0, 0, false, lines)",
+      "\t\tvim.cmd(\"silent !chmod +x %\")",
+      "\tend,",
+      "})",
+      ""
+    ],
+    "description": "BufNewFileTemp"
+  },
+  "textsnip": {
+    "prefix": "textsnip",
+    "body": [
+      "s(\"${1:TRIGGER}\", { t(\"${1:TEXT}\") }),"
+    ],
+    "description": "textsnip"
+  },
+  "postfixtoshell": {
+    "prefix": "pfshell",
+    "body": [
+      "  postfix({ trig = \"${1:example}\", dscr = \"${2:example}\" }, {",
+      "    f(function(_, parent)",
+      "      local month = parent.snippet.env.POSTFIX_MATCH",
+      "      print(month)",
+      "      local command_template = [[",
+      "        ${1:YOUR SHELL COMMAND}",
+      "      ]]",
+      "      local emojimonth = string.format(command_template, month)",
+      "      local handle = io.popen(emojimonth)",
+      "      local result = handle:read(\"*a\")",
+      "      handle:close()",
+      "      result = result:gsub(\"\\n$\", \"\") -- WARN: to avoid error",
+      "      print(result)",
+      "      return result",
+      "    end, {}),",
+      "  }),",
+      ""
+    ],
+    "description": "postfixtoshell"
+  }
+}

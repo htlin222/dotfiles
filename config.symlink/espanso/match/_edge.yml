@@ -1,0 +1,19 @@
+matches:
+  -
+    trigger: "nnnnnn"
+    replace: "https://nhentai.to/random"
+  -
+    trigger: "hanmi"
+    replace: "https://hanime1.me/"
+  -
+    trigger: "fbemoji"
+    replace: "👍❤🥰😆😮🥲😡"
+  -
+    trigger: "fbemoji"
+    replace: "👍❤🥰😆😮🥲😡"
+  -
+    trigger: " LN "
+    replace: " lymph nodes "
+  -
+    trigger: "tapper"
+    replace: "taper"

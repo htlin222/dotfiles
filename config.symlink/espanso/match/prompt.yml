@@ -1,0 +1,11 @@
+matches:
+  - trigger: "\\key"
+    replace: "to zh-tw, bullet point in markdown, add a h2 title:\n\n{{clipboard}}\n"
+    vars:
+      - name: "clipboard"
+        type: "clipboard"
+  - trigger: "\\tb"
+    replace: "as markdown table:\n{{clipboard}}\n"
+    vars:
+      - name: "clipboard"
+        type: "clipboard"

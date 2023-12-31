@@ -1,0 +1,34 @@
+{
+  "help": {
+    "prefix": "help",
+    "body": [
+      "if [[ \"\\$1\" == \"-h\" ]]; then",
+      "  echo \"Usage: script.sh [OPTIONS]\"",
+      "  echo",
+      "  echo \"Options:\"",
+      "  echo \"  -h    Show help message\"",
+      "  echo \"  -f    Specify a file\"",
+      "  exit 0",
+      "fi"
+    ],
+    "description": "help"
+  },
+  "raycast": {
+    "prefix": "raycast",
+    "body": [
+      "# Required parameters:",
+      "# @raycast.schemaVersion 1",
+      "# @raycast.title ${1:Title here}",
+      "# @raycast.mode silent",
+      "#",
+      "# Optional parameters:",
+      "# @raycast.icon ${1:💪}",
+      "#",
+      "# Documentation:",
+      "# @raycast.description ${2:example}.",
+      "# @raycast.author Hsieht-Ting Lin",
+      "# @raycast.authorURL https://github.com/htlin222"
+    ],
+    "description": "raycast parameters template"
+  }
+}

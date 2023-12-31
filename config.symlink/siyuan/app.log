@@ -1,0 +1,21 @@
+2022-08-11 18:05:21 ui version [2.1.5], booting kernel [/Applications/SiYuan.app/Contents/Resources/kernel/SiYuan-Kernel --wd=/Applications/SiYuan.app/Contents/Resources --workspace=/Users/htlin/Documents/Medical/SiYuan --lang=zh_CHT]
+2022-08-11 18:05:21 booted kernel process
+2022-08-11 18:05:21 checking kernel version
+2022-08-11 18:05:21 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:21 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:21 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:21 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:21 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:21 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:22 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:22 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:22 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:22 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:22 get kernel version failed: request to http://127.0.0.1:6806/api/system/version failed, reason: net::ERR_CONNECTION_REFUSED
+2022-08-11 18:05:22 got kernel version [2.1.5]
+2022-08-11 18:07:52 exited ui
+2022-08-11 18:08:14 ui version [2.1.5], booting kernel [/Applications/SiYuan.app/Contents/Resources/kernel/SiYuan-Kernel --wd=/Applications/SiYuan.app/Contents/Resources]
+2022-08-11 18:08:14 booted kernel process
+2022-08-11 18:08:14 checking kernel version
+2022-08-11 18:08:14 got kernel version [2.1.5]
+2022-08-11 18:11:30 exited ui

@@ -1,0 +1,16 @@
+blocks:
+  - permission
+  - user
+  - group
+  - size
+  - date
+  - name
+# == Color ==
+color:
+  when: auto
+  theme: custom
+# == Total size ==
+total-size: true
+# == Layout ==
+# Possible values: grid, tree, oneline
+# layout: tree

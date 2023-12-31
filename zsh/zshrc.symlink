@@ -1,0 +1,523 @@
+if [ "$TMUX" = "" ]; then tmux; fi
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+(ffplay -v 0 -nodisp -autoexit $HOME/.dotfiles/config.symlink/media/rat_tail.mp3 &> /dev/null &)
+zmodload zsh/zprof
+export ZSH="$HOME/.oh-my-zsh"
+DISABLE_AUTO_UPDATE="true"
+DISABLE_MAGIC_FUNCTIONS="true"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
+plugins=(zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode) #git
+source $ZSH/oh-my-zsh.sh
+source $HOME/.dotfiles/bookmark.zsh
+for file in ~/API/*; do
+    source $file
+done
+autoload -Uz compinit
+for dump in ~/.zcompdump(N.mh+48); do
+    compinit
+done
+compinit -C
+
+# ---- Export ----
+export DOTFILES=$HOME/.dotfiles
+export ML=$HOME/Dropbox/scripts/ml/
+export EDITOR="/usr/local/bin/nvim"
+export DOTFONTPATH=$HOME/Library/Fonts
+export VISUAL="/usr/local/bin/nvim"
+export DISPLAY=:0
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export NODE_OPTIONS="--no-deprecation"
+export PATH="/usr/bin/python3:$PATH"
+export PATH="$HOME/.pyenv/bin:$PATH"
+export PATH="$HOME/.dotfiles/shellscripts:$PATH"
+export PATH="$HOME/pyscripts:$PATH"
+export PATH="$HOME/Dropbox/scripts:$PATH"
+export TMP=$HOME/Dropbox/tmp
+export INBOX=$HOME/Dropbox/inbox
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+export PATH=$PATH:/Users/htlin/.spicetify
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
+alias zshconfig="vim ~/.zshrc"
+alias ranger=". ranger"
+alias rr=". ranger"
+alias bm='vim $DOTFILES/bookmark.zsh'
+alias brewdump='brew bundle dump --describe --force'
+alias c='clear'
+# alias cdf='cd $(find . -type d -print | fzf)'
+alias cover='nvim +10 ~/Dropbox/slides/cover.md'
+alias dadjoke="curl -s -H 'Accept: application/json' https://icanhazdadjoke.com/ | jq -r '.joke'"
+alias di='dia'
+alias disk='diskonaut'
+alias e='exit'
+alias index='vim ~/Dropbox/Medical/index.md'
+alias ffmpeg='ffmpeg-bar'
+alias garden='publi.sh'
+alias lf="lfcd"
+alias ls='lsd'
+alias marp-serve="marp_serve"
+alias marpimg="marp --theme-set ~/Dropbox/slides/themes --html --images png"
+alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
+alias o='open'
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias opn='xdg-open'
+alias pip="pip3"
+alias pptxpdf="sh pptx_to_pdf.sh"
+alias pt="patients"
+alias python="python3"
+alias rain="curl wttr.in/Taipei"
+alias re='reload'
+alias rec="asciinema rec"
+alias reload="exec '$SHELL'"
+alias rl='ls ~/.Trash/files'
+alias rn="recent_note"
+alias seetrash='ls ~/.Trash/files'
+alias sli="make_exec_and_slide"
+alias sn='simplenote'
+alias snippets="vim ~/.dotfiles/neovim/vscode_snippets/garden.json"
+alias st="study"
+alias str="studyrg"
+alias temp="curl wttr.in/Taipei?format='%l:+%c+%t+but+it+feels+like+%f+%h\\n'"
+alias today='dia'
+alias tree='lsd --tree'
+alias uptodate="ddgr -n 5 'https://www.uptodate.com/'"
+alias ur=undelfile
+alias v='nvim'
+alias vf='neovim_fzf'
+alias vim='nvim'
+alias vimdiff='nvim -d'
+alias vs='nvim -S'
+alias vsauto='nvim -S .vim_auto_session.vim'
+alias wpy="pyenv which python"
+alias yt-mp4='yt-dlp --merge-output-format mp4'
+alias zshconfig="vim ~/.zshrc"
+# ---- Key Binding ----
+bindkey -s '^o' 'lfcd\n'  # zsh
+
+if type rg &> /dev/null; then
+    export FZF_DEFAULT_COMMAND="fd --type f"
+    export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672 -m --height 80% --layout=reverse --inline-info'
+
+fi
+
+function rename_in_sqb() {
+    for file in *[*]*.txt; do
+        newname=$(echo "$file" | sed -E 's/\[[^]]*\]//g')
+        mv "$file" "$newname"
+    done
+}
+function fzf-pre() {
+    fzf -m --height 50% \
+        --layout=reverse \
+        --inline-info \
+        --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' \
+        --preview-window 'right,50%,+{2}+3/3,~3,noborder' \
+        --bind '?:toggle-preview'
+}
+function xdgopen() {
+    # xdg-open "$1" &> /dev/null
+    xdg-open "$1" &> /dev/null &
+}
+
+function marp_serve() {
+    kill -9 $(pgrep -f marp)
+    marp ~/Dropbox/slides -s \
+        --engine ~/Dropbox/slides/engine.js \
+        --html --bespoke.progress \
+        "$@"
+}
+function killmarp() { kill -9 $(pgrep -f marp) }
+function openai() { export OPENAI_API_KEY=$(op read "op://Dev/chat_GPT/api key") }
+function rgnv() {
+    rg_prefix='rg --column --line-number --no-heading --color=always --smart-case --glob "*.md" --max-depth 1'
+    local result=$(fzf --bind "start:reload:$rg_prefix ''" \
+            --bind "change:reload:$rg_prefix {q} || true" \
+            --bind "enter:execute(echo {} )+abort" \
+            --ansi --disabled \
+            --height 80% --layout=reverse \
+        --exit-0)
+    if [ -n "$result" ]; then
+        local filename=$(echo $result | cut -d':' -f1)
+        local number=$(echo $result | sed 's/^[^:]*://; s/:.*//')
+        nvim +$number "$filename"
+    fi
+}
+function joinmp3(){
+    cd $1
+    for f in ./*.mp3; do echo "file '$f'" >> mylist.txt; done
+    ffmpeg -y -f concat -safe 0 -i mylist.txt -c copy output.mp3
+    cd -
+}
+function kavita(){
+    GREEN="\033[32m"
+    RESET="\033[0m"
+    cd $HOME/Kavita
+    echo "${GREEN}Serve at http://localhost:5555${RESET}"
+    ./Kavita
+    echo "${GREEN}ByeBye${RESET}"
+    cd -
+}
+function make_exec_and_slide() {
+    cd $HOME/Dropbox/slides/
+    file=$(find . -type f -name "*.md" | sed 's|^\./||' | fzf-pre)
+    chmod +x "$file"
+    slides "$file"
+}
+function timezsh() {
+    shell=${1-$SHELL}
+    for i in $(seq 1 4); do /usr/bin/time $shell -i -c exit; done
+}
+function tre()
+{ command tre "$@" -e && source "/tmp/tre_aliases_$USER" 2>/dev/null; }
+function rga-fzf() {
+    RG_PREFIX="rga --files-with-matches"
+    local file
+    file="$(
+        FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \
+            fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 5 {q} {}" \
+            --phony -q "$1" \
+            --bind "change:reload:$RG_PREFIX {q}" \
+            --preview-window="70%:wrap"
+    )" &&
+    echo "opening $file" &&
+    xdg-open "$file"
+}
+
+function is_git_repo() {
+    git rev-parse --is-inside-work-tree &>/dev/null
+}
+function lfcd () {
+    tmp="$(mktemp)"
+    # `command` is needed in case `lfcd` is aliased to `lf`
+    command lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp"
+        if [ -d "$dir" ]; then
+            if [ "$dir" != "$(pwd)" ]; then
+                cd "$dir"
+            fi
+        fi
+    fi
+}
+function zgit() {
+    git add -A
+    aicommits --type conventional # or -t conventional
+    # aicommits config set OPENAI_KEY=$(op read op://Dev/chat_GPT/api\ key)
+    git push
+}
+function ygit() {
+    git add -A
+    git commit  -m "Routine: Upload"
+    git push
+}
+function topdf() {
+    /Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf "$1"
+    echo "🎉 $1 have been converted to pdf"
+    # command mv $1 ./converted/$1
+}
+function chatgpt() {
+    openai api completions.create -m text-davinci-003 -p "$1" -t 0 -M 7 --stream
+}
+function undelfile() {
+    mv -i ~/.Trash/files/$@ ./
+}
+function textexpand() {
+    cd ~/.config/espanso/match
+}
+function wikiupdate() {
+    rsync -az --delete ~/Dropbox/Medical/wiki/ ~/wiki/docs/
+    echo "rsync complete at %r"
+    git -C ~/wiki/ add .
+    git -C ~/wiki/ commit -m "update contents at %r"
+    git -C ~/wiki/ push
+}
+function dp() {
+    cd $DOTFILES
+    git -C $DOTFILES add .
+    # git -C $DOTFILES commit -a -m "routine uploading ⬆️ "
+    # do the ai commit
+    aicommits
+    git -C $DOTFILES push
+    cd -
+}
+function sss() {
+    $HOME/Dropbox/Medical/scripts/ls.sh
+}
+function simplenote() {
+    nvim -c "SimplenoteList"
+}
+function newpost(){
+    cd ~/Dropbox/blog/
+    nvim -c "echo '一隻鳥接著一隻鳥寫'" $1.md
+}
+function note(){
+    # Get the clipboard content and add a title
+    cd ~/Dropbox/Medical/
+    content=$(pbpaste)
+    title="\n## Note: $(date +"%Y-%m-%d %H:%M")\n"
+    content_with_title="$title$content"
+    filename=$(fzf-pre)
+
+    # Append the content with title to the file
+    echo -e "$content_with_title" >> "$filename"
+    vim $filename
+}
+function neovim_fzf(){
+    FILE=$(fzf-pre)
+
+    if [ -n "$FILE" ]; then
+        # If a file was selected, open it with nvim at line 10
+        nvim +10 "$FILE"
+    else
+        # If no file was selected, do nothing
+        echo "獨學而無友，則孤陋而寡聞"
+    fi
+}
+function study(){
+    cd ~/Dropbox/Medical/
+    (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
+    (python3 ~/Dropbox/scripts/gen_recent_list.py &)
+    FILE=$(find . -type f -name "*.md" | sed 's|^\./||' | fzf-pre)
+
+    if [ -n "$FILE" ]; then
+        # If a file was selected, open it with nvim at line 10
+        nvim +10 "$FILE"
+    else
+        # If no file was selected, do nothing
+        echo "獨學而無友，則孤陋而寡聞"
+    fi
+}
+function recent_note(){
+    cd ~/Dropbox/Medical/ &
+    (python3 ~/Dropbox/scripts/gen_recent_list.py &)
+    nvim +10 ~/Dropbox/Medical/recent.md
+}
+function studyrg(){
+    cd ~/Dropbox/Medical/
+    (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
+    (python3 ~/Dropbox/scripts/gen_recent_list.py &)
+    rgnv
+}
+function vimfzf(){
+    nvim "$(fzf-pre)"
+}
+
+function patients(){
+    cd ~/Dropbox/patients/
+    nvim "$(find . -type f -name "*.md" | sed 's|^\./||' | fzf-pre)"
+}
+function cdf() {
+    DIR=$(find * -type d | fzf)
+    if [ -n "$DIR" ]; then
+        # If a file was selected, open it with nvim at line 10
+        cd $DIR
+    else
+        # If no file was selected, do nothing
+        echo "千裡之行，始於足下"
+    fi
+}
+function slide(){
+    cd ~/Dropbox/slides
+    (marp_serve > /dev/null 2>&1 &)
+    FILE=$(find . \
+            -path ./node_modules \
+            -prune -o -type f -name "*.md" -print | \
+            sed 's|^\./||' | \
+        fzf-pre)
+
+    # Check if a file was selected
+    if [ -n "$FILE" ]; then
+        # If a file was selected, open it with nvim at line 10
+        (open "http://localhost:8080/$FILE" &)
+        # TODO: (open "/Users/mac/Dropbox/slides/countdown.html" &)
+        # or countdown.html?url=localhost:8080/chatGPT.md
+        nvim +10 "$FILE"
+    else
+        # If no file was selected, do nothing
+        echo "苟日新，日日新，又日新。"
+    fi
+}
+function vimconfig(){
+    cd ~/.config/nvim/lua/custom
+    nvim init.lua
+}
+function blog(){
+    cd ~/Dropbox/blog/
+    nvim blog_index.md
+}
+function mkcd() {
+    mkdir -p "$@" && cd "$_";
+}
+function icdn() {
+    GREEN="\033[32m"
+    RESET="\033[0m"
+    echo "The following files are in the cloud nine:"
+    find . -name '.*icloud'
+    find . -name '.*icloud' | perl -pe 's|(.*)/.(.*).icloud|$1/$2|s' | while read file; do brctl download "$file"; done
+    echo "\n${GREEN}Start to download all the files, be patient! ⏱️ ${RESET}"
+}
+function brewforget() {
+    rm "/opt/homebrew/Caskroom/$@";
+}
+function unblock() {
+    sudo xattr -r -d com.apple.quarantine "$@";
+}
+function loading_animation() {
+    chars=("⠇" "⠋" "⠙" "⠸" "⠴" "⠤" "⠦")
+    while :; do
+        for char in "${chars[@]}"; do
+            printf "\rNow Start to Create a pyenv %s" "$char"
+            sleep 0.1
+        done
+    done
+}
+function mkpy() {
+    GREEN="\033[32m"
+    RESET="\033[0m"
+    # loading_animation &
+    # local anim_pid=$!
+
+    echo "Creating new virtualenv: ${GREEN}$1${RESET}"
+    # eval "$(pyenv init --path)"
+    # eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+    # pyenv virtualenv 3.10.5 "$1"
+    pyenv virtualenv 3.11.6 "$1"
+    mkdir ./$1
+    cd ./$1
+    pyenv local $1
+    pyenv activate $1
+    # kill $anim_pid
+    touch .gitignore
+    pip freeze > requirements.txt
+    echo ".python-version" >> .gitignore
+    echo ".DS_Store" >> .gitignore
+    echo "\rVirtualenv ${GREEN}$1${RESET} is created"
+}
+function jupyter-init(){
+    pip install --upgrade pip
+    pip install pandas jupyter notebook
+    python3 -m ipykernel install --user --name $(pyenv version-name) --display-name "Python: $(pyenv version-name)"
+    jupyter-lab
+}
+function playground() {
+    # local GREEN='\033[0;32m' # ANSI escape code for green text
+    # local NC='\033[0m'       # ANSI escape code to reset text color
+    current_datetime=$(date +'%Y%m%d-%H%M')
+    folder_name=~/Desktop/${current_datetime}.nosync
+    mkdir -p "$folder_name"
+    cd "$folder_name" || exit 1
+    # echo "Created new windows and new folder: ${GREEN}$folder_name${NC}"
+    tmux new-window
+    # SetFile -a C ~/Desktop/${current_datetime}
+    cd -
+}
+
+function dia() {
+    local filename="$HOME/Dropbox/inbox/$(date +"%Y-%m-%d").md"
+    (python3 ~/pyscripts/inbox.py &)
+    if [ -e "$filename" ]; then
+        # File already exists, open it with vim
+        nvim +13 "$filename"
+    else
+        # File doesn't exist, create it with front matter
+        echo "---" >> "$filename"
+        echo "title: \"$(date +"%Y-%m-%d")\"" >> "$filename"
+        echo "date: \"$(date +"%Y-%m-%d")\"" >> "$filename"
+        echo "enableToc: false" >> "$filename"
+        echo "tags:" >> "$filename"
+        echo "  - diary" >> "$filename"
+        echo "---" >> "$filename"
+        echo "" >> "$filename"
+        echo "> back to [[index]]" >> "$filename"
+        echo "" >> "$filename"
+        echo "<$(date +"%Y-%m-%d")>" >> "$filename"
+        echo "" >> "$filename"
+        echo "" >> "$filename"
+        echo "---" >> "$filename"
+        # Open the file in a text editor (e.g., Vim)
+        # nvim +10 -c 'normal O' -c 'startinsert' "$filename"
+        nvim +13 "$filename"
+    fi
+}
+function reloadiCloud(){
+    killall bird
+    killall cloudd
+    # cd ~/Library/Application\ Support
+    # rm -rf CloudDocs
+    # cd -
+}
+function snippets() {
+    nvim $HOME/.dotfiles/neovim/snippets/init.lua
+}
+function yt-mp3() {
+    yt-dlp --extract-audio --audio-format mp3 $1
+}
+function yt-mp3-list() {
+    folder_name=$(basename "$(pwd)")
+    # echo "$folder_name" >> album.txt
+    # echo "unknown" >> artist.txt
+    yt-dlp --extract-audio --audio-format mp3 $(pbpaste) -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"
+}
+function yt-playlist() {
+    yt-dlp "$1" -o "%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s"
+}
+function inbox() {
+    cd ~/Dropbox/inbox/
+    python3 ~/pyscripts/inbox.py
+    nvim +10 ~/Dropbox/inbox/index.md
+}
+function mediumog() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: mediumog <slide_name>"
+        return 1
+    fi
+
+    local slide_name="$1"
+    sh ~/.dotfiles/shellscripts/gen_medium_og.sh "$slide_name"
+}
+
+setopt no_nomatch
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba init' !!
+export MAMBA_EXE="/Users/htlin/.micromamba/bin/micromamba";
+export MAMBA_ROOT_PREFIX="/Users/htlin/micromamba";
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    if [ -f "/Users/htlin/micromamba/etc/profile.d/micromamba.sh" ]; then
+        . "/Users/htlin/micromamba/etc/profile.d/micromamba.sh"
+    else
+        export  PATH="/Users/htlin/micromamba/bin:$PATH"  # extra space after export prevents interference from conda init
+    fi
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+eval $(thefuck --alias)
+eval "$(zoxide init zsh)"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="$PATH:/Users/htlin/.local/bin"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/mac/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mac/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/mac/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mac/google-cloud-sdk/completion.zsh.inc'; fi

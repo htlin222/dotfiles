@@ -1,0 +1,7 @@
+filter_exec: iTerm
+
+extra_includes:
+  - "../match/_cml.yml"
+extra_excludes:
+  - "../match/med.yml"
+  - "../match/prompt.yml"

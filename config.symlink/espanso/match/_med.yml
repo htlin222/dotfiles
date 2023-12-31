@@ -1,0 +1,2253 @@
+matches:
+  -
+    trigger: ";mets "
+    replace: "metastasis "
+  -
+    trigger: ";pall "
+    replace: "palliative "
+  -
+    trigger: ";resp "
+    replace: "respiratory "
+  -
+    trigger: ";ab "
+    replace: "antibody "
+  -
+    trigger: ";abg "
+    replace: "arterial blood gas "
+  -
+    trigger: ";abnl "
+    replace: "abnormal "
+  -
+    trigger: ";abx "
+    replace: "antibiotics "
+  -
+    trigger: ";a/c "
+    replace: "anticoagulation "
+  -
+    trigger: ";acei "
+    replace: "ACE inhibitor "
+  -
+    trigger: ";acls "
+    replace: "advanced cardiac life support "
+  -
+    trigger: ";acs "
+    replace: "acute coronary syndrome "
+  -
+    trigger: ";acv "
+    replace: "acyclovir "
+  -
+    trigger: ";ada "
+    replace: "adenosine deaminase "
+  -
+    trigger: ";adh "
+    replace: "antidiuretic hormone "
+  -
+    trigger: ";adl"
+    replace: "activities of daily living "
+  -
+    trigger: ";af "
+    replace: "atrial fibrillation "
+  -
+    trigger: ";afb "
+    replace: "acid-fast bacilli "
+  -
+    trigger: ";afl "
+    replace: "atrial flutter "
+  -
+    trigger: ";afp"
+    replace: "α-fetoprotein "
+  -
+    trigger: ";ag "
+    replace: "antigen "
+  -
+    trigger: ";agn "
+    replace: "acute glomerulonephritis "
+  -
+    trigger: ";ai "
+    replace: "adrenal insufficiency "
+  -
+    trigger: ";aih "
+    replace: "autoimmune hepatitis "
+  -
+    trigger: ";aiha"
+    replace: "autoimmune hemolytic anemia"
+  -
+    trigger: ";ain "
+    replace: "acute interstitial nephritis "
+  -
+    trigger: ";aki "
+    replace: "acute kidney injury "
+  -
+    trigger: ";alf "
+    replace: "acute liver failure "
+  -
+    trigger: ";all "
+    replace: "acute lymphoblastic leukemia "
+  -
+    trigger: ";als "
+    replace: "amyotrophic lateral sclerosis "
+  -
+    trigger: ";alt "
+    replace: "alanine aminotransferase "
+  -
+    trigger: ";ama "
+    replace: "anti-mitochondrial antibody "
+  -
+    trigger: ";ami "
+    replace: "anterior myocardial infarction "
+  -
+    trigger: ";aml "
+    replace: "acute myelogenous leukemia "
+  -
+    trigger: ";amy "
+    replace: "amylase "
+  -
+    trigger: ";ana "
+    replace: "antinuclear antibody "
+  -
+    trigger: ";anca "
+    replace: "antineutrophilic cytoplasmic Ab "
+  -
+    trigger: ";aod "
+    replace: "aortic dissection "
+  -
+    trigger: ";aov "
+    replace: "aortic valve "
+  -
+    trigger: ";apap "
+    replace: "acetyl-para-aminophenol "
+  -
+    trigger: ";apc "
+    replace: "activated protein C "
+  -
+    trigger: ";apl "
+    replace: "acute promyelocytic leukemia "
+  -
+    trigger: ";apla "
+    replace: "antiphospholipid Ab "
+  -
+    trigger: ";aps "
+    replace: "antiphospholipid Ab synd. "
+  -
+    trigger: ";arb "
+    replace: "angiotensin receptor blocker "
+  -
+    trigger: ";ards "
+    replace: "acute resp distress synd. "
+  -
+    trigger: ";arv "
+    replace: "antiretroviral "
+  -
+    trigger: ";arvc "
+    replace: "arrhythmogenic RV CMP "
+  -
+    trigger: ";as "
+    replace: "aortic stenosis "
+  -
+    trigger: ";asa "
+    replace: "aspirin "
+  -
+    trigger: ";asd "
+    replace: "atrial septal defect "
+  -
+    trigger: ";ast "
+    replace: "aspartate aminotransferase "
+  -
+    trigger: ";asx "
+    replace: "asymptomatic "
+  -
+    trigger: ";at "
+    replace: "atrial tachycardia "
+  -
+    trigger: ";atii "
+    replace: "angiotensin II "
+  -
+    trigger: ";atiii "
+    replace: "antithrombin III "
+  -
+    trigger: ";atn "
+    replace: "acute tubular necrosis "
+  -
+    trigger: ";atra "
+    replace: "all-trans-retinoic acid "
+  -
+    trigger: ";av "
+    replace: "atrioventricular "
+  -
+    trigger: ";ava "
+    replace: "aortic valve area "
+  -
+    trigger: ";avb "
+    replace: "atrioventricular block "
+  -
+    trigger: ";avnrt "
+    replace: "AV nodal reentrant tachycardia "
+  -
+    trigger: ";avr "
+    replace: "aortic valve replacement "
+  -
+    trigger: ";avrt "
+    replace: "AV reciprocating tachycardia "
+  -
+    trigger: ";a/w "
+    replace: "associated with "
+  -
+    trigger: ";aza "
+    replace: "azathioprine "
+  -
+    trigger: ";alp "
+    replace: "alkaline phosphatase "
+  -
+    trigger: ";bal "
+    replace: "bronchoalveolar lavage "
+  -
+    trigger: ";βb "
+    replace: "beta-blocker "
+  -
+    trigger: ";bbb "
+    replace: "bundle branch block "
+  -
+    trigger: ";b/c "
+    replace: "because "
+  -
+    trigger: ";bcx "
+    replace: "blood culture "
+  -
+    trigger: ";bd "
+    replace: "bile duct "
+  -
+    trigger: ";bzd "
+    replace: "benzodiazepines "
+  -
+    trigger: ";bili. "
+    replace: "bilirubin "
+  -
+    trigger: ";bipap "
+    replace: "bilevel positive airway pressure "
+  -
+    trigger: ";biv "
+    replace: "biventricular "
+  -
+    trigger: ";bm "
+    replace: "bone marrow"
+  -
+    trigger: ";bmd "
+    replace: "bone mineral density "
+  -
+    trigger: ";bmi "
+    replace: "body mass index "
+  -
+    trigger: ";bms "
+    replace: "bare metal stent "
+  -
+    trigger: ";bnp "
+    replace: "B-type natriuretic peptide "
+  -
+    trigger: ";bp "
+    replace: "blood pressure "
+  -
+    trigger: ";bph "
+    replace: "benign prostatic hypertrophy "
+  -
+    trigger: ";brbpr "
+    replace: "bright red blood per rectum "
+  -
+    trigger: ";bs "
+    replace: "breath sounds "
+  -
+    trigger: ";bt "
+    replace: "bleeding time "
+  -
+    trigger: ";bun "
+    replace: "blood urea nitrogen "
+  -
+    trigger: ";bx "
+    replace: "biopsy "
+  -
+    trigger: ";byce "
+    replace: "buffered charcoal yeast extract "
+  -
+    trigger: ";c′ "
+    replace: "complement "
+  -
+    trigger: ";cftx"
+    replace: "ceftriaxone(Sintrix) 2g QD "
+  -
+    trigger: ";cftz"
+    replace: "ceftazidime(Fortum) 2g Q8H"
+  -
+    trigger: ";cabg "
+    replace: "coronary artery bypass grafting "
+  -
+    trigger: ";cad "
+    replace: "coronary artery disease "
+  -
+    trigger: ";capd "
+    replace: "chronic ambulatory peritoneal dialysis "
+  -
+    trigger: ";cbc "
+    replace: "complete blood count "
+  -
+    trigger: ";cbd "
+    replace: "common bile duct "
+  -
+    trigger: ";ccb "
+    replace: "calcium channel blocker "
+  -
+    trigger: ";ccl4 "
+    replace: "carbon tetrachloride "
+  -
+    trigger: ";ccp "
+    replace: "cyclic citrullinated peptide "
+  -
+    trigger: ";ccs "
+    replace: "Canadian Cardiovascular Society "
+  -
+    trigger: ";ccy "
+    replace: "cholecystectomy "
+  -
+    trigger: ";cd "
+    replace: "Crohn’s disease "
+  -
+    trigger: ";cea "
+    replace: "carcinoembryonic antigen "
+  -
+    trigger: ";carotid "
+    replace: "endarterectomy "
+  -
+    trigger: ";ceph. "
+    replace: "cephalosporin "
+  -
+    trigger: ";c/f "
+    replace: "concern for "
+  -
+    trigger: ";cf "
+    replace: "cystic fibrosis "
+  -
+    trigger: ";cfu "
+    replace: "colony forming units "
+  -
+    trigger: ";chb "
+    replace: "complete heart block "
+  -
+    trigger: ";chd "
+    replace: "congenital heart disease "
+  -
+    trigger: ";chf "
+    replace: "congestive heart failure "
+  -
+    trigger: ";ci "
+    replace: "cardiac index "
+  -
+    trigger: ";ciaki "
+    replace: "contrast-induced AKI "
+  -
+    trigger: ";cidp "
+    replace: "chronic inflammatory demyelinating polyneuropathy "
+  -
+    trigger: ";cjd "
+    replace: "Creutzfeldt-Jakob disease "
+  -
+    trigger: ";ck "
+    replace: "creatine kinase "
+  -
+    trigger: ";ckd "
+    replace: "chronic kidney disease "
+  -
+    trigger: ";cll "
+    replace: "chronic lymphocytic leukemia "
+  -
+    trigger: ";cmc "
+    replace: "carpometacarpal (joint) "
+  -
+    trigger: ";cml "
+    replace: "chronic myelogenous leukemia "
+  -
+    trigger: ";cmml "
+    replace: "chronic myelomonocytic leukemia "
+  -
+    trigger: ";cmp "
+    replace: "cardiomyopathy "
+  -
+    trigger: ";cmv "
+    replace: "cytomegalovirus "
+  -
+    trigger: ";cn "
+    replace: "cranial nerve "
+  -
+    trigger: ";cni "
+    replace: "calcineurin inhibitor "
+  -
+    trigger: ";cns "
+    replace: "central nervous system "
+  -
+    trigger: ";co "
+    replace: "carbon monoxide "
+  -
+    trigger: ";cop "
+    replace: "cryptogenic organizing PNA "
+  -
+    trigger: ";copd "
+    replace: "chronic obstructive pulm. dis. "
+  -
+    trigger: ";cox "
+    replace: "cyclo-oxygenase "
+  -
+    trigger: ";cp "
+    replace: "chest pain "
+  -
+    trigger: ";cpap "
+    replace: "continuous positive airway pressure "
+  -
+    trigger: ";cpp "
+    replace: "cerebral perfusion pressure "
+  -
+    trigger: ";cppd "
+    replace: "calcium pyrophosphate dihydrate "
+  -
+    trigger: ";cr "
+    replace: "creatinine "
+  -
+    trigger: ";crag "
+    replace: "cryptococcal antigen "
+  -
+    trigger: ";crc "
+    replace: "colorectal cancer "
+  -
+    trigger: ";crcl "
+    replace: "creatinine clearance "
+  -
+    trigger: ";crp "
+    replace: "C-reactive protein "
+  -
+    trigger: ";crt "
+    replace: "cardiac resynchronization therapy "
+  -
+    trigger: ";c/s "
+    replace: "consult "
+  -
+    trigger: ";csa "
+    replace: "cyclosporine A "
+  -
+    trigger: ";csf "
+    replace: "cerebrospinal fluid "
+  -
+    trigger: ";csm "
+    replace: "carotid sinus massage "
+  -
+    trigger: ";ct "
+    replace: "computed tomogram "
+  -
+    trigger: ";cta "
+    replace: "CT angiogram "
+  -
+    trigger: ";ctd "
+    replace: "connective tissue disease "
+  -
+    trigger: ";ctx "
+    replace: "ceftriaxone "
+  -
+    trigger: ";cv "
+    replace: "cardiovascular "
+  -
+    trigger: ";cva "
+    replace: "cerebrovascular accident "
+  -
+    trigger: ";cvd "
+    replace: "cerebrovascular disease "
+  -
+    trigger: ";cvid "
+    replace: "common variable immunodefic. "
+  -
+    trigger: ";cvp "
+    replace: "central venous pressure "
+  -
+    trigger: ";cvvh "
+    replace: "continuous veno-venous hemofiltration "
+  -
+    trigger: ";c/w "
+    replace: "compared with "
+  -
+    trigger: ";consistent "
+    replace: "with "
+  -
+    trigger: ";cw "
+    replace: "chest wall "
+  -
+    trigger: ";cx "
+    replace: "culture "
+  -
+    trigger: ";cxr "
+    replace: "chest radiograph "
+  -
+    trigger: ";cyc "
+    replace: "cyclophosphamide "
+  -
+    trigger: ";δms "
+    replace: "change in mental status "
+  -
+    trigger: ";da "
+    replace: "dopamine "
+  -
+    trigger: ";dad "
+    replace: "diffuse alveolar damage "
+  -
+    trigger: ";dah "
+    replace: "diffuse alveolar hemorrhage "
+  -
+    trigger: ";dat "
+    replace: "direct antiglobulin test "
+  -
+    trigger: ";dbp "
+    replace: "diastolic blood pressure "
+  -
+    trigger: ";d/c "
+    replace: "discharge "
+  -
+    trigger: ";dccv "
+    replace: "direct current cardioversion "
+  -
+    trigger: ";dcis "
+    replace: "ductal carcinoma in situ "
+  -
+    trigger: ";dcmp "
+    replace: "dilated cardiomyopathy "
+  -
+    trigger: ";dct "
+    replace: "distal collecting tubule "
+  -
+    trigger: ";ddx "
+    replace: "differential diagnosis "
+  -
+    trigger: ";des "
+    replace: "drug-eluting stent "
+  -
+    trigger: ";dfa "
+    replace: "direct fluorescent antigen detection "
+  -
+    trigger: ";di "
+    replace: "diabetes insipidus "
+  -
+    trigger: ";dic "
+    replace: "disseminated intravascular coagulation "
+  -
+    trigger: ";diff. "
+    replace: "differential "
+  -
+    trigger: ";dip "
+    replace: "desquamative interstitial pneumonitis "
+  -
+    trigger: ";dka "
+    replace: "diabetic ketoacidosis "
+  -
+    trigger: ";dlco "
+    replace: "diffusion capacity of the lung "
+  -
+    trigger: ";dle "
+    replace: "drug-induced lupus "
+  -
+    trigger: ";dm "
+    replace: "diabetes mellitus "
+  -
+    trigger: ";dmard "
+    replace: "disease-modifying anti-rheumatic drug "
+  -
+    trigger: ";doe "
+    replace: "dyspnea on exertion "
+  -
+    trigger: ";dre "
+    replace: "digital rectal exam "
+  -
+    trigger: ";dress "
+    replace: "drug reaction w/ eosinophilia & systemic symptoms "
+  -
+    trigger: ";dse "
+    replace: "dobutamine stress echo "
+  -
+    trigger: ";dst "
+    replace: "dexamethasone suppression test "
+  -
+    trigger: ";dtrs "
+    replace: "deep tendon reflexes "
+  -
+    trigger: ";du "
+    replace: "duodenal ulcer "
+  -
+    trigger: ";dvt "
+    replace: "deep vein thrombosis "
+  -
+    trigger: ";dx "
+    replace: "diagnosis "
+# med_E.yml
+  -
+    trigger: ";ead "
+    replace: "extreme axis deviation "
+  -
+    trigger: ";eav "
+    replace: "effective arterial volume "
+  -
+    trigger: ";ebv "
+    replace: "Epstein-Barr virus "
+  -
+    trigger: ";ecg "
+    replace: "electrocardiogram "
+  -
+    trigger: ";ecmo "
+    replace: "extracorporeal membrane oxygenation "
+  -
+    trigger: ";ed "
+    replace: "emergency department "
+  -
+    trigger: ";edp "
+    replace: "end-diastolic pressure "
+  -
+    trigger: ";edv "
+    replace: "end-diastolic volume "
+  -
+    trigger: ";eeg "
+    replace: "electroencephalogram "
+  -
+    trigger: ";ef "
+    replace: "ejection fraction "
+  -
+    trigger: ";egd "
+    replace: "esophagogastroduodenoscopy "
+  -
+    trigger: ";egfr "
+    replace: "epidermal growth factor receptor "
+  -
+    trigger: ";egpa "
+    replace: "eosinophilic granulomatosis with polyangiitis "
+  -
+    trigger: ";ei "
+    replace: "entry inhibitor "
+  -
+    trigger: ";eia "
+    replace: "enzyme-linked immunoassay "
+  -
+    trigger: ";elisa "
+    replace: "enzyme-linked immunosorbent assay "
+  -
+    trigger: ";em "
+    replace: "electron microscopy "
+  -
+    trigger: ";emb "
+    replace: "ethambutol "
+  -
+    trigger: ";enac "
+    replace: "epithelial Na channel "
+  -
+    trigger: ";ent "
+    replace: "ears, nose, & throat "
+  -
+    trigger: ";e/o "
+    replace: "evidence of "
+  -
+    trigger: ";eom "
+    replace: "extraocular movement/muscles "
+  -
+    trigger: ";ep "
+    replace: "electrophysiology "
+  -
+    trigger: ";epo "
+    replace: "erythropoietin "
+  -
+    trigger: ";eps "
+    replace: "electrophysiology study "
+  -
+    trigger: ";ercp "
+    replace: "endoscopic retrograde cholangiopancreatography "
+  -
+    trigger: ";erv "
+    replace: "expiratory reserve volume "
+  -
+    trigger: ";esa "
+    replace: "erythropoiesis-stimulating agents "
+  -
+    trigger: ";esbl "
+    replace: "extended spectrum beta-lactamase "
+  -
+    trigger: ";esp "
+    replace: "end-systolic pressure "
+  -
+    trigger: ";esr "
+    replace: "erythrocyte sedimentation rate "
+  -
+    trigger: ";esrd "
+    replace: "end-stage renal disease "
+  -
+    trigger: ";esv "
+    replace: "end-systolic volume "
+  -
+    trigger: ";et "
+    replace: "endotracheal tube "
+  -
+    trigger: ";etoh "
+    replace: "alcohol "
+  -
+    trigger: ";ett "
+    replace: "endotracheal tube "
+  -
+    trigger: ";eus "
+    replace: "endoscopic ultrasound "
+  -
+    trigger: ";evar "
+    replace: "endovascular aneurysm repair "
+# med_F.yml
+  -
+    trigger: ";fdp "
+    replace: "fibrin degradation product "
+  -
+    trigger: ";fev1 "
+    replace: "forced expir. vol in 1 sec "
+  -
+    trigger: ";ffp "
+    replace: "fresh frozen plasma "
+  -
+    trigger: ";fhx "
+    replace: "family history "
+  -
+    trigger: ";fi "
+    replace: "fusion inhibitor "
+  -
+    trigger: ";fmd "
+    replace: "fibromuscular dysplasia "
+  -
+    trigger: ";fmf "
+    replace: "familial Mediterranean fever "
+  -
+    trigger: ";fna "
+    replace: "fine-needle aspiration "
+  -
+    trigger: ";fob "
+    replace: "fecal occult blood "
+  -
+    trigger: ";fobt "
+    replace: "fecal occult blood testing "
+  -
+    trigger: ";fq "
+    replace: "fluoroquinolone "
+  -
+    trigger: ";frc "
+    replace: "functional residual capacity "
+  -
+    trigger: ";fsgs "
+    replace: "focal segmental glomerulosclerosis "
+  -
+    trigger: ";fsh "
+    replace: "follicle-stimulating hormone "
+  -
+    trigger: ";fti "
+    replace: "free thyroxine index "
+  -
+    trigger: ";fuo "
+    replace: "fever of unknown origin "
+  -
+    trigger: ";f/up "
+    replace: "follow-up "
+  -
+    trigger: ";fvc "
+    replace: "forced vital capacity "
+# med_G.yml
+  -
+    trigger: ";g6pd "
+    replace: "glc-6-phosphate dehydrogenase "
+  -
+    trigger: ";gb "
+    replace: "gallbladder "
+  -
+    trigger: ";gbm "
+    replace: "glomerular basement membrane "
+  -
+    trigger: ";gbs "
+    replace: "Guillain-Barré syndrome "
+  -
+    trigger: ";gca "
+    replace: "giant cell arteritis "
+  -
+    trigger: ";gcs "
+    replace: "Glasgow coma scale "
+  -
+    trigger: ";g-csf "
+    replace: "granulocyte colony-stimulating factor "
+  -
+    trigger: ";ge "
+    replace: "gastroesophageal "
+  -
+    trigger: ";gen. "
+    replace: "generation "
+  -
+    trigger: ";gerd "
+    replace: "gastroesophageal reflux disease "
+  -
+    trigger: ";gfr "
+    replace: "glomerular filtration rate "
+  -
+    trigger: ";ggt "
+    replace: "γ-glutamyl transpeptidase "
+  -
+    trigger: ";gh "
+    replace: "growth hormone "
+  -
+    trigger: ";gib "
+    replace: "gastrointestinal bleed "
+  -
+    trigger: ";gist "
+    replace: "gastrointestinal stromal tumor "
+  -
+    trigger: ";glc "
+    replace: "glucose "
+  -
+    trigger: ";gmcsf "
+    replace: "granulocyte-macrophage colony-stimulating factor "
+  -
+    trigger: ";gn "
+    replace: "glomerulonephritis "
+  -
+    trigger: ";gnr "
+    replace: "gram-negative rods "
+  -
+    trigger: ";gnrh "
+    replace: "gonadotropin-releasing hormone "
+  -
+    trigger: ";gpa "
+    replace: "granulomatosis w/ polyangiitis "
+  -
+    trigger: ";gpc "
+    replace: "gram-positive cocci "
+  -
+    trigger: ";gpi "
+    replace: "glycoprotein IIb/IIIa inhibitor "
+  -
+    trigger: ";gra "
+    replace: "glucocorticoid-remediable aldosteronism "
+  -
+    trigger: ";gu "
+    replace: "gastric ulcer "
+  -
+    trigger: ";gvhd "
+    replace: "graft-versus-host disease "
+# med_H.yml
+  -
+    trigger: ";hr "
+    replace: "hour "
+  -
+    trigger: ";h2ra "
+    replace: "H2-receptor antagonist "
+  -
+    trigger: ";ha "
+    replace: "headache "
+  -
+    trigger: ";haca "
+    replace: "human antichimeric antibody "
+  -
+    trigger: ";hav "
+    replace: "hepatitis A virus "
+  -
+    trigger: ";hb "
+    replace: "hemoglobin "
+  -
+    trigger: ";hbig "
+    replace: "hepatitis B immunoglobulin "
+  -
+    trigger: ";hbv "
+    replace: "hepatitis B virus "
+  -
+    trigger: ";hcc "
+    replace: "hepatocellular carcinoma "
+  -
+    trigger: ";hcmp "
+    replace: "hypertrophic cardiomyopathy "
+  -
+    trigger: ";hct "
+    replace: "hematocrit "
+  -
+    trigger: ";hcv "
+    replace: "hepatitis C virus "
+  -
+    trigger: ";hcw "
+    replace: "health care worker "
+  -
+    trigger: ";hd "
+    replace: "hemodialysis "
+  -
+    trigger: ";hdl "
+    replace: "high-density lipoprotein "
+  -
+    trigger: ";hdv "
+    replace: "hepatitis D virus "
+  -
+    trigger: ";hellp "
+    replace: "hemolysis, abnl LFTs, low plts "
+  -
+    trigger: ";hev "
+    replace: "hepatitis E virus "
+  -
+    trigger: ";hf "
+    replace: "heart failure "
+  -
+    trigger: ";hgprt "
+    replace: "hypoxanthine-guanine phosphoribosyl transferase "
+  -
+    trigger: ";hhs "
+    replace: "hyperosmolar hyperglycemic state "
+  -
+    trigger: ";hit "
+    replace: "heparin-induced thrombocytopenia "
+  -
+    trigger: ";hk "
+    replace: "hypokinesis "
+  -
+    trigger: ";hl "
+    replace: "Hodgkin lymphoma "
+  -
+    trigger: ";h/o "
+    replace: "history of "
+  -
+    trigger: ";hob "
+    replace: "head of bed "
+  -
+    trigger: ";hotn "
+    replace: "hypotension "
+  -
+    trigger: ";hpf "
+    replace: "high-power field "
+  -
+    trigger: ";hpt "
+    replace: "hyperparathyroidism "
+  -
+    trigger: ";hr "
+    replace: "heart rate "
+  -
+    trigger: ";hrt "
+    replace: "hormone replacement therapy "
+  -
+    trigger: ";hs "
+    replace: "hereditary spherocytosis "
+  -
+    trigger: ";hsct "
+    replace: "hematopoietic stem cell transplantation "
+  -
+    trigger: ";hsm "
+    replace: "hepatosplenomegaly "
+  -
+    trigger: ";hsp "
+    replace: "Henoch-Schönlein purpura "
+  -
+    trigger: ";hsv "
+    replace: "herpes simplex virus "
+  -
+    trigger: ";htn "
+    replace: "hypertension "
+  -
+    trigger: ";hus "
+    replace: "hemolytic uremic syndrome "
+  -
+    trigger: ";hx "
+    replace: "history "
+# med_I.yml
+  -
+    trigger: ";i&d "
+    replace: "incision & drainage "
+  -
+    trigger: ";iabp "
+    replace: "intra-aortic balloon pump "
+  -
+    trigger: ";ibd "
+    replace: "inflammatory bowel disease "
+  -
+    trigger: ";ibs "
+    replace: "irritable bowel syndrome "
+  -
+    trigger: ";ic "
+    replace: "inspiratory capacity "
+  -
+    trigger: ";ica "
+    replace: "ionized calcium "
+  -
+    trigger: ";icd "
+    replace: "implantable cardiac defibrillator "
+  -
+    trigger: ";ich "
+    replace: "intracranial hemorrhage "
+  -
+    trigger: ";icp "
+    replace: "intracranial pressure "
+  -
+    trigger: ";icu "
+    replace: "intensive care unit "
+  -
+    trigger: ";ie "
+    replace: "infective endocarditis "
+  -
+    trigger: ";igf "
+    replace: "insulin-like growth factor "
+  -
+    trigger: ";igra "
+    replace: "interferon-γ release assay "
+  -
+    trigger: ";ii "
+    replace: "integrase inhibitor "
+  -
+    trigger: ";iip "
+    replace: "idiopathic interstitial PNA "
+  -
+    trigger: ";ild "
+    replace: "interstitial lung disease "
+  -
+    trigger: ";imi "
+    replace: "inferior myocardial infarction "
+  -
+    trigger: ";infxn "
+    replace: "infection "
+  -
+    trigger: ";inh "
+    replace: "inhaled "
+  -
+    trigger: ";inh "
+    replace: "isoniazid "
+  -
+    trigger: ";inr "
+    replace: "international normalized ratio "
+  -
+    trigger: ";ipaa "
+    replace: "ileal pouch-anal anastomosis "
+  -
+    trigger: ";ipf "
+    replace: "idiopathic pulmonary fibrosis "
+  -
+    trigger: ";itp "
+    replace: "idiopathic thrombocytopenic purpura "
+  -
+    trigger: ";ivb "
+    replace: "intravenous bolus "
+  -
+    trigger: ";ivc "
+    replace: "inferior vena cava "
+  -
+    trigger: ";ivdu "
+    replace: "intravenous drug use(r) "
+  -
+    trigger: ";ivf "
+    replace: "intravenous fluids "
+  -
+    trigger: ";ivig "
+    replace: "intravenous immunoglobulin "
+# med_JK.yml
+  -
+    trigger: ";jvd "
+    replace: "jugular venous distention "
+  -
+    trigger: ";jvp "
+    replace: "jugular venous pulse "
+# med_K.yml
+  -
+    trigger: ";ks "
+    replace: "Kaposi’s sarcoma "
+  -
+    trigger: ";kub "
+    replace: "kidney-ureter-bladder (radiography) "
+# med_L.yml
+  -
+    trigger: ";la "
+    replace: "left atrium "
+  -
+    trigger: ";laba "
+    replace: "long-acting β2-agonist "
+  -
+    trigger: ";lad "
+    replace: "left anterior descending coronary artery "
+  -
+    trigger: ";lae "
+    replace: "left atrial enlargement "
+  -
+    trigger: ";lan "
+    replace: "lymphadenopathy "
+  -
+    trigger: ";lap "
+    replace: "left atrial pressure "
+  -
+    trigger: ";lbbb "
+    replace: "left bundle branch block "
+  -
+    trigger: ";lca "
+    replace: "left coronary artery "
+  -
+    trigger: ";lcis "
+    replace: "lobular carcinoma in situ "
+  -
+    trigger: ";lcx "
+    replace: "left circumflex cor. art. "
+  -
+    trigger: ";ldh "
+    replace: "lactate dehydrogenase "
+  -
+    trigger: ";ldl "
+    replace: "low-density lipoprotein "
+  -
+    trigger: ";le "
+    replace: "lower extremity "
+  -
+    trigger: ";les "
+    replace: "lower esophageal sphincter "
+  -
+    trigger: ";lfts "
+    replace: "liver function tests "
+  -
+    trigger: ";lgib "
+    replace: "lower gastrointestinal bleed "
+  -
+    trigger: ";lgv "
+    replace: "lymphogranuloma venereum "
+  -
+    trigger: ";lh "
+    replace: "luteinizing hormone "
+  -
+    trigger: ";llq "
+    replace: "left lower quadrant "
+  -
+    trigger: ";lmwh "
+    replace: "low-molecular-weight heparin "
+  -
+    trigger: ";loc "
+    replace: "loss of consciousness "
+  -
+    trigger: ";los "
+    replace: "length of stay "
+  -
+    trigger: ";lp "
+    replace: "lumbar puncture "
+  -
+    trigger: ";lpf "
+    replace: "low-power field "
+  -
+    trigger: ";lqts "
+    replace: "long QT syndrome "
+  -
+    trigger: ";lr "
+    replace: "lactated Ringer’s "
+  -
+    trigger: ";lusb "
+    replace: "left upper sternal border "
+  -
+    trigger: ";lv "
+    replace: "left ventricle "
+  -
+    trigger: ";lvad "
+    replace: "LV assist device "
+  -
+    trigger: ";lvedp "
+    replace: "LV end-diastolic pressure "
+  -
+    trigger: ";lvedv "
+    replace: "LV end-diastolic volume "
+  -
+    trigger: ";lvesd "
+    replace: "LV end-systolic diameter "
+  -
+    trigger: ";lvh "
+    replace: "left ventricular hypertrophy "
+  -
+    trigger: ";lvot "
+    replace: "left ventricular outflow tract "
+  -
+    trigger: ";lvsd "
+    replace: "LV systolic dimension "
+  -
+    trigger: ";mab "
+    replace: "monoclonal antibody "
+  -
+    trigger: ";mac "
+    replace: "mitral annular calcification "
+  -
+    trigger: ";mycobacterium "
+    replace: "avium complex "
+  -
+    trigger: ";maha "
+    replace: "microangiopathic hemolytic anemia "
+  -
+    trigger: ";malt "
+    replace: "mucosa-assoc. lymphoid tissue "
+  -
+    trigger: ";mao "
+    replace: "monoamine oxidase "
+  -
+    trigger: ";map "
+    replace: "mean arterial pressure "
+  -
+    trigger: ";mat "
+    replace: "multifocal atrial tachycardia "
+  -
+    trigger: ";mcd "
+    replace: "minimal change disease "
+  -
+    trigger: ";mcp "
+    replace: "metacarpal phalangeal (joint) "
+  -
+    trigger: ";mcs "
+    replace: "mechanical circulatory support "
+  -
+    trigger: ";mctd "
+    replace: "mixed connective tissue dis. "
+  -
+    trigger: ";mcv "
+    replace: "mean corpuscular volume "
+  -
+    trigger: ";mdi "
+    replace: "metered dose inhaler "
+  -
+    trigger: ";mdma "
+    replace: "3,4-methylenedioxymetham- phetamine (Ecstasy) "
+  -
+    trigger: ";mdr "
+    replace: "multidrug resistant "
+  -
+    trigger: ";mds "
+    replace: "myelodysplastic syndrome "
+  -
+    trigger: ";men "
+    replace: "multiple endocrine neoplasia "
+  -
+    trigger: ";mg "
+    replace: "myasthenia gravis "
+  -
+    trigger: ";mgus "
+    replace: "monoclonal gammopathy of uncertain significance "
+  -
+    trigger: ";mi "
+    replace: "myocardial infarction "
+  -
+    trigger: ";min "
+    replace: "minute "
+  -
+    trigger: ";min. "
+    replace: "minimal "
+  -
+    trigger: ";mm "
+    replace: "multiple myeloma "
+  -
+    trigger: ";mmefr "
+    replace: "max. mid-expir. flow rate "
+  -
+    trigger: ";mmf "
+    replace: "mycophenolate mofetil "
+  -
+    trigger: ";mn "
+    replace: "membranous nephropathy "
+  -
+    trigger: ";mnz "
+    replace: "metronidazole "
+  -
+    trigger: ";mo "
+    replace: "month "
+  -
+    trigger: ";mod. "
+    replace: "moderate "
+  -
+    trigger: ";mods "
+    replace: "multiple organ dysfxn synd. "
+  -
+    trigger: ";mpa "
+    replace: "microscopic polyangiitis "
+  -
+    trigger: ";mpgn "
+    replace: "membranoproliferative glomerulonephritis "
+  -
+    trigger: ";mpn "
+    replace: "myeloproliferative neoplasm "
+  -
+    trigger: ";mr "
+    replace: "mitral regurgitation "
+  -
+    trigger: ";mri "
+    replace: "magnetic resonance "
+  -
+    trigger: ";mra "
+    replace: "magnetic resonance angiography "
+  -
+    trigger: ";mrcp "
+    replace: "MR cholangiopancreatography "
+  -
+    trigger: ";mri "
+    replace: "magnetic resonance imaging "
+  -
+    trigger: ";mrsa "
+    replace: "methicillin-resistant S. aureus "
+  -
+    trigger: ";ms "
+    replace: "mitral stenosis "
+  -
+    trigger: ";msa "
+    replace: "multisystem atrophy "
+  -
+    trigger: ";msk "
+    replace: "musculoskeletal "
+  -
+    trigger: ";mtbmycobacterium "
+    replace: "tuberculosis "
+  -
+    trigger: ";mtor "
+    replace: "mechanistic target of rapamycin "
+  -
+    trigger: ";mtp "
+    replace: "metatarsal phalangeal (joint) "
+  -
+    trigger: ";mtx "
+    replace: "methotrexate "
+  -
+    trigger: ";mv "
+    replace: "mitral valve "
+  -
+    trigger: ";mva "
+    replace: "mitral valve area "
+  -
+    trigger: ";mvp "
+    replace: "mitral valve prolapse "
+  -
+    trigger: ";mvr "
+    replace: "mitral valve replacement "
+  -
+    trigger: ";mϕ "
+    replace: "macrophage "
+  -
+    trigger: ";nac "
+    replace: "N-acetylcysteine "
+  -
+    trigger: ";nafld "
+    replace: "non-alcoholic fatty liver disease "
+  -
+    trigger: ";nash "
+    replace: "non-alcoholic steatohepatitis "
+  -
+    trigger: ";ng "
+    replace: "nasogastric "
+  -
+    trigger: ";ngt "
+    replace: "nasogastric tube "
+  -
+    trigger: ";nhl "
+    replace: "non-Hodgkin lymphoma "
+  -
+    trigger: ";nicmp "
+    replace: "non-ischemic CMP "
+  -
+    trigger: ";nif "
+    replace: "negative inspiratory force "
+  -
+    trigger: ";nj "
+    replace: "nasojejunal "
+  -
+    trigger: ";nl "
+    replace: "normal "
+  -
+    trigger: ";nm "
+    replace: "neuromuscular "
+  -
+    trigger: ";nmj "
+    replace: "neuromuscular junction "
+  -
+    trigger: ";nnrti "
+    replace: "non-nucleoside reverse transcriptase inhibitor "
+  -
+    trigger: ";nnt "
+    replace: "number needed to treat "
+  -
+    trigger: ";no "
+    replace: "nitric oxide "
+  -
+    trigger: ";npjt "
+    replace: "nonparoxysmal junctional tachycardia "
+  -
+    trigger: ";npo "
+    replace: "nothing by mouth "
+  -
+    trigger: ";nppv "
+    replace: "noninvasive positive pressure ventilation "
+  -
+    trigger: ";npv "
+    replace: "negative predictive value "
+  -
+    trigger: ";nrti "
+    replace: "nucleoside reverse transcriptase inhibitor "
+  -
+    trigger: ";ns "
+    replace: "normal saline "
+  -
+    trigger: ";nsaid "
+    replace: "nonsteroidal anti-inflam. drug "
+  -
+    trigger: ";nsclc "
+    replace: "non-small cell lung cancer "
+  -
+    trigger: ";nsf "
+    replace: "nephrogenic systemic fibrosis "
+  -
+    trigger: ";ntg "
+    replace: "nitroglycerin "
+  -
+    trigger: ";n/v "
+    replace: "nausea and/or vomiting "
+  -
+    trigger: ";nve "
+    replace: "native valve endocarditis "
+  -
+    trigger: ";nyha "
+    replace: "New York Heart Association "
+  -
+    trigger: ";o/d "
+    replace: "overdose "
+  -
+    trigger: ";o/w "
+    replace: "otherwise "
+  -
+    trigger: ";o&p "
+    replace: "ova & parasites "
+  -
+    trigger: ";oa "
+    replace: "osteoarthritis "
+  -
+    trigger: ";ocp "
+    replace: "oral contraceptive pill "
+  -
+    trigger: ";og "
+    replace: "osmolal gap "
+  -
+    trigger: ";ogt "
+    replace: "orogastric tube "
+  -
+    trigger: ";ogtt "
+    replace: "oral glucose tolerance test "
+  -
+    trigger: ";oi "
+    replace: "opportunistic infection "
+  -
+    trigger: ";om "
+    replace: "obtuse marginal cor. art. "
+  -
+    trigger: ";os "
+    replace: "overall survival "
+  -
+    trigger: ";osa "
+    replace: "obstructive sleep apnea "
+  -
+    trigger: ";otc "
+    replace: "over-the-counter "
+  -
+    trigger: ";p/w "
+    replace: "present(s) with "
+  -
+    trigger: ";pa "
+    replace: "pulmonary artery "
+  -
+    trigger: ";pac "
+    replace: "pulmonary artery catheter "
+  -
+    trigger: ";pad "
+    replace: "peripheral artery disease "
+  -
+    trigger: ";pan "
+    replace: "polyarteritis nodosa "
+  -
+    trigger: ";pasp "
+    replace: "PA systolic pressure "
+  -
+    trigger: ";pav "
+    replace: "percutaneous aortic valvuloplasty "
+  -
+    trigger: ";pb "
+    replace: "problem "
+  -
+    trigger: ";pbc "
+    replace: "primary biliary cholangitis "
+  -
+    trigger: ";pci "
+    replace: "percutaneous coronary intervention "
+  -
+    trigger: ";pcn "
+    replace: "penicillin "
+  -
+    trigger: ";pcppneumocystis "
+    replace: "jiroveci pneumonia "
+  -
+    trigger: ";pcr "
+    replace: "polymerase chain reaction "
+  -
+    trigger: ";pct "
+    replace: "porphyria cutanea tarda "
+  -
+    trigger: ";pcwp "
+    replace: "pulmonary capillary wedge pressure "
+  -
+    trigger: ";pd "
+    replace: "Parkinson’s disease "
+  -
+    trigger: ";pda "
+    replace: "patent ductus arteriosus "
+  -
+    trigger: ";pe "
+    replace: "pulmonary embolism "
+  -
+    trigger: ";pea "
+    replace: "pulseless electrical activity "
+  -
+    trigger: ";peep "
+    replace: "positive end-expiratory pressure "
+  -
+    trigger: ";pef "
+    replace: "peak expiratory flow "
+  -
+    trigger: ";pet "
+    replace: "positron emission tomography "
+  -
+    trigger: ";pex "
+    replace: "physical examination "
+  -
+    trigger: ";pfo "
+    replace: "patent foramen ovale "
+  -
+    trigger: ";pfs "
+    replace: "progression-free survival "
+  -
+    trigger: ";pft "
+    replace: "pulmonary function test "
+  -
+    trigger: ";pga "
+    replace: "polyglandular autoimmune syndrome "
+  -
+    trigger: ";pht "
+    replace: "pulmonary hypertension "
+  -
+    trigger: ";pi "
+    replace: "protease inhibitor "
+  -
+    trigger: ";pid "
+    replace: "pelvic inflammatory disease "
+  -
+    trigger: ";pif "
+    replace: "prolactin inhibitory factor "
+  -
+    trigger: ";pip "
+    replace: "peak inspiratory pressure "
+  -
+    trigger: ";pkd "
+    replace: "polycystic kidney disease "
+  -
+    trigger: ";pm "
+    replace: "polymyositis "
+  -
+    trigger: ";pmf "
+    replace: "primary myelofibrosis "
+  -
+    trigger: ";pmhx "
+    replace: "past medical history "
+  -
+    trigger: ";pmi "
+    replace: "point of maximal impulse "
+  -
+    trigger: ";pml "
+    replace: "progressive multifocal leukoencephalopathy "
+  -
+    trigger: ";pmn "
+    replace: "polymorphonuclear leukocyte "
+  -
+    trigger: ";pmr "
+    replace: "polymyalgia rheumatica "
+  -
+    trigger: ";pmv "
+    replace: "percutaneous mitral valvuloplasty "
+  -
+    trigger: ";pmvt "
+    replace: "polymorphic ventricular tachycardia "
+  -
+    trigger: ";pna "
+    replace: "pneumonia "
+  -
+    trigger: ";pnd "
+    replace: "paroxysmal nocturnal dyspnea "
+  -
+    trigger: ";pnh "
+    replace: "paroxysmal nocturnal hemoglobinuria "
+  -
+    trigger: ";pns "
+    replace: "peripheral nervous system "
+  -
+    trigger: ";pots "
+    replace: "postural orthostatic tachycardia syndrome "
+  -
+    trigger: ";ppd "
+    replace: "purified protein derivative "
+  -
+    trigger: ";pph "
+    replace: "primary pulmonary HTN "
+  -
+    trigger: ";ppi "
+    replace: "proton pump inhibitors "
+  -
+    trigger: ";pplat "
+    replace: "plateau pressure "
+  -
+    trigger: ";ppm "
+    replace: "permanent pacemaker "
+  -
+    trigger: ";ppv "
+    replace: "positive predictive value "
+  -
+    trigger: ";ppx "
+    replace: "prophylaxis "
+  -
+    trigger: ";pr "
+    replace: "PR segment on ECG "
+  -
+    trigger: ";prbcs "
+    replace: "packed red blood cells "
+  -
+    trigger: ";prl "
+    replace: "prolactin "
+  -
+    trigger: ";prpp "
+    replace: "phosphoribosyl-I-pyrophosphate "
+  -
+    trigger: ";prwp "
+    replace: "poor R wave progression "
+  -
+    trigger: ";ps "
+    replace: "pressure support "
+  -
+    trigger: ";psa "
+    replace: "prostate specific antigen "
+  -
+    trigger: ";psapseudomonas "
+    replace: "aeruginosa "
+  -
+    trigger: ";psc "
+    replace: "primary sclerosing cholangitis "
+  -
+    trigger: ";psgn "
+    replace: "post streptococcal glomerulonephritis "
+  -
+    trigger: ";pshx "
+    replace: "past surgical history "
+  -
+    trigger: ";psv "
+    replace: "pressure support ventilation "
+  -
+    trigger: ";pt "
+    replace: "patient "
+  -
+    trigger: ";PT "
+    replace: "prothrombin time "
+  -
+    trigger: ";pta "
+    replace: "percutaneous transluminal angioplasty "
+  -
+    trigger: ";pth "
+    replace: "parathyroid hormone "
+  -
+    trigger: ";pth-rp "
+    replace: "PTH-related peptide "
+  -
+    trigger: ";ptt "
+    replace: "partial thromboplastin time "
+  -
+    trigger: ";ptu "
+    replace: "propylthiouracil "
+  -
+    trigger: ";ptx "
+    replace: "pneumothorax "
+  -
+    trigger: ";pud "
+    replace: "peptic ulcer disease "
+  -
+    trigger: ";puva "
+    replace: "psoralen + ultraviolet A "
+  -
+    trigger: ";pv "
+    replace: "polycythemia vera "
+  -
+    trigger: ";pvd "
+    replace: "peripheral vascular disease "
+  -
+    trigger: ";pve "
+    replace: "prosthetic valve endocarditis "
+  -
+    trigger: ";pvr "
+    replace: "pulmonary vascular resistance "
+  -
+    trigger: ";pza "
+    replace: "pyrazinamide "
+  -
+    trigger: ";qac "
+    replace: "before every meal "
+  -
+    trigger: ";qhs "
+    replace: "every bedtime "
+  -
+    trigger: ";qol "
+    replace: "quality of life "
+  -
+    trigger: ";qw "
+    replace: "Q wave "
+  -
+    trigger: ";ra "
+    replace: "refractory anemia "
+  -
+    trigger: ";raa "
+    replace: "renin-angiotensin-aldosterone "
+  -
+    trigger: ";rad "
+    replace: "right axis deviation "
+  -
+    trigger: ";rae "
+    replace: "right atrial enlargement "
+  -
+    trigger: ";rai "
+    replace: "radioactive iodine "
+  -
+    trigger: ";raiu "
+    replace: "radioactive iodine uptake "
+  -
+    trigger: ";ras "
+    replace: "renal artery stenosis "
+  -
+    trigger: ";rast "
+    replace: "radioallergosorbent test "
+  -
+    trigger: ";rbbb "
+    replace: "right bundle branch block "
+  -
+    trigger: ";rbc "
+    replace: "red blood cell "
+  -
+    trigger: ";rbf "
+    replace: "renal blood flow "
+  -
+    trigger: ";rbv "
+    replace: "ribavirin "
+  -
+    trigger: ";rca "
+    replace: "right coronary artery "
+  -
+    trigger: ";rcmp "
+    replace: "restrictive cardiomyopathy "
+  -
+    trigger: ";rct "
+    replace: "randomized controlled trial "
+  -
+    trigger: ";rdw "
+    replace: "red cell distribution width "
+  -
+    trigger: ";re "
+    replace: "reticuloendothelial "
+  -
+    trigger: ";rf "
+    replace: "rheumatoid factor "
+  -
+    trigger: ";rfa "
+    replace: "radiofrequency ablation "
+  -
+    trigger: ";rhd "
+    replace: "rheumatic heart disease "
+  -
+    trigger: ";r/i "
+    replace: "rule in "
+  -
+    trigger: ";ri "
+    replace: "reticulocyte index "
+  -
+    trigger: ";riba "
+    replace: "recombinant immunoblot assay "
+  -
+    trigger: ";rmsf "
+    replace: "Rocky Mountain spotted fever "
+  -
+    trigger: ";r/o "
+    replace: "rule out "
+  -
+    trigger: ";ros "
+    replace: "review of systems "
+  -
+    trigger: ";rpgn "
+    replace: "rapidly progressive glomerulonephritis "
+  -
+    trigger: ";rr "
+    replace: "respiratory rate "
+  -
+    trigger: ";rrt "
+    replace: "renal replacement therapy "
+  -
+    trigger: ";rt "
+    replace: "radiation therapy "
+  -
+    trigger: ";rta "
+    replace: "renal tubular acidosis "
+  -
+    trigger: ";rtx "
+    replace: "rituximab "
+  -
+    trigger: ";ruq "
+    replace: "right upper quadrant "
+  -
+    trigger: ";rusb "
+    replace: "right upper sternal border "
+  -
+    trigger: ";rv "
+    replace: "residual volume "
+  -
+    trigger: ";rvad "
+    replace: "RV assist device "
+  -
+    trigger: ";rvh "
+    replace: "right ventricular hypertrophy "
+  -
+    trigger: ";rvot "
+    replace: "RV outflow tract "
+  -
+    trigger: ";rvsp "
+    replace: "RV systolic pressure "
+  -
+    trigger: ";rx "
+    replace: "therapy "
+  -
+    trigger: ";rygb "
+    replace: "roux-en-Y gastric bypass "
+  -
+    trigger: ";sa "
+    replace: "sinoatrial "
+  -
+    trigger: ";saag "
+    replace: "serum-ascites albumin gradient "
+  -
+    trigger: ";sah "
+    replace: "subarachnoid hemorrhage "
+  -
+    trigger: ";sb "
+    replace: "small bowel "
+  -
+    trigger: ";sbe "
+    replace: "subacute bacterial endocarditis "
+  -
+    trigger: ";sbo "
+    replace: "small bowel obstruction "
+  -
+    trigger: ";sbp "
+    replace: "spontaneous bacterial peritonitis "
+  -
+    trigger: ";sbt "
+    replace: "spontaneous breathing trial "
+  -
+    trigger: ";sc "
+    replace: "subcutaneous "
+  -
+    trigger: ";scd "
+    replace: "sudden cardiac death "
+  -
+    trigger: ";scid "
+    replace: "severe combined immunodefic. "
+  -
+    trigger: ";sclc "
+    replace: "small-cell lung cancer "
+  -
+    trigger: ";s/e "
+    replace: "side effect "
+  -
+    trigger: ";se "
+    replace: "sensitivity "
+  -
+    trigger: ";sec "
+    replace: "second "
+  -
+    trigger: ";serm "
+    replace: "selective estrogen receptor modulator "
+  -
+    trigger: ";sev. "
+    replace: "severe "
+  -
+    trigger: ";shbg "
+    replace: "steroid hormone binding globulin "
+  -
+    trigger: ";siadh "
+    replace: "synd. of inappropriate ADH "
+  -
+    trigger: ";sibo "
+    replace: "small intestine bacterial overgrowth "
+  -
+    trigger: ";siep "
+    replace: "serum immunoelectrophoresis "
+  -
+    trigger: ";sihd "
+    replace: "stable ischemic heart disease "
+  -
+    trigger: ";simv "
+    replace: "synchronized intermittent mandatory ventilation "
+  -
+    trigger: ";sirs "
+    replace: "systemic inflammatory response syndrome "
+  -
+    trigger: ";sjs "
+    replace: "Stevens-Johnson syndrome "
+  -
+    trigger: ";sle "
+    replace: "systemic lupus erythematosus "
+  -
+    trigger: ";sma "
+    replace: "superior mesenteric artery "
+  -
+    trigger: ";smv "
+    replace: "superior mesenteric vein "
+  -
+    trigger: ";smx "
+    replace: "sulfamethoxazole "
+  -
+    trigger: ";sos "
+    replace: "sinusoidal obstructive synd. "
+  -
+    trigger: ";s/p "
+    replace: "status post "
+  -
+    trigger: ";sp "
+    replace: "specificity "
+  -
+    trigger: ";spep "
+    replace: "serum protein electrophoresis "
+  -
+    trigger: ";sr "
+    replace: "sinus rhythm "
+  -
+    trigger: ";s/s "
+    replace: "signs and symptoms "
+  -
+    trigger: ";sscysalmonella, "
+    replace: "Shigella, Campylobacter, Yersinia "
+  -
+    trigger: ";ssri "
+    replace: "selective serotonin reuptake inhibitor "
+  -
+    trigger: ";sss "
+    replace: "sick sinus syndrome "
+  -
+    trigger: ";ssz "
+    replace: "sulfasalazine "
+  -
+    trigger: ";st "
+    replace: "sinus tachycardia "
+  -
+    trigger: ";std "
+    replace: "ST-segment depression "
+  -
+    trigger: ";ste "
+    replace: "ST-segment elevation "
+  -
+    trigger: ";sti "
+    replace: "sexually transmitted infection "
+  -
+    trigger: ";sv "
+    replace: "stroke volume "
+  -
+    trigger: ";svc "
+    replace: "superior vena cava "
+  -
+    trigger: ";svr "
+    replace: "systemic vascular resistance "
+  -
+    trigger: ";svt "
+    replace: "supraventricular tachycardia "
+  -
+    trigger: ";sx "
+    replace: "symptom(s) or symptomatic "
+  -
+    trigger: ";t1d "
+    replace: "type 1 diabetes mellitus "
+  -
+    trigger: ";taz "
+    replace: "piperacillin/tazobactam "
+  -
+    trigger: ";t2d "
+    replace: "type 2 diabetes mellitus "
+  -
+    trigger: ";taa "
+    replace: "thoracic aortic aneurysm "
+  -
+    trigger: ";tavi "
+    replace: "transcatheter aortic valve implantation "
+  -
+    trigger: ";tb "
+    replace: "tuberculosis "
+  -
+    trigger: ";tbg "
+    replace: "thyroid binding globulin "
+  -
+    trigger: ";tca "
+    replace: "tricyclic antidepressant "
+  -
+    trigger: ";tcd "
+    replace: "transcranial Doppler "
+  -
+    trigger: ";tcn "
+    replace: "tetracycline "
+  -
+    trigger: ";tdap "
+    replace: "tetanus, diphtheria, pertussis "
+  -
+    trigger: ";tdp "
+    replace: "torsades de pointes "
+  -
+    trigger: ";tdt "
+    replace: "terminal deoxynucleotidyl transferase "
+  -
+    trigger: ";tee "
+    replace: "transesophageal echo "
+  -
+    trigger: ";tfn "
+    replace: "transfusion "
+  -
+    trigger: ";tfts "
+    replace: "thyroid function tests "
+  -
+    trigger: ";tg "
+    replace: "triglycerides "
+  -
+    trigger: ";tga "
+    replace: "transposition of the great arteries "
+  -
+    trigger: ";tia "
+    replace: "transient ischemic attack "
+  -
+    trigger: ";tibc "
+    replace: "total iron binding capacity "
+  -
+    trigger: ";tinu "
+    replace: "tubulointerstitial nephritis and uveitis "
+  -
+    trigger: ";tips "
+    replace: "transjugular intrahepatic portosystemic shunt "
+  -
+    trigger: ";tki "
+    replace: "tyrosine kinase inhibitor "
+  -
+    trigger: ";tlc "
+    replace: "total lung capacity "
+  -
+    trigger: ";tls "
+    replace: "tumor lysis syndrome "
+  -
+    trigger: ";tmp "
+    replace: "trimethoprim "
+  -
+    trigger: ";tn "
+    replace: "troponin "
+  -
+    trigger: ";tp "
+    replace: "total protein "
+  -
+    trigger: ";tpmt "
+    replace: "thiopurine methyltransferase "
+  -
+    trigger: ";tpn "
+    replace: "total parenteral nutrition "
+  -
+    trigger: ";tpo "
+    replace: "thrombopoietin "
+  -
+    trigger: ";tpo "
+    replace: "thyroid peroxidase "
+  -
+    trigger: ";tr "
+    replace: "tricuspid regurgitation "
+  -
+    trigger: ";trali "
+    replace: "transfusion-related acute lung injury "
+  -
+    trigger: ";trh "
+    replace: "thyrotropin-releasing hormone "
+  -
+    trigger: ";trs "
+    replace: "TIMI risk score "
+  -
+    trigger: ";trus "
+    replace: "transrectal ultrasound "
+  -
+    trigger: ";ts "
+    replace: "tricuspid stenosis "
+  -
+    trigger: ";tsh "
+    replace: "thyroid-stimulating hormone "
+  -
+    trigger: ";tsi "
+    replace: "thyroid-stimulating immunoglobulin "
+  -
+    trigger: ";tss "
+    replace: "toxic shock syndrome "
+  -
+    trigger: ";tte "
+    replace: "transthoracic echo "
+  -
+    trigger: ";ttkg "
+    replace: "transtubular potassium gradient "
+  -
+    trigger: ";ttp "
+    replace: "thrombotic thrombocytopenic purpura "
+  -
+    trigger: ";tv "
+    replace: "tricuspid valve "
+  -
+    trigger: ";tw "
+    replace: "T wave "
+  -
+    trigger: ";twf "
+    replace: "T-wave flattening "
+  -
+    trigger: ";twi "
+    replace: "T-wave inversion "
+  -
+    trigger: ";tx "
+    replace: "transplant "
+  -
+    trigger: ";tzd "
+    replace: "thiazolidinediones "
+  -
+    trigger: ";u/a "
+    replace: "urinalysis "
+  -
+    trigger: ";ua "
+    replace: "unstable angina "
+  -
+    trigger: ";uag "
+    replace: "urine anion gap "
+  -
+    trigger: ";uc "
+    replace: "ulcerative colitis "
+  -
+    trigger: ";ucx "
+    replace: "urine culture "
+  -
+    trigger: ";ues "
+    replace: "upper esophageal sphincter "
+  -
+    trigger: ";ufh "
+    replace: "unfractionated heparin "
+  -
+    trigger: ";ugib "
+    replace: "upper gastrointestinal bleed "
+  -
+    trigger: ";uip "
+    replace: "usual interstitial pneumonitis "
+  -
+    trigger: ";uln "
+    replace: "upper limit of normal "
+  -
+    trigger: ";uop "
+    replace: "urine output "
+  -
+    trigger: ";upep "
+    replace: "urine protein electrophoresis "
+  -
+    trigger: ";ur "
+    replace: "urgent revascularization "
+  -
+    trigger: ";ura "
+    replace: "uric acid "
+  -
+    trigger: ";uri "
+    replace: "upper resp. tract infxn "
+  -
+    trigger: ";u/s "
+    replace: "ultrasound "
+  -
+    trigger: ";uti "
+    replace: "urinary tract infection "
+  -
+    trigger: ";v/q "
+    replace: "ventilation-perfusion "
+  -
+    trigger: ";vad "
+    replace: "ventricular assist device "
+  -
+    trigger: ";vap "
+    replace: "ventilator-associated PNA "
+  -
+    trigger: ";vats "
+    replace: "video-assisted thoracoscopic surgery "
+  -
+    trigger: ";vbi "
+    replace: "vertebrobasilar insufficiency "
+  -
+    trigger: ";vc "
+    replace: "vital capacity "
+  -
+    trigger: ";vd "
+    replace: "vessel disease "
+  -
+    trigger: ";vdrl "
+    replace: "venereal disease research laboratory (test for syphilis) "
+  -
+    trigger: ";vegf "
+    replace: "vascular endothelial growth factor "
+  -
+    trigger: ";vexas "
+    replace: "vacuoles, E1 enzyme, X-linked, autoinflammatory, somatic "
+  -
+    trigger: ";vf "
+    replace: "ventricular fibrillation "
+  -
+    trigger: ";vldl "
+    replace: "very-low-density lipoproteins "
+  -
+    trigger: ";vod "
+    replace: "veno-occlusive disease "
+  -
+    trigger: ";vs "
+    replace: "vital signs "
+  -
+    trigger: ";vsd "
+    replace: "ventricular septal defect "
+  -
+    trigger: ";vt "
+    replace: "tidal volume "
+  -
+    trigger: ";vt "
+    replace: "ventricular tachycardia "
+  -
+    trigger: ";vte "
+    replace: "venous thromboembolus "
+  -
+    trigger: ";vwd "
+    replace: "von Willebrand’s disease "
+  -
+    trigger: ";vwf "
+    replace: "von Willebrand’s factor "
+  -
+    trigger: ";vzv "
+    replace: "varicella zoster virus "
+  -
+    trigger: ";w/ "
+    replace: "with "
+  -
+    trigger: ";wbc "
+    replace: "white blood cell (count) "
+  -
+    trigger: ";wct "
+    replace: "wide-complex tachycardia "
+  -
+    trigger: ";who "
+    replace: "World Health Organization "
+  -
+    trigger: ";wk "
+    replace: "week "
+  -
+    trigger: ";wm "
+    replace: "Waldenström’s macroglobulinemia "
+  -
+    trigger: ";wma "
+    replace: "wall motion abnormality "
+  -
+    trigger: ";w/o "
+    replace: "without "
+  -
+    trigger: ";wpw "
+    replace: "Wolff-Parkinson-White syndrome "
+  -
+    trigger: ";w/u "
+    replace: "workup "
+  -
+    trigger: ";xrt "
+    replace: "radiation therapy "

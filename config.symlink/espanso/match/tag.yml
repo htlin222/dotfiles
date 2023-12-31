@@ -1,0 +1,11 @@
+matches:
+  - trigger: ":book:"
+    replace: "#📚"
+  - trigger: ".green"
+    replace: "#🌲"
+  - trigger: ".blue"
+    replace: "#🌱"
+  - trigger: ".brown"
+    replace: "#🪵"
+  - trigger: “.star"
+    replace: "#⭐"

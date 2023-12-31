@@ -1,0 +1,167 @@
+{
+  "我是一個測式": {
+    "prefix": ".test1",
+    "body": [
+      "${1:這是一個預留位}，我們可以再往下一個${1:這個會同步}，但${2:這個不會}"
+    ]
+  },
+  "newsnip": {
+    "prefix": "newsnip",
+    "body": [
+      "  \"${1:縮寫名稱}\": {",
+      "  \"prefix\": \"${2:建議用.開頭}\",",
+      "  \"body\": [\"${3:你的內容在這}\"],",
+      "  \"description\": \"${1:縮寫名稱}\"",
+      "},",
+      ""
+    ],
+    "description": "newsnip"
+  },
+  "right arrow": {
+    "prefix": "->",
+    "body": [
+      " → "
+    ],
+    "description": "right arrow"
+  },
+  "left arrow": {
+    "prefix": "<-",
+    "body": [
+      " ← "
+    ],
+    "description": "left arrow"
+  },
+  "up arrow": {
+    "prefix": ".up",
+    "body": [
+      " ↑ "
+    ],
+    "description": "up arrow"
+  },
+  "down arrow": {
+    "prefix": ".down",
+    "body": [
+      " ↓ "
+    ],
+    "description": "down arrow"
+  },
+  "square meter": {
+    "prefix": "/BSA",
+    "body": [
+      "/m²"
+    ],
+    "description": "square meter"
+  },
+  "oplus": {
+    "prefix": "oplus",
+    "body": [
+      "⊕"
+    ],
+    "description": "+ in o"
+  },
+  "otimes": {
+    "prefix": "ox",
+    "body": [
+      "⊗"
+    ],
+    "description": "x in o"
+  },
+  "ominus": {
+    "prefix": "o-",
+    "body": [
+      "⊖"
+    ],
+    "description": "- in o"
+  },
+  "oslash": {
+    "prefix": "o/",
+    "body": [
+      "⊘"
+    ],
+    "description": "/ in o"
+  },
+  "belong": {
+    "prefix": ".belong",
+    "body": [
+      "∈"
+    ],
+    "description": "belong to"
+  },
+  "delta": {
+    "prefix": "delta",
+    "body": [
+      "Δ"
+    ],
+    "description": "delta"
+  },
+  "superscript 1": {
+    "prefix": "^1",
+    "body": [
+      "¹"
+    ],
+    "description": "superscript one"
+  },
+  "superscript 2": {
+    "prefix": "^2",
+    "body": [
+      "²"
+    ],
+    "description": "superscript two"
+  },
+  "superscript 3": {
+    "prefix": "^3",
+    "body": [
+      "³"
+    ],
+    "description": "superscript three"
+  },
+  "superscript 4": {
+    "prefix": "^4",
+    "body": [
+      "⁴"
+    ],
+    "description": "superscript four"
+  },
+  "superscript 5": {
+    "prefix": "^5",
+    "body": [
+      "⁵"
+    ],
+    "description": "superscript five"
+  },
+  "superscript 6": {
+    "prefix": "^6",
+    "body": [
+      "⁶"
+    ],
+    "description": "superscript six"
+  },
+  "superscript 7": {
+    "prefix": "^7",
+    "body": [
+      "⁷"
+    ],
+    "description": "superscript seven"
+  },
+  "superscript 8": {
+    "prefix": "^8",
+    "body": [
+      "⁸"
+    ],
+    "description": "superscript eight"
+  },
+  "superscript 9": {
+    "prefix": "^9",
+    "body": [
+      "⁹"
+    ],
+    "description": "superscript nine"
+  },
+  "superscript 0": {
+    "prefix": "^0",
+    "body": [
+      "⁰"
+    ],
+    "description": "superscript nine"
+  }
+}

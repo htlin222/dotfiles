@@ -1,0 +1,14 @@
+2023/08/17 23:29:18 log.go:23: Protocol version: auto
+2023/08/17 23:29:18 log.go:23: Network: tcp
+2023/08/17 23:31:49 log.go:23: Protocol version: auto
+2023/08/17 23:31:49 log.go:23: Network: tcp
+2023/08/17 23:34:19 log.go:23: Protocol version: auto
+2023/08/17 23:34:19 log.go:23: Network: tcp
+2023/08/17 23:36:49 log.go:23: Protocol version: auto
+2023/08/17 23:36:49 log.go:23: Network: tcp
+2023/08/17 23:39:19 log.go:23: Protocol version: auto
+2023/08/17 23:39:19 log.go:23: Network: tcp
+2023/08/17 23:41:49 log.go:23: Protocol version: auto
+2023/08/17 23:41:49 log.go:23: Network: tcp
+2023/08/17 23:44:19 log.go:23: Protocol version: auto
+2023/08/17 23:44:19 log.go:23: Network: tcp

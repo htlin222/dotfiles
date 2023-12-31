@@ -1,0 +1,10 @@
+{
+  "marp header": {
+    "prefix": "header",
+    "body": [
+      "<!-- header: '${1:example}' -->",
+      ""
+    ],
+    "description": "marp header"
+  }
+}

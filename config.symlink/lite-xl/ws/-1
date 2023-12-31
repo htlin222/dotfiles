@@ -1,0 +1,1 @@
+return { path = "/", documents = {["views"]={[1]={["active"]=true,["type"]="doc",["filename"]="Users/mac/new.txt",["selection"]={[1]=2,[2]=1,[3]=2,[4]=1},["scroll"]={["x"]=0,["y"]=0},["text"]=false}},["type"]="leaf",["active_view"]=1}, directories = {} }

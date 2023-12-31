@@ -1,0 +1,9 @@
+matches:
+  - trigger: "@FOLFOX"
+    replace: "@FOLFOX(85$|$)#"
+  - trigger: "@FOLFIRI"
+    replace: "@FOLFIRI(180$|$)#"
+  - trigger: "@FOLFOXIRI"
+    replace: "@FOLFOX(85$|$)IRI(180)#"
+  - trigger: ":pre"
+    replace: "($|$___;___w;___k)[CEA___CA199___]"

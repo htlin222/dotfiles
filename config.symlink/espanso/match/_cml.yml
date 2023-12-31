@@ -1,0 +1,26 @@
+matches:
+  -
+    trigger: "lzg"
+    replace: "lazygit \"$|$\""
+  -
+    trigger: ".sync"
+    replace: "dotfilesync \"$|$\""
+  -
+    trigger: "bookdown"
+    replace: "rmarkdown::render_site(output_format = 'bookdown::bs4_book', encoding = 'UTF-8')"
+  -
+    trigger: "shebang"
+    replace: |
+              #!/bin/bash
+              # [Program]
+              #
+              # [History]
+              # {{mydate}} by Hsieh-Ting Lin : First release
+              PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+              export PATH
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%Y-%m-%d"
+

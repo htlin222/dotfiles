@@ -1,0 +1,6 @@
+s <- base::summary
+h <- utils::head
+n <- base::names
+
+# https://damien-datasci-blog.netlify.app/post/2020-12-31-pimp-your-r-startup-message/
+cat("\014")

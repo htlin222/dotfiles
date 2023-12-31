@@ -1,0 +1,53 @@
+{
+  "node record": {
+    "prefix": "record",
+    "body": [
+      "  { ${1:example}[ // ___",
+      "      shape = \"record\", // group = \"${4:group_1}\",",
+      "      label= // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+      "        \" <f0> ${1:Title_Of_Record}",
+      "        | { <f1> ${2:example} | <f2> ${3:example} }",
+      "    \"] // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
+      "  };",
+      ""
+    ],
+    "description": "node record"
+  },
+  "node basic": {
+    "prefix": "node",
+    "body": [
+      "  ${1:example}[                       //",
+      "      shape = none;              // `record`, `underline`",
+      "      label = \"${1:example}\\l ___\\l\"; //",
+      "                                 // group = \"${2:group}\";",
+      "  ];",
+      ""
+    ],
+    "description": "node basic"
+  },
+  "subgraph cluster": {
+    "prefix": "cluster",
+    "body": [
+      "  subgraph cluster_${1:example} {",
+      "    labelloc = \"t\"; //  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+      "    color = white;",
+      "    fontcolor = \"#2d696a\";",
+      "    label = \"${1:example}\";",
+      "    // ___",
+      "  }; // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
+      ""
+    ],
+    "description": "subgraph cluster"
+  },
+  "node with group": {
+    "prefix": "gnode",
+    "body": [
+      "  group_${2:group}_${1:node_name}[               //",
+      "      label = \"${1:node_name}\"; //",
+      "      group = \"${2:group}\";  //",
+      "  ];",
+      ""
+    ],
+    "description": "node with group"
+  }
+}

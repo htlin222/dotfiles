@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@andymatuschak/note-link-janitor": "^0.0.1",
+    "markmap-cli": "^0.15.4",
+    "nodemon": "^3.0.1",
+    "taskbook": "^0.3.0"
+  }
+}

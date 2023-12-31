@@ -1,0 +1,12 @@
+CHAT_CACHE_PATH=/var/folders/wt/jl58ghks2vdf78z96tnyk77h0000gn/T/chat_cache
+CACHE_PATH=/var/folders/wt/jl58ghks2vdf78z96tnyk77h0000gn/T/cache
+CHAT_CACHE_LENGTH=100
+CACHE_LENGTH=100
+REQUEST_TIMEOUT=60
+DEFAULT_MODEL=gpt-3.5-turbo
+OPENAI_API_HOST=https://api.openai.com
+DEFAULT_COLOR=magenta
+ROLE_STORAGE_PATH=/Users/mac/.config/shell_gpt/roles
+SYSTEM_ROLES=false
+DEFAULT_EXECUTE_SHELL_CMD=false
+DISABLE_STREAMING=false
