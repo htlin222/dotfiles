@@ -47,6 +47,9 @@ eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias zshconfig="vim ~/.zshrc"
+alias ga="git add ."
+alias gcm="git commit -am"
+alias gcb="git checkout -b"
 alias ranger=". ranger"
 alias rr=". ranger"
 alias bm='vim $DOTFILES/bookmark.zsh'
