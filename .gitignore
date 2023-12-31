@@ -9,6 +9,7 @@ config.symlink/epy/states.db
 config.symlink/thefuck/*
 config.symlink/nvim/
 config.symlink/nvim/**
+config.symlink/nvim/.gitignore
 config.symlink/yarn/
 config.symlink/op
 config.symlink/fish/
