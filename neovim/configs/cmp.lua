@@ -12,7 +12,7 @@ return { -- this table will override the default cmp setting
 		sources = {
 			{ name = "nvim_lsp" },
 			{ name = "luasnip" },
-			{ name = "cmp_zotcite" },
+			-- { name = "cmp_zotcite" },
 			-- { name = "papis" },
 			{ name = "nvim_lsp_document_symbol" },
 			{ name = "buffer" },
@@ -106,7 +106,7 @@ return { -- this table will override the default cmp setting
 
 	dependencies = {
 		{ "hrsh7th/cmp-emoji" },
-		{ "jalvesaq/zotcite" },
+		-- { "jalvesaq/zotcite" },
 		{ "amarakon/nvim-cmp-buffer-lines" },
 		{ "lukas-reineke/cmp-rg" },
 		{ "jalvesaq/cmp-nvim-r" },
