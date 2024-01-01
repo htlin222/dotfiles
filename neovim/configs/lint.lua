@@ -18,7 +18,7 @@ return {
 			gv = { "cpplint" },
 			python = { "pylint", "ruff", "pydocstyle" },
 			vim = { "vint" },
-			markdown = { "proselint", "write-good", "vale" },
+			markdown = { "proselint" },
 			yaml = { "yamllint" },
 			bash = { "shellcheck" },
 			text = { "vale" },
