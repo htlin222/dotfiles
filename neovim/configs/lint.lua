@@ -20,6 +20,7 @@ return {
 			vim = { "vint" },
 			markdown = { "proselint" },
 			yaml = { "yamllint" },
+			yml = { "yamllint" },
 			bash = { "shellcheck" },
 			text = { "vale" },
 		}

@@ -1,19 +1,14 @@
 matches:
-  -
-    trigger: "nnnnnn"
+  - trigger: "nnnnnn"
     replace: "https://nhentai.to/random"
-  -
-    trigger: "hanmi"
+  - trigger: "hanmi"
     replace: "https://hanime1.me/"
-  -
-    trigger: "fbemoji"
+  - trigger: "fbemoji"
     replace: "👍❤🥰😆😮🥲😡"
-  -
-    trigger: "fbemoji"
-    replace: "👍❤🥰😆😮🥲😡"
-  -
-    trigger: " LN "
-    replace: " lymph nodes "
-  -
-    trigger: "tapper"
-    replace: "taper"
+  # Pubmed Advanced search term
+  - trigger: ":title"
+    replace: "($|$[Title/Abstract])"
+  - trigger: ":review"
+    replace: '("review"[Publication Type])'
+  - trigger: ":latest"
+    replace: '("2023/01/01"[Date - Publication] : "3000"[Date - Publication])'

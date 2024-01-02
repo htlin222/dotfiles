@@ -51,7 +51,7 @@ return {
 			"cssls",
 			"clangd",
 			"r_language_server",
-			"yamlls",
+			-- "yamlls",
 			"quick_lint_js",
 			-- "zk",
 			-- "remark_ls",
