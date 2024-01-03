@@ -75,6 +75,7 @@ alias opn='xdg-open'
 alias pip="pip3"
 alias pptxpdf="sh pptx_to_pdf.sh"
 alias pt="patients"
+alias e2u="python $HOME/pyscripts/emoji2utf8.py $1"
 alias python="python3"
 alias rain="curl wttr.in/Taipei"
 alias re='reload'

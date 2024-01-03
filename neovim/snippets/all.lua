@@ -31,6 +31,7 @@ return {
 	s({ trig = "now" }, { f(current_time), i(0) }),
 	s({ trig = "true=", regTrig = false, priority = 100, snippetType = "autosnippet" }, { t("false") }),
 	s({ trig = "space;", regTrig = false, priority = 100, snippetType = "autosnippet" }, { t("&nbsp;") }),
+	s({ trig = "emoji;", regTrig = false, priority = 100, snippetType = "autosnippet" }, { t("&#"), i(0), t(";") }),
 	s({ trig = "footnote", regTrig = false, priority = 100 }, { t("* † ‡ § ‖ ¶") }),
 	s(
 		{ trig = "kbd", regTrig = false, priority = 100, snippetType = "autosnippet" },

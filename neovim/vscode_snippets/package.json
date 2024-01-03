@@ -10,9 +10,21 @@
       },
       {
         "language": [
+          "javascript"
+        ],
+        "path": "./javascript/google_apps_script.json"
+      },
+      {
+        "language": [
+          "javascript"
+        ],
+        "path": "./javascript/main.json"
+      },
+      {
+        "language": [
           "all"
         ],
-        "path": "./prompts.json"
+        "path": "./prompts/main.json"
       },
       {
         "language": [
@@ -30,7 +42,7 @@
         "language": [
           "dot"
         ],
-        "path": "./gv_elements.json"
+        "path": "./dot/main.json"
       },
       {
         "language": [
