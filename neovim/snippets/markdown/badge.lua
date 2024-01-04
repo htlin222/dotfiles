@@ -11,7 +11,7 @@ local clinical_trial_API =
 local clinical_trial_API_field = "%3Fformat%3Djson%26fields%3"
 
 return {
-	s(":badge:", { t({ "![badge](https://img.shields.io/badge/" }), i(0), t({ '-6c9a77")' }) }),
+	s("badge", { t({ "![badge](https://img.shields.io/badge/" }), i(0), t({ "-6c9a77)" }) }),
 	postfix({ trig = ":all.badge", matches.line }, {
 		l(
 			l.POSTFIX_MATCH
