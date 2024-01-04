@@ -565,5 +565,35 @@
             "- Consider ICU admission.`___`"
         ],
         "description": "Hyperglycemic crises checklist"
+    },
+    "template-is-non-a-good-ide": {
+        "prefix": "slide_open_and_end",
+        "body": [
+            "<!-- _paginate: false -->",
+            "<!-- _header: '' -->",
+            "",
+            "#### KFSYSCC",
+            "",
+            "# TITLE",
+            "",
+            "<img src=\"https://img.shields.io/badge/and-is_result-6c9a77\"/>",
+            "",
+            "## \u6797\u5354\u9706\uff0cFellow 1",
+            "",
+            "press <kbd>Ctrl</kbd> and <kbd>t</kbd>then",
+            "",
+            "---",
+            "",
+            "${1:content here}",
+            "",
+            "---",
+            "",
+            "# Thank you for your time and attention",
+            "",
+            "# _Have a nice day_",
+            "",
+            "![emojik RLQ height:300px](https://emojik.vercel.app/s/\u2600\ufe0f_\ud83d\ude0e?size=256){loop=\"1\"}"
+        ],
+        "description": "template-is-non-a-good-ide"
     }
 }

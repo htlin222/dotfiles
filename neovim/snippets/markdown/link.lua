@@ -219,11 +219,11 @@ return {
 		f(ret_filename, {}),
 		t("|TLDR]]"),
 	}),
-	s({ trig = ".ali", dscr = "Alias:\n 加入最近取過的別名" }, {
-		t("[["),
-		f(alias, {}),
-		t("]]"),
-	}),
+	-- s({ trig = ".ali", dscr = "Alias:\n 加入最近取過的別名" }, {
+	-- 	t("[["),
+	-- 	f(alias, {}),
+	-- 	t("]]"),
+	-- }),
 	s({ trig = ".toc", dscr = "加入目錄就是讚的" }, {
 		t('<!-- _header: "Outline" -->'),
 		t({ "", "", "" }),

@@ -97,6 +97,12 @@
           "sh"
         ],
         "path": "./shell.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "./trial/main.json"
       }
     ]
   }

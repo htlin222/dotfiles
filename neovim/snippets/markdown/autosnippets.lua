@@ -14,7 +14,6 @@ ls.add_snippets("all", {
 	s(":f", { t({ ":::free", "", "" }) }),
 	s(":::f", { t({ ":::free", "", "" }) }),
 	s("fff", { t({ ":::free", "", "" }) }),
-	s("badge", { t({ '<img src="https://img.shields.io/badge/' }), i(0), t({ '-6c9a77" class="badge"/>' }) }),
 	s(":s", { t({ ":::split", "", "" }), i(0), t({ "", "", ":::", "" }) }),
 	s("sss", { t({ ":::split", "", "" }), i(0), t({ "", "", ":::", "" }) }),
 	s(":::c", { t({ ":::columns", "", "" }) }),
