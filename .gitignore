@@ -7,6 +7,9 @@ config.symlink/gspread/service_account.json
 config.symlink/raycast/
 config.symlink/epy/states.db
 config.symlink/thefuck/*
+config.symlink/thefuck/**
+config.symlink/thefuck/__pycache__/*
+config.symlink/thefuck/__pycache__/**
 config.symlink/nvim/
 config.symlink/nvim/**
 config.symlink/nvim/.gitignore
