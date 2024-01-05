@@ -33,6 +33,15 @@ return {
 				async = false,
 				timeout_ms = 2000,
 			},
+			formatters = {
+				clang_format = {
+					-- /Users/htlin/.local/share/nvim/mason/bin/clang-format
+					-- A function that calculates the directory to run the command in
+					cwd = require("conform.util").root_file({ ".clang-format", "_clang-format" }),
+					-- When cwd is not found, don't run the formatter (default false)
+					require_cwd = true,
+				},
+			},
 		})
 
 		vim.keymap.set({ "n", "v" }, "<leader>mp", function()
