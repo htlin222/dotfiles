@@ -1,29 +1,14 @@
 {
-  "node record": {
-    "prefix": "record",
-    "body": [
-      "  { ${1:example}[ // ___",
-      "      shape = \"record\", // group = \"${4:group_1}\",",
-      "      label= // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
-      "        \" <f0> ${1:Title_Of_Record}",
-      "        | { <f1> ${2:example} | <f2> ${3:example} }",
-      "    \"] // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
-      "  };",
-      ""
-    ],
-    "description": "node record"
-  },
-  "node basic": {
+  "node": {
     "prefix": "node",
     "body": [
-      "  ${1:example}[                       //",
-      "      shape = none;              // `record`, `underline`",
-      "      label = \"${1:example}\\l ___\\l\"; //",
-      "                                 // group = \"${2:group}\";",
-      "  ];",
+      "  ${1:example}[               // ━━━━━━━━━━━━━━━━━",
+      "      shape = none;     // record, underline",
+      "      label = \"${1:example}\"; // ___ group = ${2:example};",
+      "  ];                    // ━━━━━━━━━━━━━━━━━",
       ""
     ],
-    "description": "node basic"
+    "description": "node"
   },
   "subgraph cluster": {
     "prefix": "cluster",

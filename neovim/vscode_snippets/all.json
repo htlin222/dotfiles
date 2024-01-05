@@ -1,6 +1,6 @@
 {
   "我是一個測式": {
-    "prefix": ".test1",
+    "prefix": ".test3",
     "body": [
       "${1:這是一個預留位}，我們可以再往下一個${1:這個會同步}，但${2:這個不會}"
     ]
@@ -19,149 +19,107 @@
   },
   "right arrow": {
     "prefix": "->",
-    "body": [
-      " → "
-    ],
+    "body": [" → "],
     "description": "right arrow"
   },
   "left arrow": {
     "prefix": "<-",
-    "body": [
-      " ← "
-    ],
+    "body": [" ← "],
     "description": "left arrow"
   },
   "up arrow": {
     "prefix": ".up",
-    "body": [
-      " ↑ "
-    ],
+    "body": [" ↑ "],
     "description": "up arrow"
   },
   "down arrow": {
     "prefix": ".down",
-    "body": [
-      " ↓ "
-    ],
+    "body": [" ↓ "],
     "description": "down arrow"
   },
   "square meter": {
     "prefix": "/BSA",
-    "body": [
-      "/m²"
-    ],
+    "body": ["/m²"],
     "description": "square meter"
   },
   "oplus": {
     "prefix": "oplus",
-    "body": [
-      "⊕"
-    ],
+    "body": ["⊕"],
     "description": "+ in o"
   },
   "otimes": {
     "prefix": "ox",
-    "body": [
-      "⊗"
-    ],
+    "body": ["⊗"],
     "description": "x in o"
   },
   "ominus": {
     "prefix": "o-",
-    "body": [
-      "⊖"
-    ],
+    "body": ["⊖"],
     "description": "- in o"
   },
   "oslash": {
     "prefix": "o/",
-    "body": [
-      "⊘"
-    ],
+    "body": ["⊘"],
     "description": "/ in o"
   },
   "belong": {
     "prefix": ".belong",
-    "body": [
-      "∈"
-    ],
+    "body": ["∈"],
     "description": "belong to"
   },
   "delta": {
     "prefix": "delta",
-    "body": [
-      "Δ"
-    ],
+    "body": ["Δ"],
     "description": "delta"
   },
   "superscript 1": {
     "prefix": "^1",
-    "body": [
-      "¹"
-    ],
+    "body": ["¹"],
     "description": "superscript one"
   },
   "superscript 2": {
     "prefix": "^2",
-    "body": [
-      "²"
-    ],
+    "body": ["²"],
     "description": "superscript two"
   },
   "superscript 3": {
     "prefix": "^3",
-    "body": [
-      "³"
-    ],
+    "body": ["³"],
     "description": "superscript three"
   },
   "superscript 4": {
     "prefix": "^4",
-    "body": [
-      "⁴"
-    ],
+    "body": ["⁴"],
     "description": "superscript four"
   },
   "superscript 5": {
     "prefix": "^5",
-    "body": [
-      "⁵"
-    ],
+    "body": ["⁵"],
     "description": "superscript five"
   },
   "superscript 6": {
     "prefix": "^6",
-    "body": [
-      "⁶"
-    ],
+    "body": ["⁶"],
     "description": "superscript six"
   },
   "superscript 7": {
     "prefix": "^7",
-    "body": [
-      "⁷"
-    ],
+    "body": ["⁷"],
     "description": "superscript seven"
   },
   "superscript 8": {
     "prefix": "^8",
-    "body": [
-      "⁸"
-    ],
+    "body": ["⁸"],
     "description": "superscript eight"
   },
   "superscript 9": {
     "prefix": "^9",
-    "body": [
-      "⁹"
-    ],
+    "body": ["⁹"],
     "description": "superscript nine"
   },
   "superscript 0": {
     "prefix": "^0",
-    "body": [
-      "⁰"
-    ],
+    "body": ["⁰"],
     "description": "superscript nine"
   }
 }

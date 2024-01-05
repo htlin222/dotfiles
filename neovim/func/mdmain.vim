@@ -105,7 +105,7 @@ function! CreateMedicalDiary()
           \ 'title: "' . split(expand('%:r'),'/')[-1] . '"',
           \ 'date: "' . strftime("%Y-%m-%d") . '"',
           \ 'enableToc: false',
-          \ 'tags:', '  - building',
+          \ 'tags:', '    - building',
           \ '---',
           \ '',
           \ '> [!info]',

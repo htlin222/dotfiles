@@ -14,7 +14,7 @@ function! Slug()
 endfunction
 command! Pandoc call PandocCite()
 function PandocCite()
-  :silent !pandoc --citeproc --bibliography="$HOME/Zotero/zotero_main.bib" -s -t gfm --csl="$HOME/Zotero/styles/american-medical-association.csl" "%" -o "%"
+  :silent !pandoc --citeproc --bibliography="$HOME/Zotero/zotero_main.bib" -s -t gfm --csl="$HOME/Zotero/styles/american-mejical-association.csl" "%" -o "%"
   :silent !sed -i "" 's/\\\[/[/g' "%"
   :silent !sed -i "" 's/\\\]/]/g' "%"
   :silent !sed -i "" 's/\\//g' "%"

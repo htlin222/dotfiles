@@ -23,7 +23,7 @@ return {
 				sql = { "sql_formatter" },
 				sh = { "beautysh", "shfmt", "shellcheck" },
 				zsh = { "beautysh", "shellcheck" },
-				markdown = { "prettier", "markdownlint", "autocorrect" },
+				markdown = { "prettier", "autocorrect" },
 				graphql = { "prettier" },
 				lua = { "stylua" },
 				python = { "black", "reorder_python_imports", "autoflake", "autopep8" },
@@ -35,11 +35,12 @@ return {
 			},
 			formatters = {
 				clang_format = {
-					-- /Users/htlin/.local/share/nvim/mason/bin/clang-format
-					-- A function that calculates the directory to run the command in
 					cwd = require("conform.util").root_file({ ".clang-format", "_clang-format" }),
-					-- When cwd is not found, don't run the formatter (default false)
 					require_cwd = true,
+				},
+				prettier = {
+					cwd = require("conform.util").root_file({ ".prettierrc.json" }),
+					require_cwd = false,
 				},
 			},
 		})
