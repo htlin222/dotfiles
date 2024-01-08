@@ -132,7 +132,11 @@ function xdgopen() {
 }
 
 function marp_serve() {
-    kill -9 $(pgrep -f marp)
+    # kill -9 $(pgrep -f marp)
+    if kill -9 $(pgrep -f marp) 2>/dev/null; then
+        echo "進程已經成功終止"
+    fi
+
     marp ~/Dropbox/slides -s \
         --engine ~/Dropbox/slides/engine.js \
         --html --bespoke.progress \

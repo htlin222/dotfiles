@@ -17,7 +17,7 @@ ls.add_snippets("all", {
 	s("....", { t({ "", ":::" }) }),
 	s(":::f", { t({ ":::free", "", "" }) }),
 	s(":::c", { t({ ":::columns", "", "" }) }),
-	s(":::d", { t({ ":::date", "", ":::" }) }),
+	s(":::d", { t({ ":::date", "" }) }),
 	s("ccc", { t({ ":::columns", "", "" }) }),
 	s("tts-", { t("texttospeech") }),
 	s("cmp:", { t("🫠  Complication: ") }),
