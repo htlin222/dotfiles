@@ -1,0 +1,1 @@
+-- [backdround/neowords.nvim: Flexible and reliable hops by any type of words](https://github.com/backdround/neowords.nvim)

@@ -1,7 +1,7 @@
 return { --LuaSnip
 	"L3MON4D3/LuaSnip",
 	dependencies = "rafamadriz/friendly-snippets",
-	event = { "VeryLazy", "InsertEnter" },
+	event = { "InsertEnter" },
 	opts = { history = true, updateevents = "TextChanged,TextChangedI" },
 	config = function()
 		-- load before require
