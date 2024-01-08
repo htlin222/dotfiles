@@ -67,7 +67,7 @@ local plug_list = {
 	"neodev",
 	"yanky",
 	-- "vim-table-mode",
-	"barbecue",
+	-- "barbecue",
 	"iswap",
 	"fsread",
 	"headlines",
