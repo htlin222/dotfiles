@@ -56,6 +56,14 @@ autocmd("BufWritePost", {
 	end,
 })
 
+-- Rformat
+
+-- autocmd("BufWritePost", {
+-- 	group = augroup("Rformat", { clear = true }),
+-- 	pattern = "*.R",
+-- 	command = "Rformat",
+-- })
+
 -- automatically updates any line in a Vim or Neovim buffer containing a date pattern like date: "YYYY-MM-DD" to the current date upon saving the file.
 
 autocmd("BufWritePost", {

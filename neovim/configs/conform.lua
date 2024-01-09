@@ -14,7 +14,7 @@ return {
 				typescriptreact = { "prettier" },
 				svelte = { "prettier" },
 				css = { "prettier", "stylelint" },
-				r = { "styler" },
+				r = { "styler" }, -- remotes::install_github("devOpifex/r.nvim")
 				scss = { "prettier", "stylelint" },
 				html = { "prettier" },
 				json = { "prettier" },
@@ -40,6 +40,10 @@ return {
 				},
 				prettier = {
 					cwd = require("conform.util").root_file({ ".prettierrc.json" }),
+					require_cwd = false,
+				},
+				styler = {
+					cwd = require("conform.util").root_file({ ".rnvim" }),
 					require_cwd = false,
 				},
 			},

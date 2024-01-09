@@ -2,4 +2,7 @@
 return {
 	"jalvesaq/Nvim-R",
 	lazy = false,
+	config = function()
+		vim.g.R_auto_start = 2
+	end,
 }
