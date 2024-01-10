@@ -13,6 +13,5 @@ return {
 		vim.g.R_min_editor_width = 80
 		vim.g.R_args = { "--no-save", "--quiet" }
 		vim.g.R_csv_app = "tmux split-window -h vd"
-		require("core.utils").load_mappings("nvimR")
 	end,
 }

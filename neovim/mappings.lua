@@ -162,6 +162,14 @@ M.lspsaga = {
 		["<leader>se"] = { "<cmd>Lspsaga rename<CR>", "rename", opts = { nowait = true } },
 	},
 }
+
+M.iron = {
+	plugin = true,
+	n = {
+		["<leader><CR>"] = { ':echo "hellow"', "testpy", opts = { nowait = true } },
+	},
+}
+
 M.nvimR = {
 	plugin = true,
 	n = {

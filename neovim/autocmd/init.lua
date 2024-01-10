@@ -20,6 +20,12 @@ else
 end
 -----------------------------------------------------------
 
+-- Load keymappings based by filetype
+
+
+require("custom.autocmd.ftkeymap")
+
+
 -- highlight on yank
 autocmd("TextYankPost", {
 	group = augroup("YankHighlight", { clear = true }),
@@ -55,14 +61,6 @@ autocmd("BufWritePost", {
 		})
 	end,
 })
-
--- Rformat
-
--- autocmd("BufWritePost", {
--- 	group = augroup("Rformat", { clear = true }),
--- 	pattern = "*.R",
--- 	command = "Rformat",
--- })
 
 -- automatically updates any line in a Vim or Neovim buffer containing a date pattern like date: "YYYY-MM-DD" to the current date upon saving the file.
 
