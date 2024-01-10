@@ -2,7 +2,7 @@
 local M = {}
 
 --   following this order
-M.ui = { theme = "falcon" }
+M.ui = { theme = "yoru" }
 M.mappings = require("custom.mappings")
 M.func = require("custom.func")
 M.autocmd = require("custom.autocmd")

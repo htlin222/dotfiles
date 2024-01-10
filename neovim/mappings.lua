@@ -1,3 +1,4 @@
+local vim = vim
 local M = {} -- 先產生一個空的table
 M.general = {
 	n = {
@@ -159,6 +160,15 @@ M.lspsaga = {
 	},
 	v = {
 		["<leader>se"] = { "<cmd>Lspsaga rename<CR>", "rename", opts = { nowait = true } },
+	},
+}
+M.nvimR = {
+	plugin = true,
+	n = {
+		["<leader><leader>"] = { "<Plug>RDSendLine", "RDSendLine", opts = { nowait = true } }, -- 把; 指定為:
+	},
+	v = {
+		["<leader><leader>"] = { "<Plug>RDSendSelection", "RDSendSelection", opts = { nowait = true } }, -- 把; 指定為:
 	},
 }
 M.mkdn = {

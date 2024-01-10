@@ -1,4 +1,5 @@
 -- ln -s $(pwd) ~/.config/nvim/lua/custom
+local vim = vim
 function _G.playAudio(audioFilePath)
 	local audioFilePath = vim.fn.expand(audioFilePath)
 	local escapedPath = vim.fn.shellescape(audioFilePath)
