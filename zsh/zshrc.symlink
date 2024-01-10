@@ -46,6 +46,7 @@ export PATH=$PATH:/Users/htlin/.spicetify
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
+alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
 alias ga="git add ."
 alias gcm="git commit -am"

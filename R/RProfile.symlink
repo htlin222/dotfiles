@@ -3,32 +3,22 @@ local({r <- getOption("repos")
       options(repos=r)})
 
 options(stringsAsFactors=FALSE)
-
 options(max.print=100)
-
 options(scipen=10)
-
-options(editor="vim")
-
+options(editor="nvim")
 # options(show.signif.stars=FALSE)
-
 options(menu.graphics=FALSE)
-
 options(prompt="> ")
 options(continue="... ")
-
 options(width = 80)
-
-q <- function (save="no", ...) {
-  quit(save=save, ...)
-}
 
 utils::rc.settings(ipck=TRUE)
 
 .First <- function(){
   if(interactive()){
     library(utils)
-    timestamp(,prefix=paste("-- [",getwd(),"] --\n-- ",sep=""), postfix=" --", suffix=" --")
+    current <- format(Sys.time(), "%Y-%m-%d %H:%M")
+    message(paste(current, "👉" ,getwd()))
   }
 }
 
@@ -41,7 +31,7 @@ sshhh <- function(a.package){
     library(a.package, character.only=TRUE)))
 }
 
-auto.loads <-c("dplyr", "ggplot2")
+auto.loads <-c("dplyr", "ggplot2","formatR")
 
 if(interactive()){
   invisible(sapply(auto.loads, sshhh))
