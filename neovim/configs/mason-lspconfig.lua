@@ -51,6 +51,7 @@ return {
 			"cssls",
 			"clangd",
 			"r_language_server",
+			"ruff_lsp",
 			-- "yamlls",
 			"quick_lint_js",
 			-- "zk",

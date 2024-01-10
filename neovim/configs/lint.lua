@@ -16,7 +16,7 @@ return {
 			json = { "jsonlint" },
 			dot = { "cpplint" },
 			gv = { "cpplint" },
-			python = { "pylint", "ruff", "pydocstyle" },
+			python = { "ruff" },
 			vim = { "vint" },
 			markdown = { "proselint" },
 			yaml = { "yamllint" },
