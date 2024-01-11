@@ -1,5 +1,8 @@
 config.symlink/spicetify/
 config.symlink/coc/extensions/
+config.symlink/chatgpt-cli/
+config.symlink/gpt-cli/
+config.symlink/configstore/*
 config.symlink/gh/
 config.symlink/yai.json
 config.symlink/joplin-desktop/

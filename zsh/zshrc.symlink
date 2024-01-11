@@ -45,6 +45,7 @@ export PATH="/usr/local/sbin:$PATH"
 export PATH=$PATH:/Users/htlin/.spicetify
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
+eval "$(gptcli alias)"
 alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
 alias zshconfig="vim ~/.zshrc"

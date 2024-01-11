@@ -17,7 +17,7 @@ return {
 				r = { "styler" }, -- remotes::install_github("devOpifex/r.nvim")
 				scss = { "prettier", "stylelint" },
 				html = { "prettier" },
-				json = { "prettier" },
+				json = { "fixjson" },
 				yaml = { "yamlfmt" },
 				yml = { "prettier", "yamlfmt" },
 				sql = { "sql_formatter" },
