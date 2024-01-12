@@ -4,6 +4,16 @@
     "body": ["<!-- _header: '' -->"],
     "description": "no header at this page"
   },
+  "no footer at this page": {
+    "prefix": "nofooter",
+    "body": ["<!-- _footer: '' -->"],
+    "description": "no footer at this page"
+  },
+  "footer": {
+    "prefix": "footer",
+    "body": ["<!-- _footer: '${1:YOUR_FOOTER_HERE}' -->"],
+    "description": "no footer at this page"
+  },
   "section": {
     "prefix": "sec",
     "body": [

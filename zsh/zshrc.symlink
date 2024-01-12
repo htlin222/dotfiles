@@ -52,8 +52,7 @@ alias zshconfig="vim ~/.zshrc"
 alias ga="git add ."
 alias gcm="git commit -am"
 alias gcb="git checkout -b"
-alias ranger=". ranger"
-alias rr=". ranger"
+alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 alias bm='vim $DOTFILES/bookmark.zsh'
 alias brewdump='brew bundle dump --describe --force'
 alias c='clear'

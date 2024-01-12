@@ -24,6 +24,7 @@ end
 
 
 require("custom.autocmd.ftkeymap")
+require("custom.autocmd.garden")
 
 
 -- highlight on yank

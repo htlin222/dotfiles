@@ -25,9 +25,7 @@ slides="$HOME/Dropbox/slides/output/"
 rsync -az --delete --include="*.md" --exclude="*" "$medical" ~/garden/content/
 rsync -az --delete --include="*.md" --exclude="*" "$blog" ~/garden/content/blog/
 rsync -az --delete --include="*.svg" --exclude="*" "$src" ~/garden/content/src/
-# rsync -az --delete --include="*.md" --exclude="*" $blog ~/blog/content/posts/
-# rsync -az --delete --include="*.md" --exclude="*" $slides ~/garden/content/slides/
-# rsync -az --delete --include="*/" --include="*" $slides ~/garden/content/slides/
+rsync -az --delete --include="*/" --include="*" "$slides" ~/garden/content/slides/
 echo "🔃 sync the folder"
 sed -i "" 's/\^[0-9]*//g' ~/garden/content/*.md
 sed -i "" 's/\[\[index\]\]/[花園大門口](https:\/\/www.physician.tw\/)/g' ~/garden/content/*.md
