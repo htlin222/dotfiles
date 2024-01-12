@@ -27,7 +27,6 @@ opt.scrolloff = 10
 opt.sidescrolloff = 8
 opt.tabstop = 2
 opt.colorcolumn = "80," .. table.concat(vim.fn.range(120, 999), ",")
-wo.conceallevel = 3
 wo.relativenumber = true
 vim.cmd([[highlight ColorColumn ctermbg=235 guibg=#2c2d27]])
 vim.g.did_load_netrw = 1
