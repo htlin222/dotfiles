@@ -1,3 +1,4 @@
+local vim = vim
 -----------------------------------------------------------
 -- Autocommand functions
 -----------------------------------------------------------
@@ -20,10 +21,9 @@ else
 end
 -----------------------------------------------------------
 
--- Load keymappings based by filetype
-
 require("custom.autocmd.ftkeymap")
 require("custom.autocmd.garden")
+require("custom.autocmd.format")
 
 -- highlight on yank
 autocmd("TextYankPost", {
@@ -39,6 +39,9 @@ autocmd("BufWritePre", { pattern = { "*.txt", "*.md" }, command = "PanguAll" })
 
 -- sets the filetype to zsh for any new or existing buffer with a .gp file extension
 autocmd({ "BufRead", "BufNewFile" }, { pattern = "*.gp", command = "set filetype=zsh" })
+
+-- R format
+
 
 -- converts Graphviz .gv files to SVG format when they are saved, and notifies the user about the success or failure of the conversion.
 autocmd("BufWritePost", {

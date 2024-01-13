@@ -8,7 +8,7 @@ options(scipen=10)
 options(editor="nvim")
 # options(show.signif.stars=FALSE)
 options(menu.graphics=FALSE)
-options(prompt="> ")
+options(prompt = '\u1b[34m»\u1b[0m ')
 options(continue="... ")
 options(width = 80)
 
@@ -18,7 +18,7 @@ utils::rc.settings(ipck=TRUE)
   if(interactive()){
     library(utils)
     current <- format(Sys.time(), "%Y-%m-%d %H:%M")
-    message(paste(current, "👉" ,getwd()))
+    message(paste("\u001b[33m⏲︎\u001b[0m",current, "🗺️" ,getwd()))
   }
 }
 
@@ -51,4 +51,4 @@ attach(.env)
   df
 }
 
-message("*** Successfully loaded .Rprofile ***")
+message("\u001b[32mSuccessfully loaded .Rprofile\u001b[0m")

@@ -179,14 +179,18 @@ M.iron = {
 M.nvimR = {
 	plugin = true,
 	n = {
-		["<leader><leader>"] = { "<Plug>RDSendLine", "RDSendLine", opts = { nowait = true } },
-		["<leader><CR>"] = { "<Plug>RSendFile", "RSendFile", opts = { nowait = true } },
+		["<leader><leader>"] = { "<Plug>RDSendLine", "RDSendLine", opts = { nowait = true, silent = true } },
+		["<leader>rf"] = { "<Plug>RSendFile", "RSendFile", opts = { nowait = true, silent = true } },
+		["<leader>rc"] = {
+			':silent! RSend system("clear")<CR>',
+			"ClearConsole",
+			opts = { nowait = true, silent = true },
+		},
 		["<leader>rh"] = { "<Plug>Rhelp", "R help", opts = { nowait = true } },
-		["<leader>rf"] = { "<cmd>Rformat<CR>", "R format", opts = { nowait = true } },
-		["<leader>rl"] = { "<Plug>Rstart", "R format", opts = { nowait = true } },
-		["<leader>rq"] = { "<Plug>RSaveClose", "R save and close", opts = { nowait = true } },
-		["<leader>rd"] = { "<Plug>RViewDFv", "R save and close", opts = { nowait = true } },
-		["<leader>rs"] = { "<Plug>RSummary", "R Summary", opts = { nowait = true } },
+		["<leader>r<CR>"] = { "<Plug>RStart", "R start", opts = { nowait = true, silent = true } },
+		["<leader>rq"] = { "<Plug>RSaveClose", "R save and close", opts = { nowait = true, silent = true } },
+		["<leader>rd"] = { "<Plug>RViewDFv", "R save and close", opts = { nowait = true, silent = true } },
+		["<leader>rs"] = { "<Plug>RSummary", "R Summary", opts = { nowait = true, silent = true } },
 		["<leader>ro"] = { "<Plug>RUpdateObjBrowser", "R update object windows", opts = { nowait = true } },
 	},
 	v = {

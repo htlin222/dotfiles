@@ -1,12 +1,12 @@
 -- ln -s $(pwd) ~/.config/nvim/lua/custom
 local vim = vim
 function _G.playAudio(audioFilePath)
-	local audioFilePath = vim.fn.expand(audioFilePath)
-	local escapedPath = vim.fn.shellescape(audioFilePath)
+	local audioFilePath_expaned = vim.fn.expand(audioFilePath)
+	local escapedPath = vim.fn.shellescape(audioFilePath_expaned)
 	local command = string.format("ffplay -v 0 -nodisp -autoexit %s &", escapedPath)
 	os.execute(command)
 end
---- Play: 🎤領域展開
+-- Play: 🎤領域展開
 -- playAudio("$HOME/.config/nvim/lua/custom/media/open.mp3")
 --
 local opt = vim.opt

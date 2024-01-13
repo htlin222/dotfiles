@@ -61,7 +61,6 @@ function _G.Open_with_default_app()
 		print("你底心是小小的窗扉緊掩")
 	end
 end
-
 M = {}
 M.print_me = function()
 	print("M.print_me = function()")

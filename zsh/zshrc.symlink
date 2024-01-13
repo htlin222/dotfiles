@@ -16,6 +16,7 @@ source $HOME/.dotfiles/bookmark.zsh
 for file in ~/API/*; do
     source $file
 done
+
 autoload -Uz compinit
 for dump in ~/.zcompdump(N.mh+48); do
     compinit
@@ -74,6 +75,7 @@ alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
 alias o='open'
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias opn='xdg-open'
+alias lsgist='gh gist list --limit 30'
 alias pip="pip3"
 alias pptxpdf="sh pptx_to_pdf.sh"
 alias pt="patients"
@@ -132,6 +134,13 @@ function xdgopen() {
     # xdg-open "$1" &> /dev/null
     xdg-open "$1" &> /dev/null &
 }
+
+function gist(){
+    MY_FILE=$1
+    DESCRIPTION=$(cat "$MY_FILE" | grep 'description:' | cut -d':' -f2)
+    gh gist create "$MY_FILE" --desc "$DESCRIPTION"
+}
+
 
 function marp_serve() {
     # kill -9 $(pgrep -f marp)

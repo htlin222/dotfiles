@@ -23,10 +23,10 @@ return {
 				sql = { "sql_formatter" },
 				sh = { "beautysh", "shfmt", "shellcheck" },
 				zsh = { "beautysh", "shellcheck" },
-				markdown = { "prettier", "autocorrect", "markdownlint-cli2" },
+				markdown = { "prettier", "markdownlint-cli2", "cbfmt" },
 				graphql = { "prettier" },
 				lua = { "stylua" },
-				python = { "ruff_fix", "ruff_format", "reorder_python_imports" },
+				python = { "black", "ruff_fix", "ruff_format", "isort" },
 				-- python = { "ruff_fix", "reorder_python_imports" },
 			},
 			format_on_save = {
