@@ -63,21 +63,21 @@ function align_comment_block(comment_block, max_comment_start)
 end
 
 autocmd("BufWritePost", {
-	group = augroup("align", { clear = true }),
-	pattern = { "*.R", "*.py", "*.md" },
+	group = augroup("R_fomrat", { clear = true }),
+	pattern = "*.R",
 	callback = function()
+		local file = vim.fn.expand("%:p")
+		local cmd = "Rscript $HOME/.dotfiles/neovim/func/styler_i_INPUT.R " .. file
+		vim.cmd("silent! RSend system('clear')")
+		vim.cmd("silent ! " .. cmd) -- Run the command
 		align_comments()
 	end,
 })
 
 autocmd("BufWritePost", {
-	group = augroup("R_fomrat", { clear = true }),
-	pattern = "*.R",
+	group = augroup("align", { clear = true }),
+	pattern = { "*.py", "*.md" },
 	callback = function()
-		-- vim.cmd("w")
-		local file = vim.fn.expand("%:p")
-		local cmd = "Rscript $HOME/.dotfiles/neovim/func/styler_i_INPUT.R " .. file
-		vim.cmd("echo 'DONE'")
-		vim.cmd("silent ! " .. cmd) -- Run the command
+		align_comments()
 	end,
 })

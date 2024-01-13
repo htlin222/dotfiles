@@ -9,7 +9,6 @@ return {
 		vim.R_objbr_auto_start = 1
 		vim.g.R_assign = 0
 		vim.g.Rout_prompt_str = "»"
-		vim.g.R_show_args = 1
 		vim.g.R_clear_line = 1
 		vim.g.R_rconsole_width = 1000
 		vim.g.R_rconsole_height = 10

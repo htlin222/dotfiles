@@ -14,11 +14,12 @@ return {
 				typescriptreact = { "prettier" },
 				svelte = { "prettier" },
 				css = { "prettier", "stylelint" },
-				r = { "styler" }, -- remotes::install_github("devOpifex/r.nvim")
+				r = { "styler", "squeeze_blanks", "trim_whitespace" }, -- remotes::install_github("devOpifex/r.nvim")
 				scss = { "prettier", "stylelint" },
 				html = { "prettier" },
 				json = { "fixjson" },
 				yaml = { "yamlfmt" },
+				toml = { "taplo" },
 				yml = { "prettier", "yamlfmt" },
 				sql = { "sql_formatter" },
 				sh = { "beautysh", "shfmt", "shellcheck" },

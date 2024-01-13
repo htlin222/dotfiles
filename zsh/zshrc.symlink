@@ -55,6 +55,7 @@ alias ga="git add ."
 alias gcm="git commit -am"
 alias gcb="git checkout -b"
 alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+alias vc='vimconfig'
 alias bm='vim $DOTFILES/bookmark.zsh'
 alias brewdump='brew bundle dump --describe --force'
 alias c='clear'
@@ -285,8 +286,6 @@ function note(){
     title="\n## Note: $(date +"%Y-%m-%d %H:%M")\n"
     content_with_title="$title$content"
     filename=$(fzf-pre)
-
-    # Append the content with title to the file
     echo -e "$content_with_title" >> "$filename"
     vim $filename
 }
