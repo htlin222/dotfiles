@@ -1,7 +1,7 @@
 scriptencoding utf-8
 augroup creatprevious
   au BufLeave *.md let g:previous=expand('%:t:r')
-  silent execute '!ffplay -v 0 -nodisp -autoexit ~/.config/nvim/lua/custom/media/enter.wav &'
+  " silent execute '!ffplay -v 0 -nodisp -autoexit ~/.config/nvim/lua/custom/media/enter.wav &'
 augroup END
 " autocmd BufWritePre ~/Documents/Medical/*.md silent! call MySubstituteCommand()
 command! -nargs=0 Ali :call Aliasing()

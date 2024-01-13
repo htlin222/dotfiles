@@ -18,7 +18,12 @@ M.general = {
 			"don't save empty line to register if is empty line",
 			opts = { expr = true },
 		}, -- 把; 指定為:
-		["<leader><CR>"] = { "i<CR><ESC>", "break line" },
+		-- ["<leader><CR>"] = { "i<CR><ESC>", "break line" },
+		["<leader><CR>"] = {
+			":silent lua AppendCurrentLine()<CR>",
+			"Code Complete",
+			opts = { nowait = true, silent = true },
+		},
 		["<leader>o"] = { "<cmd>lua Open_with_default_app()<CR>", "Open by default app" },
 		-- ["<leader>mp"] = { ":MarkdownPreview<CR>", "MarkdownPreview", opts = { nowait = true, silent = true } },
 		["yij"] = { "yi[", "same as i[", opts = { nowait = true } },
@@ -129,6 +134,7 @@ M.general = {
 	},
 	v = {
 		[";"] = { ":", "enter command mode", opts = { nowait = true } },
+		["<leader>ga"] = { ":'<,'>!aicomp<cr>", "Aider Append", opts = { nowait = true } },
 		["p"] = { '"_dP', "paste but don't overwrite the clipboard", opts = { nowait = true } },
 		["H"] = { "^", "begining of line", opts = { nowait = true } },
 		["ij"] = { "i[", "same as i[", opts = { nowait = true } },
@@ -166,7 +172,7 @@ M.lspsaga = {
 M.iron = {
 	plugin = true,
 	n = {
-		["<leader><CR>"] = { ':echo "hellow"', "testpy", opts = { nowait = true } },
+		["<leader>po"] = { ':echo "hellow"', "testpy", opts = { nowait = true } },
 	},
 }
 

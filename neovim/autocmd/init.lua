@@ -22,10 +22,8 @@ end
 
 -- Load keymappings based by filetype
 
-
 require("custom.autocmd.ftkeymap")
 require("custom.autocmd.garden")
-
 
 -- highlight on yank
 autocmd("TextYankPost", {

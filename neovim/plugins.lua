@@ -6,6 +6,7 @@ local plug_list = {
 	"lsp-timeout",
 	"fugitive", -- "tpope/vim-fugitive",
 	"neoclip",
+	"gp",
 	"iron",
 	"hawtkeys",
 	"automkdir",

@@ -1,5 +1,32 @@
+local vim = vim
 function Print_me()
 	print("This is a message from my_module.")
+end
+
+function _G.AppendCurrentLine()
+	if vim.o.encoding == "" then
+		vim.o.encoding = "utf-8"
+	end
+	local current_line = vim.fn.getline(".")
+	-- local trimmed_line = string.sub(current_line, 3)
+	local trimmed_line = current_line
+	local current_file = vim.fn.expand("%:t")
+	local combined_text = "In " .. current_file .. ": " .. trimmed_line
+	local append_cmd = ":silent GpAppend " .. combined_text
+	vim.cmd(append_cmd)
+	print("已產生結果了")
+	vim.cmd(":normal!<CR>")
+end
+
+function _G.AppendVisualSelection()
+	-- 检查是否在 Visual 模式下
+	if vim.fn.visualmode() ~= "V" then
+		vim.api.nvim_err_writeln("Not in Visual mode")
+		return
+	end
+	local selection = vim.fn.getreg("")
+	local append_cmd = ":GpAppend " .. selection
+	vim.cmd(append_cmd)
 end
 
 function _G.ReloadConfig()

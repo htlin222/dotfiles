@@ -3,7 +3,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-(ffplay -v 0 -nodisp -autoexit $HOME/.dotfiles/config.symlink/media/rat_tail.mp3 &> /dev/null &)
+# (ffplay -v 0 -nodisp -autoexit $HOME/.dotfiles/config.symlink/media/rat_tail.mp3 &> /dev/null &)
 zmodload zsh/zprof
 export ZSH="$HOME/.oh-my-zsh"
 DISABLE_AUTO_UPDATE="true"
@@ -531,3 +531,4 @@ if [ -f '/Users/mac/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mac/google-
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/mac/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mac/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH=/Users/htlin/edirect:${PATH}

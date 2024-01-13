@@ -7,7 +7,7 @@ function _G.playAudio(audioFilePath)
 	os.execute(command)
 end
 --- Play: 🎤領域展開
-playAudio("$HOME/.config/nvim/lua/custom/media/open.mp3")
+-- playAudio("$HOME/.config/nvim/lua/custom/media/open.mp3")
 --
 local opt = vim.opt
 local wo = vim.wo
