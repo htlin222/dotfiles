@@ -48,14 +48,16 @@ export PATH=$PATH:/Users/htlin/.spicetify
 # eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init - | sed s/precmd/chpwd/g)"
 eval "$(gptcli alias)"
+eval "$(mcfly init zsh)"
 alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
+alias hx="mcfly search"
 alias ga="git add ."
 alias gcm="git commit -am"
 alias demo="cd ~/Dropbox/scripts/demo"
 alias gcb="git checkout -b"
-alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+alias ranger='joshuto'
 alias vc='vimconfig'
 alias bm='vim $DOTFILES/bookmark.zsh'
 alias brewdump='brew bundle dump --describe --force'
