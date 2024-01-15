@@ -1,14 +1,14 @@
 matches:
   - trigger: "nnnnnn"
-    replace: "https://nhentai.to/random"
+    replace: "nhentai.to/random"
   - trigger: ".dn"
     replace: "doc.new"
   - trigger: ".duty"
-    replace: "https://staff.kfsyscc.org/dr_schedule/2024/\n"
+    replace: "staff.kfsyscc.org/dr_schedule/2024/\n"
   - trigger: ".top"
-    replace: "https://emr.kfsyscc.org/\n"
+    replace: "emr.kfsyscc.org/\n"
   - trigger: "hanmi"
-    replace: "https://hanime1.me/"
+    replace: "hanime1.me/"
   - trigger: "fbemoji"
     replace: "👍❤🥰😆😮🥲😡"
   # Pubmed Advanced search term

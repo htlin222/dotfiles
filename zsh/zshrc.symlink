@@ -53,6 +53,7 @@ alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
 alias ga="git add ."
 alias gcm="git commit -am"
+alias demo="cd ~/Dropbox/scripts/demo"
 alias gcb="git checkout -b"
 alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 alias vc='vimconfig'

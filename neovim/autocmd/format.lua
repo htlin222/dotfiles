@@ -76,7 +76,7 @@ autocmd("BufWritePost", {
 
 autocmd("BufWritePost", {
 	group = augroup("align", { clear = true }),
-	pattern = { "*.py", "*.md" },
+	pattern = { "*.py" },
 	callback = function()
 		align_comments()
 	end,
