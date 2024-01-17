@@ -11,6 +11,8 @@ matches:
     replace: "staff.kfsyscc.org/dr_schedule/2024/\n"
   - trigger: ".top"
     replace: "emr.kfsyscc.org/\n"
+  - trigger: ".gmail"
+    replace: "mail.google.com/mail/u/0/#inbox\n"
   - trigger: "hanmi"
     replace: "hanime1.me/"
   - trigger: "fbemoji"

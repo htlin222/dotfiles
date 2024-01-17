@@ -74,10 +74,10 @@ autocmd("BufWritePost", {
 	end,
 })
 
-autocmd("BufWritePost", {
-	group = augroup("align", { clear = true }),
-	pattern = { "*.py" },
-	callback = function()
-		align_comments()
-	end,
-})
+-- autocmd("BufWritePost", {
+-- 	group = augroup("align", { clear = true }),
+-- 	pattern = { "*.py" },
+-- 	callback = function()
+-- 		align_comments()
+-- 	end,
+-- })
