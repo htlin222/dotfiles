@@ -12,8 +12,8 @@ custom_commands = []
 # default, hsplit
 mode = "default"
 
-automatically_count_files = false
-collapse_preview = true
+automatically_count_files = true
+collapse_preview = false
 # ratios for parent view (optional), current view and preview
 column_ratio = [1, 4, 4]
 scroll_offset = 6
@@ -31,7 +31,7 @@ linemode = "size"
 [display.sort]
 # lexical, mtime, natural, size, ext
 sort_method = "natural"
-case_sensitive = false
+case_sensitive = true
 directories_first = true
 reverse = false
 
