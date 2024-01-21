@@ -59,7 +59,7 @@ return {
 			return "{" .. parent.snippet.env.POSTFIX_MATCH .. "}"
 		end, {}),
 	}),
-	postfix({ trig = "**", dscr = "星號、粗體", snippetType = "autosnippet" }, {
+	postfix({ trig = ".**", dscr = "星號、粗體", snippetType = "autosnippet" }, {
 		f(function(_, parent)
 			return "**" .. parent.snippet.env.POSTFIX_MATCH .. "**"
 		end, {}),

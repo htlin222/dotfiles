@@ -152,34 +152,23 @@ return {
 		t("|overview and recommendations]]"),
 	}),
 	s(
-		{ trig = "outline", dscr = "outline" },
+		{ trig = "dxoutline", dscr = "outline" },
 		fmta(
 			[=[
       ## Outline of <>
 
-      - [[overview of <>| Overview:]] 󰒖
-      - [[definitions of <>| Definitions:]] 󰒖
-      - [[etiologies of <>| Etiologies:]] 󰒖
-
-      ---
-
-      - [[clinical manifestations of <>| Clinical manifestations:]] 󰒖
-      - [[diagnosis of <>| Diagnosis:]] 󰒖
-      - [[management of <>| Management:]] 󰒖
-      - [[treatment of <>| Treatment:]] 󰒖
-
-      ---
-
-      - [[tldr of <>| TLDR:]] 󰒖
-      - [[quiz of <>| Quiz:]] 󰒖
-      - [[references of <>| References: ]] 󰒖
-
-      ## See: also
-
+      - [[overview of <>| Overview:]]
+      - [[definitions of <>| Definitions:]]
+      - [[etiologies of <>| Etiologies:]]
+      - [[clinical manifestations of <>| Clinical manifestations:]]
+      - [[diagnosis of <>| Diagnosis:]]
+      - [[management of <>| Management:]]
+      - [[treatment of <>| Treatment:]]
+      - [[tldr of <>| TLDR:]]
+      - [[references of <>| References: ]]
       - <>
       ]=],
 			{
-				f(ret_filename),
 				f(ret_filename),
 				f(ret_filename),
 				f(ret_filename),
