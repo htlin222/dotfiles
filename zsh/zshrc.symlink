@@ -369,6 +369,24 @@ function cdf() {
         echo "千裡之行，始於足下"
     fi
 }
+function pdf(){
+    cd ~/Documents/10_PDF檔/
+    (marp_serve > /dev/null 2>&1 &)
+    FILE=$(find . \
+            -path ./node_modules \
+            -prune -o -type f -name "*.pdf" -print | \
+            sed 's|^\./||' | \
+        fzf-pre)
+
+    # Check if a file was selected
+    if [ -n "$FILE" ]; then
+        # If a file was selected, open it with nvim at line 10
+        open "$FILE"
+    else
+        # If no file was selected, do nothing
+        echo "溫故而知新，可以為師矣"
+    fi
+}
 function slide(){
     cd ~/Dropbox/slides
     (marp_serve > /dev/null 2>&1 &)
