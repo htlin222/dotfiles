@@ -79,7 +79,7 @@ M.general = {
 		["<Esc>"] = { ":", "enter command mode", opts = { nowait = true } },
 		["<Up>"] = { ":tabprevious<CR>", "Previous Tab", opts = { nowait = true, silent = true } },
 		["<leader><tab>"] = { ":tab sb %<CR>", "current file to a new tab", opts = { nowait = true, silent = true } },
-		["<leader><leader>"] = { "ciw", "Change and edit", opts = { nowait = true, silent = true } },
+		-- ["<leader><leader>"] = { "ciw", "Change and edit", opts = { nowait = true, silent = true } },
 		["<leader>mk"] = {
 			":mksession! ./.vim_auto_session.vim<CR>:echo '已保存目前的工進度 💼 '<CR>",
 			"save session to .vim_auto_session",
@@ -404,7 +404,7 @@ M.mkdn = {
 			"split line with filename",
 			opts = { nowait = true, silent = false },
 		},
-		["<leader>."] = { --split the line
+		["<leader>s."] = { --split the line
 			":silent! call SubstitutionForCurrentLine()<CR>",
 			"split line",
 			opts = { nowait = true, silent = true },
@@ -419,7 +419,7 @@ M.mkdn = {
 			"renew Medial/recent.md",
 			opts = { nowait = true, silent = true },
 		},
-		["<leader>,"] = { --split the line
+		["<leader>s,"] = { --split the line
 			":silent! call SubstitutionForCurrentLineComma()<CR>",
 			"split line by comma",
 			opts = { nowait = true, silent = true },
