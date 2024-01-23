@@ -511,6 +511,28 @@ function dia() {
         nvim +13 "$filename"
     fi
 }
+
+function draft() {
+    cd "$HOME/Dropbox/blog/"
+    local filename="$HOME/Dropbox/blog/$(date +"%Y-%m-%d-%H-%M").md"
+    if [ -e "$filename" ]; then
+        # File already exists, open it with vim
+        nvim +10 "$filename"
+    else
+        echo "---" >> "$filename"
+        echo "title: \"$(date +"%Y-%m-%d")\"" >> "$filename"
+        echo "date: \"$(date -u +"%Y-%m-%dT%H:%M:%S.%NZ")\"" >> "$filename"
+        echo "template: post" >> "$filename"
+        echo "draft: true" >> "$filename"
+        echo "description: \"這個人很懶不寫介紹\"" >> "$filename"
+        echo "category: tutorial" >> "$filename"
+        echo "---" >> "$filename"
+        echo "" >> "$filename"
+        echo "" >> "$filename"
+        nvim +10 "$filename"
+    fi
+}
+
 function reloadiCloud(){
     killall bird
     killall cloudd
