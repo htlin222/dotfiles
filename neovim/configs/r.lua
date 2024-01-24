@@ -11,7 +11,7 @@ return {
 		vim.g.Rout_prompt_str = "»"
 		vim.g.R_clear_line = 1
 		vim.g.R_rconsole_width = 1000
-		vim.g.R_rconsole_height = 10
+		vim.g.R_rconsole_height = 20
 		vim.g.R_min_editor_width = 80
 		vim.g.R_args = { "--no-save", "--quiet" }
 		vim.g.R_csv_app = "tmux split-window -h vd"

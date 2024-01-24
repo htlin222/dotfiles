@@ -10,7 +10,7 @@
     "posix_terminal_shell": "zsh",
     "terminal_close_behavior": "clean",
     "reduced_motion": true,
-    "editor_theme": "Vibrant Ink",
+    "editor_theme": "Merbivore",
     "global_theme": "alternate",
     "text_rendering": "geometricPrecision",
     "insert_native_pipe_operator": true,

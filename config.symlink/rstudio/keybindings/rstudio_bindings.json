@@ -1,3 +1,4 @@
 {
-    "sourceNavigateForward": "Ctrl+Cmd+Space"
+    "sourceNavigateForward": "Ctrl+Cmd+Space",
+    "openNewTerminalAtEditorLocation": "Ctrl+T"
 }
