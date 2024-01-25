@@ -1,0 +1,5 @@
+feeds:
+  - url: https://dropbox.tech/feed
+    # name will be prefixed to all entries in the list
+    name: dropbox
+  - url: https://snyk.io/blog/feed

@@ -2,9 +2,9 @@
 
 keymap = [
   { keys = ["escape"], commands = ["escape"] },
-  { keys = ["ctrl+t"], commands = ["new_tab"] },
+  # { keys = ["ctrl+t"], commands = ["new_tab"] },
   { keys = ["alt+t"], commands = ["new_tab --cursor"] },
-  { keys = ["T"], commands = ["new_tab --current"] },
+  { keys = ["ctrl+t"], commands = ["new_tab --current"] },
   { keys = ["W"], commands = ["close_tab"] },
   { keys = ["ctrl+w"], commands = ["close_tab"] },
   { keys = ["ctrl+c"], commands = ["quit"] },
@@ -13,9 +13,9 @@ keymap = [
 
   { keys = ["R"], commands = ["reload_dirlist"] },
   { keys = ["z", "h"], commands = ["toggle_hidden"] },
-  { keys = ["ctrl+h"], commands = ["toggle_hidden"] },
-  { keys = ["\t"], commands = ["tab_switch 1"] },
-  { keys = ["backtab"], commands = ["tab_switch -1"] },
+  # { keys = ["ctrl+h"], commands = ["toggle_hidden"] },
+  { keys = ["T"], commands = ["tab_switch 1"] },
+  # { keys = ["alt"], commands = ["tab_switch -1"] },
 
   { keys = ["alt+1"], commands = ["tab_switch_index 1"] },
   { keys = ["alt+2"], commands = ["tab_switch_index 2"] },

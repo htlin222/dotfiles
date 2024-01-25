@@ -79,6 +79,8 @@ alias o='open'
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias opn='xdg-open'
 alias lsgist='gh gist list --limit 30'
+alias jj='sprint && ranger'
+alias kk='cd ~/Dropbox/scripts/ && ranger'
 alias pip="pip3"
 alias pptxpdf="sh pptx_to_pdf.sh"
 alias pt="patients"
@@ -475,7 +477,7 @@ function playground() {
     # local GREEN='\033[0;32m' # ANSI escape code for green text
     # local NC='\033[0m'       # ANSI escape code to reset text color
     current_datetime=$(date +'%Y%m%d-%H%M')
-    folder_name=~/Desktop/${current_datetime}.nosync
+    folder_name=~/Desktop/playground.nosync/${current_datetime}
     mkdir -p "$folder_name"
     cd "$folder_name" || exit 1
     # echo "Created new windows and new folder: ${GREEN}$folder_name${NC}"
