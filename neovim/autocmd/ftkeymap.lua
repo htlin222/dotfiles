@@ -21,3 +21,9 @@ autocmd({ "BufRead", "BufNewFile" }, {
 		vim.keymap.set("n", "<space>rh", "<cmd>IronHide<cr>")
 	end,
 })
+
+autocmd({ "BufRead", "BufNewFile" }, {
+	group = augroup("markdown", { clear = true }),
+	pattern = "*.md",
+	callback = function() end,
+})
