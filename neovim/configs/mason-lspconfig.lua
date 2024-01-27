@@ -1,7 +1,7 @@
 return {
 	"williamboman/mason-lspconfig.nvim",
 	event = "VeryLazy",
-	filetypes = { "python", "markdown", "html", "lua", "yaml", "bib", "json", "text", "sh", "dot", "gv", "json" },
+	filetypes = { "python", "markdown", "html", "lua", "yaml", "bib", "json", "text", "sh", "dot", "gv", "json", "r" },
 	dependencies = {
 		"williamboman/mason.nvim",
 		{
