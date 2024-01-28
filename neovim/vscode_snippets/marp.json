@@ -7,6 +7,14 @@
     ],
     "description": "marp header"
   },
+  "marp class": {
+    "prefix": "class",
+    "body": [
+      "<!-- _class: ${1:example} -->",
+      ""
+    ],
+    "description": "marp class"
+  },
   "marp header one": {
     "prefix": "headerthis",
     "body": [
