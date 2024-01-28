@@ -11,4 +11,5 @@ local fmta = require("luasnip.extras.fmt").fmta
 
 return {
 	s({ trig = "--", dscr = "des", snippetType = "autosnippet" }, { t(" <- ") }),
+	s({ trig = ">>", dscr = "des", snippetType = "autosnippet" }, { t(" %>% ") }),
 }
