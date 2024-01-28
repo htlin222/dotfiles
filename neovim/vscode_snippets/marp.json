@@ -1,4 +1,20 @@
 {
+  "marp header": {
+    "prefix": "header",
+    "body": [
+      "<!-- header: '**${1:example}**' -->",
+      ""
+    ],
+    "description": "marp header"
+  },
+  "marp header one": {
+    "prefix": "headerthis",
+    "body": [
+      "<!-- _header: '**${1:example}**' -->",
+      ""
+    ],
+    "description": "marp header only on this page"
+  },
   "no header at this page": {
     "prefix": "noheader",
     "body": ["<!-- _header: '' -->"],
@@ -257,7 +273,7 @@
       "",
       "---",
       "",
-      "<!-- _header: 'Outline' -->",
+      "<!-- _header: '**Outline**' -->",
       "",
       "# Outline",
       "",

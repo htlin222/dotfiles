@@ -1,20 +1,4 @@
 {
-  "marp header": {
-    "prefix": "header",
-    "body": [
-      "<!-- header: '${1:example}' -->",
-      ""
-    ],
-    "description": "marp header"
-  },
-  "marp header one": {
-    "prefix": "headerthis",
-    "body": [
-      "<!-- _header: '${1:example}' -->",
-      ""
-    ],
-    "description": "marp header only on this page"
-  },
   "positive": {
     "prefix": ".pos",
     "body": [
