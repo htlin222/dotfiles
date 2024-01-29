@@ -22,8 +22,9 @@ end
 -----------------------------------------------------------
 
 require("custom.autocmd.ftkeymap")
-require("custom.autocmd.garden")
+require("custom.autocmd.fttemplate")
 require("custom.autocmd.format")
+require("custom.autocmd.garden")
 
 -- highlight on yank
 autocmd("TextYankPost", {
@@ -41,7 +42,6 @@ autocmd("BufWritePre", { pattern = { "*.txt", "*.md" }, command = "PanguAll" })
 autocmd({ "BufRead", "BufNewFile" }, { pattern = "*.gp", command = "set filetype=zsh" })
 
 -- R format
-
 
 -- converts Graphviz .gv files to SVG format when they are saved, and notifies the user about the success or failure of the conversion.
 autocmd("BufWritePost", {
@@ -133,58 +133,6 @@ autocmd("InsertEnter", {
 	pattern = "*",
 	callback = function()
 		vim.opt.colorcolumn = "80," .. table.concat(vim.fn.range(120, 999), ",")
-	end,
-})
-
--- ████ Insert Title according to the filetype █████
-
--- shell script template
-
-autocmd("BufNewFile", {
-	group = augroup("Shell", { clear = true }),
-	pattern = "*.sh",
-	callback = function()
-		local title = vim.fn.fnamemodify(vim.fn.expand("%:r"), ":t")
-		local date = os.date("%Y-%m-%d")
-		local lines = {
-			"#!/bin/bash",
-			"# Author: Hsieh-Ting Lin",
-			'# Title: "' .. title .. '"',
-			'# Date: "' .. date .. '"',
-			"# Version: 1.0.0",
-			"# Notes: ",
-			"",
-			"",
-		}
-		vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
-		vim.cmd("silent !chmod +x %")
-	end,
-})
-
--- python template
-
-autocmd("BufNewFile", {
-	group = augroup("Python", { clear = true }),
-	pattern = "*.py",
-	callback = function()
-		local lines = {
-			"#!/usr/bin/env python3",
-			"# -*- coding: utf-8 -*-",
-			"# title: " .. vim.fn.fnamemodify(vim.fn.expand("%:r"), ":t"),
-			'# date: "' .. os.date("%Y-%m-%d") .. '"',
-			"# author: Hsieh-Ting Lin, the Lizard 🦎",
-			"",
-			"",
-			"def main():",
-			'    """Write Docstring."""',
-			'    print("your code here")',
-			"",
-			"",
-			'if __name__ == "__main__":',
-			"    main()",
-		}
-		vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
-		vim.cmd("silent !chmod +x %")
 	end,
 })
 
