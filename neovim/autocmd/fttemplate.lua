@@ -45,6 +45,7 @@ autocmd("BufNewFile", {
 			"#!/usr/bin/env python3",
 			"# -*- coding: utf-8 -*-",
 			"# title: " .. vim.fn.fnamemodify(vim.fn.expand("%:r"), ":t"),
+			"# description: " .. vim.fn.fnamemodify(vim.fn.expand("%:r"), ":t") .. " is a script about...",
 			'# date: "' .. os.date("%Y-%m-%d") .. '"',
 			"# author: Hsieh-Ting Lin, the Lizard 🦎",
 			"",

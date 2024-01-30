@@ -167,7 +167,9 @@ function joshuto_official() {
 
 function gist(){
     MY_FILE=$1
-    DESCRIPTION=$(cat "$MY_FILE" | grep 'description:' | cut -d':' -f2)
+    # DESCRIPTION=$(cat "$MY_FILE" | grep 'description:' | cut -d':' -f2)
+    # DESCRIPTION=$(cat "$MY_FILE" | grep 'description:' | cut -d':' -f2 | tr -d '"')
+    DESCRIPTION=$(cat "$MY_FILE" | grep -iE 'description:|desc:' | cut -d':' -f2 | tr -d '"')
     gh gist create "$MY_FILE" --desc "$DESCRIPTION"
 }
 
