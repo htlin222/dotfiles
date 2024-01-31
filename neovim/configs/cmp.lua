@@ -11,6 +11,7 @@ return { -- this table will override the default cmp setting
 	opts = {
 		sources = {
 			{ name = "nvim_lsp" },
+			{ name = "codeium" },
 			{ name = "luasnip" },
 			-- { name = "cmp_zotcite" },
 			-- { name = "papis" },
@@ -106,6 +107,14 @@ return { -- this table will override the default cmp setting
 			}),
 		},
 	},
+	-- formatting = {
+	-- 	format = require("lspkind").cmp_format({
+	-- 		mode = "symbol",
+	-- 		maxwidth = 50,
+	-- 		ellipsis_char = "...",
+	-- 		symbol_map = { Codeium = "" },
+	-- 	}),
+	-- },
 
 	dependencies = {
 		{ "hrsh7th/cmp-emoji" },
@@ -125,6 +134,7 @@ return { -- this table will override the default cmp setting
 				require("cmp_pandoc").setup({})
 			end,
 		},
+
 		{ -- setting of tabnine : [tzachar/cmp-tabnine: TabNine plugin for hrsh7th/nvim-cmp](https://github.com/tzachar/cmp-tabnine)
 			-- "tzachar/cmp-tabnine",
 			-- build = "./install.sh",

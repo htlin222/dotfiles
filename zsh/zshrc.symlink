@@ -172,7 +172,19 @@ function gist(){
     DESCRIPTION=$(cat "$MY_FILE" | grep -iE 'description:|desc:' | cut -d':' -f2 | tr -d '"')
     gh gist create "$MY_FILE" --desc "$DESCRIPTION"
 }
-
+function check_and_start_marp_serve() {
+    # Check if any marp serve process is already running
+    if pgrep -f "marp .+ -s" > /dev/null; then
+        echo "Marp serve is already running in the background."
+    else
+        echo "Starting Marp serve..."
+        # Start Marp serve in the background
+        marp ~/Dropbox/slides -s \
+            --engine ~/Dropbox/slides/engine.js \
+            --html --bespoke.progress \
+            "$@" &
+    fi
+}
 
 function marp_serve() {
     # kill -9 $(pgrep -f marp)
@@ -394,7 +406,7 @@ function pdf(){
 }
 function slide(){
     cd ~/Dropbox/slides
-    (marp_serve > /dev/null 2>&1 &)
+    (check_and_start_marp_serve > /dev/null 2>&1 &)
     FILE=$(find . \
             -path ./node_modules \
             -prune -o -type f -name "*.md" -print | \
