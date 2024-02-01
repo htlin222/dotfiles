@@ -7,7 +7,6 @@ enableToc: false
 
 # README
 
-# This is my dotfile
 ## Getting Start
 
 see: [tutorial](tutorial.md)
