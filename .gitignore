@@ -1,3 +1,4 @@
+**/.env
 config.symlink/spicetify/
 config.symlink/coc/extensions/
 config.symlink/chatgpt-cli/
