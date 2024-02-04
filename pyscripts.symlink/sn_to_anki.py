@@ -10,6 +10,7 @@
 # @raycast.mode fullOutput
 # @raycast.packageName System
 # @raycast.schemaVersion 1
+
 import json
 import os
 

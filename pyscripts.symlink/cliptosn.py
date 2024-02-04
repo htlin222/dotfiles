@@ -1,7 +1,7 @@
 #!/Users/htlin/.pyenv/versions/automator/bin/python
 # -*- coding: utf-8 -*-
 # title: cliptosn
-# date: "2024-02-03"
+# date: "2024-02-04"
 # @raycast.title Clipboard to Simplenote with Anki tag
 # @raycast.author HTLin the 🦎
 # @raycast.authorURL https://github.com/htlin222
@@ -28,6 +28,8 @@ SIMPLENOTE_PASSWORD = os.getenv("SIMPLENOTE_PASSWORD")
 
 
 def run_macos_notification(title, body):
+    title = title.replace("'", "_")
+    body = body.replace("'", "_")
     command = (
         f'osascript -e \'display notification with title "{title}" subtitle "{body}"\''
     )
