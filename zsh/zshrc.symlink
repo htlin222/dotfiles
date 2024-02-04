@@ -9,7 +9,8 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
-plugins=(zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode) #git
+plugins=(zsh-autosuggestions zsh-syntax-highlighting git you-should-use)
+# zsh-vi-mode
 source $ZSH/oh-my-zsh.sh
 source $HOME/.dotfiles/bookmark.zsh
 for file in ~/API/*; do
@@ -54,6 +55,7 @@ alias zshconfig="vim ~/.zshrc"
 alias up="ffsend upload"
 alias hx="mcfly search"
 alias ga="git add ."
+alias br="broot"
 alias gcm="git commit -am"
 alias demo="cd ~/Dropbox/scripts/demo"
 alias gcb="git checkout -b"
@@ -139,6 +141,10 @@ function fzf-pre() {
 function xdgopen() {
     # xdg-open "$1" &> /dev/null
     xdg-open "$1" &> /dev/null &
+}
+function nccn() {
+    cd ~/Documents/guidelines/NCCN
+    sh ~/Documents/guidelines/NCCN/nccn.sh $(cat nccn_dict.txt | fzf)
 }
 function joshuto_official() {
     ID="$$"
@@ -288,7 +294,7 @@ function topdf() {
     # command mv $1 ./converted/$1
 }
 function chatgpt() {
-    openai api completions.create -m text-davinci-003 -p "$1" -t 0 -M 7 --stream
+    sh /Users/htlin/.dotfiles/shellscripts/chatGPT_CURL.sh -i "$1"
 }
 function undelfile() {
     mv -i ~/.Trash/files/$@ ./
@@ -489,15 +495,30 @@ function jupyter-init(){
     jupyter-lab
 }
 function playground() {
-    # local GREEN='\033[0;32m' # ANSI escape code for green text
-    # local NC='\033[0m'       # ANSI escape code to reset text color
+    local GREEN='\033[0;32m'
+    local NC='\033[0m'
+
+    # 取得當前日期和時間
     current_datetime=$(date +'%Y%m%d-%H%M')
-    folder_name=~/Desktop/playground.nosync/${current_datetime}
+
+    if [ $# -eq 0 ]; then
+        folder_name=~/Desktop/playground.nosync/${current_datetime}
+    else
+        folder_name=~/Desktop/playground.nosync/$1
+    fi
+    # 創建目錄及其子目錄
     mkdir -p "$folder_name"
+    mkdir -p "$folder_name/src"
+    mkdir -p "$folder_name/doc"
+    # 創建一個空的.env檔案
+    touch $folder_name/.env
+    # 創建.gitignore檔案，忽略.env檔案
+    echo "**/.env" > $folder_name/.gitignore
+    echo "# $folder_name\n\n> $current_datetime" > $folder_name/README.md
+    # 進入新創建的目錄
     cd "$folder_name" || exit 1
-    # echo "Created new windows and new folder: ${GREEN}$folder_name${NC}"
+
     tmux new-window
-    # SetFile -a C ~/Desktop/${current_datetime}
     cd -
 }
 
@@ -625,3 +646,5 @@ if [ -f '/Users/mac/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mac/g
 export PATH=/Users/htlin/edirect:${PATH}
 
 eval "$(atuin init zsh)"
+
+source /Users/htlin/.config/broot/launcher/bash/br

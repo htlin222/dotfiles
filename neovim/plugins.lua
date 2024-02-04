@@ -3,6 +3,7 @@ local plug_list = {
 	--- First to load
 	"lspsaga", -- https://github.com/nvimdev/lspsaga.nvim
 	"carbon-now",
+	"quarto",
 	"codeium",
 	"lsp-timeout",
 	"fugitive", -- "tpope/vim-fugitive",
