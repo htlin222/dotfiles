@@ -52,6 +52,7 @@ eval "$(mcfly init zsh)"
 alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
+alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
 alias up="ffsend upload"
 alias wh="which"
 alias hx="mcfly search"
