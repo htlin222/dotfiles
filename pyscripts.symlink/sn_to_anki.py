@@ -1,7 +1,7 @@
 #!/Users/htlin/.pyenv/versions/automator/bin/python
 # -*- coding: utf-8 -*-
 # title: sn_to_anki
-# date: "2023-03-03"
+# date: "2024-02-04"
 # @raycast.title Simplenote to Anki
 # @raycast.author HTLin the 🦎
 # @raycast.authorURL https://github.com/htlin222
@@ -33,6 +33,7 @@ ANKI_DECK_NAME = "00_inbox"
 ANKI_NOTE_TYPE = "Basic"
 ANKI_FRONT_FIELD = "Front"
 ANKI_BACK_FIELD = "Back"
+ANKICONNECT_API_KEY = "mykey"  # 將此處替換為您的API密鑰
 
 
 def get_sn():
@@ -78,6 +79,7 @@ def sent_to_anki(title, back):
     back_html = markdown.markdown(back)
     # print(back_html)
     payload = {
+        "key": ANKICONNECT_API_KEY,  # 使用API密鑰
         "action": "addNote",
         "version": 6,
         "params": {

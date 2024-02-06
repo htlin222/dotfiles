@@ -53,9 +53,11 @@ alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
 alias up="ffsend upload"
+alias wh="which"
 alias hx="mcfly search"
 alias ga="git add ."
 alias br="broot"
+alias lns="ln -s"
 alias gcm="git commit -am"
 alias demo="cd ~/Dropbox/scripts/demo"
 alias gcb="git checkout -b"
@@ -66,7 +68,7 @@ alias brewdump='brew bundle dump --describe --force'
 alias c='clear'
 # alias cdf='cd $(find . -type d -print | fzf)'
 alias cover='nvim +10 ~/Dropbox/slides/cover.md'
-alias dadjoke="curl -s -H 'Accept: application/json' https://icanhazdadjoke.com/ | jq -r '.joke'"
+alias dj="curl -s -H 'Accept: application/json' https://icanhazdadjoke.com/ | jq -r '.joke'"
 alias di='dia'
 alias disk='diskonaut'
 alias e='exit'
@@ -324,10 +326,6 @@ function sss() {
 function simplenote() {
     nvim -c "SimplenoteList"
 }
-function newpost(){
-    cd ~/Dropbox/blog/
-    nvim -c "echo '一隻鳥接著一隻鳥寫'" $1.md
-}
 function note(){
     # Get the clipboard content and add a title
     cd ~/Dropbox/Medical/
@@ -434,10 +432,6 @@ function slide(){
 function vimconfig(){
     cd ~/.config/nvim/lua/custom
     nvim init.lua
-}
-function blog(){
-    cd ~/Dropbox/blog/
-    nvim blog_index.md
 }
 function mkcd() {
     mkdir -p "$@" && cd "$_";
@@ -568,6 +562,21 @@ function draft() {
         echo "" >> "$filename"
         echo "" >> "$filename"
         nvim +10 "$filename"
+    fi
+}
+
+function updateblog() {
+    blog="$HOME/Dropbox/blog/"
+    rsync -az --delete --include="*.md" --exclude="*" "$blog" ~/blog/content/posts/
+    if git -C ~/blog/ rev-parse --git-dir >/dev/null 2>&1; then
+        git -C ~/blog/ pull
+        git -C ~/blog/ add .
+        git -C ~/blog/ commit -m "routine blogging ✏️ "
+        git -C ~/blog/ push
+        echo "👉 see action at https://app.netlify.com/sites/htlin/deploys"
+        echo "👉 see website at https://htlin.site"
+    else
+        echo "🔔 Not a git repo"
     fi
 }
 

@@ -3,6 +3,7 @@
 config.symlink/spicetify/
 config.symlink/coc/extensions/
 config.symlink/chatgpt-cli/
+/config.symlink/configstore/update-notifier-@johannlai/gptcli.json
 config.symlink/gpt-cli/
 config.symlink/configstore/**
 config.symlink/configstore/*
