@@ -70,7 +70,6 @@ alias c='clear'
 # alias cdf='cd $(find . -type d -print | fzf)'
 alias cover='nvim +10 ~/Dropbox/slides/cover.md'
 alias dj="curl -s -H 'Accept: application/json' https://icanhazdadjoke.com/ | jq -r '.joke'"
-alias di='dia'
 alias disk='diskonaut'
 alias e='exit'
 alias index='vim ~/Dropbox/Medical/index.md'
@@ -658,3 +657,5 @@ export PATH=/Users/htlin/edirect:${PATH}
 eval "$(atuin init zsh)"
 
 source /Users/htlin/.config/broot/launcher/bash/br
+
+source /Users/mac/.config/broot/launcher/bash/br
