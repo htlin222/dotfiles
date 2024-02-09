@@ -9,8 +9,18 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
-plugins=(zsh-autosuggestions zsh-syntax-highlighting git you-should-use)
+plugins=(zsh-autosuggestions zsh-syntax-highlighting git you-should-use sudo web-search copyfile jsontools)
 # zsh-vi-mode
+ZSH_WEB_SEARCH_ENGINES=(
+    # reddit "https://www.reddit.com/search/?q="
+    anna "https://tw.annas-archive.org/search?index=&ext=epub&sort=newest&q="
+    pubmed "https://pubmed-ncbi-nlm-nih-gov.autorpa.kfsyscc.org/?sort=date&term="
+    cco "https://clinicaloptions.com/CE-CME?specialities=hematology,oncology&contenttypes=pdf,slideset,slideset-download,text-module&searchtext="
+    scihub "https://sci-hub.tw/"
+    search-uptodate "https://www-uptodate-com.autorpa.kfsyscc.org/contents/search?search="
+    zlib "https://zh.singlelogin.re/s/"
+    google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
+)
 source $ZSH/oh-my-zsh.sh
 source $HOME/.dotfiles/bookmark.zsh
 for file in ~/API/*; do
