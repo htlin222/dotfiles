@@ -330,6 +330,12 @@ function dp() {
     git -C $DOTFILES push
     cd -
 }
+
+function dotpull() {
+    command ...
+    git -C $DOTFILES restore
+    git -C $DOTFILES pull
+}
 function sss() {
     $HOME/Dropbox/Medical/scripts/ls.sh
 }
