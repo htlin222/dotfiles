@@ -332,8 +332,7 @@ function dp() {
 }
 
 function dotpull() {
-    command ...
-    git -C $DOTFILES restore
+    git restore $DOTFILES
     git -C $DOTFILES pull
 }
 function sss() {
