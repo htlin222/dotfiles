@@ -35,6 +35,7 @@ done
 # ---- start export ----
 export EDITOR="/usr/local/bin/nvim"
 export ML=$HOME/Dropbox/scripts/ml/
+export SMEAR=$HOME/Documents/images/smear/
 export DOTFONTPATH=$HOME/Library/Fonts
 export VISUAL="/usr/local/bin/nvim"
 export DISPLAY=:0
@@ -67,9 +68,9 @@ bindkey -s '^n' 'tmux new-window\n'
 
 # --- source need files
 
-source  "$DOTFILES/zsh/modules/fzf.zsh"
 source  "$DOTFILES/zsh/modules/alias.zsh"
 source  "$DOTFILES/zsh/modules/functions.zsh"
+source  "$DOTFILES/zsh/modules/fzf.zsh"
 source /Users/htlin/.config/broot/launcher/bash/br
 source /Users/mac/.config/broot/launcher/bash/br
 
