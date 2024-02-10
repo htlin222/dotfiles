@@ -155,7 +155,9 @@ M.lspsaga = {
 	plugin = true,
 	n = {
 		["<leader>ft"] = { "<cmd>Lspsaga term_toggle<CR>", "float term", opts = { nowait = true } },
-		["<leader>cn"] = { "<cmd>Lspsaga code_action<CR>", "code_action", opts = { nowait = true } },
+		["<leader>T"] = { "<cmd>Lspsaga term_toggle<CR>", "float term", opts = { nowait = true } },
+		["<leader>K"] = { ":Lspsaga code_action<cr>", "Code Action", opts = { nowait = true } },
+		-- ["<leader>cn"] = { "<cmd>Lspsaga code_action<CR>", "code_action", opts = { nowait = true } },
 		["<leader>dx"] = {
 			"<cmd>Lspsaga diagnostic_jump_next<CR>",
 			"Lspsaga diagnostic_jump_next",
