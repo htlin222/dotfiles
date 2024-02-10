@@ -79,7 +79,7 @@ def sent_to_anki(title, back):
     back_html = markdown.markdown(back)
     # print(back_html)
     payload = {
-        "key": ANKICONNECT_API_KEY,  # 使用API密鑰
+        # "key": ANKICONNECT_API_KEY,  # 使用API密鑰
         "action": "addNote",
         "version": 6,
         "params": {
