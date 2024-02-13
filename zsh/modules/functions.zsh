@@ -344,7 +344,7 @@ function loading_animation() {
         done
     done
 }
-function loadpyenv(){
+function pyinit(){
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init - | sed s/precmd/chpwd/g)"

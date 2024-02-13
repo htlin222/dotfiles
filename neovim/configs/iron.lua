@@ -11,7 +11,7 @@ return {
 				-- Your repl definitions come here
 				repl_definition = {
 					python = {
-						command = { "bpython" },
+						command = { "ptpython" },
 					},
 				},
 				-- How the repl window will be displayed

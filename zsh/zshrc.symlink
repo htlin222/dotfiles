@@ -10,7 +10,8 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
-plugins+=(zsh-lazyload zsh-autosuggestions zsh-syntax-highlighting git you-should-use sudo web-search copyfile jsontools)
+plugins+=(zsh-vi-mode zsh-lazyload zsh-autosuggestions zsh-syntax-highlighting git you-should-use sudo web-search copyfile jsontools)
+# Default cursor styles
 # https://github.com/qoomon/zsh-lazyload
 # zsh-vi-mode
 ZSH_WEB_SEARCH_ENGINES=(
@@ -57,8 +58,11 @@ export PATH=$PATH:/Users/htlin/.spicetify
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$PATH:/Users/htlin/.local/bin"
 export PATH="Users/htlin/edirect:${PATH}"
-eval "$(mcfly init zsh)"
-eval "$(atuin init zsh)"
+(eval "$(mcfly init zsh)" &> /dev/null &)
+(eval "$(atuin init zsh)" &> /dev/null &)
+(eval "$(pyenv init --path)" &> /dev/null &)
+(eval "$(pyenv init -)" &> /dev/null &)
+(eval "$(pyenv virtualenv-init - | sed s/precmd/chpwd/g)" &> /dev/null &)
 # eval $(thefuck --alias)
 # eval "$(zoxide init zsh)"
 
