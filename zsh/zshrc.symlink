@@ -10,7 +10,8 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
-plugins+=(zsh-vi-mode zsh-lazyload zsh-autosuggestions zsh-syntax-highlighting git you-should-use sudo web-search copyfile jsontools)
+plugins+=(zsh-lazyload zsh-autosuggestions fast-syntax-highlighting git you-should-use sudo web-search copyfile jsontools zsh-vi-mode)
+#zsh-vi-mode
 # Default cursor styles
 # https://github.com/qoomon/zsh-lazyload
 # zsh-vi-mode
@@ -24,7 +25,7 @@ ZSH_WEB_SEARCH_ENGINES=(
     zlib "https://zh.singlelogin.re/s/"
     google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
 )
-source "$ZSH"/oh-my-zsh.sh
+source "$ZSH/oh-my-zsh.sh"
 
 # ---- Export ----
 export DOTFILES=$HOME/.dotfiles
@@ -72,9 +73,10 @@ bindkey -s '^n' 'tmux new-window\n'
 
 # --- source need files
 
-source  "$DOTFILES/zsh/modules/alias.zsh"
-source  "$DOTFILES/zsh/modules/functions.zsh"
-source  "$DOTFILES/zsh/modules/fzf.zsh"
+source "$DOTFILES/zsh/modules/alias.zsh"
+source "$DOTFILES/zsh/modules/functions.zsh"
+source "$DOTFILES/zsh/modules/fzf.zsh"
+source "$HOME/.rye/env"
 source /Users/htlin/.config/broot/launcher/bash/br
 source /Users/mac/.config/broot/launcher/bash/br
 
