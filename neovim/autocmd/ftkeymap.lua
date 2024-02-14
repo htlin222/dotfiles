@@ -22,8 +22,16 @@ autocmd({ "BufRead", "BufNewFile" }, {
 	end,
 })
 
+-- autocmd({ "BufRead", "BufNewFile" }, {
+-- 	group = augroup("markdown", { clear = true }),
+-- 	pattern = "*.md",
+-- 	callback = function() end,
+-- })
+
 autocmd({ "BufRead", "BufNewFile" }, {
-	group = augroup("markdown", { clear = true }),
-	pattern = "*.md",
-	callback = function() end,
+	group = augroup("bash_and_zsh", { clear = true }),
+	pattern = { "*.zsh", "*.env", "*.zshrc" },
+	callback = function()
+		vim.bo.filetype = "sh"
+	end,
 })

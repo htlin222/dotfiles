@@ -4,7 +4,15 @@ alias zshconfig="vim ~/.zshrc"
 alias tt="taskwarrior-tui"
 alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
 alias up="ffsend upload"
+alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
 alias "brewcask"="brew install --cask --no-quarantine"
+alias bc='bc --quiet <(echo "scale=5;print\"scale=5\n\"")'
+alias xo='xdg-open'
+alias lc='lolcat'
+alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
+alias mv="mv -iv"
+alias rm="rm -ivr"
+alias cp="cp -ivr"
 alias wh="which"
 alias hx="mcfly search"
 alias ga="git add ."
