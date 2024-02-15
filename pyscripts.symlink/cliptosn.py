@@ -37,8 +37,9 @@ def run_macos_notification(title, body):
 
 
 def main():
-    note_store = simplenote.Simplenote(SIMPLENOTE_EMAIL, SIMPLENOTE_PASSWORD)
     note_body = clipboard.paste()
+    note_body = note_body.replace('"', "__")
+    note_store = simplenote.Simplenote(SIMPLENOTE_EMAIL, SIMPLENOTE_PASSWORD)
     if note_body is None:
         run_macos_notification("剪貼板中沒有內容", "Check it")
     else:
