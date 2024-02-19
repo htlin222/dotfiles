@@ -80,7 +80,7 @@ return { --mkdnflow
 				MkdnYankFileAnchorLink = { "n", "yfa" },
 				MkdnIncreaseHeading = { "n", "-" },
 				MkdnDecreaseHeading = { "n", "=" },
-				MkdnToggleToDo = { { "n", "v" }, "<leader>to" },
+				MkdnToggleToDo = { { "n", "v" }, "<leader><CR>" },
 				MkdnNewListItem = false,
 				MkdnNewListItemBelowInsert = { "n", "o" },
 				MkdnNewListItemAboveInsert = { "n", "O" },
@@ -94,7 +94,7 @@ return { --mkdnflow
 				MkdnTableNewRowAbove = { "n", "<leader>iR" },
 				MkdnTableNewColAfter = { "n", "<leader>ic" },
 				MkdnTableNewColBefore = { "n", "<leader>iC" },
-				MkdnFoldSection = { "n", "<leader>zq" },
+				MkdnFoldSection = { "n", "<leader>fl" },
 			},
 		})
 	end,

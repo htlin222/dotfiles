@@ -4,6 +4,14 @@ function rename_in_sqb() {
         mv "$file" "$newname"
     done
 }
+
+function unlock() {
+    # find "/Applications" -type d -maxdepth 1 -name "*.app" -mmin -10 | while read app; do
+    #     echo "👌Removing quarantine from: $app"
+    #     sudo xattr -r -d com.apple.quarantine "$app"
+    # done
+    sh /Users/htlin/.dotfiles/shellscripts/do_not_block_app.sh
+}
 function ya() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXX")"
     yazi "$@" --cwd-file="$tmp"
@@ -506,3 +514,10 @@ function mediumog() {
     local slide_name="$1"
     sh ~/.dotfiles/shellscripts/gen_medium_og.sh "$slide_name"
 }
+
+fucntion playlist() {
+    playlist_name=$(yt-dlp "$1" -I 1:1 --skip-download --no-warning --print playlist_title | tr ' ' '_' | tr -d '/\\' | tr -d '[:punct:]')
+    echo "start to generate playlist: ${playlist_name}"
+    yt-dlp -i --get-filename -o "%(title)s" "$1" > "${playlist_name}.txt"
+}
+

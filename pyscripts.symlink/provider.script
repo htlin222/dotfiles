@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# title: provider.script
+# description: provider.script is a script about...
+# date: "2024-02-18"
+# author: Hsieh-Ting Lin, the Lizard 🦎
+
+
+# Please copy this file to the folder: ~/Library/Application\ Scripts/tanin.tip/
+
+import json
+import sys
+import urllib.parse
+
+
+def main(input):
+    query = input
+    query = urllib.parse.quote(query)
+    items = [
+        {"type": "text", "value": f"Input {input}"},
+        {
+            "type": "url",
+            "label": f"Google {input}",
+            "value": f"https://google.com/search?q={query}",
+        },
+    ]
+
+    print(json.dumps(items))
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])
