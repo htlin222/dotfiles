@@ -1,0 +1,6 @@
+filter_exec: WezTerm
+extra_includes:
+  - "../match/_cml.yml"
+extra_excludes:
+  - "../match/base.yml"
+  - "../match/prompt.yml"
