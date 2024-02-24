@@ -198,6 +198,23 @@ M.mkdn = {
 			"Yank Filename as wikilink",
 			opts = { silent = false },
 		},
+		["<leader>pp"] = { -- 👉 [[paste as wiwki link]]
+			function()
+				-- 獲取當前暫存器（"）的內容
+				local content = vim.fn.getreg('"')
+				-- 在內容前後新增雙方括號
+				local content = content:gsub("%c", "")
+				local bracketedContent = "[[" .. content .. "]]"
+				-- 使用 `vim.api.nvim_put()` 函數粘貼處理過的內容
+				-- 第一個參數是一個包含要粘貼行的表（在這裡，我們的內容被視為一行）
+				-- 第二個參數是模式，"c" 表示字元模式
+				-- 第三個參數是是否要在粘貼後模擬按下 Enter 鍵，false 表示不模擬
+				-- 第四個參數是是否要使用暫存器的內容，true 表示使用
+				vim.api.nvim_put({ bracketedContent }, "c", false, true)
+			end,
+			"PasteWithBracketed",
+			opts = { silent = false },
+		},
 		["<leader>wf"] = { -- of this file
 			function()
 				local win = vim.api.nvim_get_current_win()

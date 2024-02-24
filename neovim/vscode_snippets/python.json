@@ -140,5 +140,22 @@
       ""
     ],
     "description": "ChatGPT call private API"
+  },
+  "cjkfont": {
+    "prefix": "cjkfont",
+    "body": [
+      "# 先下載台北黑體字型",
+      "!wget -O taipei_sans_tc_beta.ttf https://drive.google.com/uc?id=1eGAsTN1HBpJAkeVM57_C7ccp7hbgSz3_&export=download",
+      "",
+      "import matplotlib",
+      "",
+      "# 新增字體",
+      "matplotlib.font_manager.fontManager.addfont('taipei_sans_tc_beta.ttf')",
+      "",
+      "# 將 font-family 設為 Taipei Sans TC Beta",
+      "# 設定完後，之後的圖表都可以顯示中文了",
+      "matplotlib.rc('font', family='Taipei Sans TC Beta')"
+    ],
+    "description": "cjkfont"
   }
 }
