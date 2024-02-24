@@ -52,9 +52,12 @@ return {
 			"clangd",
 			"r_language_server",
 			"ruff_lsp",
+			"prosemd_lsp",
+			-- "pylsp",
+			"pyright",
 			-- "yamlls",
 			"quick_lint_js",
-			-- "zk",
+			"zk",
 			-- "remark_ls",
 			-- "vale_ls",
 			"marksman",
@@ -80,6 +83,21 @@ return {
 		lspconfig.dotls.setup({
 			on_attach = on_attach,
 			filetypes = { "dot", "graphviz", "gv" },
+		})
+		lspconfig.pyright.setup({
+			on_attach = on_attach,
+			filetypes = { "py", "python" },
+			settings = {
+				pyright = {
+					disableOrganizeImports = true, -- Using Ruff
+				},
+				python = {
+					analysis = {
+						ignore = { "*" }, -- Using Ruff
+						typeCheckingMode = "off", -- Using mypy
+					},
+				},
+			},
 		})
 	end,
 }

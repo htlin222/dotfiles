@@ -27,7 +27,7 @@ return {
 				markdown = { "prettier", "markdownlint-cli2" },
 				graphql = { "prettier" },
 				lua = { "stylua" },
-				python = { "black", "ruff_fix", "ruff_format", "isort", "pylyzer" },
+				python = { "black", "ruff_fix", "ruff_format", "isort", "mypy" },
 			},
 			format_on_save = {
 				lsp_fallback = true,

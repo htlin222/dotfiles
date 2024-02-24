@@ -4,6 +4,7 @@ local plug_list = {
 	"lspsaga", -- https://github.com/nvimdev/lspsaga.nvim
 	"carbon-now",
 	"quarto",
+	-- "lsp_signature",
 	"codeium",
 	"lsp-timeout",
 	"fugitive", -- "tpope/vim-fugitive",
@@ -21,9 +22,8 @@ local plug_list = {
 	"gitlinker",
 	"gitsigns",
 	"octo",
-	"fidget",
-	"spider",
-	-- 2023-12-26: added
+	"fidget", -- Extensible UI for Neovim notifications and LSP progress messages.
+	"spider", -- Use the w, e, b motions like a spider. Move by subwords and skip insignificant punctuation.
 	"marks",
 	"urlview",
 	"better-escape",
@@ -31,7 +31,7 @@ local plug_list = {
 	"pangu",
 	"neocomposer",
 	"trailblazer",
-	"oil",
+	"oil", -- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
 	-- "dressing",
 	"conform",
 	"lint",
@@ -39,7 +39,7 @@ local plug_list = {
 	"firenvim",
 	"nvim-lspconfig",
 	"mason-nvim-dap", -- TODO: figure out how to use it
-	-- "mason-tool-installer", -- WARN: Cause Error
+	"mason-tool-installer", -- WARN: Cause Error
 	"nvim-treesitter-textobjects",
 	"nvim-tree",
 	-- telescope stuff
@@ -49,14 +49,14 @@ local plug_list = {
 	"telescope-symbols",
 	"compiler",
 	"hbac",
-	--- others
+	-- -- --- others
 	"cursorline",
 	"inc-rename",
-	"modicator",
+	"modicator", -- A small Neovim plugin that changes the color of your cursor's line number based on the current Vim mode.
 	"dial",
 	"specs",
 	"hover",
-	"chatgpt",
+	-- "chatgpt",
 	"trailblazer",
 	"pick",
 	"aerial",
@@ -64,7 +64,7 @@ local plug_list = {
 	"harpoon",
 	"aidoc",
 	"hop", -- may replaced by
-	"flash",
+	-- -- "flash",
 	-- "satellite", -- only support 0.10 now at 0.09
 	-- "neoscroll",
 	"winshift",
@@ -72,9 +72,9 @@ local plug_list = {
 	"mini",
 	"neodev",
 	"yanky",
-	-- "vim-table-mode",
+	"vim-table-mode",
 	-- "barbecue",
-	"iswap",
+	"iswap", -- Interactively select and swap: function arguments, list elements, function parameters, and more. Powered by tree-sitter.
 	"fsread",
 	"headlines",
 	"legendary",
@@ -82,12 +82,13 @@ local plug_list = {
 	"regexplainer",
 	"neo-tree",
 	"neotest",
+	-- how to handle hits TODO:
 	"noice", -- when suggestion show up, <C-y> to sent the command
 	"nvim-dap",
 	-- "markmap",
 	"nvim-dap-python",
 	"nvim-dap-ui",
-	-- "nvim-search-and-replace",
+	"nvim-search-and-replace",
 	"nvim-surround",
 	"pantran",
 	"indent-blankline",
@@ -96,22 +97,22 @@ local plug_list = {
 	"scrollbar",
 	"early-retirement",
 	"due",
-	"ufo",
-	"quicknote",
+	-- "ufo",
+	-- "quicknote",
 	"search-replace",
 	"symbols-outline",
 	"trouble",
 	"twilight",
 	"mode",
 	"vim-illuminate",
-	-- "vim-startuptime",
+	"vim-startuptime",
 	"todo-comments",
 	"vim-tmux-navigator",
 	"highlight-undo",
 	"zen-mode",
 	"gist",
 	"cybu",
-	-- "zk",
+	"zk",
 	"markdown-preview",
 	"deadcolumn",
 	"LuaSnip",

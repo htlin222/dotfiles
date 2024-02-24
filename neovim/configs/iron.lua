@@ -1,6 +1,6 @@
 return {
 	"hkupty/iron.nvim",
-	ft = { "python" },
+	ft = { "python", "sh", "r" },
 	config = function(plugins, opts)
 		local iron = require("iron.core")
 
@@ -13,10 +13,19 @@ return {
 					python = {
 						command = { "ptpython" },
 					},
+					r = {
+						command = { "R" },
+					},
+					sh = {
+						-- Can be a table or a function that
+						-- returns a table (see below)
+						command = { "zsh" },
+					},
 				},
 				-- How the repl window will be displayed
 				-- See below for more information
 				repl_open_cmd = require("iron.view").right(60),
+				-- repl_open_cmd = require("iron.view").bottom(10),
 			},
 			-- Iron doesn't set keymaps by default anymore.
 			-- You can set them here or manually add keymaps to the functions in iron.core

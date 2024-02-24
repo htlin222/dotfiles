@@ -9,6 +9,10 @@ return { -- this table will override the default cmp setting
 	"hrsh7th/nvim-cmp",
 	event = { "VeryLazy", "InsertEnter" },
 	opts = {
+		window = {
+			completion = cmp.config.window.bordered(nil),
+			documentation = cmp.config.window.bordered(nil),
+		},
 		sources = {
 			{ name = "nvim_lsp" },
 			{ name = "codeium" },
