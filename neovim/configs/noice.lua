@@ -87,9 +87,10 @@ return {
 					opts = {
 						lang = "markdown",
 						replace = true,
-						render = "markdown",
+						-- render = "markdown",
 						-- render = "html",
-						format = { "💡\n\n:{message}" },
+						render = "plain",
+						format = { "💡\n\n{message}" },
 						win_options = { concealcursor = "n", conceallevel = 3 },
 					},
 				},
@@ -179,6 +180,7 @@ return {
 					["^%s*(Return:)"] = "@text.title",
 					["^%s*(See also:)"] = "@text.title",
 					["{%S-}"] = "@parameter",
+					["^#.*"] = "@text.title",
 				},
 			},
 		})
