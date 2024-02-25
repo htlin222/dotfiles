@@ -23,7 +23,7 @@ local plug_list = {
 	"gitsigns",
 	"octo",
 	"fidget", -- Extensible UI for Neovim notifications and LSP progress messages.
-	"spider", -- Use the w, e, b motions like a spider. Move by subwords and skip insignificant punctuation.
+	-- "spider", -- Use the w, e, b motions like a spider. Move by subwords and skip insignificant punctuation.
 	"marks",
 	"urlview",
 	"better-escape",
