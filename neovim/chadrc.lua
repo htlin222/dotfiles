@@ -3,7 +3,7 @@ local M = {}
 
 --   following this order
 M.ui = {
-	theme = "ayu_dark",
+	theme = "dark_horizon",
 	lsp = {
 		-- show function signatures i.e args as you type
 		signature = {

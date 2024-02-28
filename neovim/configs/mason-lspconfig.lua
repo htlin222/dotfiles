@@ -60,7 +60,7 @@ return {
 			"zk",
 			-- "remark_ls",
 			-- "vale_ls",
-			"marksman",
+			-- "marksman",
 			"rust_analyzer",
 			"vimls",
 			"lua_ls",

@@ -36,6 +36,5 @@
     "python_version": "3.11.6",
     "python_path": "~/.pyenv/versions/3.11.6/bin/python",
     "jobs_tab_visibility": "shown",
-    "enable_cloud_publish_ui": true,
     "show_publish_diagnostics": true
 }

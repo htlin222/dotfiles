@@ -34,7 +34,7 @@ function xdgopen() {
 }
 function nccn() {
     cd ~/Documents/guidelines/NCCN
-    sh ~/Documents/guidelines/NCCN/nccn.sh $(cat nccn_dict.txt | fzf)
+    sh ~/Documents/guidelines/NCCN/nccn.sh
 }
 function joshuto_official() {
     ID="$$"
