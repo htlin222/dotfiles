@@ -271,10 +271,13 @@ function! Prefix()
     let first_lines = getline(1, 10)
     if join(first_lines) =~? 'prefix:'
     " if (first_lines =~? 'prefix: "\(\w\+\)"') || (first_lines =~? "prefix: '\(\w\+\)'")
+    " eval "$(pyenv init --path)"
+    " eval "$(pyenv init -)"
+    " eval "$(pyenv virtualenv-init - | sed s/precmd/chpwd/g)"
       let current_file = expand('%:r')
       let command = 'python ~/pyscripts/add_snippets.py "' . current_file . '.md"' . ' ~/.dotfiles/neovim/vscode_snippets/garden.json'
-      silent! execute '!'. command
-      " execute '!'. command
+      " silent! execute '!'. command
+      execute '!'. command
       echo 'Add Prefix 🥰'
     endif
   endif

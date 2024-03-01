@@ -1,6 +1,6 @@
 return {
 	"WhoIsSethDaniel/mason-tool-installer.nvim",
-	event = { "BufReadPre", "BufNewFile" },
+	-- event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		require("mason-tool-installer").setup({
 			ensure_installed = {
@@ -33,13 +33,9 @@ return {
 				"yamlfmt",
 				"yapf",
 			},
-
 			auto_update = false,
-
-			run_on_start = true,
-
+			run_on_start = false,
 			start_delay = 3000, -- 3 second delay
-
 			debounce_hours = 5, -- at least 5 hours between attempts to install/update
 		})
 	end,

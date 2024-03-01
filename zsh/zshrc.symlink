@@ -83,3 +83,4 @@ source /Users/mac/.config/broot/launcher/bash/br
 setopt no_nomatch
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+source "$HOME/.rye/env"
