@@ -501,6 +501,9 @@ M.telekasten = {
 		["<leader>zb"] = { "<cmd>Telekasten show_backlinks<CR>" },
 		["<leader>zI"] = { "<cmd>Telekasten insert_img_link<CR>" },
 	},
+	i = {
+		["\\["] = { "<cmd>Telekasten insert_link<CR>", "Find Friends" },
+	},
 }
 M.dap = {
 	plugin = true,
