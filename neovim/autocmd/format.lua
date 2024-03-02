@@ -2,6 +2,17 @@ local vim = vim
 local augroup = vim.api.nvim_create_augroup -- Create/get autocommand group
 local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
 
+local function add_vscode_snippet(vscode_snippets_file)
+	local first_lines = vim.api.nvim_buf_get_lines(0, 0, 10, false)
+	if table.concat(first_lines):match("prefix:") then
+		local filename = vim.fn.expand("%:t")
+		local command = string.format('python ~/pyscripts/add_py_snippet.py "%s" %s', filename, vscode_snippets_file)
+		vim.fn.system(command)
+		-- print(command)
+		print("Add Prefix 🥰")
+	end
+end
+
 -- Align Comments in Neovim, ignoring lines that are Markdown hyperlink references
 local function align_comments()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -71,13 +82,73 @@ autocmd("BufWritePost", {
 		vim.cmd("silent! RSend system('clear')")
 		vim.cmd("silent ! " .. cmd) -- Run the command
 		align_comments()
+		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/r.json")
 	end,
 })
 
--- autocmd("BufWritePost", {
--- 	group = augroup("align", { clear = true }),
--- 	pattern = { "*.py" },
--- 	callback = function()
--- 		align_comments()
--- 	end,
--- })
+-- BUG: Why not work in .sh?
+autocmd("BufWritePost", {
+	group = augroup("snippets", { clear = true }),
+	pattern = "*.R",
+	callback = function()
+		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/r.json")
+	end,
+})
+
+-- BUG: Why not work in .sh?
+autocmd("BufWritePost", {
+	group = augroup("snippets", { clear = true }),
+	pattern = "*.sh",
+	callback = function()
+		print("Why")
+		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/shell.json")
+	end,
+})
+
+autocmd("BufWritePost", {
+	group = augroup("snippets", { clear = true }),
+	pattern = { "*.py" },
+	callback = function()
+		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/python.json")
+	end,
+})
+
+autocmd("BufWritePost", {
+	group = augroup("archieved", { clear = true }),
+	pattern = "*.md",
+	callback = function()
+		if vim.fn.expand("%:t") == "todo_list.md" then
+			local path = vim.fn.expand("%:p") -- 獲取當前檔案的完整路徑
+			local archive_path = vim.fn.expand("~/Dropbox/inbox/archieved.md") -- 處理~符號，指定存檔目錄和檔案名稱
+			local lines = vim.fn.readfile(path) -- 讀取當前檔案的所有行
+			local archive_index = nil
+			for i, line in ipairs(lines) do
+				if line == "## [[archieved.md|archieved]]" then
+					archive_index = i
+					break
+				end
+			end
+
+			if archive_index then
+				local date = os.date("%Y-%m-%d")
+				-- local subtitle = "## " .. date .. "\n"
+				local content_to_archive = table.concat(lines, "\n", archive_index + 1)
+				if content_to_archive ~= "" then
+					-- content_to_archive = subtitle .. content_to_archive .. "\n"
+					content_to_archive = content_to_archive .. "\n"
+					-- 附加到存檔檔案
+					local f = io.open(archive_path, "a")
+					f:write(content_to_archive)
+					f:close()
+					-- 從原檔案中移除已存檔的內容
+					vim.api.nvim_buf_set_lines(0, archive_index, -1, false, {})
+					print("Content archived to " .. archive_path)
+				else
+					print("No content to archive.")
+				end
+			else
+				print("Archive marker not found.")
+			end
+		end
+	end,
+})

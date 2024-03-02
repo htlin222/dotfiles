@@ -710,5 +710,22 @@
             "- suggested high protein diet, not suggested chicken essence because it may confound the lab."
         ],
         "description": "prechemo_TNBC"
+    },
+    "para": {
+        "prefix": "para",
+        "body": [
+            "- Projects:",
+            "  - Areas:",
+            "- Resources:",
+            "  - Archives:"
+        ],
+        "description": "para"
+    },
+    "resources": {
+        "prefix": "demodemo",
+        "body": [
+            "rest"
+        ],
+        "description": "resources"
     }
 }

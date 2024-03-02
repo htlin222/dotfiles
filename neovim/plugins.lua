@@ -1,6 +1,7 @@
 -- ~/.config/nvim/lua/custom/configs/*.lua
 local plug_list = {
 	--- First to load
+	"neodev",
 	"lspsaga", -- https://github.com/nvimdev/lspsaga.nvim
 	"carbon-now",
 	"quarto",
@@ -56,7 +57,7 @@ local plug_list = {
 	"dial",
 	"specs",
 	"hover",
-	-- "chatgpt",
+	"chatgpt",
 	"trailblazer",
 	"pick",
 	"aerial",
@@ -70,7 +71,6 @@ local plug_list = {
 	"winshift",
 	-- "nvim-ufo",
 	"mini",
-	"neodev",
 	"yanky",
 	"vim-table-mode",
 	-- "barbecue",

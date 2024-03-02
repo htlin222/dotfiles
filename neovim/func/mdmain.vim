@@ -266,13 +266,13 @@ function! AddPrefixNoPrompt(pfx)
     let yaml_prefix =  'prefix: "' . USERINPUT . '"'
     execute '3pu= yaml_prefix'
 endfunction
+
 function! Prefix()
   if &filetype ==? 'markdown'
     let first_lines = getline(1, 10)
     if join(first_lines) =~? 'prefix:'
-    " if (first_lines =~? 'prefix: "\(\w\+\)"') || (first_lines =~? "prefix: '\(\w\+\)'")
       let current_file = expand('%:r')
-      let command = 'python ~/pyscripts/add_snippets.py "' . current_file . '.md"' . ' ~/.dotfiles/neovim/vscode_snippets/garden.json'
+      let command = 'python ~/pyscripts/add_snippet_by_pfx.py "' . current_file . '.md"' . ' ~/.dotfiles/neovim/vscode_snippets/garden.json'
       silent! execute '!'. command
       " execute '!'. command
       echo 'Add Prefix 🥰'

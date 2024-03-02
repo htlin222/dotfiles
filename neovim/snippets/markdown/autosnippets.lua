@@ -31,6 +31,6 @@ ls.add_snippets("all", {
 	s("EtOH", { t("alcoholism"), i(0) }),
 	s("utd", { t("uptodate"), i(0) }),
 	s("___", { t("`___`"), i(0) }),
-	s("_date", { t("`___`/`___`/`___`"), i(0) }),
+	s("_date_", { t("`___`/`___`/`___`"), i(0) }),
 	s("prelim", { t("preliminary"), i(0) }),
 }, { type = "autosnippets", key = "all_auto" })

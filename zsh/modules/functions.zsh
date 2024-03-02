@@ -431,6 +431,7 @@ function dia() {
         echo "---" >> "$filename"
         echo "" >> "$filename"
         echo "> back to [[index]]" >> "$filename"
+        echo "> go to [[todo_list]]" >> "$filename"
         echo "" >> "$filename"
         echo "<$(date +"%Y-%m-%d")>" >> "$filename"
         echo "" >> "$filename"
@@ -499,6 +500,11 @@ function yt-mp3-list() {
 }
 function yt-playlist() {
     yt-dlp "$1" -o "%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s"
+}
+
+function yt-list-cookies() {
+    # for bilibili 1080p
+    yt-dlp "$1" -o "%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s" --cookies-from-browser edge
 }
 function inbox() {
     cd ~/Dropbox/inbox/

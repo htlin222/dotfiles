@@ -10,7 +10,7 @@ return {
 	config = true,
 	opts = {
 		markdown = {
-			-- headline_highlights = { "Headline1", "Headline2" },
+			headline_highlights = { "Headline1", "Headline2" },
 			-- fat_headlines = true,
 			-- fat_headline_upper_string = "▃",
 			-- fat_headline_lower_string = "󰗈",

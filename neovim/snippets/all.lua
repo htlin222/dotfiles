@@ -24,6 +24,7 @@ return {
 	s("update", { t('date: "'), d(1, date_input, {}, { user_args = { "%Y-%m-%d" } }), t('"') }),
 	s("due", { t("<"), d(1, date_input, {}, { user_args = { "%Y-%m-%d" } }), t(">") }),
 	s({ trig = ";;", regTrig = false, priority = 100, snippetType = "autosnippet" }, { f(switchIM) }),
+	s({ trig = "pfx", snippetType = "autosnippet" }, { t('prefix: "'), i(0), t('"') }),
 	s({ trig = "F=", regTrig = false, priority = 100, snippetType = "autosnippet" }, { t("T") }),
 	s({ trig = "T=", regTrig = false, priority = 100, snippetType = "autosnippet" }, { t("F") }),
 	s({ trig = "false=", regTrig = false, priority = 100, snippetType = "autosnippet" }, { t("true") }),

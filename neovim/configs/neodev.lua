@@ -1,1 +1,6 @@
-return { "folke/neodev.nvim", opts = {} }
+return {
+	"folke/neodev.nvim",
+	config = function()
+		require("neodev").setup()
+	end,
+}

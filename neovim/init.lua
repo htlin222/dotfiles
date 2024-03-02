@@ -18,6 +18,7 @@ opt.lbr = true
 opt.expandtab = true
 opt.shiftround = false
 opt.shiftwidth = 2
+
 opt.spell = true
 opt.spelllang = { "en_us" }
 opt.smartindent = true
@@ -29,7 +30,7 @@ opt.tabstop = 2
 opt.colorcolumn = "80," .. table.concat(vim.fn.range(120, 999), ",")
 wo.relativenumber = true
 vim.cmd([[highlight ColorColumn ctermbg=235 guibg=#2c2d27]])
-vim.cmd([[highlight @markup.link ctermbg=235 guifg=#aad84c guibg=#2c2d27]])
+-- vim.cmd([[highlight @markup.link ctermbg=235 guifg=#aad84c guibg=#2c2d27]])
 -- vim.cmd([[highlight Title ctermbg=235 guifg=#aad84c guibg=#2c2d27]])
 vim.g.did_load_netrw = 1
 vim.markdown_folding = 1

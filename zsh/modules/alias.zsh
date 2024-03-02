@@ -1,6 +1,7 @@
 alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
+alias pom="sh pom.sh"
 alias tt="taskwarrior-tui"
 alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
 alias up="ffsend upload"
@@ -9,6 +10,8 @@ alias "brewcask"="brew install --cask --no-quarantine"
 alias bc='bc --quiet <(echo "scale=5;print\"scale=5\n\"")'
 alias xo='xdg-open'
 alias lc='lolcat'
+alias asco="yazi ~/Documents/textbook/ASCO-SEP/"
+alias ash="yazi ~/Documents/textbook/8th\ ASH-SEP/"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
 alias mv="mv -iv"
 alias rm="rm -ivr"
