@@ -129,7 +129,6 @@ M.general = {
 	},
 	i = {
 		["<C-c>"] = { "<ESC>", "Map Ctrl + C to True Esc" },
-		-- ["jj"] = { "<ESC>", "Map Ctrl + C to True Esc" },
 		["<C-\\>"] = { "<ESC>", "Map Ctrl + C to True Esc" },
 	},
 	v = {
@@ -456,6 +455,9 @@ M.mkdn = {
 			opts = { nowait = true, silent = true },
 		},
 	},
+	i = {
+		["@"] = { "<cmd>Telescope bibtex<CR>", "add citation", opts = { nowait = true } },
+	},
 	v = {
 		["<C-g>"] = {
 			":call  SearchGoogle()<CR>",
@@ -499,11 +501,11 @@ M.telekasten = {
 		["<leader>zn"] = { "<cmd>Telekasten new_note<CR>" },
 		["<leader>zc"] = { "<cmd>Telekasten show_calendar<CR>" },
 		["<leader>zb"] = { "<cmd>Telekasten show_backlinks<CR>" },
-		["<leader>zI"] = { "<cmd>Telekasten insert_img_link<CR>" },
+		["<leader>ti"] = { "<cmd>Telekasten insert_img_link<CR>" },
 	},
-	i = {
-		["\\["] = { "<cmd>Telekasten insert_link<CR>", "Find Friends" },
-	},
+	-- i = {
+	-- 	["\\["] = { "<cmd>Telekasten insert_link<CR>", "Find Friends" },
+	-- },
 }
 M.dap = {
 	plugin = true,

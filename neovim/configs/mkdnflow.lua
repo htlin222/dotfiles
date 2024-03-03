@@ -21,7 +21,10 @@ return { --mkdnflow
 				maps = true,
 				paths = true,
 				tables = true,
-				-- yaml = true,
+				yaml = true,
+			},
+			yaml = {
+				bib = { override = true },
 			},
 			filetypes = { md = true, rmd = true, markdown = true, telekasten = true, vimiwki = true },
 			perspective = {
@@ -33,7 +36,7 @@ return { --mkdnflow
 			},
 			wrap = true,
 			bib = {
-				default_path = "~/Downloads/test.bib",
+				default_path = nil,
 				find_in_root = true,
 			},
 			silent = false,
@@ -46,7 +49,7 @@ return { --mkdnflow
 				transform_implicit = false,
 				-- transform_explicit = false,
 				transform_explicit = function(text)
-					-- text = text:gsub(" ", "-")
+					text = text:gsub(" ", "_")
 					text = text:lower()
 					-- text = os.date('%Y-%m-%d_')..text
 					return text

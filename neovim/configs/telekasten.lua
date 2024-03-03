@@ -1,6 +1,18 @@
+local vim = vim
+local function determine_home()
+	local current_file_path = vim.fn.expand("%:p")
+	local inbox_path = vim.fn.expand("~/Dropbox/inbox")
+	local medical_path = vim.fn.expand("~/Dropbox/Medical")
+	if string.sub(current_file_path, 1, string.len(inbox_path)) == inbox_path then
+		return inbox_path
+	else
+		return medical_path
+	end
+end
 return { --telekasten
 	"renerocksai/telekasten.nvim",
-	event = { "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox/Medical/**.md" },
+	-- event = { "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox/Medical/**.md" },
+	ft = { "markdown" },
 	dependencies = { "nvim-telescope/telescope.nvim" },
 	config = function()
 		vim.keymap.set("n", "<leader>z", "<cmd>Telekasten panel<CR>")
@@ -19,8 +31,10 @@ return { --telekasten
 		vim.opt.foldlevel = 3
 		require("core.utils").load_mappings("telekasten")
 		require("telekasten").setup({
-			home = vim.fn.expand("~/Dropbox/Medical"), -- Put the name of your notes directory here
 			subdirs_in_links = false,
+			-- home = vim.fn.expand("~/Dropbox/inbox"), -- Put the name of your notes directory here
+			-- home = vim.fn.expand("~/Dropbox/Medical"), -- Put the name of your notes directory here
+			home = determine_home(),
 			auto_set_filetype = false,
 			tag_notation = "yaml-bare",
 			template_new_note = vim.fn.expand("~/Dropbox/Medical/template/new_note.md"),

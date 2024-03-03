@@ -20,6 +20,7 @@ return {
 				json = { "fixjson" },
 				yaml = { "yamlfmt" },
 				toml = { "taplo" },
+				bib = { "bibtex-tidy" },
 				yml = { "prettier", "yamlfmt" },
 				sql = { "sql_formatter" },
 				sh = { "beautysh", "shfmt", "shellcheck" },

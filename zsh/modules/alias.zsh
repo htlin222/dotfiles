@@ -4,6 +4,7 @@ alias zshconfig="vim ~/.zshrc"
 alias pom="sh pom.sh"
 alias tt="taskwarrior-tui"
 alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
+alias mac_gdrive="cd /Users/mac/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
 alias up="ffsend upload"
 alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
 alias "brewcask"="brew install --cask --no-quarantine"
