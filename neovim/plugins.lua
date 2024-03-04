@@ -5,6 +5,7 @@ local plug_list = {
 	"lspsaga", -- https://github.com/nvimdev/lspsaga.nvim
 	"carbon-now",
 	"quarto",
+	"otter",
 	-- "lsp_signature",
 	"codeium",
 	"lsp-timeout",

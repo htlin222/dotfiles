@@ -21,6 +21,7 @@ return { -- this table will override the default cmp setting
 			-- { name = "papis" },
 			{ name = "nvim_lsp_document_symbol" },
 			{ name = "nvim_lsp_signature_help" },
+			{ name = "otter" },
 			{ name = "mkdnflow" }, -- Add this
 			{ name = "buffer" },
 			{ name = "bufname" },
