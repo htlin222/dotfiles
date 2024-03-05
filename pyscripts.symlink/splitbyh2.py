@@ -104,10 +104,21 @@ if __name__ == "__main__":
         )
 
     # Create wikilink list and update the input markdown file
-    wikilink_list = "\n".join([f"- [[{filename}]]" for filename in new_md_files.keys()])
+
+    wikilink_list = "\n".join(
+        [
+            f"- [[{filename.lower().replace(' ', '_')}.md|{filename}]]"
+            for filename in new_md_files.keys()
+        ]
+    )
+    # wikilink_list = "\n".join([f"- [[{lowercase_filename}.md|{filename}]]" for filename in new_md_files.keys()])
+
+    # where lowercase_filename = filename.lower().replace(" ", "_")
     # Save new markdown files
     for filename, content in new_md_files.items():
-        with open(f"{filename}.md", "w", encoding="utf-8") as f:
+        with open(
+            f"{filename.lower().replace(' ', '_')}.md", "w", encoding="utf-8"
+        ) as f:
             to_write = f"{content}\n\n### Siblings\n\n{wikilink_list}\n\n"
             f.write(to_write)
 

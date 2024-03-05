@@ -39,7 +39,7 @@ function! SplitByH2()
   write
   if expand('%:e') == 'md'
     let filepath = expand('%:p')
-    let command = 'python ~/pyscripts/splitbyh2.py "' . filepath . '"'
+    let command = 'python ~/pyscripts/split_by_h2.py "' . filepath . '"'
     call system(command)
     echohl Blue
     echom '🤞領域展開✨領域展開🤞'
