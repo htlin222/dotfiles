@@ -12,7 +12,8 @@ end
 return { --telekasten
 	"renerocksai/telekasten.nvim",
 	-- event = { "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox/Medical/**.md" },
-	ft = { "markdown" },
+	-- ft = { "markdown" },
+	ft = { "markdown", "quarto" },
 	dependencies = { "nvim-telescope/telescope.nvim" },
 	config = function()
 		vim.keymap.set("n", "<leader>z", "<cmd>Telekasten panel<CR>")

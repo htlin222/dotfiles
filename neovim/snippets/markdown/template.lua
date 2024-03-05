@@ -1,4 +1,5 @@
 local ls = require("luasnip")
+local vim = vim
 local i = ls.insert_node
 local s = ls.snippet
 local f = ls.function_node
@@ -30,6 +31,9 @@ return {
 	s({ trig = "slug=" }, { f(function()
 		vim.cmd("Slug")
 	end) }),
+	s({ trig = "as.slide" }, { t("[[~/Dropbox/slides/"), i(0), t("]]") }),
+	s({ trig = "add.bib" }, { t("["), f(ret_filename), t(".bib]("), f(ret_filename), t(".bib)") }),
+	-- f(ret_filename),
 	s({ trig = "say" }, { f(playmp3) }),
 	s({ trig = "ali " }, { f(function()
 		vim.cmd("call Aliasing()")
@@ -53,7 +57,6 @@ return {
       # <>
 
       slug<>
-      <>
       ]],
 			{
 				f(ret_filename),
@@ -65,19 +68,19 @@ return {
 				t("]]"),
 				f(ret_filename),
 				i(0),
-				f(playmp3),
+				-- f(playmp3),
 			}
 		)
 	),
-	postfix({ trig = ".ali", dscr = "aliasing" }, {
-		f(function(_, parent)
-			-- local cmd = "echo 'Hi there'"
-			local ali = parent.snippet.env.POSTFIX_MATCH
-			local cmd = "call AliasingNoPrompt('" .. ali .. "')"
-			vim.cmd(cmd)
-		end),
-		-- i(i, "alias created"),
-	}),
+	-- postfix({ trig = ".ali", dscr = "aliasing" }, {
+	-- 	f(function(_, parent)
+	-- 		-- local cmd = "echo 'Hi there'"
+	-- 		local ali = parent.snippet.env.POSTFIX_MATCH
+	-- 		local cmd = "call AliasingNoPrompt('" .. ali .. "')"
+	-- 		vim.cmd(cmd)
+	-- 	end),
+	-- 	-- i(i, "alias created"),
+	-- }),
 	postfix({ trig = ".pfx", dscr = "add prefix" }, {
 		f(function(_, parent)
 			-- local cmd = "echo 'Hi there'"

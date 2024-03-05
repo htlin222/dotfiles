@@ -2,6 +2,7 @@ alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
 alias zshconfig="vim ~/.zshrc"
 alias pom="sh pom.sh"
+alias ff="fleet_of_thought"
 alias tt="taskwarrior-tui"
 alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
 alias mac_gdrive="cd /Users/mac/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
