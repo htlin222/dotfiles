@@ -46,9 +46,12 @@ return { --mkdnflow
 				conceal = true,
 				context = 0,
 				implicit_extension = nil,
-				transform_implicit = false,
-				-- transform_explicit = false,
+				transform_implicit = function(text)
+					text = text:gsub("%s+$", "")
+					return text
+				end,
 				transform_explicit = function(text)
+					text = text:gsub("%s+$", "")
 					text = text:gsub(" ", "_")
 					text = text:lower()
 					-- text = os.date('%Y-%m-%d_')..text

@@ -52,6 +52,7 @@ return {
 			"clangd",
 			"r_language_server",
 			"ruff_lsp",
+			"typos",
 			-- "prosemd_lsp",
 			-- "pylsp",
 			"pyright",

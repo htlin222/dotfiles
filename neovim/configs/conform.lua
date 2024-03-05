@@ -25,7 +25,7 @@ return {
 				sql = { "sql_formatter" },
 				sh = { "beautysh", "shfmt", "shellcheck" },
 				zsh = { "beautysh", "shellcheck" },
-				markdown = { "prettier", "markdownlint-cli2" },
+				markdown = { "prettier", "markdownlint-cli2", "typos", "codespell" },
 				graphql = { "prettier" },
 				lua = { "stylua" },
 				python = { "black", "ruff_fix", "ruff_format", "isort", "mypy" },
