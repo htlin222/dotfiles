@@ -9,6 +9,14 @@
         "path": "./all.json"
       },
       {
+        "language": "quarto",
+        "path": "./quarto.json"
+      },
+      {
+        "language": "quarto",
+        "path": "./garden.json"
+      },
+      {
         "language": [
           "javascript"
         ],

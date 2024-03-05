@@ -413,13 +413,10 @@ function playground() {
     tmux new-window
     cd -
 }
-
-function dia() {
+fucntion creat_today(){
     local filename="$HOME/Dropbox/inbox/$(date +"%Y-%m-%d").md"
-    (python3 ~/pyscripts/inbox.py &)
     if [ -e "$filename" ]; then
         # File already exists, open it with vim
-        nvim +13 "$filename"
     else
         # File doesn't exist, create it with front matter
         echo "---" >> "$filename"
@@ -437,10 +434,24 @@ function dia() {
         echo "" >> "$filename"
         echo "" >> "$filename"
         echo "---" >> "$filename"
-        # Open the file in a text editor (e.g., Vim)
-        # nvim +10 -c 'normal O' -c 'startinsert' "$filename"
-        nvim +13 "$filename"
     fi
+    echo "$filename"
+}
+
+function dia() {
+    (python3 ~/pyscripts/inbox.py &)
+    local filename=$(creat_today)
+    nvim +13 "$filename"
+}
+
+function fleet_of_thought() {
+    local filename=$(creat_today)
+    echo "💡 我有一個想法:"
+    # cat >> "$filename"  # 將用戶輸入的內容附加到文件末尾
+    read -r content  # 接收用戶輸入的內容
+    # 將用戶輸入的內容附加到文件末尾
+    local current_time=$(date +'%Y-%m-%d_%H%M')
+    echo "- $content \`$current_time\`" >> "$filename"
 }
 
 function draft() {
@@ -460,6 +471,9 @@ function draft() {
         echo "---" >> "$filename"
         echo "" >> "$filename"
         echo "" >> "$filename"
+        echo "" >> "$filename"
+        echo "" >> "$filename"
+        echo "## Fleet" >> "$filename"
         nvim +10 "$filename"
     fi
 }

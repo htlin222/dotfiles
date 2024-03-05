@@ -1,6 +1,6 @@
 return { --mkdnflow
 	"jakewvincent/mkdnflow.nvim",
-	ft = { "markdown" },
+	ft = { "markdown", "quarto" },
 	-- lazy = true,
 	config = function()
 		-- by default, the fold method was set by tree-sitter expr
