@@ -19,13 +19,13 @@
 medical="$HOME/Dropbox/Medical/"
 src="$HOME/Dropbox/Medical/src/"
 blog="$HOME/Dropbox/blog/"
-slides="$HOME/Dropbox/slides/output/"
+# slides="$HOME/Dropbox/slides/output/"
 
 # Loop through all files in the source folder
 rsync -az --delete --include="*.md" --exclude="*" "$medical" ~/garden/content/
 rsync -az --delete --include="*.md" --exclude="*" "$blog" ~/garden/content/blog/
 rsync -az --delete --include="*.svg" --exclude="*" "$src" ~/garden/content/src/
-rsync -az --delete --include="*/" --include="*" "$slides" ~/garden/content/slides/
+# rsync -az --delete --include="*/" --include="*" "$slides" ~/garden/content/slides/
 echo "🔃 sync the folder"
 sed -i "" 's/\^[0-9]*//g' ~/garden/content/*.md
 sed -i "" 's/\[\[index\]\]/[花園大門口](https:\/\/www.physician.tw\/)/g' ~/garden/content/*.md

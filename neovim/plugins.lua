@@ -42,7 +42,7 @@ local plug_list = {
 	"nvim-lspconfig",
 	"mason-nvim-dap", -- TODO: figure out how to use it
 	"mason-tool-installer", -- WARN: Cause Error
-	"nvim-treesitter-textobjects",
+	-- "nvim-treesitter-textobjects",
 	"nvim-tree",
 	-- telescope stuff
 	"telekasten", -- ft.
