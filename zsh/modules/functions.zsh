@@ -463,7 +463,7 @@ function draft() {
     else
         echo "---" >> "$filename"
         echo "title: \"$(date +"%Y-%m-%d")\"" >> "$filename"
-        echo "date: \"$(date -u +"%Y-%m-%dT%H:%M:%S.%NZ")\"" >> "$filename"
+        echo "date: \"$(date -u +"%Y-%m-%d")\"" >> "$filename"
         echo "template: post" >> "$filename"
         echo "draft: true" >> "$filename"
         echo "description: \"這個人很懶不寫介紹\"" >> "$filename"

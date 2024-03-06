@@ -5,7 +5,7 @@
       "<!-- header: '**${1:example}**' -->",
       ""
     ],
-    "description": "marp header"
+    "description": "create marp header"
   },
   "marp class": {
     "prefix": "class",
@@ -25,17 +25,23 @@
   },
   "no header at this page": {
     "prefix": "noheader",
-    "body": ["<!-- _header: '' -->"],
+    "body": [
+      "<!-- _header: '' -->"
+    ],
     "description": "no header at this page"
   },
   "no footer at this page": {
     "prefix": "nofooter",
-    "body": ["<!-- _footer: '' -->"],
+    "body": [
+      "<!-- _footer: '' -->"
+    ],
     "description": "no footer at this page"
   },
   "footer": {
     "prefix": "footer",
-    "body": ["<!-- _footer: '${1:YOUR_FOOTER_HERE}' -->"],
+    "body": [
+      "<!-- _footer: '${1:YOUR_FOOTER_HERE}' -->"
+    ],
     "description": "no footer at this page"
   },
   "section": {
@@ -70,25 +76,6 @@
       ""
     ],
     "description": "mermaidsetup"
-  },
-  "newslide": {
-    "prefix": "newslide",
-    "body": [
-      "---",
-      "",
-      "## ${1:標題}",
-      "",
-      "",
-      "",
-      "<!--",
-      "",
-      "${1:標題} 這個人什麼都沒說",
-      "",
-      "-->",
-      "",
-      ""
-    ],
-    "description": "newslide"
   },
   "imgconfig": {
     "prefix": "imgconfig",
@@ -159,7 +146,16 @@
   },
   "newslide": {
     "prefix": "newslide",
-    "body": ["", "", "---", "", "## ${1:example}", "", "", ""],
+    "body": [
+      "",
+      "",
+      "---",
+      "",
+      "## ${1:example}",
+      "",
+      "",
+      ""
+    ],
     "description": "newslide"
   },
   "theend": {
@@ -206,7 +202,9 @@
   },
   "bgh": {
     "prefix": "bgh",
-    "body": ["bg height:650px"],
+    "body": [
+      "bg height:650px"
+    ],
     "description": "bg height:650px"
   },
   "show": {
@@ -271,13 +269,12 @@
       "",
       "# ${1:example}",
       "",
-      "## 林協霆,<sup>1</sup>; Moderator<sup>2</sup>",
+      "## 林協霆,",
       "",
       "<br>",
       "",
-      "#### (1)Presenter, 專研醫師, 和信治癌中心醫院腫瘤內科部",
+      "#### Felow 1, 和信治癌中心醫院腫瘤內科部",
       "",
-      "#### (2)Moderator, 主治醫師, 和信治癌中心醫院腫瘤內科部",
       "",
       "---",
       "",
@@ -305,5 +302,12 @@
       ""
     ],
     "description": "Marp Default"
+  },
+  "fit": {
+    "prefix": "fit",
+    "body": [
+      "<!--fit-->"
+    ],
+    "description": "fit"
   }
 }

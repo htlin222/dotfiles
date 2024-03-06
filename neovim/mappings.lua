@@ -390,20 +390,6 @@ M.mkdn = {
 			"Add snippets filename",
 			opts = { nowait = true, silent = false },
 		},
-		["<leader>mk"] = { --split the line
-			function()
-				local file_name = vim.fn.expand("%:p")
-				vim.cmd("write")
-				local cmd = string.format("python ~/Dropbox/scripts/splitbyh2_with_filename.py '%s'", file_name)
-				vim.fn.system(cmd)
-				vim.cmd("e")
-				vim.cmd("echohl Identifier")
-				vim.cmd("echomsg '🫷領域展開🫸'")
-				vim.cmd("echohl None")
-			end,
-			"split line with filename",
-			opts = { nowait = true, silent = false },
-		},
 		["<leader>s."] = { --split the line
 			":silent! call SubstitutionForCurrentLine()<CR>",
 			"split line",
@@ -444,7 +430,7 @@ M.mkdn = {
 			"Recruit wikilink if start with [[",
 			opts = { nowait = true, silent = true },
 		},
-		["<leader>ms"] = { --split the line
+		["<leader>s2"] = { --split the line
 			":call SplitByH2()<CR>",
 			"Split by H2 with wikilink",
 			opts = { nowait = true, silent = true },

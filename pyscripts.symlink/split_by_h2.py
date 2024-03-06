@@ -53,14 +53,6 @@ tags:
         else:
             return self.content.strip()
 
-    # def _process_markdown_content(self):
-    #     self._delete_siblings_from_text()
-    #     pre_h1_content, h1_and_following_content = self.content.split("# ", 1)
-    #     h1_title, post_h1_content = h1_and_following_content.split("\n", 1)
-    #     between_h1_h2 = self._get_content_before_first_h2()
-    #     level_2_heading_pattern = re.compile(r"## (.+?)\n(.*?)(?=\n## |\Z)", re.DOTALL)
-    #     level_2_headings = level_2_heading_pattern.findall(post_h1_content)
-    #     return pre_h1_content, h1_title, between_h1_h2, level_2_headings
     def _process_markdown_content(self):
         self._delete_siblings_from_text()
         # 使用正則表達式直接分割和提取所需內容
@@ -75,9 +67,12 @@ tags:
         return pre_h1_content, h1_title, between_h1_h2, level_2_headings
 
     def save_new_markdown_files(self):
-        pre_h1_content, h1_title, between_h1_h2, level_2_headings = (
-            self._process_markdown_content()
-        )
+        (
+            pre_h1_content,
+            h1_title,
+            between_h1_h2,
+            level_2_headings,
+        ) = self._process_markdown_content()
         new_md_files = {
             heading: self._create_new_md_file(heading, content)
             for heading, content in level_2_headings
@@ -91,16 +86,20 @@ tags:
         )
 
         for filename, content in new_md_files.items():
+            # 在生成wikilink_list時排除當前的filename
+            filtered_wikilink_list = "\n".join(
+                link
+                for link in wikilink_list.split("\n")
+                if f'[[{filename.lower().replace(" ", "_")}.md|' not in link
+            )
+
             with open(
                 f"{filename.lower().replace(' ', '_')}.md", "w", encoding="utf-8"
             ) as f:
-                to_write = f"{content}\n\n### Siblings\n\n{wikilink_list}\n\n"
+                to_write = f"{content}\n\n### Siblings\n\n{filtered_wikilink_list}\n\n"
                 f.write(to_write)
-
-        main_content_updated = (
-            f"{pre_h1_content}# {h1_title}\n{between_h1_h2}\n\n{wikilink_list}\n\n"
-        )
-        self._update_original_file(main_content_updated)
+                main_content_updated = f"{between_h1_h2}\n\n{wikilink_list}\n\n"
+                self._update_original_file(main_content_updated)
 
     def _update_original_file(self, content):
         with open(self.file_path, "w", encoding="utf-8") as f:

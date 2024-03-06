@@ -17,6 +17,7 @@ alias ash="yazi ~/Documents/textbook/8th\ ASH-SEP/"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
 alias mv="mv -iv"
 alias rm="rm -ivr"
+alias rip="rip -i"
 alias cp="cp -ivr"
 alias wh="which"
 alias hx="mcfly search"
