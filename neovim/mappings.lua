@@ -90,7 +90,7 @@ M.general = {
 		["<leader>tb"] = { ":Telescope bibtex<CR>", "add citation", opts = { nowait = true } },
 		["<leader>te"] = { ":Telescope symbols<CR>", "emoji", opts = { nowait = true } },
 		["<leader>tt"] = { ":Template ", "Insert template", opts = { nowait = true } },
-		["<leader>w"] = { ":w<CR>", "save", opts = { nowait = true, silent = true } },
+		["<leader>w"] = { ":w ++p ++bad=drop<CR>", "save", opts = { nowait = true, silent = true } },
 		["?"] = { ":noh<CR>", "enter command mode", opts = { nowait = true, silent = true } },
 		["H"] = { "^", "begining of line", opts = { nowait = true } },
 		["L"] = { "$", "go to end of line", opts = { nowait = true } },
