@@ -4,6 +4,10 @@ function rename_in_sqb() {
         mv "$file" "$newname"
     done
 }
+fcd() {
+    local dir
+    dir=$(fd --type d | fzf) && cd "$dir"
+}
 
 function unlock() {
     # find "/Applications" -type d -maxdepth 1 -name "*.app" -mmin -10 | while read app; do

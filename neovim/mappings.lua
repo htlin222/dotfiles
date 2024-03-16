@@ -145,8 +145,12 @@ M.general = {
 		["ak"] = { "a{", "same as a{", opts = { nowait = true } },
 		["ah"] = { "a<", "same as a<", opts = { nowait = true } },
 		["am"] = { "a'", "same as a'", opts = { nowait = true } },
+		["<"] = { "<gv", "indent right", opts = { nowait = true } },
+		[">"] = { ">gv", "indent left", opts = { nowait = true } },
 		["a,"] = { 'a"', 'same as a"', opts = { nowait = true } },
 		["L"] = { "$h", "go to end of line", opts = { nowait = true } },
+		["J"] = { ":m '>+1<CR>gv=gv", "move the selection down", opts = { nowait = true } },
+		["K"] = { ":m '<-2<CR>gv=gv", "move the selection up", opts = { nowait = true } },
 		-- autocmd BufWritePre ~/Documents/Medical/*.md execute "s/\.\s\([A-Z]\)/.\r- \1/g"
 	},
 }
