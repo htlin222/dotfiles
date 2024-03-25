@@ -84,40 +84,6 @@
     ],
     "description": "imgconfig"
   },
-  "half": {
-    "prefix": "half",
-    "body": [
-      ":::half",
-      "",
-      "${1:Left Column}",
-      "",
-      ":::split",
-      "",
-      "${2:Right Column}",
-      "",
-      ":::",
-      "",
-      ""
-    ],
-    "description": "marpit two not animation"
-  },
-  "twocol": {
-    "prefix": "twocol",
-    "body": [
-      ":::columns",
-      "",
-      "#### ${1:Left Column}",
-      "",
-      ":::split",
-      "",
-      "#### ${2:Right Column}",
-      "",
-      ":::",
-      "",
-      ""
-    ],
-    "description": "marpit two column"
-  },
   "largeh2": {
     "prefix": "largeh2",
     "body": [
