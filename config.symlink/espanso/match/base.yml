@@ -61,5 +61,8 @@ matches:
     replace: "¶"
   - trigger: "ft4"
     replace: "§"
+  - trigger: "fuckyou"
+    replace: "我想這部分，還是要跟余先生討論後再決定"
+    #
 # other files:
 # facebook.yml
