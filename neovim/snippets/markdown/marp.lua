@@ -16,5 +16,6 @@ return {
 	s({ trig = "split" }, { t({ "", ":::split", "", "" }), i(0), t({ "", "", ":::", "" }) }),
 	s({ trig = "even" }, { t({ "", ":::columns", "", "" }) }),
 	s({ trig = "date" }, { t({ "", ":::date", "" }) }),
-	-- s({ trig = "h4" }, { t({ "#### " }), i(0) }),
+	s({ trig = "shadow" }, { t({ "drop-shadow:0px,45px,30px,rgba(0,0,0,.7) Figure: width:1150px" }), i(0) }),
+	s({ trig = "opacity" }, { t({ "bg opacity:.3 h:500px" }), i(0) }),
 }
