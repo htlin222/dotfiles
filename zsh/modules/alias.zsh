@@ -3,8 +3,8 @@ if uname | grep -q "Darwin"; then
 else
 	alias open="xdg-open"
 fi
-alias abbr='nvim ~/.config/nvim/lua/custom/snippets/all.lua'
 alias R='R -q'
+alias man='colored man'
 alias todo='pter ~/Dropbox/todo.txt'
 alias zshconfig="vim ~/.zshrc"
 alias pom="sh pom.sh"

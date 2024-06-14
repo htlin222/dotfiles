@@ -1,9 +1,11 @@
 if [ "$TMUX" = "" ]; then tmux; fi
 
 # ---- Welcome Message ----
-
 # cfonts "Lizard" --colors white,"#f80"
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
 # ---- oh-my-zsh stuff and p10k ----
 
 setopt no_nomatch
@@ -15,7 +17,7 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
-plugins+=(zsh-lazyload zsh-autosuggestions fast-syntax-highlighting git you-should-use sudo web-search copyfile jsontools zsh-vi-mode fzf-tab)
+plugins+=(zsh-lazyload zsh-autosuggestions fast-syntax-highlighting git you-should-use sudo web-search copyfile jsontools zsh-vi-mode fzf-tab colored-man-pages gitignore lol man rsync)
 
 ZSH_WEB_SEARCH_ENGINES=(
 	# reddit "https://www.reddit.com/search/?q="
