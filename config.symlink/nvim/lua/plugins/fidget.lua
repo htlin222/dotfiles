@@ -1,7 +1,7 @@
 return {
-	"j-hui/fidget.nvim",
-	opts = {
-		-- options
-	},
-	event = "VeryLazy",
+  "j-hui/fidget.nvim",
+  config = function()
+    require("fidget").setup()
+  end,
+  event = "BufEnter",
 }

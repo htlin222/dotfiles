@@ -4,30 +4,30 @@ local vim = vim
 local map = vim.keymap.set
 
 -- normal mode --
-map("n", ";", ":", { desc = "CMD enter command mode" })
+map("n", ";", ":", { desc = "CMD enter command mode", nowait = true })
 map("n", "c", '"_c', { desc = "To Black Hole" })
-map("n", "+", "<C-a>", { desc = "increase number" })
-map("n", "_", "<C-x>", { desc = "decrease number" })
+map("n", "+", "<C-a>", { desc = "increase number", nowait = true })
+map("n", "_", "<C-x>", { desc = "decrease number", nowait = true })
 map("n", "x", '"_x', { desc = "do not yank x when x", nowait = true })
-map("n", "H", "^", { desc = "Beginning of line" })
-map("n", "L", "$", { desc = "End of line" })
-map("n", "<Right>", ":bn<CR>", { desc = "Next buffer" })
-map("n", "<Left>", ":bp<CR>", { desc = "Previous buffer" })
+map("n", "H", "^", { desc = "Beginning of line", nowait = true })
+map("n", "L", "$", { desc = "End of line", nowait = true })
+map("n", "<Right>", ":bn<CR>", { desc = "Next buffer", nowait = true, silent = true })
+map("n", "<Left>", ":bp<CR>", { desc = "Previous buffer", nowait = true, silent = true })
 map("n", "<Down>", ":tabnext<CR>", { nowait = true, silent = true })
 map("n", "<Up>", ":tabprevious<CR>", { nowait = true, silent = true })
 map("n", "<ESC>", ":", { desc = "Enter Cmdline" })
 map("n", "?", ":noh<CR>", { desc = "Delete Highlight", silent = true })
 map("n", "<leader>ta", ":tabnew<CR>", { desc = "New Tab", nowait = true, silent = true })
-map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save" })
-map("n", "<leader>q", ":q<CR>", { desc = "Quit" })
+map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save", nowait = true })
+map("n", "<leader>q", ":q<CR>", { desc = "Quit", nowait = true })
 map("n", "<C-c>", "<ESC>", { desc = "Map Ctrl + C to True Esc" })
 map("n", "<C-s>", "<cmd>SymbolsOutline<CR>", { desc = "Symbols Outline", nowait = true, silent = true })
 map("n", "j", function() -----------------
   return vim.v.count > 0 and "j" or "gj"
-end, { expr = true })
+end, { expr = true, nowait = true })
 map("n", "k", function() -----------------
   return vim.v.count > 0 and "k" or "gk"
-end, { expr = true })
+end, { expr = true, nowait = true })
 map("n", "dd", function() -----------------
   if vim.fn.getline "." == "" then
     return '"_dd'
@@ -42,11 +42,11 @@ map("n", "<leader>i", function() -----------------
 end, { desc = "when go into the insert mode, switch to boshiamy.inputmethod", nowait = true, silent = true })
 
 -- insert mode --
-map("i", "<C-c>", "<ESC>", { desc = "Escape" })
+map("i", "<C-c>", "<ESC>", { desc = "Escape", nowait = true })
 
 -- visual mode --
-map("v", "<", "<gv", { desc = "Indent left" })
-map("v", ">", ">gv", { desc = "Indent right" })
+map("v", "<", "<gv", { desc = "Indent left", nowait = true })
+map("v", ">", ">gv", { desc = "Indent right", nowait = true })
 map("v", ";", ":", { desc = "enter command mode", nowait = true })
 map("v", "<leader>ga", ":'<,'>!aicomp<cr>", { desc = "Aider Append", nowait = true })
 map("v", "p", '"_dP', { desc = "paste but don't overwrite the clipboard", nowait = true })

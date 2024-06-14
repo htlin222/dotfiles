@@ -16,8 +16,7 @@ from pathlib import Path
 
 import pyimgur
 import pyperclip
-from PIL import Image
-from PIL import ImageGrab
+from PIL import Image, ImageGrab
 
 PILlogger = logging.getLogger("PIL")
 PILlogger.setLevel(logging.CRITICAL)
@@ -36,7 +35,7 @@ def run_macos_notification(title, body):
 
 
 def cmd_p():
-    command = f'osascript -e \'tell application "System Events" to keystroke "v" using command down\''
+    command = 'osascript -e \'tell application "System Events" to keystroke "v" using command down\''
     subprocess.run(command, shell=True)
 
 
@@ -46,14 +45,20 @@ def upload_image(image):
         run_macos_notification("🖼️ 上傳中 🆙", "跟我一起數萬, 吐, Three🎉")
         image = image.save(IMAGE_PATH)
         width, height = Image.open(IMAGE_PATH).size
-        size_config = ("width:1150px" if float(width) / float(height) *
-                       450 > 1100 else "height:450px")
+        size_config = (
+            "width:1150px"
+            if float(width) / float(height) * 450 > 1100
+            else "height:450px"
+        )
         uploaded_image = pyimgur.Imgur(CLIENT_ID).upload_image(
-            IMAGE_PATH, title="Uploaded by PyImgur")
+            IMAGE_PATH, title="Uploaded by PyImgur"
+        )
         md_formated_result = f"\n![Figure: {size_config}]({uploaded_image.link})\n\n"
         pyperclip.copy(md_formated_result)
         os.remove(IMAGE_PATH)
-        run_macos_notification("🎉 登登！你的圖片網址來啦👇爽爽爽😁", md_formated_result)
+        run_macos_notification(
+            "🎉 登登！你的圖片網址來啦👇爽爽爽😁", md_formated_result
+        )
         # use this if you want cmd + p directly after the image uploaded
         # cmd_p()
     # else:
