@@ -1,0 +1,153 @@
+# [tmux(1) - Linux manual page](https://man7.org/linux/man-pages/man1/tmux.1.html)
+unbind C-b
+# Setting two prefix: 'Ctrl+b' to 'Ctrl+A'
+set-option -g prefix C-a
+# Ensure that we can send Ctrl-A to other apps
+bind C-a send-prefix
+# Setting up the colors and copy/paste
+# highlight (change color) on control key (send-prefix) event?
+set -g status-left '#{?client_prefix,#[bg=colour212]PFX.#[bg=colour202]#S,#[fg=white,bg=colour203,bold]#S}'
+
+set -g default-terminal "screen-256color"
+setw -g mode-keys vi
+set-option -g status-interval 5
+set-option -g automatic-rename on
+set-option -g automatic-rename-format '#{b:pane_current_path}'
+
+# This is OS/X specific and should only be enabled when the 'reattach-to-user-namespace' is installed
+# set -g default-command "reattach-to-user-namespace -l /bin/bash"
+# bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
+# bind C-v run "tmux set-buffer $(reattach-to-user-namespace pbpaste); tmux paste-buffer"
+
+# Reload key
+bind r source-file ~/.tmux.conf \; display 'Reloaded!🦎'
+
+# Vim style copy / paste
+unbind [
+bind Escape copy-mode
+unbind p
+bind p paste-buffer
+# Use v to trigger selection
+bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind-key -T copy-mode-vi 'r' send -X rectangle-toggle
+
+# Use Alt-arrow keys without prefix key to switch panes
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# Shift arrow to switch windows
+bind -n S-Left  previous-window
+bind -n S-Right next-window
+
+# Shift Alt vim keys to switch windows
+bind -n M-H previous-window
+bind -n M-L next-window
+
+# Use y to yank current selection
+bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
+# unbind =
+bind b split-window -h -c "#{pane_current_path}"
+bind v split-window -v -c "#{pane_current_path}"
+bind c new-window -c "#{pane_current_path}"
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Allow resizing splits
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# Shift Alt vim keys to switch windows
+bind -n M-H previous-window
+bind -n M-L next-window
+
+set -g mouse on
+# make scrolling with wheels work
+bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+bind -n WheelDownPane select-pane -t= \; send-keys -M
+# Lower escape timing from 500ms to 50ms for quicker response to scroll-buffer access.
+set -s escape-time 50
+# Drag to re-order windows
+bind-key -n MouseDrag1Status swap-window -t=
+# Double click on the window list to open a new window
+bind-key -n DoubleClick1Status new-window
+# Start windows and panes at 1, not 0
+set -g base-index 1
+set -g pane-base-index 1
+set-window-option -g pane-base-index 1
+set-option -g renumber-windows on
+# set-window-option -g clock-mode-colour colour64 #green
+set -g @catppuccin_flavour 'frappe'
+# set -g @catppuccin_no_patched_fonts_theme_enabled on
+# set -g @catppuccin_date_time "%H:%M"
+set -g @catppuccin_datetime_icon "󰔚"
+# set -g @catppuccin_user_icon "B"
+# set -g @catppuccin_directory_icon "C"
+# set -g @catppuccin_window_icon "D"
+# set -g @catppuccin_session_icon "E"
+# set -g @catppuccin_host_icon "F"
+# List of plugins prefix I to install
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'tmux-plugins/tmux-copycat'
+set -g @plugin 'jaclu/tmux-menus'
+set -g @plugin 'sainnhe/tmux-fzf'
+set -g @plugin 'imomaliev/tmux-keyboard-layout'
+set -g @plugin 'tmux-plugins/tmux-yank'
+# set -g @plugin 'laktak/extrakto'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'sainnhe/tmux-fzf'
+set -g @plugin 'dreamsofcode-io/catppuccin-tmux'
+# Smart pane switching with awareness of Vim splits.
+# See: https://github.com/christoomey/vim-tmux-navigator
+# is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
+#     | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?)(diff)?$'"
+# is_vim="ps -o args -g $$ | grep -iqE 'n?vim?x?'"
+# bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h'  'select-pane -L'
+# bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j'  'select-pane -D'
+# bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k'  'select-pane -U'
+# bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l'  'select-pane -R'
+# tmux_version='$(tmux -V | sed -En "s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p")'
+# if-shell -b '[ "$(echo "$tmux_version < 3.0" | bc)" = 1 ]' \
+#     "bind-key -n 'C-\\' if-shell \"$is_vim\" 'send-keys C-\\'  'select-pane -l'"
+# if-shell -b '[ "$(echo "$tmux_version >= 3.0" | bc)" = 1 ]' \
+#     "bind-key -n 'C-\\' if-shell \"$is_vim\" 'send-keys C-\\\\'  'select-pane -l'"
+
+bind-key -T copy-mode-vi 'C-h' select-pane -L
+bind-key -T copy-mode-vi 'C-j' select-pane -D
+bind-key -T copy-mode-vi 'C-k' select-pane -U
+bind-key -T copy-mode-vi 'C-l' select-pane -R
+bind-key -T copy-mode-vi 'C-\' select-pane -l
+# set -g @plugin 'dracula/tmux'
+
+# set -g @dracula-show-powerline true
+# set -g @dracula-show-left-icon session
+# set -g @dracula-plugins "git cpu-usage ram-usage"
+# set -g @dracula-border-contrast true
+# == menus settings ==
+set -g @menus_location_x 'C'
+set -g @menus_location_y 'C'
+set -g status-right '#(gitmux "#{pane_current_path}")'
+# NB: put the following line if you want to make the status-position at top
+# set -g status-position top
+
+# Default value in tmux >= 3.2
+TMUX_FZF_OPTIONS="-w 60% -h 60% -m  --border=none --layout=reverse  --padding=1 --preview-window 'right,50%,+{2}+3/3,~3,border-none'"
+# Other examples:
+# set -g @plugin 'github_username/plugin_name'
+# set -g @plugin 'git@github.com/user/plugin'
+# set -g @plugin 'git@bitbucket.com/user/plugin'
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+if "test ! -d ~/.tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
+run -b '~/.tmux/plugins/tpm/tpm'
+# Ref: [gpakosz/.tmux: 🇫🇷 Oh my tmux! My self-contained, pretty & versatile tmux configuration made with ❤️](https://github.com/gpakosz/.tmux)
+# [My .tmux.conf for tmux 2.1 (with fixes for mouse breakage)](https://gist.github.com/subfuzion/814b3360e9f0b2d89c08)
+# [前言 — tao-of-tmux v1.0.2 文档](https://tao-of-tmux.readthedocs.io/zh_CN/latest/manuscript/00-foreword.html)

@@ -1,0 +1,4 @@
+Gamelog generated on 2024-04-24 13:49:03
+Compiled with api_version: 2684, arch: arm64, audio: true, os: macos
+SDL renderer: metal
+Lua 5.4 run with api version: 2684, game version: v0.67, savegame version: 180

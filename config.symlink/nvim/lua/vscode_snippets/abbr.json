@@ -1,0 +1,9 @@
+{
+  "acid-base": {
+    "prefix": ".ab",
+    "body": [
+      "acid-base status"
+    ],
+    "description": "acid-base"
+  }
+}

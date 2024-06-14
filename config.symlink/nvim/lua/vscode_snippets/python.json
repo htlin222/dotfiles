@@ -1,0 +1,174 @@
+{
+    "system_notification": {
+        "prefix": "sysnot",
+        "body": [
+            "import subprocess",
+            "",
+            "title = \"Hellow\"",
+            "body = \"\ud83e\udd8e\"",
+            "",
+            "def run_macos_notification(title, body):",
+            "    command = (",
+            "        f'osascript -e \\'display notification with title \"{title}\" subtitle \"{body}\"\\''",
+            "    )",
+            "    subprocess.run(command, shell=True)",
+            "",
+            "run_macos_notification(title, body)",
+            ""
+        ],
+        "description": "system_notification"
+    },
+    "get one passowrd API KEY": {
+        "prefix": "1p",
+        "body": [
+            "def get_api_key(command):",
+            "    print(\"\u53d6\u5f97API KEY\ud83d\udd11\")",
+            "    result = subprocess.run([\"op\", \"read\", command],",
+            "                            capture_output=True,",
+            "                            text=True)",
+            "    if result.returncode != 0:",
+            "        raise ValueError(f\"Error fetching API key: {result.stderr}\")",
+            "    return result.stdout.strip()",
+            ""
+        ],
+        "description": "get one password API KEY"
+    },
+    "ChatGPTAzure": {
+        "prefix": "azure",
+        "body": [
+            "def process_text(text, type):",
+            "    try:",
+            "        # Use your new API settings here for text",
+            "        openai.api_type = \"azure\"  # INFO: For Azure Open AI API, must add this",
+            "        openai.api_base = new_api_base",
+            "        openai.api_version = new_api_version",
+            "        # WARN: MAKE SURE YOU HAVE get_api_key function loaded ",
+            "        # openai.api_key = get_api_key(\"op://Dev/AzureAPIChatGPT/credential\")",
+            "",
+            "        print(f\"API Base: {new_api_base}\")",
+            "        # print(f\"API Version: {new_api_version}\")",
+            "        print(f\"Engine: {new_engine}\")",
+            "",
+            "        response = openai.ChatCompletion.create(",
+            "            engine=new_engine,",
+            "            messages=[",
+            "                {",
+            "                    \"role\": \"system\",",
+            "                    \"content\": \"You are a helpful assistant.\"",
+            "                },",
+            "                {",
+            "                    \"role\": \"user\",",
+            "                    \"content\": type + text",
+            "                },",
+            "            ],",
+            "        )",
+            "        return response[\"choices\"][0][\"message\"][\"content\"]",
+            "    except Exception as e:",
+            "        print(f\"An error occurred: {e}\")",
+            "        print(f\"Exception type: {type(e)}\")  # Add this line for more details",
+            "        return None",
+            ""
+        ],
+        "description": "ChatGPTAzure, process_text"
+    },
+    "process_long_text": {
+        "prefix": "process_long_text",
+        "body": [
+            "def process_long_text(long_text, type):",
+            "    text_list = split_text(long_text, 1200)",
+            "    processed_text_list = []",
+            "    for text in text_list:",
+            "        processed_text = process_text(text, type)",
+            "        if processed_text is not None:",
+            "            processed_text_list.append(processed_text)",
+            "        else:",
+            "            print(\"Warning: Got None from process_text. Skipping this chunk.\")",
+            "    return \"\".join(processed_text_list)",
+            ""
+        ],
+        "description": "process_long_text, need process_text"
+    },
+    "WhisperAI": {
+        "prefix": "transcript",
+        "body": [
+            "def process_audio_file(input_file):",
+            "    print(\"\ud83e\udef5 \u8b80\u5165\u6a94\u6848\ud83d\udcc2\")",
+            "    audio_file = AudioSegment.from_file(input_file)",
+            "    print(\"\u5207\u5272\u97f3\u6a94\u6210\u591a\u500b\u5c0f\u6a94\u6848\ud83d\udcda\")",
+            "    chunk_size = 100 * 1000  # 100 \u79d2",
+            "    chunks = [",
+            "        audio_file[i:i + chunk_size]",
+            "        for i in range(0, len(audio_file), chunk_size)",
+            "    ]",
+            "",
+            "    # \u4f7f\u7528 OpenAI \u7684 Audio API \u5c07\u6bcf\u500b\u5c0f\u6a94\u6848\u8f49\u6210\u6587\u5b57\uff0c\u7136\u5f8c\u5408\u4f75\u5728\u4e00\u8d77",
+            "    openai.api_key = get_api_key(\"op://Dev/chat_GPT/api key\")",
+            "",
+            "    transcript = \"\"",
+            "    print(\"\ud83e\udef5 \u958b\u59cb\u7522\u751f\u9010\u5b57\u7a3f\ud83d\udc49\\n\")",
+            "    for i, chunk in enumerate(chunks):",
+            "        with chunk.export(\"temp.wav\", format=\"wav\") as f:",
+            "            result = openai.Audio.transcribe(\"whisper-1\", f)",
+            "            print(",
+            "                f\"\ud83d\udd25 Processing chunk {i+1}/{len(chunks)}:\\n {result['text']}\")",
+            "            transcript += result[\"text\"]",
+            "        os.remove(\"temp.wav\")",
+            "    return transcript",
+            ""
+        ],
+        "description": "transcript = process_audio_file(input_file)"
+    },
+    "ChatGPT call private API": {
+        "prefix": "ChatGPT_my",
+        "body": [
+            "def process_text(text, type):",
+            "    openai.api_key = get_api_key(\"op://Dev/chat_GPT/api key\")",
+            "    response = openai.ChatCompletion.create(",
+            "        model=\"gpt-3.5-turbo\",",
+            "        messages=[",
+            "            {",
+            "                \"role\": \"system\",",
+            "                \"content\": \"You are a helpful assistant.\"",
+            "            },",
+            "            {",
+            "                \"role\": \"user\",",
+            "                \"content\": type + text",
+            "            },",
+            "        ],",
+            "    )",
+            "    return response.choices[0].message.content",
+            ""
+        ],
+        "description": "ChatGPT call private API"
+    },
+    "cjkfont": {
+        "prefix": "cjkfont",
+        "body": [
+            "# \u5148\u4e0b\u8f09\u53f0\u5317\u9ed1\u9ad4\u5b57\u578b",
+            "!wget -O taipei_sans_tc_beta.ttf https://drive.google.com/uc?id=1eGAsTN1HBpJAkeVM57_C7ccp7hbgSz3_&export=download",
+            "",
+            "import matplotlib",
+            "",
+            "# \u65b0\u589e\u5b57\u9ad4",
+            "matplotlib.font_manager.fontManager.addfont('taipei_sans_tc_beta.ttf')",
+            "",
+            "# \u5c07 font-family \u8a2d\u70ba Taipei Sans TC Beta",
+            "# \u8a2d\u5b9a\u5b8c\u5f8c\uff0c\u4e4b\u5f8c\u7684\u5716\u8868\u90fd\u53ef\u4ee5\u986f\u793a\u4e2d\u6587\u4e86",
+            "matplotlib.rc('font', family='Taipei Sans TC Beta')"
+        ],
+        "description": "cjkfont"
+    },
+    "test": {
+        "prefix": "another",
+        "body": [
+            "def main():",
+            "    \"\"\"donw Docstring.\"\"\"",
+            "    print(\"your code here\")",
+            "",
+            "",
+            "if __name__ == \"__main__\":",
+            "    main()"
+        ],
+        "description": "test is a script about..."
+    }
+}

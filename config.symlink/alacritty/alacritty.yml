@@ -1,0 +1,122 @@
+# yamllint disable rule:braces rule:commas rule:colons rule:comments-indentation
+---
+window:
+    # Blank space added around the window in pixels
+    padding:
+        x: 10
+        y: 10
+
+    # Spread additional padding evenly around the terminal content
+    dynamic_padding: true
+
+    # Disable border and title bar
+    decorations: none
+
+font:
+    normal:
+        family: JetBrainsMono Nerd Font
+        style: Regular
+    bold:
+        family: JetBrainsMono Nerd Font
+        style: Bold
+    italic:
+        family: JetBrainsMono Nerd Font
+        style: Italic
+
+    # Point size of the font
+    size: 18
+    offset:
+       x: 1
+       y: 1
+# Colors (One Dark); if dim colors are not set, they will be calculated
+# automatically based on the `normal` colors
+env:
+  TERM: xterm-256color
+import:
+  # uncomment the flavour you want below:
+  - ~/.config/alacritty/catppuccin/catppuccin-mocha.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-macchiato.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-frappe.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-latte.yml
+# colors:
+
+mouse:
+    hide_when_typing: true
+
+selection:
+    # When set to `true`, selected text will be copied to the primary
+    # clipboard.
+    save_to_clipboard: true
+
+cursor:
+    # Thickness of the cursor (number from `0.0` to `1.0`)
+    thickness: 0.1
+    # Vi mode cursor style
+    vi_mode_style: Block
+
+# Default shell
+# For osx uncomment the following
+    # shell:
+        # program: /usr/local/bin/bash  # osx
+    # args:
+    # - --login
+
+# Key bindings
+key_bindings:
+    - { key: V,        mods: Super, action: Paste                }
+    - { key: C,        mods: Super, action: Copy                 }
+    - { key: Q,        mods: Super, action: Quit                 }
+    - { key: W,        mods: Super, action: Quit                 }
+    - { key: Equals,   mods: Super, action: IncreaseFontSize     }
+    - { key: Minus,    mods: Super, action: DecreaseFontSize     }
+    - { key: Key0,     mods: Super, action: ResetFontSize        }
+    - { key: End,      mods: Shift, action: ScrollToBottom       }
+    - { key: Home,     mods: Shift, action: ScrollToTop          }
+    # Since we cannot set zoom factor we bind keys multiple times
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: U,        mods: Super, action: IncreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    - { key: D,        mods: Super, action: DecreaseFontSize     }
+    # Vi mode
+    - { key: LBracket, mods: Control|Alt,  action: ToggleViMode  }
+    - { key: Q,        mode: Vi,           action: ToggleViMode  }
+    - { key: H,        mods: Shift, mode: Vi,  action: First     }
+    - { key: L,        mods: Shift, mode: Vi,  action: Last      }
+    # Tmux-like
+    - { key: P,        mods: Control|Alt,  action: Paste         }
+    # On OSX uncomment the following to enable alt maps
+    - { key: D,        mods: Alt,   chars: "\x1bd"               }
+    - { key: Z,        mods: Alt,   chars: "\x1bz"               }
+...

@@ -1,0 +1,637 @@
+{
+    "htn": {
+        "prefix": "htnn",
+        "body": [
+            "hypertension"
+        ],
+        "description": "\u4e16\u4e0a\u7684"
+    },
+    "prechemo_breast": {
+        "prefix": "prechemo_breast",
+        "body": [
+            "#### Education",
+            "",
+            "- arranged Por-A implentation",
+            "- explained reason of adjuvant chemotherapy: cure and lower the risk of recurrence/metastasis.",
+            "  - most likely metastasis sites: liver, brain, lung, bone.",
+            "  - if metastasis, the 5-year survival rate is 26%",
+            "- explained chemotherapy schedule: `___` CAF or AC followed by T",
+            "  - OPD setting, no need for hospitalization",
+            "- explained potential chemotherapy toxicities:",
+            "  - common: fatigue, alopecia(reversible), nause/vomting, febrile neutropenia, opportunistic infection, infusion reaction (21% to 40% )",
+            "  - cyclophosphamide: bone marrow function compromised, hemorrhagic cystitis, secondary leukemia ( 0.5% \u5343\u5206\u4e4b\u4e00)",
+            "  - `___` doxorubicin: cardiotoxicity, life-time culmucation 450-500 mg/BSA ( `___` 240 `___` 300mg/BSA throught this course)",
+            "  - `___` fluorouracil: stomatitis or esophagopharyngitis, leukopenia, vomiting, diarrhea, frequent bowel movements, watery stools, gastrointestinal ulcer or bleeding, hand-foot syndrome",
+            "  - `___` docetaxel: stomatitis, persistent febrile neutropenia, cutaneous reactions, moderate neurosensory effects, secondary leukemia ( 0.5% )",
+            "- explained potential endorcine therapy toxicities:",
+            "  - AI: hot flashes, arthralgia, flushing, asthenia, edema, headache, osteoporosis and fractures, hypercholesterolemia, hepatic impairment",
+            "- explained potential ICI toxicities:",
+            "  - pembrolizumab: skin rash pneumonitis, colitis, hepatitis, hypophysitis, thyroid dysfunction, diabetes mellitus",
+            "- suggested high protein diet, not suggested additional supplement because it may confound the lab, which may lead to postponed the chemotherapy schedule.",
+            "- informed patient to avoid raw food, include fish, meat, vegetable"
+        ],
+        "description": "\u75c5\u4eba\u9996\u6b21\u270c\ufe0f \u63a5\u53d7\u4e73\u764c\u5316\u7642\u7684 \u2192 \u5fc5\u505a\u6e05\u55ae"
+    },
+    "temp_BCA": {
+        "prefix": "breast_opd",
+        "body": [
+            "<>-year-old woman, presented for <> due to"
+        ],
+        "description": "temp_BCA"
+    },
+    "PMH": {
+        "prefix": "PMH",
+        "body": [
+            "## MEDICAL HISTORY AND RISK FACTORS",
+            "",
+            "- denied HTN, DM, viral hepatitis",
+            "- Obstetric/Gynecologic:",
+            "  - G<>P<>AA<>SA",
+            "  - Age at first pregnancy:",
+            "  - Age at first menarche: < 14 >",
+            "  - LMP: < YYYY-MM-DD >",
+            "  - <> days per cycle, <> days with < moderate > amount",
+            "  - \\*or postmeopause at age <>",
+            "  - HRT: < for contraception, for postmeopausal symtpom >",
+            "  - breast feeding: < one month >",
+            "- Past surgical history:",
+            "  - NIL",
+            "  - < disease > - < operation > - in < hosptial > - in age <>",
+            "- Allergy: NKDA < >",
+            "- Concurrent medication/supplement/herb:",
+            "  - NIL",
+            "  - <>",
+            "- Personal/Social history:",
+            "  - Smoking history: < denied > < pack per year >, < from age **to** >",
+            "  - Alcohol consumption: < calculate: Beer, 5%(250ml)/1unit >",
+            "  - Betel nuts: denied",
+            "  - Recreational drug: < cannabis, amphetamine, etc. >",
+            "  - Occupation: <>",
+            "  - Residence: Taipei City <>",
+            "  - Education Level: college <>",
+            "- Family history:",
+            "  - Siblings [1] <> [2] <> [3] <>",
+            "  - lives with husband (age <>) and < sons, mother in law, boyfriend, roomate...>",
+            "  - mother of [1] < son/daugher > ( < age > ) [2]",
+            "  - Family cancer history:",
+            "    - < breast cancer > - maternal <>, diagnosed at age <>",
+            "    - < prostate cancer > - paternal <>, diagnosed at age <>",
+            "  - Other family medical history:",
+            "    - < e.g. HTN > - < mother >",
+            "    - < DM > - < paternal > < grandmother >"
+        ],
+        "description": "\u904e\u53bb\u75c5\u53f2\uff0c\u7531\u5176\u5c0d\u65bc\u4e73\u764c\u75c5\u4eba\u8d85\u7d1a\u91cd\u8981\uff0c\u9700\u8981\u586b\u4e00\u5927\u5806\u91cd\u8981\u7684 \u2192 \u8868\u683c\uff01\uff01\uff01"
+    },
+    "breast cancer assessment": {
+        "prefix": "breast.ass",
+        "body": [
+            "- Rt/Lt<> breast cancer (<>'/<>cm), histology: <>",
+            "- <>T<>N<>(<>/<>)M<>, Stage <>",
+            "- NG2, ER/PR/HER2: <>/<>/<>, Ki-67=<>%"
+        ],
+        "description": "breast cancer assessment"
+    },
+    "Trastuzumab": {
+        "prefix": "herceptin",
+        "body": [
+            "- Mechanism: Binds to HER2",
+            "- Dosing: Loading dose 4-8 mg/kg IV, followed by 2-6 mg/kg maintenance dose IV weekly or every 21 d",
+            "- PK/PD: T1/2 \u223c6-16 d",
+            "- AEs: CMP (DLT), GI upset, rash, fever, pain",
+            "- DDI: Anthracyclines (potential \u2191 in cardiac tox)",
+            "-",
+            "",
+            "[[protocol-of-Trastuzumab]]",
+            "",
+            "- [[Polymorphisms]]"
+        ],
+        "description": "Trastuzumab"
+    },
+    "cyclophosphamide": {
+        "prefix": "cyc",
+        "body": [
+            "\u9810\u9632\u7528\u85e5\uff1a",
+            "",
+            "[[Mesna]] UROMITEXAN 400MG",
+            "",
+            "- SLE",
+            "",
+            "  - for Severe organ-threatening nephritis or CNS disease (induction, minimize exposure)",
+            "",
+            "- S/E",
+            "  - Cytopenias,",
+            "  - infertility/teratogen,",
+            "  - myeloprolif. dis.,",
+            "  - hemorrhagic cystitis,",
+            "  - bladder cancer"
+        ],
+        "description": "cyclophosphamide"
+    },
+    "endoxan": {
+        "prefix": "endoxan",
+        "body": [
+            ""
+        ],
+        "description": "endoxan"
+    },
+    "5FU": {
+        "prefix": "5FU",
+        "body": [
+            "- Dosing: Dose, schedule, & administration (IVB vs. IV continuous infusion) are based on malignancy. Common ranges, IVB: 400-600 mg/m2/dose; IV continuous infusion 200-1,500 mg/m2/d. No renal or hepatic dose adjustments recommended; use w/ caution",
+            "- PK/PD: Extensive tissue distribution; saturable catabolism; excretion via metabolism, lung, & urine; T1/2 8-20 min after IVB",
+            "- AEs: Dependent on dose & administration (IV bolus vs. IV continuous infusion), diarrhea (DLT), mucositis (DLT), N/V (low emetogenic potential), myelosuppression (bolus > continuous infusion), neurotoxicity, coronary artery vasospasm, conjunctivitis, hand-foot syndrome (continuous infusion > bolus), alopecia, nail changes",
+            "- DDI: CYP2C9 substrates (\u2193 substrate levels), cimetidine (\u2193 clearance of 5-FU), oral anticoagulants (\u2191 levels of anticoagulants), leucovorin (\u2191 tox of 5-FU)",
+            "- Clinical pearls: AEs w/ DPD deficiency (prolonged clearance, \u2191 tox), radiosensitizer; leucovorin is given w/ bolus administration to \u2191 intracellular half-life of 5-FU (\u2191 cytotoxicity). Uridine triacetate used as antidote in cases of overdose or DPD deficiency"
+        ],
+        "description": "5FU"
+    },
+    "breast-exam-findings": {
+        "prefix": "breastpe",
+        "body": [
+            "Physical breast examination: <> Inflammatory <> Peau d\u2019orange <> Palpable lymph nodes <> Nipple secretion"
+        ],
+        "description": "breast-exam-findings"
+    },
+    "template": {
+        "prefix": "slide_open_and_end",
+        "body": [
+            "<!-- _paginate: false -->",
+            "<!-- _header: '' -->",
+            "",
+            "#### KFSYSCC",
+            "",
+            "# TITLE",
+            "",
+            "<img src=\"https://img.shields.io/badge/and-is_result-6c9a77\"/>",
+            "",
+            "## \u6797\u5354\u9706\uff0cFellow 1",
+            "",
+            "press <kbd>Ctrl</kbd> and <kbd>t</kbd>then",
+            "",
+            "---",
+            "",
+            "${1:content here}",
+            "",
+            "---",
+            "",
+            "# Thank you for your time and attention",
+            "",
+            "# _Have a nice day_",
+            "",
+            "![emojik RLQ height:300px](https://emojik.vercel.app/s/\u2600\ufe0f_\ud83d\ude0e?size=256)"
+        ],
+        "description": "template"
+    },
+    "chemo_temp_CAF": {
+        "prefix": "CAF",
+        "body": [
+            "(Cycled every 21 days for 6 cycles)",
+            "",
+            "- Cyclophosphamide 500 mg/m2 IV",
+            "- Doxorubicin 50 mg/m2 IV",
+            "- Fluorouracil 500 mg/m2 IV"
+        ],
+        "description": "chemo_temp_CAF"
+    },
+    "MINIPE": {
+        "prefix": "minipe",
+        "body": [
+            "## PHYSICAL EXAM",
+            "",
+            "alert<> and oriented<>, appeared in no distress<>",
+            "No<Anemia> conjunctival pallor,<> no<> scleral icterus",
+            "HEENT: no<> oral thrush,<> no neck LAP",
+            "Chest: bilateral<> clear<> breath sounds",
+            "[Optional] Breast:<>no inflammatory,<>no Peau d'orange,<>no Palpable LN,<>no Nipple secretion",
+            "Heart: regular rhythm,<> normal rate,<>no murmur",
+            "Abd: non<>distended, normo<>active BoS, nontender",
+            "Ext: warm, <bilateral 2+>no<> pitting edema"
+        ],
+        "description": "MINIPE"
+    },
+    "Procedure_Note_CVC": {
+        "prefix": "CVC",
+        "body": [
+            "- indication: hemodynamic monitoring`___`intravenous access `___`stem cell harvest`___`hemodialysis `___`",
+            "- ultrasound-guided: yes",
+            "- position: right internal jugular vein. `___` right femoral vein `___`",
+            "- catheter: Non-tunneled central venous catheter `___`, large `___` small `___` bore",
+            "- estimated blood loss: 3ml",
+            "- CXR: catheter tip at cavo-atrial junction (2.5cm below carina)"
+        ],
+        "description": "Procedure_Note_CVC"
+    },
+    "Smart Brevity": {
+        "prefix": "Smart",
+        "body": [
+            "## \u6a19\u984c: ${1:\u7528 6-10 \u500b\u5b57}",
+            "",
+            "TLDR: \u958b\u5834(\u4e00\u53e5\u77ed\u8a9e): ${2:\u8b80\u8005\u77e5\u9053\u3001\u60f3\u77e5\u9053\u3001\u61c9\u8a72\u77e5\u9053}",
+            "",
+            "## \ud83c\udf1f\u8981\u9ede",
+            "",
+            "${3:\u89e3\u91cb\u70ba\u4ec0\u9ebc\u9019\u4ef6\u4e8b\u60c5\u5f88\u91cd\u8981}",
+            "",
+            "## \ud83d\udcda\u8a73\u7d30\u5167\u5bb9",
+            "",
+            "${4:\u8b80\u8005\u53ef\u9078\u64c7\u662f\u5426\u8981\u7e7c\u7e8c\u5f80\u4e0b\u8b80\u66f4\u591a\u5167\u5bb9}"
+        ],
+        "description": "Smart Brevity"
+    },
+    "Regional Lymph Nodes-of-Staging of breast cancer": {
+        "prefix": "breast_LN",
+        "body": [
+            "- N1 (1-3 axillary nodes)",
+            "- N2 (4-9 axillary nodes)",
+            "- N3 (\u226510 axillary nodes or any infraclavicular or ipsilateral supraclavicular nodes);",
+            "",
+            "## The regional lymph nodes are",
+            "",
+            "> \u56db\u5927\u5340\u57df\u6c7a\u5b9a\u671f\u5225\uff0c\u5176\u4e2d\u814b\u4e0b\u9084\u53ef\u4ee5 \u2714 \u5206\u4f4e\u4e2d\u9ad8\uff0c\u5176\u4e2dinfraclavicular & III \u7b97\u4e00\u6a23",
+            "",
+            "1. Axillary (ipsilateral): interpectoral (Rotter) nodes and lymph nodes along the axillary",
+            "vein and its tributaries, which may be divided into the following levels:",
+            "    - (i) Level I (low-axilla): lymph nodes lateral to the lateral border of pectoralis minor muscle.",
+            "    - (ii) Level II (mid-axilla): lymph nodes between the medial and lateral borders of the pectoralis minor muscle and the interpectoral (Rotter) lymph nodes.",
+            "    - (iii) Level III (apical axilla): apical lymph nodes and those medial to the medial margin of the pectoralis minor muscle, excluding those designated as subclavicular or infraclavicular.",
+            "2. Infraclavicular (subclavicular) (ipsilateral).",
+            "3. Internal mammary (ipsilateral): lymph nodes in the intercostal spaces along the edge",
+            "of the sternum in the endothoracic fascia.",
+            "4. Supraclavicular (ipsilateral).",
+            "",
+            "[[figure-of-Regional Lymph Nodes-of-Staging of breast cancer]]",
+            "",
+            "> \u53ef\u4ee5 \u2716 \u4e0d\u53ef\u4ee5 \u2714 \u52d5\u5f88\u91cd\u8981\uff0c\u9ecf\u4f4f\u7b97N2",
+            "",
+            "- NX Regional lymph nodes cannot be assessed (e.g., previously removed)",
+            "- N0 No regional lymph node metastasis",
+            "  - N(i): micrometastasis 0.2mm, less than 200cell/hpf",
+            "- N1 : movable ipsilateral level I, II axillary lymph node(s) (Fig. 327)",
+            "- N2 : ipsilateral level I, II axillary lymph node(s) that are clinically fixed or matted; or in clinically detected* ipsilateral internal mammary lymph node(s) in",
+            "- the absence of clinically evident axillary lymph node metastasis",
+            "  - N2a : axillary lymph node(s) fixed to one another (matted) or to other structures (Fig. 328)",
+            "  - N2b : only in clinically detected* internal mammary lymph node(s) and in the absence of clinically evident axillary lymph node metastasis (Fig. 329)",
+            "- N3 : ipsilateral infraclavicular (level III axillary) lymph node(s) with or without level I, II axillary lymph node involvement; or in clinically detected* ipsilateral internal mammary lymph node(s) with clinically evident level I, II axillary lymph node metastasis; or : ipsilateral supraclavicular lymph node(s) with or without axillary or internal mammary lymph node involvement",
+            "  - N3a : infraclavicular lymph node(s) (Fig. 330)",
+            "  - N3b : internal mammary and axillary lymph nodes (Fig. 331)",
+            "  - N3c : supraclavicular lymph node(s) (Fig. 332)"
+        ],
+        "description": "Regional Lymph Nodes-of-Staging of breast cancer"
+    },
+    "ACbyT": {
+        "prefix": "ACbyT",
+        "body": [
+            "- Cyle 1-4 (Cycled every 3 weeks)",
+            "  - Doxorubicin 60 mg/m2, Cyclophosphamide 600 mg/m2",
+            "- Cycle 5-8 (Cycled every 3 weeks)",
+            "  - Docetaxel* 60 mg/m2"
+        ],
+        "description": "ACbyT"
+    },
+    "peau d orange": {
+        "prefix": "orange-peel",
+        "body": [
+            "- Erythematous, warm, and edematous skin plaques with prominent hair follicles that resemble orange peel",
+            "- Caused by obstruction of the lymphatic channels due to tumor growth"
+        ],
+        "description": "peau d orange"
+    },
+    "protocol-of-Trastuzumab": {
+        "prefix": "h",
+        "body": [
+            "(Cycled every 3 weeks for 17cycles)",
+            "",
+            "- Loading(week 1) 8 mg/kg IVF over 90 mins",
+            "- Maintenance(week 2 to 17): 6 mg/kg IVF over 90 mins",
+            "- AEs: severe CHF (congestive heart failure, 0.54%), symptomatic CHF(1.73%), decrease in LVEF (7.08%), febrile neutropenia (breast cancer, 23%; gastric cancer, 5% ), neutropenia, grade 3 and 4 (32% to 34%), thrombocytopenia, grade 3 and 4 (gastric cancer, 5% ), thrombosis (breast cancer, 2.1% to 3.7% ), interstitial pneumonia"
+        ],
+        "description": "protocol-of-trastuzumab \u2192 \u5291\u91cf\u4ee5\u53ca\u526f\u4f5c\u7528"
+    },
+    "ESMO Checklist_Early and Locally Advanced Non-Small Cell Lung Cancer": {
+        "prefix": "EarlyNSCLC",
+        "body": [
+            "## MEDICAL HISTORY AND RISK FACTORS",
+            "",
+            "Past personal medical history and vascular risk factors:",
+            "Past surgical history:",
+            "Concurrent medication:",
+            "Allergies:",
+            "Smoking history: __pack/y from age__ to age__",
+            "Alcohol consumption:",
+            "",
+            "---",
+            "",
+            "## PHYSICAL EXAM",
+            "",
+            "(PRESENT MEDICAL CONDITIONS)",
+            "",
+            "Normal weight: Height: BMI",
+            "Main symptoms:",
+            "Weight loss:",
+            "ECOG Performance Status:",
+            "ENT Examination:",
+            "alert<> and oriented<>, appeared in no distress<>",
+            "No< Anemia > conjunctival pallor,<> no<> scleral icterus",
+            "HEENT: no<> oral thrush,<> no neck LAP",
+            "Chest: bilateral<> clear<> breath sounds",
+            "Heart: regular rhythm,<> normal rate,<>no murmur",
+            "Abd: non<>distended, normo<>active BoS, nontender",
+            "Ext: warm, <bilateral 2+>no<> pitting edema",
+            "",
+            "### Assessment",
+            "",
+            "# Lung adenocarcinoma",
+            "",
+            "## DIAGNOSIS AND CLINICAL STAGING",
+            "",
+            "- < date > PET/CT scan:",
+            "- < date > Bronchoscopy:",
+            "- < date > EBUS/EUS:",
+            "- < date > TNM stage and grade:",
+            "",
+            "### HISTOLOGICAL ANALYSIS",
+            "",
+            "- Core biopsy of primary tumour:",
+            "- Non-squamous:",
+            "  - Tested for EGFR mut. PD-L1, method used",
+            "- Squamous:",
+            "  - Tested for PD-L1, method used",
+            "- Tissue material available/stored for future molecular analyses YES NO",
+            "- CBC/DC, Liver Enzymes, LDH, Calcium, Albumin, Renal, Function",
+            "- IF the patient is scheduled for radical treatment, the following tests have been considered",
+            "  - (Stage III) Brain MRI, preferably to contrast-enhanced CT-scan",
+            "  - Lung function tests",
+            "  - Cardio-vascular check-up",
+            "- Timeline for further work-up has been checked and it is tight enough",
+            "",
+            "### MDT discussion and decision",
+            "",
+            "- Treatment options have been discussed with the patient and strategy accepte",
+            "  - Surgery Performed Planned",
+            "  - SBRT Radiotherapy Radiofrequency ablation (or similar ablative approach)",
+            "  - Neoadjuvant chemotherapy",
+            "  - Adjuvant radiotherapy Adjuvant chemotherapy",
+            "  - Chemoradiation Concurrent Sequential",
+            "  - Durvalumab maintenance",
+            "  - Supportive and palliative care",
+            "  - Enrolment in a clinical trial"
+        ],
+        "description": "ESMO Checklist_Early and Locally Advanced Non-Small Cell Lung Cancer"
+    },
+    "neuroexam": {
+        "prefix": "nelist",
+        "body": [
+            "## NEUROLOGY EXAM",
+            "",
+            "- A+Ox3 / E4V5M6 / JOMAC intact",
+            "- CNII-XII grossly intact",
+            "- UPPER ext.",
+            "  - strength 5/5 throughout / normal tone",
+            "  - intact to sharp and dull throughout",
+            "  - DTR: Biceps 2+ / Triceps 2+ / Brachioradialis 2+",
+            "  - Rapid Hand Movements intact, No Drift",
+            "- LOWER ext.",
+            "  - strength 5/5 throughout / normal tone",
+            "  - intact to sharp and dull throughout",
+            "  - DTR: Knee 2+ / Achilles 2+ / Babinski -/-",
+            "  - SLRT: 90 degree",
+            "  - Rapid Foot Tapping intact",
+            "- COORDINATION",
+            "  - F-N-F: no dysmetria or dyssynergia",
+            "  - H-N-S: intact ; DDK -/-",
+            "  - Romberg test intact; Steady Gait"
+        ],
+        "description": "neuroexam"
+    },
+    "assessment of hospitalized cancer patients": {
+        "prefix": "temp.consult",
+        "body": [
+            "== assessment ==",
+            "",
+            "== plan =="
+        ],
+        "description": "assessment of hospitalized cancer patients"
+    },
+    "HBV_pathway": {
+        "prefix": "hbv.pathway",
+        "body": [
+            "- moderate risk: HBsAg-positive individuals receieved cytotoxic chemotherapy",
+            "- confirm HBV/HCV profiles prior to administering preventive anti-viral agents for HBV flare-up prophylaxis during chemotherapy.",
+            "- start entecavir concurrently or prior to initiating chemotherapy",
+            "  - maintained for at least 6 months after withdrawal of immunosuppression",
+            "  - duration of chemotherapy: `___`/`___`/`___` to `___`/`___`/`___` (estimated)",
+            "  - explain adverse effects:",
+            "    - headache, fatigue, dizziness, nausea reported in 22% of patients.",
+            "- monitor if HBV reactivation:",
+            "  - previously had undetectable HBV DNA -> detectable HBV DNA",
+            "  - 10x to 100x fold increase in HBV DNA",
+            "  - HBsAg negative/anti-HBc positive becomes HBsAg positive"
+        ],
+        "description": "HBV_pathway"
+    },
+    "KPS": {
+        "prefix": "kps",
+        "body": [
+            "- 100% Healthy, no symptoms or signs of disease",
+            "- 90% Capable of normal activity, few symptoms or signs of disease",
+            "- 80% Normal activity with some difficulty, some symptoms or signs",
+            "- Still go for work? `___`",
+            "- 70% Caring for self, not capable of normal activity or work",
+            "- 60% Requiring some help, can take care of most personal requirements",
+            "- 50% Requires help often, requires frequent medical care",
+            "- Someone have to care about this patient 24hr `___`",
+            "- 40% Disabled, requires special care and help",
+            "- 30% Severely disabled, hospital admission indicated but no risk of death",
+            "- 20% Very ill, urgently requiring admission, requires supportive measures or treatment"
+        ],
+        "description": "KPS"
+    },
+    "Iron-supplementation": {
+        "prefix": "fe",
+        "body": [
+            "? IV (not PO) if NYHA II/III, EF \u226440%, Fe-defic (ferritin <100 or 100\u2013 300 & TSAT <20%). ~20% \u2193 HF hosp. (Lancet 2020;396:1895)."
+        ],
+        "description": "Iron-supplementation"
+    },
+    "Procedure_Note_LP": {
+        "prefix": "LP",
+        "body": [
+            "- indication: suspected meningitis`___`intrathecal chemotherapy`___`rule out leptomeningeal seeding`___`",
+            "- left`___`right`___` lateral position",
+            "- L`___`/`___` lumbar interspace.",
+            "- opening pressure: `___` cmH2O",
+            "- CSF was collected into 1 `___` tubes",
+            "- intrathecal chemotherapy: methotrexate `___` mg",
+            "- estimated blood: 0 ml",
+            "",
+            "The patient tolerate the procedure well without complication, and will lying supine for 4 hours."
+        ],
+        "description": "Procedure_Note_LP"
+    },
+    "Procedure_Note_BMBx": {
+        "prefix": "BMBX",
+        "body": [
+            "- indication: `___`",
+            "- diagnosis: `___`",
+            "- site: Rt `___` Lt `___` bilateral `___` superior posterior iliac crest",
+            "- position: prone `___`"
+        ],
+        "description": "Procedure_Note_BMBx"
+    },
+    "Procedure_Note_Intubation": {
+        "prefix": "RSI",
+        "body": [
+            "time: `___`:`___`",
+            "",
+            "- indication: respiratory distress `___`",
+            "- pre-oxygenation: HFNC 15L for 3 minutes",
+            "- plan B: laryngeal mask airway",
+            "- induction medication:",
+            "  - Propofol 10ml (50-70 kg) `___`",
+            "  - Midazolam 2mL (50kg) `___`",
+            "  - Succinylcholine 0.5ml (50 kg \u4ee5\u4e0b) `___`",
+            "- GlideScope video laryngoscopes, with hyperangulated blade",
+            "- endotracheal tube size: 7.5 Fr `___`",
+            "- portable CXR: ETT tips 5 \u00b1 2 cm `___` above the carina",
+            "- post-procedural vitals: `___`",
+            "",
+            "The patient tolerated the procedure well and there were no complications"
+        ],
+        "description": "Procedure_Note_Intubation"
+    },
+    "Procedure_Note_Pleural": {
+        "prefix": "PLE",
+        "body": [
+            "- constraindication include coagulopathy (INR >2.0) or platelets <50: NIL `___`",
+            "- Patient position: sitting.",
+            "- Right `___` Left `___` sided",
+            "- 10 `___` th intercostal space.",
+            "- Amount: `___` mL",
+            "- Estimated Blood Loss: minimal",
+            "",
+            "The patient tolerated the procedure well without complications."
+        ],
+        "description": "Procedure_Note_Pleural"
+    },
+    "Procedure_Note_Ascitic": {
+        "prefix": "ASC",
+        "body": [
+            "- indication: symptom relief `___` diagnostic `___`",
+            "- constraindication include Coagulopathy (INR >2.0) Platelets <50: NIL `___`",
+            "- site: LLQ `___` RLQ `___`, with Z-track technique",
+            "- samples were sent to the lab for analysis: `___`",
+            "- amount: `___` ml,",
+            "- color: translucent `___` yellow `___` brown `___` cloudy `___` turbid `___` blood tinged `___` grossly bloody `___` milky `___`",
+            "- estimated blood loss: minimal",
+            "",
+            "The patient tolerated the procedure well without complications."
+        ],
+        "description": "Procedure_Note_Ascitic"
+    },
+    "Hyperglycemic crises checklist": {
+        "prefix": "hypogly",
+        "body": [
+            "- ABCDE survey `___`",
+            "- Establish IV access with two large-bore peripheral IV lines. `___`",
+            "- Confirm diagnosis with:",
+            "  - blood gas `___`",
+            "  - BMP `___`",
+            "  - serum osmolality `___`",
+            "  - serum ketones `___`",
+            "  - urine ketones `___`",
+            "- Identify and treat life-threatening causes `___`",
+            "  - e.g., MI, sepsis",
+            "- Assess severity of DKA:",
+            "  - Moderate:",
+            "    - pH 7.0-7.24",
+            "    - SodBicar: 10-15 mEq/L",
+            "    - AG \\> 12 mEq/L",
+            "    - MS: Alert or drowsy, or ( severe: Stuporous )",
+            "- Begin fluid resuscitation with 0.9% NaCl.`___`",
+            "- Replete potassium and maintain K+ levels at 4-5 mEq/L.`___`",
+            "- Replete other electrolytes",
+            "- Start continuous insulin IV infusion",
+            "  - with hourly POC glucose checks once serum potassium is confirmed > 3.3 mEq/L.`___`",
+            "- Consider bicarbonate if pH \\< 6.9 despite adequate fluid therapy.`___`",
+            "- Adjust fluid resuscitation based on corrected sodium for hyperglycemia, serum glucose, and clinical response.",
+            "  - Corrected serum sodium \u2265 135 mmol/L: 0.45% NaCl",
+            "  - Corrected serum sodium < 135 mmol/L: 0.9% NaCl",
+            "  - Add dextrose once POC glucose is below 250-300 mg/dL.",
+            "- Identify and treat the underlying cause`___`",
+            "  - e.g., medication nonadherence, infection",
+            "- Order monitoring labs",
+            "  - e.g., BMP, serum osmolality, and blood gas every 2-4 hours`___`",
+            "- Consider endocrine consult.`___`",
+            "- Consider ICU admission.`___`"
+        ],
+        "description": "Hyperglycemic crises checklist"
+    },
+    "template-is-non-a-good-ide": {
+        "prefix": "slide_open_and_end",
+        "body": [
+            "<!-- _paginate: false -->",
+            "<!-- _header: '' -->",
+            "",
+            "### Book: R for Data Science (2e)",
+            "",
+            "<br>",
+            "",
+            "## <!--fit--> Section I: Whole Game",
+            "",
+            "## \u6797\u5354\u9706"
+        ],
+        "description": "template-is-non-a-good-ide"
+    },
+    "prechemo_TNBC": {
+        "prefix": "prechemo_TNBC",
+        "body": [
+            "< Diagnostic >",
+            "",
+            "- for recurrence early stage TNBC, consider CT scan for chest, abdomen, and pelvis",
+            "- consider PET-CT",
+            "",
+            "< Theraputic >",
+            "",
+            "- arranged Por-A implentation",
+            "- Cyle 1-4 (Cycled every 3 weeks)",
+            "  - Doxorubicin 60 mg/m2, Cyclophosphamide 600 mg/m2",
+            "  - Pembrolizumab 200 mg (out-of-pocket expense $65,226NTD x 2 vial x 4 = 521,808)",
+            "- Cycle 5-8 (Cycled every 3 weeks)",
+            "  - Docetaxel\\* 60 mg/m2",
+            "  - Pembrolizumab 200 mg (out-of-pocket expense $65,226NTD x 2 vial x 4 = 521,808)",
+            "- then proceed to surgery",
+            "- post-op XRT if indicated",
+            "",
+            "< Education >",
+            "",
+            "- explained reason of < adjuvant / neoadjuvant > chemotherapy: achieve pathological complete response (pCR), to cure and lower the risk of recurrence/metastasis.",
+            "- explained chemotherapy schedule",
+            "- explained potential chemotherapy toxicities:",
+            "  - <> cyclophosphamide: bone marrow function compromised, hemorrhagic cystitis",
+            "  - <> doxorubicin: cardiotoxicity, with life-time culmucation 450-500 mg/BSA (300mg/BSA this course)",
+            "  - <> docetaxel: stomatitis, persistent febrile neutropenia, cutaneous reactions, moderate neurosensory effects",
+            "- explained potential ICI toxicities:",
+            "  - pembrolizumab: skin rash pneumonitis, colitis, hepatitis, hypophysitis, thyroid dysfunction, diabetes mellitus",
+            "- suggested high protein diet, not suggested chicken essence because it may confound the lab."
+        ],
+        "description": "prechemo_TNBC"
+    },
+    "ebc adjuvant": {
+        "prefix": "A_EBC_ADJ",
+        "body": [
+            "- `___` Menopause, Premenopause",
+            "- Adjuvant chemotherapy:",
+            "  - `___` CAF X 6,",
+            "  - `___` AC X 4 --> T X 4",
+            "- Consult RT",
+            "- `___` Letrozole x 5 years, Tamoxifen x 5~10 years or consider LHRH agonist + AI for 5 years",
+            "- 2023/`___`/`___`: explain purpose of adjuvant treatment is to reduce further risk of local recurrence and distant mets, but not 100%",
+            "  - Offer oncotype DX for evaluation but self-paid",
+            "  - Arrange #1 CAF/AC on `___`/`___` (4~5th week), RTC on `___`/`___` and check lab for prechemotherapy evaluation",
+            "  - Olanzepine HS self-paid, akyenzo, dexam, and primperan for emeis.",
+            "  - Do cardiac echo if has risk factor: hx of CAD",
+            "  - schedule vascular assessment, rehabilitation, nutritional assessment, dental check before chemotherapy"
+        ],
+        "description": "ebc adjuvant"
+    }
+}

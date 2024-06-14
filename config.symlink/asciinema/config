@@ -1,0 +1,8 @@
+[record]
+idle_time_limit = 0.5
+
+[play]
+
+; Playback speed (can be fractional), default: 1
+speed = 2
+idle_time_limit = 0.5

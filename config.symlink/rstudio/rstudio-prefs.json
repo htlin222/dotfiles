@@ -1,0 +1,75 @@
+{
+    "initial_working_directory": "~",
+    "highlight_selected_line": true,
+    "relative_line_numbers": true,
+    "scroll_past_end_of_document": true,
+    "code_completion_delay": 0,
+    "help_font_size_points": 14,
+    "font_size_points": 14,
+    "posix_terminal_shell": "zsh",
+    "terminal_close_behavior": "clean",
+    "reduced_motion": true,
+    "editor_theme": "Merbivore",
+    "global_theme": "alternate",
+    "text_rendering": "geometricPrecision",
+    "insert_native_pipe_operator": true,
+    "soft_wrap_r_files": true,
+    "continue_comments_on_newline": true,
+    "check_arguments_to_r_function_calls": true,
+    "check_unexpected_assignment_in_function_call": true,
+    "warn_if_no_such_variable_in_scope": true,
+    "warn_variable_defined_but_not_used": true,
+    "style_diagnostics": true,
+    "editor_keybindings": "vim",
+    "syntax_color_console": true,
+    "console_double_click_select": true,
+    "cran_mirror": {
+        "name": "Taiwan (Taipei) [https]",
+        "host": "National Taiwan University, Taipei",
+        "url": "https://cran.csie.ntu.edu.tw/",
+        "country": "tw",
+        "ok": 1,
+        "secondary": ""
+    },
+    "python_type": "system",
+    "python_version": "3.11.6",
+    "python_path": "~/.pyenv/versions/3.11.6/bin/python",
+    "jobs_tab_visibility": "shown",
+    "show_publish_diagnostics": true,
+    "blinking_cursor": false,
+    "fold_style": "begin-only",
+    "save_workspace": "always",
+    "remove_history_duplicates": true,
+    "panes": {
+        "quadrants": [
+            "TabSet1",
+            "Console",
+            "Source",
+            "TabSet2"
+        ],
+        "tabSet1": [
+            "Files",
+            "Presentation"
+        ],
+        "tabSet2": [
+            "Presentations"
+        ],
+        "hiddenTabSet": [
+            "Environment",
+            "History",
+            "Plots",
+            "Connections",
+            "Packages",
+            "Help",
+            "Build",
+            "VCS",
+            "Tutorial",
+            "Viewer",
+            "Presentations"
+        ],
+        "console_left_on_top": false,
+        "console_right_on_top": true,
+        "additional_source_columns": 0
+    },
+    "default_sweave_engine": "knitr"
+}

@@ -1,0 +1,38 @@
+{
+  "node": {
+    "prefix": "node",
+    "body": [
+      "  ${1:example}[               // ━━━━━━━━━━━━━━━━━",
+      "      shape = none;     // record, underline",
+      "      label = \"${1:example}\"; // ___ group = ${2:example};",
+      "  ];                    // ━━━━━━━━━━━━━━━━━",
+      ""
+    ],
+    "description": "node"
+  },
+  "subgraph cluster": {
+    "prefix": "cluster",
+    "body": [
+      "  subgraph cluster_${1:example} {",
+      "    labelloc = \"t\"; //  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+      "    color = white;",
+      "    fontcolor = \"#2d696a\";",
+      "    label = \"${1:example}\";",
+      "    // ___",
+      "  }; // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
+      ""
+    ],
+    "description": "subgraph cluster"
+  },
+  "node with group": {
+    "prefix": "gnode",
+    "body": [
+      "  group_${2:group}_${1:node_name}[               //",
+      "      label = \"${1:node_name}\"; //",
+      "      group = \"${2:group}\";  //",
+      "  ];",
+      ""
+    ],
+    "description": "node with group"
+  }
+}

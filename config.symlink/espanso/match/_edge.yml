@@ -1,0 +1,26 @@
+matches:
+  - trigger: "nnnnnn"
+    replace: "nhentai.to/random"
+  - trigger: ".dn"
+    replace: "doc.new"
+  - trigger: ".marp"
+    replace: "localhost:8080\n"
+  - trigger: ".kavita"
+    replace: "localhost:5555\n"
+  - trigger: ".duty"
+    replace: "staff.kfsyscc.org/dr_schedule/2024/\n"
+  - trigger: ".top"
+    replace: "emr.kfsyscc.org/\n"
+  - trigger: ".gmail"
+    replace: "mail.google.com/mail/u/0/#inbox\n"
+  - trigger: "hanmi"
+    replace: "hanime1.me/"
+  - trigger: "fbemoji"
+    replace: "👍❤🥰😆😮🥲😡"
+  # Pubmed Advanced search term
+  - trigger: ":title"
+    replace: "($|$[Title/Abstract])"
+  - trigger: ":review"
+    replace: '("review"[Publication Type])'
+  - trigger: ":latest"
+    replace: '("2023/01/01"[Date - Publication] : "3000"[Date - Publication])'

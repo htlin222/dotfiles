@@ -1,0 +1,9 @@
+{
+    "test": {
+        "prefix": "hellow",
+        "body": [
+            "x <- 1"
+        ],
+        "description": "\" \""
+    }
+}

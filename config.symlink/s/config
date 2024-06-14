@@ -1,0 +1,13 @@
+provider: google
+customProviders [
+  {
+    name: pubmed
+    url: "https://pubmed.ncbi.nlm.nih.gov/?term=%s"
+    tags: [uptodate]
+  }
+  {
+    name: uptodate
+    url: "https://www.uptodate.com/contents/search?search=%s"
+    tags: [uptodate]
+  }
+]

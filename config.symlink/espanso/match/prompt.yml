@@ -1,0 +1,17 @@
+matches:
+  - trigger: "/key"
+    replace: "to zh-tw, bullet point in markdown, add a h2 title:\n\n{{clipboard}}\n"
+    vars:
+      - name: "clipboard"
+        type: "clipboard"
+  - trigger: "/tb"
+    replace: "as markdown table:\n{{clipboard}}\n"
+    vars:
+      - name: "clipboard"
+        type: "clipboard"
+  - trigger: "/list"
+    replace: "as nested, nested markdown list, keep the same text, don't makeup additional words"
+  - trigger: "/yaml"
+    replace: "as nested, YAML"
+  - trigger: "/q"
+    replace: "According to the text, return me a question as specific as possilbe"

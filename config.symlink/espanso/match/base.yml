@@ -1,0 +1,70 @@
+matches:
+  - trigger: "blue"
+    replace: "#3D6869"
+  - trigger: ":clipboardtest"
+    replace: "\"$|$\",\"{{clipboard}}\""
+    vars:
+      - name: "clipboard"
+        type: "clipboard"
+  - trigger: "ymd"
+    replace: "{{mydate}}"
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%Y-%m-%d"
+  - trigger: "mmdd"
+    replace: "({{mydate}})"
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%m-%d"
+  - trigger: "/review"
+    replace: |
+      (""$|$[title])
+      AND ("N Engl J Med"[jour] OR "Lancet"[jour] OR "JAMA"[jour] OR "BMJ"[jour] OR "Ann Intern Med"[jour] OR "Intensive Care Medicine"[jour] OR "Nat Rev Dis Primers"[jour])
+      AND ("Case Reports"[Publication Type] OR "review"[Publication Type]) AND "last 10 years"[EDat]
+  - trigger: "bitly"
+    replace: "bit.ly/"
+  - trigger: "gitcommit"
+    replace: "git commit \"$|$ {{mydate}}\""
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%y-%m-%d %H:%M"
+  # Shell commands
+  - trigger: ":shell"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "echo Hello from your shell"
+  - trigger: "::short"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "$HOME/.pyenv/versions/keyboardmaestro/bin/python  $HOME/pyscripts/bitly.py"
+  - trigger: ":whichpy"
+    replace: "$HOME/.pyenv/versions/$|$/bin/python"
+  - trigger: ":blank"
+    replace: "⠀⠀⠀⠀⠀⠀⠀⠀"
+  - trigger: "pyenv:bin"
+    replace: "$HOME/.pyenv/versions/$|$/bin/python"
+  - trigger: "ft1"
+    replace: "†"
+  - trigger: "ft2"
+    replace: "††"
+  - trigger: "ft3"
+    replace: "¶"
+  - trigger: "ft4"
+    replace: "§"
+  - trigger: "fuckyou"
+    replace: "我想這部分，還是要跟余先生討論後再決定"
+    #
+# other files:
+# facebook.yml

@@ -1,0 +1,3 @@
+[submodule "config.symlink/nvim"]
+	path = config.symlink/nvim
+	url = git@github.com:elliottminns/NVChad

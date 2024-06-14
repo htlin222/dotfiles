@@ -1,0 +1,10 @@
+matches:
+  -
+    trigger: "some.thing "
+    replace: "Some thing important "
+  -
+    trigger: ".good "
+    replace: "test "
+  -
+    trigger: "no sweating "
+    replace: "anhidrosis "

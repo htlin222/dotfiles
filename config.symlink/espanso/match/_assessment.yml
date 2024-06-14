@@ -1,0 +1,18 @@
+matches:
+  -
+    trigger: "zavi "
+    replace: "ceftazidime/avibactam "
+  -
+    trigger: "pna "
+    replace: "pneumonia "
+  -
+    trigger: "incl "
+    replace: "include "
+  -
+    trigger: "a/w "
+    replace: "associated with "
+  -
+    trigger: "feverwu "
+    replace: |
+      happy
+      birthday

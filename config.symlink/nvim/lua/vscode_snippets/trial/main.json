@@ -1,0 +1,10 @@
+{
+  "allocation": {
+    "prefix": "allocation",
+    "body": [
+      "![badge:allocation](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fclinicaltrials.gov%2Fapi%2Fv2%2Fstudies%2F${1:NCT02231749}%3Fformat%3Djson%26fields%3DDesignAllocation&query=protocolSection.designModule.designInfo.allocation&label=Allocation&color=6c9a77)",
+      ""
+    ],
+    "description": "allocation"
+  }
+}

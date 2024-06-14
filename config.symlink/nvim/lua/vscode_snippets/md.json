@@ -1,0 +1,162 @@
+{
+  "positive": {
+    "prefix": ".pos",
+    "body": [
+      "✅positive"
+    ],
+    "description": "positive "
+  },
+  "clap": {
+    "prefix": "clap",
+    "body": [
+      "```txt",
+      "**【希望用你的掌聲來投票與支援】**",
+      "拍 5~10 下：簽個到，表示支援（感謝你的鼓勵啊啊啊）",
+      "拍 10~30 下：希望我可以多寫一些文章！有你這位讀者，寫這篇也心滿意足了！",
+      "拍 30~50 下：內容對你感覺很有共鳴，希望能多分享給周圍的朋友！",
+      "```"
+    ],
+    "description": "希望用你的掌聲來投票與支援
+  },
+  "primary": {
+    "prefix": "1'",
+    "body": [
+      "1️⃣ °"
+    ],
+    "description": "primary"
+  },
+  "fit": {
+    "prefix": "fit",
+    "body": [
+      "<!--fit-->"
+    ],
+    "description": "fit"
+  },
+  "secondary": {
+    "prefix": "2'",
+    "body": [
+      "2️⃣ °"
+    ],
+    "description": "secondary"
+  },
+  "one star": {
+    "prefix": ".s",
+    "body": [
+      "⭐"
+    ],
+    "description": "one star"
+  },
+  "two star": {
+    "prefix": ".ss",
+    "body": [
+      "⭐⭐"
+    ],
+    "description": "two star"
+  },
+  "three star": {
+    "prefix": ".sss",
+    "body": [
+      "⭐⭐⭐"
+    ],
+    "description": "three star"
+  },
+  "amboss": {
+    "prefix": "amboss",
+    "body": [
+      "## Summary",
+      "${1:Start from here}",
+      "## Epidemiology",
+      "",
+      "## Etiology",
+      "",
+      "## Pathophysiology",
+      "",
+      "## Clinical features",
+      "",
+      "## Diagnostics",
+      "",
+      "## Treatment",
+      "",
+      "## References"
+    ],
+    "description": "amboss"
+  },
+  "garden": {
+    "prefix": "garden",
+    "body": [
+      "- [[~/Dropbox/Medical/${1:YOUR TITLE}|${1:YOUR TITLE}]]"
+    ],
+    "description": "pathway"
+  },
+  "pathway": {
+    "prefix": "pathway",
+    "body": [
+      "${1:## Diagnosis}",
+      "",
+      "## Workup",
+      "",
+      "## Primary Treatmenet",
+      "",
+      "## Adjuvant Treatmenet",
+      ""
+    ],
+    "description": "pathway"
+  },
+  "Graph-easy": {
+    "prefix": "geasy",
+    "body": [
+      "```",
+      "~~~graph-easy --as=boxart",
+      "[ A ] - to -> [ B ]",
+      "~~~",
+      "```"
+    ],
+    "description": "Graph-easy, will generate a box flow chart"
+  },
+  "Assessment and Plan": {
+    "prefix": "anp",
+    "body": [
+      "### Assessment ",
+      "",
+      "# ${1:Breast Cancer}",
+      "",
+      "### Plan",
+      "",
+      "#### Further Workup",
+      "",
+      "-",
+      "",
+      "#### Theraputic",
+      "",
+      "-",
+      "",
+      "#### Education",
+      "",
+      "- ",
+      "",
+      "---",
+      "",
+      "### Other Underlying Problem",
+      "# ${2:example}",
+      ""
+    ],
+    "description": "To write Assessment and Plan"
+  },
+  "list": {
+    "prefix": "list",
+    "body": [
+      "```txt",
+      "a.aes       b.basic     c.checklist",
+      "d.ddx       e.expand    f.follow",
+      "g.grading   h.history   i.icd",
+      "m.med       n.note      o.other",
+      "p.plan      q.consult   r.report",
+      "s.score     t.trial     u.utility",
+      "x.explain   y.symptom   z.nhi",
+      "```",
+      ""
+    ],
+    "description": "請按照以下的分類來為片語命名"
+  }
+}
+

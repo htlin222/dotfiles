@@ -1,0 +1,17 @@
+matches:
+  - trigger: ":greet"
+    form: |
+      Hey [[name]],
+      Happy Birthday!
+  - trigger: ":quote"
+    replace: "{{clipboard}} wow {{output}}"
+    vars:
+      - name: output
+        type: choice
+        params:
+          values:
+            - "Every moment is a fresh beginning."
+            - "Everything you can imagine is real."
+            - "Whatever you do, do it well."
+      - name: "clipboard"
+        type: "clipboard"

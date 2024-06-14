@@ -1,0 +1,202 @@
+{
+  "greater-than or equal to ": {
+    "prefix": ">=",
+    "body": [
+      "&ge;"
+    ],
+    "description": "greater-than or equal to "
+  },
+  "less-than or equal to ": {
+    "prefix": "<=",
+    "body": [
+      "&le;"
+    ],
+    "description": "less-than or equal to "
+  },
+  "non-breaking space": {
+    "prefix": "space",
+    "body": [
+      "&nbsp;"
+    ],
+    "description": "non-breaking space"
+  },
+  "single quote": {
+    "prefix": "'",
+    "body": [
+      "&apos"
+    ],
+    "description": "single quote"
+  },
+  "double quote": {
+    "prefix": "''",
+    "body": [
+      "&quot;"
+    ],
+    "description": "double quote"
+  },
+  "and": {
+    "prefix": "&",
+    "body": [
+      "&amp;"
+    ],
+    "description": "and"
+  },
+  "greater than": {
+    "prefix": ">",
+    "body": [
+      "&gt;"
+    ],
+    "description": "greater than"
+  },
+  "less than": {
+    "prefix": "<",
+    "body": [
+      "&lt;"
+    ],
+    "description": "less than"
+  },
+  "label": {
+    "prefix": "label",
+    "body": [
+      "label=\"${1:example}\""
+    ],
+    "description": "label"
+  },
+  "stage": {
+    "prefix": "stage",
+    "body": [
+      "// add this at the end",
+      "node[shape=plaintext, fillcolor=white, width=2]",
+      "1->2->3->4[style=invis]",
+      "1[label=\"${1:Neoadjuvant}\"];",
+      "2[label=\"${2:Surgery}\"];",
+      "3[label=\"${3:Adjuvant}\"];",
+      "{rank=same 1; ${4:other_node}}"
+    ],
+    "description": "stage, add this at the end"
+  },
+  "RCT": {
+    "prefix": "NAC",
+    "body": [
+      "digraph {",
+      "  compound=true;",
+      "  graph [",
+      "    splines=ortho,",
+      "    nodesep=1",
+      "    rankdir=\"LR\"",
+      "    fontname=\"Arial\",",
+      "    label=\"KEYNOTE-522\"",
+      "    labelloc = \"b\"",
+      "    fontsize=\"30pt\"",
+      "  ]",
+      "  node[",
+      "    color=\"#2d696a\",",
+      "    penwidth=1.5,",
+      "    fontsize=\"18pt\",",
+      "    shape=record,",
+      "    // fontname=\"FiraSans-Regular\"",
+      "    fontname=\"Arial\",",
+      "    ]",
+      "  edge[color=black, penwidth=2]",
+      "  background[",
+      "      color=\"white\",",
+      "      fontsize=\"20pt\",",
+      "      label=\" Stratification by",
+      "      \\nnodal status, tumor size,",
+      "      \\ncarboplatin schedule\"",
+      "      ]",
+      "  pupulation [",
+      "      fillcolor=\"#eefffaff\",",
+      "      style=\"filled\",",
+      "      label=\"primary stage I-IIA/B TNBC",
+      "      | aged ≥18 yr",
+      "      | T1cN1-2 or T2-4N0-2 TNBC",
+      "      | ECOG PS 0/1",
+      "      | available for PD-L1 testing",
+      "      | (N = 1174)\"",
+      "      ]",
+      "  method [",
+      "      shape=circle,",
+      "      fillcolor=\"#2d696a\",",
+      "      penwidth=5,",
+      "      color = \"#6c9a77\",",
+      "      fontcolor=\"#ffffff\",",
+      "      style=\"filled\",",
+      "      fontsize=\"14pt\",",
+      "      label=\"RND\\n2:1\"]",
+      "  subgraph armA {",
+      "    node[",
+      "      color=white,",
+      "      fillcolor=\"#2d696a:#6c9a77\",",
+      "      style=\"filled\",",
+      "      fontcolor=\"#ffffff\",",
+      "    ]",
+      "    intervention[label=\"",
+      "        💊 Pembrolizumab 200 mg IV",
+      "      | Carboplatin + Paclitaxel",
+      "      | Doxo/Epirubicin + Cyclophosphamide",
+      "      | {Q3W|4 + 4 cycles}",
+      "      \" ]",
+      "    surgery1[label=\"Surgery\"]",
+      "    intervention -> surgery1",
+      "  }",
+      "  subgraph armB {",
+      "    node[",
+      "      color=\"#2d696a:#6c9a77\",",
+      "      fillcolor=white,",
+      "      style=\"filled\",",
+      "      fontcolor=\"#2d696a:#6c9a77\",",
+      "      ]",
+      "    control[label=\"",
+      "          CONTROL: Placebo",
+      "        | Carboplatin + Paclitaxel",
+      "        | Doxo/Epirubicin + Cyclophosphamide",
+      "        | {Q3W|4 + 4 cycles}",
+      "        \" ]",
+      "    surgery2[label=\"Surgery\"]",
+      "    control -> surgery2",
+      "  }",
+      "  pupulation -> method",
+      "  method -> intervention [ltail=method lhead=armA];",
+      "  method -> control [ltail=method lhead=armB];",
+      "}",
+      ""
+    ],
+    "description": "neoadjuvant setting"
+  },
+  "basic": {
+    "prefix": "basic",
+    "body": [
+      "digraph {",
+      "  compound=true;",
+      "  graph [",
+      "    // splines=ortho, // ___",
+      "    nodesep=1,",
+      "    rankdir=\"LR\"",
+      "    fontname=\"Inter-ExtraBoldItalic\"",
+      "    // label=\"TITLE\" // ___",
+      "    labelloc = \"b\"",
+      "    fontsize=\"24pt\"",
+      "  ]",
+      "  edge[color=\"#2d696a\", penwidth=1.5]",
+      "  // default node setting",
+      "  node[penwidth=1, fontsize=\"18pt\", shape=record, fontname=\"Inter-Medium\", style=\"filled\"]",
+      "  // style 1",
+      "  node[color=\"#2d696a\" fillcolor=white]",
+      "  // ___",
+      "  // style 2",
+      "  node[color=white,fillcolor=\"#2d696a:#6c9a77\",fontcolor=\"#ffffff\"]",
+      "  // ___",
+      "  // style 3",
+      "  node[color=white,fillcolor=white, fontcolor=black, penwidth=0]",
+      "  // ___",
+      "  // start to draw",
+      "  // ___",
+      "  start -> node_B  -> node_C -> end",
+      "  // ___",
+      "}",
+      ""
+    ],
+    "description": "basic"
+  }
+}
