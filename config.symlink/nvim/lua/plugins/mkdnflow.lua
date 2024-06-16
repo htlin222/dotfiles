@@ -10,7 +10,7 @@ return { --mkdnflow
     vim.cmd "source $HOME/.config/nvim/lua/func/mdmain.vim"
     require("mkdnflow").setup {
       modules = {
-        bib = true,
+        bib = false,
         buffers = true,
         conceal = true,
         cursor = true,
@@ -20,10 +20,7 @@ return { --mkdnflow
         maps = true,
         paths = true,
         tables = true,
-        yaml = true,
-      },
-      yaml = {
-        bib = { override = true },
+        yaml = false,
       },
       filetypes = { md = true, rmd = true, markdown = true, telekasten = true, vimiwki = true },
       perspective = {
@@ -34,10 +31,6 @@ return { --mkdnflow
         update = false,
       },
       wrap = true,
-      bib = {
-        default_path = nil,
-        find_in_root = true,
-      },
       silent = false,
       links = {
         style = "wiki",

@@ -9,7 +9,7 @@ command! Slug call Slug()
 function! Slug()
   let l:python_arg = expand('%:t:r')
   " Run the Python script and save the output to a variable
-  let l:output = system("$HOME/.pyenv/versions/automator/bin/python $HOME/Dropbox/scripts/slug.py '" . l:python_arg . "'")
+  " let l:output = system("$HOME/.pyenv/versions/automator/bin/python $HOME/Dropbox/scripts/slug.py '" . l:python_arg . "'")
   2put =l:output
 endfunction
 command! Pandoc call PandocCite()

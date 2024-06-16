@@ -4,8 +4,7 @@ local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
-local servers =
-  { "html", "cssls", "markdown_oxide", "tsserver", "ruff_lsp", "pyright", "jsonls", "harper_ls", "bashls" }
+local servers = { "html", "cssls", "markdown_oxide", "tsserver", "ruff_lsp", "pyright", "jsonls", "bashls", "vimls" }
 capabilities.workspace = {
   didChangeWatchedFiles = {
     dynamicRegistration = true,

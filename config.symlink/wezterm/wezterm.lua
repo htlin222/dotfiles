@@ -32,7 +32,7 @@ local full_config = mytable.merge_all(
 	cfg_misc,
 	require("cfg_appearance"),
 	require("cfg_fonts"),
-	-- require("cfg_keys"),
+	require("cfg_keys"),
 	require("cfg_mouse"),
 	{} -- so the last table can have an ending comma for git diffs :)
 )

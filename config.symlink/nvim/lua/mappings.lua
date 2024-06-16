@@ -4,8 +4,8 @@ local vim = vim
 local map = vim.keymap.set
 
 -- normal mode --
-map("n", ";", ":", { desc = "CMD enter command mode", nowait = true })
-map("n", "c", '"_c', { desc = "To Black Hole" })
+map("n", ";", ":", { desc = "CMD enter command mode", nowait = true, silent = true })
+map("n", "c", '"_c', { desc = "To Black Hole", silent = true })
 map("n", "+", "<C-a>", { desc = "increase number", nowait = true })
 map("n", "_", "<C-x>", { desc = "decrease number", nowait = true })
 map("n", "x", '"_x', { desc = "do not yank x when x", nowait = true })
@@ -18,23 +18,36 @@ map("n", "<Up>", ":tabprevious<CR>", { nowait = true, silent = true })
 map("n", "<ESC>", ":", { desc = "Enter Cmdline" })
 map("n", "?", ":noh<CR>", { desc = "Delete Highlight", silent = true })
 map("n", "<leader>ta", ":tabnew<CR>", { desc = "New Tab", nowait = true, silent = true })
-map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save", nowait = true })
-map("n", "<leader>q", ":q<CR>", { desc = "Quit", nowait = true })
-map("n", "<C-c>", "<ESC>", { desc = "Map Ctrl + C to True Esc" })
+map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save", nowait = true, silent = true })
+map("n", "<leader>q", ":q<CR>", { desc = "Quit", nowait = true, silent = true })
+map("n", "<C-c>", "<ESC>", { desc = "Map Ctrl + C to True Esc", silent = true })
 map("n", "<C-s>", "<cmd>SymbolsOutline<CR>", { desc = "Symbols Outline", nowait = true, silent = true })
 map("n", "j", function() -----------------
   return vim.v.count > 0 and "j" or "gj"
-end, { expr = true, nowait = true })
+end, { expr = true, nowait = true, silent = true })
 map("n", "k", function() -----------------
   return vim.v.count > 0 and "k" or "gk"
-end, { expr = true, nowait = true })
+end, { expr = true, nowait = true, silent = true })
 map("n", "dd", function() -----------------
   if vim.fn.getline "." == "" then
     return '"_dd'
   end
   return "dd"
-end, { expr = true })
+end, { expr = true, silent = true })
 map("n", "<C-P>", "<cmd>put<CR>", { desc = "Paste Below", nowait = true, silent = true })
+
+map("n", "<leader><CR>", function()
+  if vim.bo.filetype == "markdown" then
+    local currentLine = vim.fn.getline "."
+    local url = string.match(currentLine, "%(([^%)]+)%)")
+    if url and (url:find "^zotero" or url:find "^skim" or url:find "^raycast") then
+      vim.cmd("!open " .. vim.fn.fnameescape(url))
+    else
+      vim.fn.search "___" -- 使用 vim.fn.search 尋找下一個匹配項
+      vim.cmd "echomsg '下一個空白'"
+    end
+  end
+end, { desc = "Paste Below", nowait = true, silent = true })
 map("n", "<leader>i", function() -----------------
   vim.cmd "startinsert"
   os.execute "im-select com.boshiamy.inputmethod.BoshiamyIMK"

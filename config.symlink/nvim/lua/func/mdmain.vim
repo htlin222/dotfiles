@@ -70,7 +70,7 @@ function! MarpYaml()
           \ '---',
           \ '',
           \ ])
-    call Slug()
+    " call Slug()
     echo '✔建立了Marp簡報' . split(expand('%:r'),'/')[-1] . '🐣'
 endfunction
 
@@ -81,6 +81,11 @@ augroup MarkdownFrontMatter
   autocmd BufNewFile ~/Dropbox/inbox/*.md call CreateRegular()
   autocmd BufNewFile ~/Dropbox/slides/*.md call MarpYaml()
   autocmd BufNewFile ~/Dropbox/blog/*.md call NewBlogPost()
+augroup END
+
+augroup LitNote
+  autocmd!
+  autocmd BufNewFile ~/Dropbox/Medical/LitNote/*.md call CreateLitNote()
 augroup END
 
 function! CreateRegular()
@@ -97,8 +102,36 @@ function! CreateRegular()
           \ ])
     echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
 endfunction
+
+function! CreateLitNote()
+    " execute 'silent !ffplay -v 0 -nodisp -autoexit ' . shellescape(expand('$HOME/.config/nvim/lua/custom/media/newmd.mp3')) . ' &'
+    let g:previous = get(g:, 'previous', 'index')
+    let g:current_file_name = split(expand('%:r'),'/')[-1]
+    call append(0, [
+          \ '---',
+          \ 'citekey: ' . g:current_file_name ,
+          \ 'date: "' . strftime("%Y-%m-%d") . '"',
+          \ 'enableToc: false',
+          \ 'tags:', '  - building',
+          \ '---',
+          \ '',
+          \ '> [!info]',
+          \ '>',
+          \ '> 🌱 來自: [[../' . g:previous . ']]',
+          \ '',
+          \ '---',
+          \ '',
+          \ '> [!NOTE]',
+          \ '> Zotero: [Link](zotero://select/items/@' . g:current_file_name . ')',
+          \ '',
+          \ ])
+    " call Slug()
+    echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
+endfunction
+
 function! CreateMedicalDiary()
     " execute 'silent !ffplay -v 0 -nodisp -autoexit ' . shellescape(expand('$HOME/.config/nvim/lua/custom/media/newmd.mp3')) . ' &'
+  if match(expand('%:p'), expand('~/Dropbox/Medical/') . '[^/]*\.md$') != -1
     let g:previous = get(g:, 'previous', 'index')
     call append(0, [
           \ '---',
@@ -113,8 +146,9 @@ function! CreateMedicalDiary()
           \ '> 🌱 來自: [[' . g:previous . ']]',
           \ '',
           \ ])
-    call Slug()
+    " call Slug()
     echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
+  endif
 endfunction
 
 function! NewBlogPost()
@@ -132,7 +166,7 @@ function! NewBlogPost()
           \ '',
           \ ])
 " socialImage: /media/JAMA.png
-    call Slug()
+    " call Slug()
     echo '登登！可喜可賀！你從🥚' . g:previous . '這條筆記裡 ✔建立了' . split(expand('%:r'),'/')[-1] . '🐣'
 endfunction
 function! AddDashToVisualLines()

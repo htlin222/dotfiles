@@ -1,4 +1,5 @@
 -- Run :MasonInstall eslint_d to install the eslint daemon package
+local vim = vim
 local lint = require "lint"
 lint.linters_by_ft = {
   lua = {
@@ -14,6 +15,7 @@ lint.linters_by_ft = {
     -- "codespell",
     -- "alex",
   },
+  vim = { "vint" },
   sh = {
     -- "shellcheck",
   },
