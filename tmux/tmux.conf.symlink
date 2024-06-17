@@ -67,6 +67,14 @@ bind -r L resize-pane -R 5
 bind -n M-H previous-window
 bind -n M-L next-window
 
+# [不會關掉的 tmux popup - HackMD](https://hackmd.io/@DailyOops/persistent-tmux-popup?type=view)
+
+bind "'" if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
+    detach-client
+} {
+  run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_popup.sh"
+}
+
 set -g mouse on
 # make scrolling with wheels work
 bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
@@ -98,6 +106,7 @@ set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'christoomey/vim-tmux-navigator'
 set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'jaclu/tmux-menus'
+set -g @plugin 'jimeh/tmuxifier'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'imomaliev/tmux-keyboard-layout'
 set -g @plugin 'tmux-plugins/tmux-yank'

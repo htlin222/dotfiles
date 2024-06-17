@@ -3,6 +3,7 @@
 *.test/
 *.ignore/
 *.nosync/
+config.symlink/nvim/lazy-lock.json
 config.symlink/spicetify/
 config.symlink/coc/extensions/
 config.symlink/chatgpt-cli/

@@ -27,6 +27,7 @@ alias lc='lolcat'
 alias asco="yazi ~/Documents/textbook/ASCO-SEP/"
 alias ash="yazi ~/Documents/textbook/8th\ ASH-SEP/"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
+alias ses='sesh connect $(sesh list | fzf)'
 alias mv="mv -iv"
 alias rm="rm -i"
 alias rip="rip -i"

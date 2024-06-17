@@ -36,7 +36,7 @@ map("n", "dd", function() -----------------
 end, { expr = true, silent = true })
 map("n", "<C-P>", "<cmd>put<CR>", { desc = "Paste Below", nowait = true, silent = true })
 
-map("n", "<leader><CR>", function()
+map("n", "<leader><leader>", function()
   if vim.bo.filetype == "markdown" then
     local currentLine = vim.fn.getline "."
     local url = string.match(currentLine, "%(([^%)]+)%)")

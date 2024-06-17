@@ -2,7 +2,6 @@ if [ "$TMUX" = "" ]; then tmux; fi
 
 # ---- Welcome Message ----
 # cfonts "Lizard" --colors white,"#f80"
-
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
