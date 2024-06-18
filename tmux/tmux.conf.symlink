@@ -69,7 +69,8 @@ bind -n M-L next-window
 
 # [不會關掉的 tmux popup - HackMD](https://hackmd.io/@DailyOops/persistent-tmux-popup?type=view)
 
-bind "'" if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
+unbind i
+bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
     detach-client
 } {
   run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_popup.sh"

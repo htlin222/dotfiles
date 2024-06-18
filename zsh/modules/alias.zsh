@@ -4,6 +4,7 @@ else
 	alias open="xdg-open"
 fi
 alias R='R -q'
+alias dtc='tmux detach-client'
 alias man='colored man'
 alias todo='pter ~/Dropbox/todo.txt'
 alias zshconfig="vim ~/.zshrc"

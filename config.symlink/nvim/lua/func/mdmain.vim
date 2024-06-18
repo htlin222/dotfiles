@@ -1,8 +1,7 @@
 scriptencoding utf-8
-augroup creatprevious
-  au BufLeave *.md let g:previous=expand('%:t:r')
-  " silent execute '!ffplay -v 0 -nodisp -autoexit ~/.config/nvim/lua/custom/media/enter.wav &'
-augroup END
+" augroup creatprevious
+"   au BufLeave *.md let g:previous=expand('%:t:r')
+" augroup END
 " autocmd BufWritePre ~/Documents/Medical/*.md silent! call MySubstituteCommand()
 command! -nargs=0 Ali :call Aliasing()
 " NB: keymapping here as well
@@ -97,7 +96,7 @@ function! CreateRegular()
           \ 'date: "' . strftime("%Y-%m-%d") . '"',
           \ '---',
           \ '',
-          \ '> 🌱 來自: [[' . g:previous . ']] 🧬',
+          \ '> 🌱 created from: [[' . g:previous . ']] 🧬',
           \ '',
           \ ])
     echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
@@ -111,17 +110,10 @@ function! CreateLitNote()
           \ '---',
           \ 'citekey: ' . g:current_file_name ,
           \ 'date: "' . strftime("%Y-%m-%d") . '"',
-          \ 'enableToc: false',
           \ 'tags:', '  - building',
           \ '---',
           \ '',
-          \ '> [!info]',
-          \ '>',
-          \ '> 🌱 來自: [[../' . g:previous . ']]',
-          \ '',
-          \ '---',
-          \ '',
-          \ '> [!NOTE]',
+          \ '> 🌱 created from: [[../' . g:previous . ']]',
           \ '> Zotero: [Link](zotero://select/items/@' . g:current_file_name . ')',
           \ '',
           \ ])
@@ -137,13 +129,10 @@ function! CreateMedicalDiary()
           \ '---',
           \ 'title: "' . split(expand('%:r'),'/')[-1] . '"',
           \ 'date: "' . strftime("%Y-%m-%d") . '"',
-          \ 'enableToc: false',
           \ 'tags:', '    - building',
           \ '---',
           \ '',
-          \ '> [!info]',
-          \ '>',
-          \ '> 🌱 來自: [[' . g:previous . ']]',
+          \ '> 🌱 created from: [[' . g:previous . ']]',
           \ '',
           \ ])
     " call Slug()
