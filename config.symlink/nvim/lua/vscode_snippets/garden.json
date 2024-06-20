@@ -4,7 +4,7 @@
         "body": [
             "hypertension"
         ],
-        "description": "\u4e16\u4e0a\u7684"
+        "description": "世上的"
     },
     "prechemo_breast": {
         "prefix": "prechemo_breast",
@@ -19,7 +19,7 @@
             "  - OPD setting, no need for hospitalization",
             "- explained potential chemotherapy toxicities:",
             "  - common: fatigue, alopecia(reversible), nause/vomting, febrile neutropenia, opportunistic infection, infusion reaction (21% to 40% )",
-            "  - cyclophosphamide: bone marrow function compromised, hemorrhagic cystitis, secondary leukemia ( 0.5% \u5343\u5206\u4e4b\u4e00)",
+            "  - cyclophosphamide: bone marrow function compromised, hemorrhagic cystitis, secondary leukemia ( 0.5% 千分之一)",
             "  - `___` doxorubicin: cardiotoxicity, life-time culmucation 450-500 mg/BSA ( `___` 240 `___` 300mg/BSA throught this course)",
             "  - `___` fluorouracil: stomatitis or esophagopharyngitis, leukopenia, vomiting, diarrhea, frequent bowel movements, watery stools, gastrointestinal ulcer or bleeding, hand-foot syndrome",
             "  - `___` docetaxel: stomatitis, persistent febrile neutropenia, cutaneous reactions, moderate neurosensory effects, secondary leukemia ( 0.5% )",
@@ -30,7 +30,7 @@
             "- suggested high protein diet, not suggested additional supplement because it may confound the lab, which may lead to postponed the chemotherapy schedule.",
             "- informed patient to avoid raw food, include fish, meat, vegetable"
         ],
-        "description": "\u75c5\u4eba\u9996\u6b21\u270c\ufe0f \u63a5\u53d7\u4e73\u764c\u5316\u7642\u7684 \u2192 \u5fc5\u505a\u6e05\u55ae"
+        "description": "病人首次✌️ 接受乳癌化療的 → 必做清單"
     },
     "temp_BCA": {
         "prefix": "breast_opd",
@@ -80,7 +80,7 @@
             "    - < e.g. HTN > - < mother >",
             "    - < DM > - < paternal > < grandmother >"
         ],
-        "description": "\u904e\u53bb\u75c5\u53f2\uff0c\u7531\u5176\u5c0d\u65bc\u4e73\u764c\u75c5\u4eba\u8d85\u7d1a\u91cd\u8981\uff0c\u9700\u8981\u586b\u4e00\u5927\u5806\u91cd\u8981\u7684 \u2192 \u8868\u683c\uff01\uff01\uff01"
+        "description": "過去病史，由其對於乳癌病人超級重要，需要填一大堆重要的 → 表格！！！"
     },
     "breast cancer assessment": {
         "prefix": "breast.ass",
@@ -96,9 +96,9 @@
         "body": [
             "- Mechanism: Binds to HER2",
             "- Dosing: Loading dose 4-8 mg/kg IV, followed by 2-6 mg/kg maintenance dose IV weekly or every 21 d",
-            "- PK/PD: T1/2 \u223c6-16 d",
+            "- PK/PD: T1/2 ∼6-16 d",
             "- AEs: CMP (DLT), GI upset, rash, fever, pain",
-            "- DDI: Anthracyclines (potential \u2191 in cardiac tox)",
+            "- DDI: Anthracyclines (potential ↑ in cardiac tox)",
             "-",
             "",
             "[[protocol-of-Trastuzumab]]",
@@ -110,7 +110,7 @@
     "cyclophosphamide": {
         "prefix": "cyc",
         "body": [
-            "\u9810\u9632\u7528\u85e5\uff1a",
+            "預防用藥：",
             "",
             "[[Mesna]] UROMITEXAN 400MG",
             "",
@@ -140,15 +140,15 @@
             "- Dosing: Dose, schedule, & administration (IVB vs. IV continuous infusion) are based on malignancy. Common ranges, IVB: 400-600 mg/m2/dose; IV continuous infusion 200-1,500 mg/m2/d. No renal or hepatic dose adjustments recommended; use w/ caution",
             "- PK/PD: Extensive tissue distribution; saturable catabolism; excretion via metabolism, lung, & urine; T1/2 8-20 min after IVB",
             "- AEs: Dependent on dose & administration (IV bolus vs. IV continuous infusion), diarrhea (DLT), mucositis (DLT), N/V (low emetogenic potential), myelosuppression (bolus > continuous infusion), neurotoxicity, coronary artery vasospasm, conjunctivitis, hand-foot syndrome (continuous infusion > bolus), alopecia, nail changes",
-            "- DDI: CYP2C9 substrates (\u2193 substrate levels), cimetidine (\u2193 clearance of 5-FU), oral anticoagulants (\u2191 levels of anticoagulants), leucovorin (\u2191 tox of 5-FU)",
-            "- Clinical pearls: AEs w/ DPD deficiency (prolonged clearance, \u2191 tox), radiosensitizer; leucovorin is given w/ bolus administration to \u2191 intracellular half-life of 5-FU (\u2191 cytotoxicity). Uridine triacetate used as antidote in cases of overdose or DPD deficiency"
+            "- DDI: CYP2C9 substrates (↓ substrate levels), cimetidine (↓ clearance of 5-FU), oral anticoagulants (↑ levels of anticoagulants), leucovorin (↑ tox of 5-FU)",
+            "- Clinical pearls: AEs w/ DPD deficiency (prolonged clearance, ↑ tox), radiosensitizer; leucovorin is given w/ bolus administration to ↑ intracellular half-life of 5-FU (↑ cytotoxicity). Uridine triacetate used as antidote in cases of overdose or DPD deficiency"
         ],
         "description": "5FU"
     },
     "breast-exam-findings": {
         "prefix": "breastpe",
         "body": [
-            "Physical breast examination: <> Inflammatory <> Peau d\u2019orange <> Palpable lymph nodes <> Nipple secretion"
+            "Physical breast examination: <> Inflammatory <> Peau d’orange <> Palpable lymph nodes <> Nipple secretion"
         ],
         "description": "breast-exam-findings"
     },
@@ -164,7 +164,7 @@
             "",
             "<img src=\"https://img.shields.io/badge/and-is_result-6c9a77\"/>",
             "",
-            "## \u6797\u5354\u9706\uff0cFellow 1",
+            "## 林協霆，Fellow 1",
             "",
             "press <kbd>Ctrl</kbd> and <kbd>t</kbd>then",
             "",
@@ -178,7 +178,7 @@
             "",
             "# _Have a nice day_",
             "",
-            "![emojik RLQ height:300px](https://emojik.vercel.app/s/\u2600\ufe0f_\ud83d\ude0e?size=256)"
+            "![emojik RLQ height:300px](https://emojik.vercel.app/s/☀️_😎?size=256)"
         ],
         "description": "template"
     },
@@ -224,17 +224,17 @@
     "Smart Brevity": {
         "prefix": "Smart",
         "body": [
-            "## \u6a19\u984c: ${1:\u7528 6-10 \u500b\u5b57}",
+            "## 標題: ${1:用 6-10 個字}",
             "",
-            "TLDR: \u958b\u5834(\u4e00\u53e5\u77ed\u8a9e): ${2:\u8b80\u8005\u77e5\u9053\u3001\u60f3\u77e5\u9053\u3001\u61c9\u8a72\u77e5\u9053}",
+            "TLDR: 開場(一句短語): ${2:讀者知道、想知道、應該知道}",
             "",
-            "## \ud83c\udf1f\u8981\u9ede",
+            "## 🌟要點",
             "",
-            "${3:\u89e3\u91cb\u70ba\u4ec0\u9ebc\u9019\u4ef6\u4e8b\u60c5\u5f88\u91cd\u8981}",
+            "${3:解釋為什麼這件事情很重要}",
             "",
-            "## \ud83d\udcda\u8a73\u7d30\u5167\u5bb9",
+            "## 📚詳細內容",
             "",
-            "${4:\u8b80\u8005\u53ef\u9078\u64c7\u662f\u5426\u8981\u7e7c\u7e8c\u5f80\u4e0b\u8b80\u66f4\u591a\u5167\u5bb9}"
+            "${4:讀者可選擇是否要繼續往下讀更多內容}"
         ],
         "description": "Smart Brevity"
     },
@@ -243,11 +243,11 @@
         "body": [
             "- N1 (1-3 axillary nodes)",
             "- N2 (4-9 axillary nodes)",
-            "- N3 (\u226510 axillary nodes or any infraclavicular or ipsilateral supraclavicular nodes);",
+            "- N3 (≥10 axillary nodes or any infraclavicular or ipsilateral supraclavicular nodes);",
             "",
             "## The regional lymph nodes are",
             "",
-            "> \u56db\u5927\u5340\u57df\u6c7a\u5b9a\u671f\u5225\uff0c\u5176\u4e2d\u814b\u4e0b\u9084\u53ef\u4ee5 \u2714 \u5206\u4f4e\u4e2d\u9ad8\uff0c\u5176\u4e2dinfraclavicular & III \u7b97\u4e00\u6a23",
+            "> 四大區域決定期別，其中腋下還可以 ✔ 分低中高，其中infraclavicular & III 算一樣",
             "",
             "1. Axillary (ipsilateral): interpectoral (Rotter) nodes and lymph nodes along the axillary",
             "vein and its tributaries, which may be divided into the following levels:",
@@ -261,7 +261,7 @@
             "",
             "[[figure-of-Regional Lymph Nodes-of-Staging of breast cancer]]",
             "",
-            "> \u53ef\u4ee5 \u2716 \u4e0d\u53ef\u4ee5 \u2714 \u52d5\u5f88\u91cd\u8981\uff0c\u9ecf\u4f4f\u7b97N2",
+            "> 可以 ✖ 不可以 ✔ 動很重要，黏住算N2",
             "",
             "- NX Regional lymph nodes cannot be assessed (e.g., previously removed)",
             "- N0 No regional lymph node metastasis",
@@ -305,7 +305,7 @@
             "- Maintenance(week 2 to 17): 6 mg/kg IVF over 90 mins",
             "- AEs: severe CHF (congestive heart failure, 0.54%), symptomatic CHF(1.73%), decrease in LVEF (7.08%), febrile neutropenia (breast cancer, 23%; gastric cancer, 5% ), neutropenia, grade 3 and 4 (32% to 34%), thrombocytopenia, grade 3 and 4 (gastric cancer, 5% ), thrombosis (breast cancer, 2.1% to 3.7% ), interstitial pneumonia"
         ],
-        "description": "protocol-of-trastuzumab \u2192 \u5291\u91cf\u4ee5\u53ca\u526f\u4f5c\u7528"
+        "description": "protocol-of-trastuzumab → 劑量以及副作用"
     },
     "ESMO Checklist_Early and Locally Advanced Non-Small Cell Lung Cancer": {
         "prefix": "EarlyNSCLC",
@@ -449,7 +449,7 @@
     "Iron-supplementation": {
         "prefix": "fe",
         "body": [
-            "? IV (not PO) if NYHA II/III, EF \u226440%, Fe-defic (ferritin <100 or 100\u2013 300 & TSAT <20%). ~20% \u2193 HF hosp. (Lancet 2020;396:1895)."
+            "? IV (not PO) if NYHA II/III, EF ≤40%, Fe-defic (ferritin <100 or 100– 300 & TSAT <20%). ~20% ↓ HF hosp. (Lancet 2020;396:1895)."
         ],
         "description": "Iron-supplementation"
     },
@@ -489,10 +489,10 @@
             "- induction medication:",
             "  - Propofol 10ml (50-70 kg) `___`",
             "  - Midazolam 2mL (50kg) `___`",
-            "  - Succinylcholine 0.5ml (50 kg \u4ee5\u4e0b) `___`",
+            "  - Succinylcholine 0.5ml (50 kg 以下) `___`",
             "- GlideScope video laryngoscopes, with hyperangulated blade",
             "- endotracheal tube size: 7.5 Fr `___`",
-            "- portable CXR: ETT tips 5 \u00b1 2 cm `___` above the carina",
+            "- portable CXR: ETT tips 5 ± 2 cm `___` above the carina",
             "- post-procedural vitals: `___`",
             "",
             "The patient tolerated the procedure well and there were no complications"
@@ -554,7 +554,7 @@
             "  - with hourly POC glucose checks once serum potassium is confirmed > 3.3 mEq/L.`___`",
             "- Consider bicarbonate if pH \\< 6.9 despite adequate fluid therapy.`___`",
             "- Adjust fluid resuscitation based on corrected sodium for hyperglycemia, serum glucose, and clinical response.",
-            "  - Corrected serum sodium \u2265 135 mmol/L: 0.45% NaCl",
+            "  - Corrected serum sodium ≥ 135 mmol/L: 0.45% NaCl",
             "  - Corrected serum sodium < 135 mmol/L: 0.9% NaCl",
             "  - Add dextrose once POC glucose is below 250-300 mg/dL.",
             "- Identify and treat the underlying cause`___`",
@@ -578,7 +578,7 @@
             "",
             "## <!--fit--> Section I: Whole Game",
             "",
-            "## \u6797\u5354\u9706"
+            "## 林協霆"
         ],
         "description": "template-is-non-a-good-ide"
     },

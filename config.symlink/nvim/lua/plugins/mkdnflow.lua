@@ -58,6 +58,30 @@ return { --mkdnflow
         complete = "X",
       },
       create_dirs = true,
+      mappings = {
+        MkdnEnter = { { "n", "v" }, "<CR>" },
+        MkdnTab = false,
+        MkdnSTab = false,
+        MkdnNextLink = { "n", "<Tab>" },
+        MkdnPrevLink = { "n", "<S-Tab>" },
+        MkdnNextHeading = { "n", "]]" },
+        MkdnPrevHeading = { "n", "[[" },
+        MkdnGoBack = { "n", "<BS>" },
+        MkdnGoForward = { "n", "<leader><BS>" },
+        MkdnCreateLink = false, -- see MkdnEnter
+        MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>pn" }, -- see MkdnEnter
+        MkdnFollowLink = false, -- see MkdnEnter
+        MkdnDestroyLink = { "n", "<leader>dl" },
+        MkdnTagSpan = { "v", "<M-CR>" },
+        MkdnIncreaseHeading = { "n", "-" },
+        MkdnDecreaseHeading = { "n", "=" },
+        MkdnToggleToDo = { { "n", "v" }, "<leader>do" },
+        MkdnNewListItem = false,
+        MkdnTableNextCell = { "i", "<Tab>" },
+        MkdnTablePrevCell = { "i", "<S-Tab>" },
+        MkdnFoldSection = { "n", "<leader>fs" },
+        MkdnUnfoldSection = { "n", "<leader>uf" },
+      },
     }
   end,
 }

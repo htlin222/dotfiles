@@ -4,12 +4,12 @@ local lint = require "lint"
 lint.linters_by_ft = {
   lua = {
     "selene",
-    "codespell",
+    -- "codespell",
   },
   python = {
     "ruff",
     "mypy",
-    "codespell",
+    -- "codespell",
   },
   markdown = {
     -- "codespell",
