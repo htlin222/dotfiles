@@ -7,6 +7,10 @@ return {
     { "nvim-treesitter/nvim-treesitter" },
   },
   config = function()
-    require("lspsaga").setup {}
+    require("lspsaga").setup {
+      diagnostic = {
+        on_insert = false,
+      },
+    }
   end,
 }
