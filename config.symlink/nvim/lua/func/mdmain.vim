@@ -96,6 +96,7 @@ function! CreateRegular()
           \ 'date: "' . strftime("%Y-%m-%d") . '"',
           \ '---',
           \ '',
+          \ '> [!NOTE]',
           \ '> 🌱 created from: [[' . g:previous . ']] 🧬',
           \ '',
           \ ])
@@ -113,6 +114,7 @@ function! CreateLitNote()
           \ 'tags:', '  - building',
           \ '---',
           \ '',
+          \ '> [!NOTE]',
           \ '> 🌱 created from: [[../' . g:previous . ']]',
           \ '> Zotero: [Link](zotero://select/items/@' . g:current_file_name . ')',
           \ '',
@@ -132,6 +134,7 @@ function! CreateMedicalDiary()
           \ 'tags:', '    - building',
           \ '---',
           \ '',
+          \ '> [!NOTE]',
           \ '> 🌱 created from: [[' . g:previous . ']]',
           \ '',
           \ ])
