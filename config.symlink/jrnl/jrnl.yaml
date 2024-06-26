@@ -5,13 +5,13 @@ colors:
   title: cyan
 default_hour: 9
 default_minute: 0
-editor: /usr/local/bin/nvim
+editor: /opt/homebrew/bin/nvim
 encrypt: false
 highlight: true
 indent_character: '|'
 journals:
   default:
-    encrypt: true
+    encrypt: false
     journal: ~/Dropbox/jrnl.txt
   fleet:
     encrypt: false

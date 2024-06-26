@@ -4,7 +4,7 @@ local vim = vim
 local map = vim.keymap.set
 
 -- normal mode --
-map("n", ";", ":", { desc = "CMD enter command mode", nowait = true, silent = true })
+map("n", ";", ":", { desc = "CMD enter command mode", nowait = true, silent = false })
 map("n", "c", '"_c', { desc = "To Black Hole", silent = true })
 map("n", "+", "<C-a>", { desc = "increase number", nowait = true })
 map("n", "_", "<C-x>", { desc = "decrease number", nowait = true })
@@ -20,6 +20,14 @@ map("n", "?", ":noh<CR>", { desc = "Delete Highlight", silent = true })
 map("n", "<leader>ta", ":tabnew<CR>", { desc = "New Tab", nowait = true, silent = true })
 map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save", nowait = true, silent = true })
 map("n", "<leader>q", ":q<CR>", { desc = "Quit", nowait = true, silent = true })
+map("n", "<leader><", "V`[<", { desc = "indent the pasted words", noremap = true, silent = true })
+map("n", "<leader>>", "V`]>", { desc = "redo indent the pasted words", noremap = true, silent = true })
+map(
+  "n",
+  "<leader>ca",
+  "<cmd>s/\\<\\(\\w\\)\\(\\S*\\)/\\u\\1\\L\\2/g<CR><cmd>noh<CR>",
+  { desc = "Set The First Letter of Each Word Capital", noremap = true, silent = true }
+)
 map("n", "<C-c>", "<ESC>", { desc = "Map Ctrl + C to True Esc", silent = true })
 map("n", "<C-s>", "<cmd>SymbolsOutline<CR>", { desc = "Symbols Outline", nowait = true, silent = true })
 map("n", "j", function() -----------------
