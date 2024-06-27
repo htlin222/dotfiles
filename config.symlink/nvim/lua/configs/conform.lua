@@ -23,8 +23,8 @@ local options = {
     markdown = { "prettier", "markdownlint-cli2" },
     quarto = { "prettier", "markdownlint-cli2" },
     graphql = { "prettier" },
-    groovy = { "npm_groovy_lint" },
-    python = { "black", "ruff_fix", "ruff_format", "isort", "mypy" },
+    -- groovy = { "checkstyle" },
+    python = { "ruff_fix", "ruff_format", "isort", "mypy" },
   },
 
   format_on_save = {

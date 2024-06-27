@@ -4,6 +4,7 @@ function rename_in_sqb() {
         mv "$file" "$newname"
     done
 }
+
 fcd() {
     local dir
     dir=$(fd --type d | fzf) && cd "$dir"
@@ -111,16 +112,19 @@ function marp_serve() {
 function killmarp() { kill -9 $(pgrep -f marp) }
 function openai() { export OPENAI_API_KEY=$(op read "op://Dev/chat_GPT/api key") }
 function rgnv() {
-    rg_prefix='rg --column --line-number --no-heading --color=always --smart-case --glob "*.md" --max-depth 1'
-    local result=$(fzf --bind "start:reload:$rg_prefix ''" \
-            --bind "change:reload:$rg_prefix {q} || true" \
-            --bind "enter:execute(echo {} )+abort" \
+    rg_prefix='rg -i --column --line-number --no-heading --sort=modified --color=always --smart-case --glob "*.md" --max-depth 1'
+    local result=$(fzf --bind "start:reload($rg_prefix '' | uniq)" \
+            --bind "change:reload($rg_prefix {q} | uniq || true)" \
+            --bind "enter:execute(echo {} | tee /tmp/fzf_result)+abort" \
             --ansi --disabled \
             --height 80% --layout=reverse \
         --exit-0)
-    if [ -n "$result" ]; then
+
+    if [ -s /tmp/fzf_result ]; then
+        local result=$(cat /tmp/fzf_result)
         local filename=$(echo $result | cut -d':' -f1)
         local number=$(echo $result | sed 's/^[^:]*://; s/:.*//')
+        rm -f /tmp/fzf_result
         nvim +$number "$filename"
     fi
 }
@@ -278,14 +282,15 @@ function study(){
     fi
 }
 function recent_note(){
-    cd ~/Dropbox/Medical/ &
-    (python3 ~/Dropbox/scripts/gen_recent_list.py &)
-    nvim +10 ~/Dropbox/Medical/recent.md
+    cd ~/Dropbox/Medical/
+    # nvim +10 $(ls -lt | head -n 20 | awk '{print $NF}' | fzf --preview 'glow {}')
+    file=$(ls -lt | head -n 30 | awk '{print $NF}' | fzf --preview 'bat --style=numbers --color=always {}')
+    [ -n "$file" ] && vim "$file"
 }
 function studyrg(){
     cd ~/Dropbox/Medical/
     (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
-    (python3 ~/Dropbox/scripts/gen_recent_list.py &)
+    # (python3 ~/Dropbox/scripts/gen_recent_list.py &)
     rgnv
 }
 function vimfzf(){
