@@ -22,19 +22,9 @@ utils::rc.settings(ipck=TRUE)
   }
 }
 
-
-if(Sys.getenv("TERM") == "xterm-256color")
-  library("colorout")
-
 sshhh <- function(a.package){
   suppressWarnings(suppressPackageStartupMessages(
     library(a.package, character.only=TRUE)))
-}
-
-auto.loads <-c("dplyr", "ggplot2","formatR")
-
-if(interactive()){
-  invisible(sapply(auto.loads, sshhh))
 }
 
 .env <- new.env()
@@ -50,5 +40,3 @@ attach(.env)
   df[id] <- lapply(df[id], as.character)
   df
 }
-
-message("\u001b[32mSuccessfully loaded .Rprofile\u001b[0m")

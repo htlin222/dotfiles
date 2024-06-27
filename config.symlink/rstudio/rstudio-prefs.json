@@ -31,9 +31,6 @@
         "ok": 1,
         "secondary": ""
     },
-    "python_type": "system",
-    "python_version": "3.11.6",
-    "python_path": "~/.pyenv/versions/3.11.6/bin/python",
     "jobs_tab_visibility": "shown",
     "show_publish_diagnostics": true,
     "blinking_cursor": false,
@@ -71,5 +68,11 @@
         "console_right_on_top": true,
         "additional_source_columns": 0
     },
-    "default_sweave_engine": "knitr"
+    "default_sweave_engine": "knitr",
+    "highlight_r_function_calls": true,
+    "rainbow_parentheses": true,
+    "terminal_initial_directory": "current",
+    "show_terminal_tab": false,
+    "show_help_tooltip_on_idle": true,
+    "tab_multiline_completion": true
 }

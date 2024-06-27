@@ -67,7 +67,6 @@ export PATH=$PATH:/Users/htlin/.spicetify
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$PATH:/Users/htlin/.local/bin"
 export PATH="Users/htlin/edirect:${PATH}"
-
 # ---- Python stuff ----
 # (eval "$(pyenv init --path)" &>/dev/null &)
 # (eval "$(pyenv init -)" &>/dev/null &)

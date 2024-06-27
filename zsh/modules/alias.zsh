@@ -3,7 +3,7 @@ if uname | grep -q "Darwin"; then
 else
 	alias open="xdg-open"
 fi
-alias R='R -q'
+# alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias man='colored man'
 alias todo='pter ~/Dropbox/todo.txt'
