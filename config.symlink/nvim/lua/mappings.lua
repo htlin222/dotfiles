@@ -22,12 +22,12 @@ map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save", nowait = true, s
 map("n", "<leader>q", ":q<CR>", { desc = "Quit", nowait = true, silent = true })
 map("n", "<leader><", "V`[<", { desc = "indent the pasted words", noremap = true, silent = true })
 map("n", "<leader>>", "V`]>", { desc = "redo indent the pasted words", noremap = true, silent = true })
-map(
+map( ---------------
   "n",
   "<leader>ca",
   "<cmd>s/\\<\\(\\w\\)\\(\\S*\\)/\\u\\1\\L\\2/g<CR><cmd>noh<CR>",
   { desc = "Set The First Letter of Each Word Capital", noremap = true, silent = true }
-)
+) ---------------
 map("n", "<C-c>", "<ESC>", { desc = "Map Ctrl + C to True Esc", silent = true })
 map("n", "<C-s>", "<cmd>SymbolsOutline<CR>", { desc = "Symbols Outline", nowait = true, silent = true })
 map("n", "j", function() -----------------
