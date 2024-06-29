@@ -221,6 +221,12 @@ function dp() {
     cd -
 }
 
+gitacp() {
+  git add .
+  aicommits
+  git push
+}
+
 function dotpull() {
     git restore $DOTFILES
     git -C $DOTFILES pull

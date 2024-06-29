@@ -1,0 +1,38 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Added by OrbStack: command-line tools and integration
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+
+# ---- start export ----
+export DOTFILES=$HOME/.dotfiles
+export EDITOR="nvim"
+export ML=$HOME/Dropbox/scripts/ml/
+export SMEAR=$HOME/Documents/images/smear/
+export DOTFONTPATH=$HOME/Library/Fonts
+export VISUAL="nvim"
+export DISPLAY=:0
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export NODE_OPTIONS="--no-deprecation"
+export PATH="/usr/bin/python3:$PATH"
+export PATH="$HOME/.pyenv/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/.dotfiles/shellscripts:$PATH"
+export PATH="$HOME/pyscripts:$PATH"
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_NO_ENV_HINTS=1
+export PATH="$HOME/Dropbox/scripts:$PATH"
+export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
+export TMP=$HOME/Dropbox/tmp
+export INBOX=$HOME/Dropbox/inbox
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+export PATH=$PATH:/Users/htlin/.spicetify
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="$PATH:/Users/htlin/.local/bin"
+export PATH="Users/htlin/edirect:${PATH}"

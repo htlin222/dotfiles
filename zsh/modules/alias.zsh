@@ -56,6 +56,7 @@ alias ffmpeg='ffmpeg-bar'
 alias garden='publi.sh'
 alias lf="lfcd"
 alias ls='lsd'
+alias fdfzf="fd --type f | fzf --preview 'bat --style=numbers --color=always {}'"
 alias marp-serve="marp_serve"
 alias marpimg="marp --theme-set ~/Dropbox/slides/themes --html --images png"
 alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
