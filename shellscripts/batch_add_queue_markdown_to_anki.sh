@@ -11,7 +11,8 @@ find ~/Dropbox/Medical -name "*.md" -type f -mtime -1 -exec grep -l "anki" {} \;
 
 # 遍歷目標目錄中的所有Markdown文件並執行Python腳本
 for file in ~/Dropbox/tmp/queue/*.md; do
-	/Users/mac/.pyenv/versions/automator/bin/python ~/pyscripts/add_md_to_anki.py "$file"
+	# /Users/mac/.pyenv/versions/automator/bin/python ~/pyscripts/add_md_to_anki.py "$file"
+  ~/bin/md_to_anki/md_to_anki -f "$file"
 done
 
-rm -f ~/Dropbox/tmp/queue/*.md
+# rm -f ~/Dropbox/tmp/queue/*.md
