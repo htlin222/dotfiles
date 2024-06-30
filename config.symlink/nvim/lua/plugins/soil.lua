@@ -3,7 +3,6 @@ return {
 
   -- Optional for puml syntax highlighting:
   dependencies = { "javiorfo/nvim-nyctophilia" },
-  lazy = true,
   ft = { "plantuml" },
   opts = {
     -- If you want to change default configurations

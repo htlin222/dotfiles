@@ -1,5 +1,5 @@
 return {
-	"LeonHeidelbach/trailblazer.nvim",
-	event = "BufReadPre",
-	opts = {},
+  "LeonHeidelbach/trailblazer.nvim",
+  event = "VeryLazy",
+  opts = {},
 }

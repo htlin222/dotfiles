@@ -2,7 +2,7 @@ return {
   "yamatsum/nvim-cursorline",
   event = "VeryLazy",
   config = function()
-    require("nvim-cursorline").setup({
+    require("nvim-cursorline").setup {
       cursorline = {
         enable = true,
         timeout = 0,
@@ -13,6 +13,6 @@ return {
         min_length = 3,
         hl = { underline = true },
       },
-    })
+    }
   end,
 }

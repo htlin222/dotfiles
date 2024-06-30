@@ -1,6 +1,5 @@
 return { --twilight
   "folke/twilight.nvim",
-  event = "VeryLazy",
   keys = {
     { -- example for lazy-loading on keystroke
       "<leader>tl",

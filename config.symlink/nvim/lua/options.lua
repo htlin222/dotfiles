@@ -1,14 +1,11 @@
 require "nvchad.options"
 
--- add yours here!
-
--- local o = vim.o
--- o.cursorlineopt ='both' -- to enable cursorline!
---
 local vim = vim
 local opt = vim.opt
 local wo = vim.wo
+
 -- start option
+opt.cursorlineopt = "both"
 opt.autoindent = true
 opt.autochdir = true
 opt.lbr = true

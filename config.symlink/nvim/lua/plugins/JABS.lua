@@ -2,7 +2,15 @@ local vim = vim
 return {
   "matbme/JABS.nvim",
   -- lazy = false,
-  event = "VeryLazy",
+  keys = {
+    { -- example for lazy-loading on keystroke
+      "<leader>ls",
+      "<cmd>JABSOpen<CR>",
+      mode = { "n", "o", "x" },
+      desc = "JABSOpen",
+    },
+  },
+
   config = function()
     require("jabs").setup {
       relative = "cursor", -- win, editor, cursor. Default win
@@ -27,6 +35,6 @@ return {
       },
     }
 
-    vim.keymap.set("n", "<leader>ls", "<cmd>JABSOpen<CR>", { desc = "JABSOpen", silent = true })
+    -- vim.keymap.set("n", "<leader>ls", "<cmd>JABSOpen<CR>", { desc = "JABSOpen", silent = true })
   end,
 }

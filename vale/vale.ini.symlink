@@ -1,0 +1,9 @@
+StylesPath = styles
+
+MinAlertLevel = suggestion
+
+Packages = Google, alex, Hugo
+
+[*]
+BasedOnStyles = Vale, Google, alex
+

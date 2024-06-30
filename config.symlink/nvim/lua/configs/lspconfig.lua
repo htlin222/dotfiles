@@ -19,3 +19,13 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
+
+require("lspconfig").lua_ls.setup {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" },
+      },
+    },
+  },
+}

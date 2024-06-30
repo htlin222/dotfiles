@@ -1,7 +1,7 @@
 return { --mkdnflow
   "jakewvincent/mkdnflow.nvim",
+  evnt = "VeryLazy",
   ft = { "markdown", "quarto" },
-  -- lazy = true,
   config = function()
     -- by default, the fold method was set by tree-sitter expr
     vim.opt.foldmethod = "manual"

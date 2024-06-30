@@ -1,4 +1,4 @@
 return {
-	"sitiom/nvim-numbertoggle",
-	event = "VeryLazy",
+  "sitiom/nvim-numbertoggle",
+  event = "VeryLazy",
 }

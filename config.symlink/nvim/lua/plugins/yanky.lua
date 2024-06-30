@@ -1,11 +1,11 @@
 return {
   "gbprod/yanky.nvim",
-  -- event = "CursorMoved",
+  event = "VeryLazy",
   config = function()
-    require("yanky").setup({
+    require("yanky").setup {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-    })
+    }
   end,
 }

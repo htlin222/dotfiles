@@ -2,7 +2,7 @@
 -- Lua
 return {
   "abecodes/tabout.nvim",
-  lazy = false,
+  -- lazy = false,
   event = "InsertCharPre", -- Set the event to 'InsertCharPre' for better compatibility
   opt = true, -- Set this to true if the plugin is optional
   priority = 1000,

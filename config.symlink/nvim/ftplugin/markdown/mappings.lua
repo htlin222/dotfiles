@@ -8,6 +8,10 @@ map("n", "<leader>yw", function()
   vim.fn.setreg("+", formatted_file_name, "y")
   print(formatted_file_name)
 end, { desc = "Yank Filename as wikilink", silent = true })
+-- add to anki
+map("n", "<leader>an", function()
+  require("func.anki").add_to_anki()
+end, { desc = "Add this note to anki", silent = false })
 -- 👉 [[paste as wiwki link]]
 map("n", "<leader>pw", function()
   local content = vim.fn.getreg '"'
@@ -29,7 +33,7 @@ map("n", "<leader>po", function()
   print(formatted_file_name)
 end, { desc = "create text: of this file", silent = false })
 --- as H2
-map("n", "<leader>a", function()
+map("n", "<leader>aa", function()
   local current_line = vim.api.nvim_get_current_line()
   local new_line = "## " .. current_line
   vim.api.nvim_set_current_line(new_line)

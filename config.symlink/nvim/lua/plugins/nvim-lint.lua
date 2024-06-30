@@ -1,8 +1,9 @@
 local vim = vim
 return {
   "mfussenegger/nvim-lint",
-  event = { "BufReadPre", "BufNewFile" },
+  event = "VeryLazy",
+  -- event = { "BufReadPre", "BufNewFile" },
   config = function()
-    require("configs.lint")
+    require "configs.lint"
   end,
 }

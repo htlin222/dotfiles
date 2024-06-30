@@ -11,7 +11,8 @@ local has_words_before = function()
 end
 return { -- this table will override the default cmp setting
   "hrsh7th/nvim-cmp",
-  event = { "VeryLazy", "InsertEnter" },
+  -- event = { "InsertEnter" },
+  event = { "VeryLazy" },
   opts = {
     window = {
       completion = cmp.config.window.bordered(nil),
@@ -27,40 +28,41 @@ return { -- this table will override the default cmp setting
         },
       },
       { name = "codeium" },
+      -- { name = "supermaven" },
       { name = "luasnip" },
       -- { name = "cmp_zotcite" },
       -- { name = "papis" },
       { name = "nvim_lsp_document_symbol" },
       { name = "nvim_lsp_signature_help" },
       { name = "otter" },
+      { name = "plugins" },
       { name = "mkdnflow" }, -- Add this
       { name = "buffer" },
       { name = "bufname" },
-      -- { name = "rg", keyword_length = 5 },
+      { name = "rg", keyword_length = 3 },
       -- { name = "omni",                    option = { disable_omnifuncs = { "v:lua.vim.lsp.omnifunc" } } },
       -- { name = "calc" },
       -- { name = "rpncalc" },
       { name = "cmdline_history" },
       { name = "nvim_lua" },
-      { name = "path" },
+      { name = "treesitter" },
+      { name = "async_path" },
+      -- { name = "path" },
       { name = "cmp_yanky" },
       -- { name = "cmp_tabnine" },
       { name = "emoji" },
-      -- { name = "cmp_r" },
       { name = "pandoc_references" },
       { name = "treesitter" },
       -- { name = "cmp_r" },
       -- { name = "buffer-lines",            option = {} },
       {
-        name = "spell",
+        name = "look",
+        keyword_length = 3,
         option = {
-          keep_all_entries = false,
-          enable_in_context = function()
-            return true
-          end,
+          convert_case = true,
+          loud = true,
         },
       },
-      -- { name = "dictionary",       keyword_length = 2 },
     },
     mapping = {
       ["<C-d>"] = require("cmp").mapping.scroll_docs(-4),
@@ -125,7 +127,11 @@ return { -- this table will override the default cmp setting
       }),
     },
     formatting = {
-      format = function(_, vim_item)
+      fields = { "kind", "abbr" },
+      format = function(entry, vim_item)
+        local kind = require("lspkind").cmp_format { mode = "symbol_text", maxwidth = 50 }(entry, vim_item)
+        local strings = vim.split(kind.kind, "%s", { trimempty = true })
+        kind.kind = " " .. (strings[1] or "") .. " "
         local label = vim_item.abbr
         local truncated_label = vim.fn.strcharpart(label, 0, MAX_LABEL_WIDTH)
         if truncated_label ~= label then
@@ -142,12 +148,18 @@ return { -- this table will override the default cmp setting
 
   dependencies = {
     { "hrsh7th/cmp-emoji" },
+    { "Exafunction/codeium.nvim" },
+    { "FelipeLema/cmp-async-path" },
     -- { "jalvesaq/zotcite" },
     { "amarakon/nvim-cmp-buffer-lines" },
     { "lukas-reineke/cmp-rg" },
     -- { "jalvesaq/cmp-nvim-r" },
     -- { "jalvesaq/Nvim-R" },
     { "R-nvim/cmp-r" },
+    { "chrisgrieser/cmp_yanky" },
+    { "octaltree/cmp-look" },
+    { "onsails/lspkind.nvim" },
+    { "ray-x/cmp-treesitter" },
     { "jc-doyle/cmp-pandoc-references" },
     { -- [aspeddro/cmp-pandoc.nvim: Pandoc source for nvim-cmp](https://github.com/aspeddro/cmp-pandoc.nvim)
       "aspeddro/cmp-pandoc.nvim",
@@ -159,32 +171,14 @@ return { -- this table will override the default cmp setting
         require("cmp_pandoc").setup {}
       end,
     },
-
-    { -- setting of tabnine : [tzachar/cmp-tabnine: TabNine plugin for hrsh7th/nvim-cmp](https://github.com/tzachar/cmp-tabnine)
-      -- "tzachar/cmp-tabnine",
-      -- build = "./install.sh",
-      -- config = function()
-      -- 	local tabnine = require("cmp_tabnine.config")
-      -- 	tabnine:setup({}) -- put your options here
-      -- end,
-    },
-    { -- setting of cmp_ai : see : [tzachar/cmp-ai](https://github.com/tzachar/cmp-ai)
-      -- "tzachar/cmp-ai",
-      -- config = function()
-      -- 	local cmp_ai = require("cmp_ai.config")
-      -- 	cmp_ai:setup({
-      -- 		max_lines = 1000,
-      -- 		provider = "OpenAI",
-      -- 		model = "gpt-4",
-      -- 		notify = true,
-      -- 		run_on_every_keystroke = true,
-      -- 		ignored_file_types = {
-      -- 			-- default is not to ignore
-      -- 			-- uncomment to ignore in lua:
-      -- 			-- lua = true
-      -- 		},
-      -- 	})
-      -- end,
+    {
+      "KadoBOT/cmp-plugins",
+      config = function()
+        require("cmp-plugins").setup {
+          files = { ".*\\.lua" }, -- default
+          -- files = { "plugins.lua", "some_path/plugins/" } -- Recommended: use static filenames or partial paths
+        }
+      end,
     },
   },
 }
