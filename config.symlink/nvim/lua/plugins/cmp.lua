@@ -14,6 +14,9 @@ return { -- this table will override the default cmp setting
   -- event = { "InsertEnter" },
   event = { "VeryLazy" },
   opts = {
+    performance = {
+      max_view_entries = 5,
+    },
     window = {
       completion = cmp.config.window.bordered(nil),
       documentation = cmp.config.window.bordered(nil),

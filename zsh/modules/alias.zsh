@@ -27,6 +27,7 @@ alias bc='bc --quiet <(echo "scale=5;print\"scale=5\n\"")'
 alias googledrive="cd /Users/htlin/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
 alias xo='xdg-open'
 alias lc='lolcat'
+alias tldr='tldr'
 alias asco="yazi ~/Documents/textbook/ASCO-SEP/"
 alias ash="yazi ~/Documents/textbook/8th\ ASH-SEP/"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
