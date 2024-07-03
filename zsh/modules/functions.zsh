@@ -4,7 +4,15 @@ function rename_in_sqb() {
         mv "$file" "$newname"
     done
 }
-
+sprint() {
+  local folder
+  folder=$(find ~/dropbox/sprint -type d | fzf --height 40% --border)
+  if [ -n "$folder" ]; then
+    cd "$folder"
+  else
+    echo "No folder selected"
+  fi
+}
 fcd() {
     local dir
     dir=$(fd --type d | fzf) && cd "$dir"
