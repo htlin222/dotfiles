@@ -33,7 +33,6 @@ map( ---------------
   { desc = "Set The First Letter of Each Word Capital" }
 ) ---------------
 map("n", "<C-c>", "<ESC>", { desc = "Map Ctrl + C to True Esc" })
-map("n", "<C-s>", "<cmd>SymbolsOutline<CR>", { desc = "Symbols Outline" })
 map("n", "j", function() -----------------
   return vim.v.count > 0 and "j" or "gj"
 end, { expr = true })

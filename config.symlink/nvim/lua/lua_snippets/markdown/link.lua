@@ -38,6 +38,32 @@ local function findFilesWithSameName(_, _, _)
 	return friends
 end
 
+
+local function findHeadingOne(_, _, _)
+	local current_buf = vim.fn.bufname("%")
+	local current_file_name = vim.fn.fnamemodify(current_buf, ":t:r")
+	local command_template = [[
+  # complete this command that will find all level 1 headings in the current file from a markdown file a.k.a # Title 
+  ]]
+	local command = string.format(command_template, current_file_name)
+	local file = io.popen(command, "r")
+	local headings = {}
+	-- table.insert(friends, "whatever.md")
+	for line in file:lines() do
+		if line == current_buf then
+		-- 如果與 current_buf 相等，則跳過此行
+		else
+			if line:sub(-3) == ".md" then
+				line = "- [[" .. line:sub(1, -4) .. "]] "
+			end
+			table.insert(headings, line)
+		end
+	end
+	-- 刪除最後一個元素
+	print("GetAllHeading🥰")
+	return friends
+end
+
 local function findFilesWithSameDay(_, _, _)
 	local current_buf = vim.fn.bufname("%") -- 取得當前緩衝區的文件名
 	-- local current_file_name = vim.fn.fnamemodify(current_buf, ":t:r") -- 提取當前文件的無擴展名文件名

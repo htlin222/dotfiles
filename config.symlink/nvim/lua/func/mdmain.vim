@@ -253,7 +253,7 @@ function! AliasingNoPrompt(ali)
 endfunction
 command! -nargs=0 Ali :call Aliasing()
 " NB: keymapping here as well
-nnoremap <silent> <leader>s :call Aliasing()<CR>
+" nnoremap <silent> <leader>s :call Aliasing()<CR>
 
 " NB: gen TOC
 function! Toc()

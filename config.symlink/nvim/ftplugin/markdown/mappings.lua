@@ -1,5 +1,11 @@
 local vim = vim
-local map = vim.keymap.set
+local function map(modes, lhs, rhs, opts)
+  -- opts.unique = opts.unique ~= false
+  opts.silent = opts.silent ~= false
+  opts.nowait = opts.nowait ~= false
+  vim.keymap.set(modes, lhs, rhs, opts)
+end
+-- normal mode --
 
 -- 👉 [[wiwki link]]
 map("n", "<leader>yw", function()
@@ -7,20 +13,20 @@ map("n", "<leader>yw", function()
   local formatted_file_name = "[[" .. file_name .. "]]"
   vim.fn.setreg("+", formatted_file_name, "y")
   print(formatted_file_name)
-end, { desc = "Yank Filename as wikilink", silent = true })
+end, { desc = "Yank Filename as wikilink" })
 -- add to anki
 map("n", "<leader>an", function()
   require("func.anki").add_to_anki()
-end, { desc = "Add this note to anki", silent = false })
+end, { desc = "Add this note to anki" })
 -- 👉 [[paste as wiwki link]]
 map("n", "<leader>pw", function()
   local content = vim.fn.getreg '"'
   local content = content:gsub("%c", "")
   local bracketedContent = "[[" .. content .. "]]"
   vim.api.nvim_put({ bracketedContent }, "c", false, true)
-end, { desc = "PasteWithBracketed", silent = true })
+end, { desc = "PasteWithBracketed" })
 -- paste "of this file"
-map("n", "<leader>po", function()
+map("n", "<leader>of", function()
   local win = vim.api.nvim_get_current_win()
   local buf = vim.api.nvim_get_current_buf()
   local line = vim.api.nvim_win_get_cursor(win)[1]
@@ -28,11 +34,11 @@ map("n", "<leader>po", function()
   vim.api.nvim_win_set_cursor(win, { line, line_length })
   local file_name = vim.fn.expand "%:t:r"
   local formatted_file_name = "-of-" .. file_name
-  vim.fn.setreg("+", file_name, "y")
+  local clipboard_content = vim.fn.getreg "+" -- 獲取剪貼板原本內容
   vim.api.nvim_put({ formatted_file_name }, "c", true, true)
+  vim.fn.setreg("+", clipboard_content) -- 恢復剪貼板內容
   print(formatted_file_name)
 end, { desc = "create text: of this file", silent = false })
---- as H2
 map("n", "<leader>aa", function()
   local current_line = vim.api.nvim_get_current_line()
   local new_line = "## " .. current_line
