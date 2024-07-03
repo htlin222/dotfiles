@@ -1,5 +1,6 @@
 return {
   "iamcco/markdown-preview.nvim",
+  lazy = false,
   cmd = { "MarkdownPreview", "MarkdownPreviewStop" },
   keys = {
     { -- example for lazy-loading on keystroke

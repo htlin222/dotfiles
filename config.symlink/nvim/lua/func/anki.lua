@@ -2,12 +2,13 @@ local nio = require "nio"
 local M = {}
 local vim = vim
 
-function M.add_to_anki()
+function M.add_to_anki(deck)
   nio.run(function()
     local current_buffer_path = vim.api.nvim_buf_get_name(0)
     if current_buffer_path ~= nil and current_buffer_path ~= "" then
       local home = os.getenv "HOME"
-      local cmd = string.format('%s/bin/md_to_anki/md_to_anki -f "%s"', home, current_buffer_path)
+      deck = deck or "00_Inbox"
+      local cmd = string.format('%s/bin/md_to_anki/md_to_anki -f "%s" --deck "%s"', home, current_buffer_path, deck)
       local handle = io.popen(cmd)
       local result = handle:read "*a"
       handle:close()
@@ -21,4 +22,5 @@ function M.add_to_anki()
   end)
 end
 -- require("func.anki").add_to_anki()
+-- Create the Vim command
 return M
