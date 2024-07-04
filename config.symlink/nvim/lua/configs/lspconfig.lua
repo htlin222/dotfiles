@@ -2,7 +2,7 @@
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
-
+vim.diagnostic.config { virtual_text = false }
 local lspconfig = require "lspconfig"
 local servers =
   { "html", "cssls", "tsserver", "ruff_lsp", "pyright", "jsonls", "bashls", "vimls", "r_language_server", "julials" }

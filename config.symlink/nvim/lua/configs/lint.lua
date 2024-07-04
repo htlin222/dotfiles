@@ -17,8 +17,8 @@ lint.linters_by_ft = {
     "write_good",
   },
   vim = { "vint" },
-  sh = {
-    -- "shellcheck",
+  bash = {
+    "shellcheck",
   },
 }
 

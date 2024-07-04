@@ -8,6 +8,7 @@ alias dtc='tmux detach-client'
 alias man='colored man'
 alias todo='pter ~/Dropbox/todo.txt'
 alias zshconfig="vim ~/.zshrc"
+alias mkdir="mkdir -p"
 alias pom="sh pom.sh"
 alias ff="fleet_of_thought"
 alias t="todo.sh"
