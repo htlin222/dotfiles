@@ -18,7 +18,7 @@ end, { desc = "Yank Filename as wikilink" })
 map("n", "<leader>an", function()
   require("func.anki").add_to_anki()
 end, { desc = "Add this note to anki" })
--- 👉 [[paste as wiwki link]]
+-- 👉 [[paste as wiki link]]
 map("n", "<leader>pw", function()
   local content = vim.fn.getreg '"'
   local content = content:gsub("%c", "")
