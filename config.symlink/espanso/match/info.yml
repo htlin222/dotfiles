@@ -1,8 +1,8 @@
 matches:
-  - trigger: "KFSYSCC"
+  - trigger: "\\KFSYSCC"
     replace: "醫療財團法人辜公亮基金會和信治癌中心醫院"
-  - trigger: "MO"
+  - trigger: "\\MO"
     replace: "腫瘤內科部"
-  - trigger: "EMAIL"
+  - trigger: "\\MAIL"
     replace: "htlin222@kfsyscc.org"
 #
