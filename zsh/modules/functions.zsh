@@ -736,14 +736,3 @@ newsprint() {
 	cd "$folder_path"
 	vim README.md
 }
-explain_cmd() {
-	COMMAND="$@"
-	URL="http://explainshell.com/explain?cmd=${COMMAND}"
-	SYSTEM=$(uname)
-
-	if [[ "$SYSTEM" == "Linux" ]]; then
-		curl -s "${URL}" | scrape -e 'span.dropdown > a, pre' | sed -re 's/<(\/?)[^>]*>//g'
-	elif [[ "$SYSTEM" == "Darwin" ]]; then
-		curl -s "${URL}" | scrape -e 'span.dropdown > a, pre' | sed -Ee 's/<(\/?)[^>]*>//g'
-	fi
-}
