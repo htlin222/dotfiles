@@ -39,7 +39,7 @@ return { -- this table will override the default cmp setting
       { name = "nvim_lsp_signature_help" },
       { name = "otter" },
       { name = "plugins" },
-      { name = "mkdnflow" }, -- Add this
+      -- { name = "mkdnflow" },
       { name = "buffer" },
       { name = "bufname" },
       { name = "rg", keyword_length = 3 },
