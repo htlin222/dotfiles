@@ -51,7 +51,9 @@ local function findHeadingOne(_, _, _)
     local link = string.format("- [%s](#%s)", line, sanitized_line)
     table.insert(list_of_headings, link)
   end
-
+  -- 去掉第一個和最後一個項目
+  table.remove(list_of_headings, 1)
+  table.remove(list_of_headings, #list_of_headings)
   file:close()
 
   print "GetAllHeading🥰"

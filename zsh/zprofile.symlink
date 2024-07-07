@@ -9,6 +9,7 @@ export EDITOR="nvim"
 export ML=$HOME/Dropbox/scripts/ml/
 export SMEAR=$HOME/Documents/images/smear/
 export DOTFONTPATH=$HOME/Library/Fonts
+export BETTER_EXCEPTIONS=1  # Linux / macOS
 export VISUAL="nvim"
 export DISPLAY=:0
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"

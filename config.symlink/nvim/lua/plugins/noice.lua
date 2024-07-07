@@ -63,7 +63,7 @@ return {
       },
       message = {
         -- Messages shown by lsp servers
-        enabled = true,
+        enabled = false,
         view = "mini",
         opts = {},
       },

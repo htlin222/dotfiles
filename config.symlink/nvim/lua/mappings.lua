@@ -7,7 +7,7 @@ local function map(modes, lhs, rhs, opts)
   opts.nowait = opts.nowait ~= false
   vim.keymap.set(modes, lhs, rhs, opts)
 end
--- normal mode --
+-- Normal mode --
 map("n", ";", ":", { desc = "CMD enter command mode", silent = false })
 map("n", "c", '"_c', { desc = "To Black Hole", unique = false })
 map("n", "+", "<C-a>", { desc = "increase number" })
@@ -26,9 +26,27 @@ map("n", "<leader>w", ":w ++p ++bad=drop<CR>", { desc = "Save" })
 map("n", "<leader>q", ":q<CR>", { desc = "Quit" })
 map("n", "<leader><", "V`[<", { desc = "indent the pasted words" })
 map("n", "<leader>>", "V`]>", { desc = "redo indent the pasted words" })
+map("n", "yih", "yi(", { desc = "same as i[" })
+map("n", "yij", "yi[", { desc = "same as i[" })
+map("n", "yik", "yi{", { desc = "same as i{" })
+map("n", "dih", "di(", { desc = "same as i[" })
+map("n", "dij", "di[", { desc = "same as i[" })
+map("n", "dik", "di{", { desc = "same as i{" })
+map("n", "cih", "ci(", { desc = "same as i[" })
+map("n", "cij", "ci[", { desc = "same as i[" })
+map("n", "cik", "ci{", { desc = "same as i{" })
+map("n", "yih", "yi(", { desc = "same as i[" })
+map("n", "yij", "yi[", { desc = "same as i[" })
+map("n", "yik", "yi{", { desc = "same as i{" })
+map("n", "dah", "da(", { desc = "same as i[" })
+map("n", "daj", "da[", { desc = "same as i[" })
+map("n", "dak", "da{", { desc = "same as i{" })
+map("n", "cah", "ca(", { desc = "same as i[" })
+map("n", "caj", "ca[", { desc = "same as i[" })
+map("n", "cak", "ca{", { desc = "same as i{" })
 map( ---------------
   "n",
-  "<leader>ca",
+  "<leader>fc",
   "<cmd>s/\\<\\(\\w\\)\\(\\S*\\)/\\u\\1\\L\\2/g<CR><cmd>noh<CR>",
   { desc = "Set The First Letter of Each Word Capital" }
 ) ---------------
@@ -81,9 +99,9 @@ map("v", ">", ">gv", { desc = "Indent right" })
 map("v", ";", ":", { desc = "enter command mode" })
 map("v", "<leader>ga", ":'<,'>!aicomp<cr>", { desc = "Aider Append" })
 map("v", "p", '"_dP', { desc = "paste but don't overwrite the clipboard" })
+map("v", "ih", "i(", { desc = "same as i[" })
 map("v", "ij", "i[", { desc = "same as i[" })
 map("v", "ik", "i{", { desc = "same as i{" })
-map("v", "ih", "i<", { desc = "same as i<" })
 map("v", "im", "i'", { desc = "same as i'" })
 map("v", "i,", 'i"', { desc = 'same as i"' })
 map("v", "aj", "a[", { desc = "same as a[" })
@@ -95,3 +113,6 @@ map("v", "L", "$h", { desc = "go to end of line" })
 map("v", "J", ":m '>+1<CR>gv=gv", { desc = "move the selection down" })
 map("v", "K", ":m '<-2<CR>gv=gv", { desc = "move the selection up" })
 map("v", "H", "^", { desc = "begining of line" })
+
+-- Lspsaga
+map("n", "<leader>lo", "<cmd>Lspsaga outline<CR>", { desc = "Lspsaga Code Outline" })

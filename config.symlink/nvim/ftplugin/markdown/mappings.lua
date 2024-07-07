@@ -102,3 +102,5 @@ map(
 
 map("n", "<leader>s2", ":call SplitByH2()<CR>", { desc = "Split by H2 with wikilink", silent = false, nowait = true })
 map("n", "<leader>mt", ":TableModeToggle<CR>", { desc = "TableModeToggle", silent = false, nowait = true })
+
+

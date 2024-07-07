@@ -11,9 +11,16 @@ lint.linters_by_ft = {
     "mypy",
     -- "codespell",
   },
+  json = {
+    -- "eslint_d",
+    "jsonlint",
+    -- "write_good",
+  },
   markdown = {
     "codespell",
+    "proselint",
     "vale",
+    "typos",
     "write_good",
   },
   vim = { "vint" },

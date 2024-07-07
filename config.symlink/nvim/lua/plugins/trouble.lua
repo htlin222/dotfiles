@@ -5,7 +5,7 @@ return { --trouble
   keys = {
     { -- example for lazy-loading on keystroke
       "<leader>tr",
-      "<cmd>TroubleToggle document_diagnostics<CR>",
+      "<cmd>Trouble diagnostics<CR>",
       mode = { "n", "o", "x" },
       desc = "Trouble Toggle document_diagnostics",
     },

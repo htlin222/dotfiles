@@ -1,3 +1,4 @@
+local vim = vim
 return {
   "glepnir/lspsaga.nvim",
   event = { "LspAttach" },
@@ -12,5 +13,11 @@ return {
         on_insert = false,
       },
     }
+    vim.api.nvim_set_keymap(
+      "n",
+      "<leader>ca",
+      "<cmd>Lspsaga code_action<CR>",
+      { desc = "Lspsaga code_action", noremap = true, silent = true }
+    )
   end,
 }
