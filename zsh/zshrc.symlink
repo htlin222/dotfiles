@@ -4,7 +4,7 @@ if [ "$TMUX" = "" ]; then tmux; fi
 # cfonts "Lizard" --colors white,"#f80"
 if [ -f ".venv/bin/activate" ]; then
 	source .venv/bin/activate
-  echo "uv .venv is activated"
+	echo "uv .venv is activated"
 fi
 # ---- oh-my-zsh stuff and p10k ----
 
@@ -13,28 +13,29 @@ setopt no_nomatch
 
 # (ffplay -v 0 -nodisp -autoexit $HOME/.dotfiles/config.symlink/media/rat_tail.mp3 &> /dev/null &)
 export ZSH="$HOME/.oh-my-zsh"
+
 DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
 plugins+=(
-  colored-man-pages
-  copyfile
-  fast-syntax-highlighting
-  fzf-tab
-  git
-  gitignore
-  jsontools
-  lol
-  man
-  rsync
-  sudo
-  web-search
-  you-should-use
-  zsh-autosuggestions
-  zsh-lazyload
-  zsh-vi-mode
-  zsh-autopair
+	colored-man-pages
+	copyfile
+	fast-syntax-highlighting
+	fzf-tab
+	git
+	gitignore
+	jsontools
+	lol
+	man
+	rsync
+	sudo
+	web-search
+	you-should-use
+	zsh-autosuggestions
+	zsh-lazyload
+	zsh-vi-mode
+	zsh-autopair
 )
 
 ZSH_WEB_SEARCH_ENGINES=(

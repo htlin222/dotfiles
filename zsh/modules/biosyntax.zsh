@@ -7,9 +7,6 @@
 ## v0.1
 ##
 ## Append this to your ~/.zshrc & ~/.bashrc
-## to enable source-highlight for less and add
-## bioSyntax pipe capability on your command line
-##
 export HIGHLIGHT="$HOME/.local/share/source-highlight"
 export LESSOPEN="| $HIGHLIGHT/src-hilite-lesspipe-bio.sh %s"
 export LESS=" -R "
@@ -35,3 +32,4 @@ alias bam-less='sam-less'
 # Auxillary syntaxes (uncomment to activate)
 alias fai-less='source-highlight      -f esc --lang-def=$HIGHLIGHT/faidx.lang    --outlang-def=$HIGHLIGHT/bioSyntax.outlang   --style-file=$HIGHLIGHT/sam.style   | less'
 alias flagstat-less='source-highlight -f esc --lang-def=$HIGHLIGHT/flagstat.lang --outlang-def=$HIGHLIGHT/bioSyntax.outlang   --style-file=$HIGHLIGHT/sam.style   | less'
+#export HIGHLIGHT="/usr/local/opt/source-highlight/share/source-highlight"
