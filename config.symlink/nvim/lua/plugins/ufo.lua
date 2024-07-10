@@ -8,7 +8,7 @@ return {
     -- provider_selector = function(bufnr, filetype, buftype)
     --   return { "treesitter", "indent" }
     -- end,
-    open_fold_hl_timeout = 400,
+    open_fold_hl_timeout = 2000,
     -- close_fold_kinds = { "imports", "comment" },
     preview = {
       win_config = {
@@ -29,7 +29,7 @@ return {
     vim.o.foldcolumn = "1" -- '0' is not bad
     vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
     vim.o.foldlevelstart = 99
-    vim.o.foldenable = true
+    vim.o.foldenable = false
   end,
   config = function(_, opts)
     local handler = function(virtText, lnum, endLnum, width, truncate)
