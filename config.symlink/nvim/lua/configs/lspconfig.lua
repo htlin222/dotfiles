@@ -1,3 +1,4 @@
+local vim = vim
 -- EXAMPLE
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
@@ -15,6 +16,8 @@ local servers = {
   "julials",
   "markdown_oxide",
   "pyright",
+  "pylsp",
+  "basedpyright",
   "r_language_server",
   "ruff_lsp",
   "tsserver",

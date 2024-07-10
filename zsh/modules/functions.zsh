@@ -430,10 +430,6 @@ function jupyter-init() {
 	jupyter-lab
 }
 function playground() {
-	local GREEN='\033[0;32m'
-	local NC='\033[0m'
-
-	# 取得當前日期和時間
 	current_datetime=$(date +'%Y%m%d-%H%M')
 
 	if [ $# -eq 0 ]; then
@@ -452,11 +448,9 @@ function playground() {
 	echo "# $folder_name\n\n> $current_datetime" >$folder_name/README.md
 	# 進入新創建的目錄
 	cd "$folder_name" || exit 1
-	# uv venv
-	# source .venv/bin/activate
-
-	tmux new-window
-	cd -
+	# uv venv source .venv/bin/activate
+	# tmux new-window
+	# cd -
 }
 function act!() {
 	[ -f 'bin/activate' ] && source bin/activate

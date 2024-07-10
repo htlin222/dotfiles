@@ -11,11 +11,11 @@ local has_words_before = function()
 end
 return { -- this table will override the default cmp setting
   "hrsh7th/nvim-cmp",
-  -- event = { "InsertEnter" },
-  event = { "VeryLazy" },
+  event = { "InsertEnter" },
+  -- event = { "VeryLazy" },
   opts = {
     performance = {
-      max_view_entries = 5,
+      max_view_entries = 15,
     },
     window = {
       completion = cmp.config.window.bordered(nil),

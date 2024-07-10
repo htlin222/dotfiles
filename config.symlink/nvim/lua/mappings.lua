@@ -116,3 +116,4 @@ map("v", "H", "^", { desc = "begining of line" })
 
 -- Lspsaga
 map("n", "<leader>lo", "<cmd>Lspsaga outline<CR>", { desc = "Lspsaga Code Outline" })
+map("n", "K", "<cmd>Lspsaga hover_doc<CR>", { desc = "Hover Doc" })
