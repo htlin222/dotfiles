@@ -38,6 +38,14 @@ autocmd("TextYankPost", {
 autocmd("BufWritePre", { pattern = "", command = ":%s/\\s\\+$//e" })
 autocmd("BufWritePre", { pattern = { "*.txt", "*.md" }, command = "PanguAll" })
 
+autocmd({ "BufRead", "BufNewFile" }, {
+  callback = function()
+    if vim.bo.filetype == "" then
+      vim.bo.filetype = "bash"
+    end
+  end,
+})
+
 -- sets the filetype to zsh for any new or existing buffer with a .gp file extension
 autocmd({ "BufRead", "BufNewFile" }, { pattern = "*.gp", command = "set filetype=zsh" })
 

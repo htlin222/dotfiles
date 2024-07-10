@@ -9,7 +9,7 @@ local servers = {
   "awk_ls",
   "bashls",
   "cssls",
-  "harper_ls",
+  -- "harper_ls",
   "html",
   "jsonls",
   "julials",

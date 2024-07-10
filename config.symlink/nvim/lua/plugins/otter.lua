@@ -2,6 +2,7 @@ return {
   "jmbuhr/otter.nvim",
   -- Optional dependencies
   event = "VeryLazy",
+  ft = { "markdown", "norg" },
   config = function()
     local otter = require "otter"
     otter.setup {

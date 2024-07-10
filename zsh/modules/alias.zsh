@@ -1,11 +1,14 @@
 if uname | grep -q "Darwin"; then
-	alias open="open"
+  alias open="open"
+  alias xdg-open="open"
 else
-	alias open="xdg-open"
+  alias open="xdg-open"
+  alias xdg-open="xdg-open"
 fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias man='colored man'
+alias nt='newsboat'
 alias todo='pter ~/Dropbox/todo.txt'
 alias zshconfig="vim ~/.zshrc"
 alias mkdir="mkdir -p"

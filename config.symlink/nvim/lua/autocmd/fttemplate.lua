@@ -30,7 +30,7 @@ autocmd("BufNewFile", {
       "# --END-- #",
       "set -ue",
       "set -o pipefail",
-      "set -x",
+      "trap \"echo 'END'\" EXIT",
       "",
       "",
     }

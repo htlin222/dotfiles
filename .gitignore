@@ -38,6 +38,8 @@ node_modules/*
 */copyq/*
 */HTLIN/*
 
+newsboat.symlink/cache.db
+newsboat.symlink/history.search
 
 tmux/tmux.symlink/plugins/tmux
 tmux/tmux.symlink/plugins/**
