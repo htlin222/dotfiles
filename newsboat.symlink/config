@@ -5,6 +5,8 @@ max-items 50
 # externel browser
 browser "open -g -a 'Thorium' %u"
 
+macro y set browser "/usr/local/bin/you-get -p '/Applications/mpv.app/Contents/MacOS/mpv-bundle --no-ytdl --referrer=https://www.bilibili.com' %u > /dev/null &"; open-in-browser ; set browser "open"
+
 # unbind keys
 unbind-key j
 unbind-key k

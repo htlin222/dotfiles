@@ -26,3 +26,20 @@ http://www.jwatch.org/oncology-and-hematology/rss "03.Topics"
 https://onesearch-rss.nejm.org/api/specialty/rss?context=nejm&specialty=hematology-oncology "03.Topics"
 https://pubmed.ncbi.nlm.nih.gov/rss/search/12Ek7-__ImvJh-wseRs4aKt5E-NyK5HzqfcPavQ66TXMyUUkZ1/?limit=15&utm_campaign=pubmed-2&fc=20231218001752 "03.Topics"
 http://www.linuxjournal.com/node/feed "~Linux Journal"
+
+--Youtube--------------------------------------------------------
+https://www.youtube.com/feeds/videos.xml?channel_id=UCgLUl1WDoDXUtxPaZeSZHsw  創業 "~|- 李自然說"
+https://www.youtube.com/feeds/videos.xml?channel_id=UCLROLAN8kmU7tGQDs6KH-bQ  科普 "~|- 媽咪說"
+--B站-個人-------------------------------------------------------
+https://rsshub-flax.vercel.app/bilibili/user/video/28273002 英語 "~|- 口語控"
+https://rsshub-flax.vercel.app/bilibili/user/video/573735582 面試 "~|- ShowMeBug"
+https://rsshub-flax.vercel.app/bilibili/user/video/288339968 開發者 "~|- PegasusWang"
+https://rsshub-flax.vercel.app/bilibili/user/video/13081489 開發者 "~|- TheCW"
+https://rsshub-flax.vercel.app/bilibili/user/video/119801456 自媒體 "~|- 老蔣巨靠譜"
+--B站-教學-------------------------------------------------------
+https://rsshub-flax.vercel.app/bilibili/video/page/BV1bQ4y1A77L Node.js "~|- Nest.js實戰"
+--B站-分區-------------------------------------------------------
+https://rsshub-flax.vercel.app/bilibili/partion/ranking/189/3 B站分區 "~|- 裝機"
+https://rsshub-flax.vercel.app/bilibili/partion/ranking/209/3 B站分區 "~|- 職業職場"
+https://rsshub-flax.vercel.app/bilibili/partion/ranking/122/3 B站分區 "~|- 野生技術協會"
+-----------------------------------------------------------------
