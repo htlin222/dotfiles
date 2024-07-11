@@ -1,9 +1,9 @@
-local vim = vim
+-- local vim = vim
 -- EXAMPLE
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
-vim.diagnostic.config { virtual_text = false }
+-- vim.diagnostic.config { virtual_text = false } -- for tiny lsp
 local lspconfig = require "lspconfig"
 local servers = {
   "ast_grep",
@@ -17,7 +17,7 @@ local servers = {
   "markdown_oxide",
   "pyright",
   "pylsp",
-  "basedpyright",
+  -- "basedpyright",
   "r_language_server",
   "ruff_lsp",
   "tsserver",
