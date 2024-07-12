@@ -56,7 +56,7 @@ return { -- this table will override the default cmp setting
       { name = "emoji" },
       { name = "pandoc_references" },
       { name = "treesitter" },
-      -- { name = "cmp_r" },
+      { name = "cmp_r" },
       -- { name = "buffer-lines",            option = {} },
       {
         name = "look",

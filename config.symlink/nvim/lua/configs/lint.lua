@@ -8,7 +8,7 @@ lint.linters_by_ft = {
   },
   python = {
     "ruff",
-    "mypy",
+    -- "mypy",
     -- "codespell",
   },
   json = {

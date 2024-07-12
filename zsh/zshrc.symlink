@@ -3,8 +3,9 @@ if [ "$TMUX" = "" ]; then tmux; fi
 # ---- Welcome Message ----
 # cfonts "Lizard" --colors white,"#f80"
 if [ -f ".venv/bin/activate" ]; then
-	source .venv/bin/activate
-	echo "uv .venv is activated"
+  source .venv/bin/activate
+  osascript -e 'display notification "uv .venv is activated ✨" with title "Python Venv"'
+  echo "uv .venv is activated ✨"
 fi
 # ---- oh-my-zsh stuff and p10k ----
 
@@ -19,41 +20,41 @@ DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
 plugins+=(
-	colored-man-pages
-	copyfile
-	fast-syntax-highlighting
-	fzf-tab
-	git
-	gitignore
-	jsontools
-	lol
-	man
-	rsync
-	sudo
-	web-search
-	you-should-use
-	zsh-autosuggestions
-	zsh-lazyload
-	zsh-vi-mode
-	zsh-autopair
+  colored-man-pages
+  copyfile
+  fast-syntax-highlighting
+  fzf-tab
+  git
+  gitignore
+  jsontools
+  lol
+  man
+  rsync
+  sudo
+  web-search
+  you-should-use
+  zsh-autosuggestions
+  zsh-lazyload
+  zsh-vi-mode
+  zsh-autopair
 )
 
 ZSH_WEB_SEARCH_ENGINES=(
-	# reddit "https://www.reddit.com/search/?q="
-	anna "https://tw.annas-archive.org/search?index=&ext=epub&sort=newest&q="
-	pubmed "https://pubmed-ncbi-nlm-nih-gov.autorpa.kfsyscc.org/?sort=date&term="
-	cco "https://clinicaloptions.com/CE-CME?specialities=hematology,oncology&contenttypes=pdf,slideset,slideset-download,text-module&searchtext="
-	scihub "https://sci-hub.tw/"
-	search-uptodate "https://www-uptodate-com.autorpa.kfsyscc.org/contents/search?search="
-	zlib "https://zh.singlelogin.re/s/"
-	google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
+  # reddit "https://www.reddit.com/search/?q="
+  anna "https://tw.annas-archive.org/search?index=&ext=epub&sort=newest&q="
+  pubmed "https://pubmed-ncbi-nlm-nih-gov.autorpa.kfsyscc.org/?sort=date&term="
+  cco "https://clinicaloptions.com/CE-CME?specialities=hematology,oncology&contenttypes=pdf,slideset,slideset-download,text-module&searchtext="
+  scihub "https://sci-hub.tw/"
+  search-uptodate "https://www-uptodate-com.autorpa.kfsyscc.org/contents/search?search="
+  zlib "https://zh.singlelogin.re/s/"
+  google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
 )
 
 source "$ZSH/oh-my-zsh.sh"
 
 # ---- Source API ----
 for file in ~/API/*; do
-	source "$file"
+  source "$file"
 done
 
 # ---- Key Binding ----
@@ -69,8 +70,8 @@ source "$DOTFILES/zsh/modules/biosyntax.zsh"
 # fnm
 FNM_PATH="/Users/mac/Library/Application Support/fnm"
 if [ -d "$FNM_PATH" ]; then
-	export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
-	eval "$(fnm env)"
+  export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
+  eval "$(fnm env)"
 fi
 
 source /Users/htlin/.config/broot/launcher/bash/br

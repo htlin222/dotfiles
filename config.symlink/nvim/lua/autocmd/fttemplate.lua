@@ -84,7 +84,7 @@ autocmd("BufNewFile", {
       '# install.packages("PACKAGE_NAME")',
       '# devtools::install_github("author/PROJECT")',
       "# library(ggplot2)",
-      "",
+      "renv::init()",
       "",
     }
     vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
