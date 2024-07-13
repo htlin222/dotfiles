@@ -22,6 +22,7 @@ local servers = {
   "ruff_lsp",
   "tsserver",
   "vimls",
+  "jdtls",
 }
 -- too slow in large valut"markdown_oxide",
 capabilities.workspace = {
@@ -45,5 +46,11 @@ require("lspconfig").lua_ls.setup {
         globals = { "vim" },
       },
     },
+  },
+}
+require("lspconfig").groovyls.setup {
+  cmd = { "java", "-jar", "/usr/local/opt/groovysdk/libexec/lib/groovy-4.0.8.jar" },
+  filetypes = {
+    "groovy",
   },
 }

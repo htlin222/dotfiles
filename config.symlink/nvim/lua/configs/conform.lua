@@ -23,7 +23,7 @@ local options = {
     markdown = { "prettier", "markdownlint-cli2" },
     quarto = { "prettier", "markdownlint-cli2" },
     graphql = { "prettier" },
-    -- groovy = { "checkstyle" },
+    groovy = { "google-java-format" },
     python = { "ruff_fix", "ruff_format", "isort", "mypy" },
   },
 

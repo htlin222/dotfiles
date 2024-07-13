@@ -1,11 +1,12 @@
 return {
   "jmbuhr/otter.nvim",
   -- Optional dependencies
-  event = "VeryLazy",
+  -- event = "VeryLazy",
   ft = { "markdown", "norg" },
   config = function()
     local otter = require "otter"
     otter.setup {
+      verbose = { no_code_found = false },
       lsp = {
         hover = {
           border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },

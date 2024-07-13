@@ -4,7 +4,7 @@ if [ "$TMUX" = "" ]; then tmux; fi
 # cfonts "Lizard" --colors white,"#f80"
 if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
-  osascript -e 'display notification "uv .venv is activated ✨" with title "Python Venv"'
+  screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
   echo "uv .venv is activated ✨"
 fi
 # ---- oh-my-zsh stuff and p10k ----

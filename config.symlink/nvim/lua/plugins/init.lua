@@ -6,6 +6,7 @@ return {
       require "configs.conform"
     end,
   },
+  { "nvim-java/nvim-java" },
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -23,6 +24,13 @@ return {
   {
     "williamboman/mason.nvim",
     opts = {
+      ui = {
+        icons = {
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗",
+        },
+      },
       ensure_installed = {
         "julia-lsp",
         "alex",
