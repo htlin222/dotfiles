@@ -9,7 +9,7 @@ local d = ls.dynamic_node
 local r = ls.restore_node
 local l = require("luasnip.extras").lambda
 local rep = require("luasnip.extras").rep
-local p = require("luasnip.extras").partial
+-- local p = require("luasnip.extras").partial
 local m = require("luasnip.extras").match
 local n = require("luasnip.extras").nonempty
 local dl = require("luasnip.extras").dynamic_lambda
@@ -314,7 +314,6 @@ ls.add_snippets("all", {
   -- Shorthand for repeating the text in a given node.
   s("repeat", { i(1, "text"), t { "", "" }, rep(1) }),
   -- Directly insert the ouput from a function evaluated at runtime.
-  s("today", p(os.date, "%Y-%m-%d")),
   -- use matchNodes (`m(argnode, condition, then, else)`) to insert text
   -- based on a pattern/function/lambda-evaluation.
   -- It's basically a shortcut for simple functionNodes:
