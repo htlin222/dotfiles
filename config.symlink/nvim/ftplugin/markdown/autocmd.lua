@@ -6,22 +6,22 @@ local function check_and_prompt_publish()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
   -- 檢查是否包含 "draft: false"
-  local contains_draft_false = false
+  local is_draft = false
   for _, line in ipairs(lines) do
-    if line:match "draft: false" then
-      contains_draft_false = true
+    if line:match "draft: true" then
+      is_draft = true
       break
     end
   end
 
   -- 如果包含，提示用戶
-  if contains_draft_false then
+  if is_draft then
     local response = vim.fn.input "Are You Going to publish this y/n: "
     if response == "y" then
       -- 修改 "draft: false" 為 "draft: true"
       for i, line in ipairs(lines) do
-        if line:match "draft: false" then
-          lines[i] = line:gsub("draft: false", "draft: true")
+        if line:match "draft: true" then
+          lines[i] = line:gsub("draft: true", "draft: false")
           break
         end
       end

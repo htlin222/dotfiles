@@ -20,6 +20,7 @@ opt.softtabstop = 2
 opt.swapfile = false
 opt.scrolloff = 10
 opt.sidescrolloff = 8
+opt.ttimeoutlen = 0
 opt.tabstop = 2
 opt.colorcolumn = "80," .. table.concat(vim.fn.range(120, 999), ",")
 wo.relativenumber = true
