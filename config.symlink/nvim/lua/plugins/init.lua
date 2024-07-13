@@ -14,13 +14,6 @@ return {
       require "configs.lspconfig"
     end,
   },
-  -- {
-  --   "rachartier/tiny-inline-diagnostic.nvim",
-  --   event = "VeryLazy",
-  --   config = function()
-  --     require("tiny-inline-diagnostic").setup()
-  --   end,
-  -- },
   {
     "williamboman/mason.nvim",
     opts = {
@@ -33,13 +26,13 @@ return {
       },
       ensure_installed = {
         "julia-lsp",
-        "alex",
         "ast-grep",
         "bash-language-server",
         "beautysh",
         "bibtex-tidy",
-        "black",
+        "jupytext",
         "cbfmt",
+        "jupytext",
         "checkstyle",
         "clang-format",
         "codespell",

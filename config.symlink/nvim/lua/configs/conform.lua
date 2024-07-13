@@ -21,10 +21,10 @@ local options = {
     sh = { "shfmt" },
     zsh = { "shfmt" },
     markdown = { "prettier", "markdownlint-cli2" },
-    quarto = { "prettier", "markdownlint-cli2" },
+    quarto = { "prettier", "markdownlint-cli2", "jupytext" },
     graphql = { "prettier" },
     groovy = { "google-java-format" },
-    python = { "ruff_fix", "ruff_format", "isort", "mypy" },
+    python = { "ruff_fix", "ruff_format", "isort", "mypy", "docformatter" },
   },
 
   format_on_save = {

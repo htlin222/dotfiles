@@ -1,4 +1,7 @@
 if [ "$TMUX" = "" ]; then tmux; fi
+if [ -n "${ZSH_DEBUGRC+1}" ]; then
+  zmodload zsh/zprof
+fi
 
 # ---- Welcome Message ----
 # cfonts "Lizard" --colors white,"#f80"
@@ -51,6 +54,8 @@ ZSH_WEB_SEARCH_ENGINES=(
 )
 
 source "$ZSH/oh-my-zsh.sh"
+eval "$(fixit init zsh)"
+# eval $(thefuck --alias)
 
 # ---- Source API ----
 for file in ~/API/*; do
@@ -76,3 +81,6 @@ fi
 
 source /Users/htlin/.config/broot/launcher/bash/br
 eval "$(atuin init zsh)"
+if [ -n "${ZSH_DEBUGRC+1}" ]; then
+  zprof
+fi

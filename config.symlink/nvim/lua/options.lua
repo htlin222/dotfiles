@@ -1,5 +1,4 @@
 require "nvchad.options"
-
 local vim = vim
 local opt = vim.opt
 local wo = vim.wo

@@ -8,6 +8,8 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias man='colored man'
+alias f="fix"
+alias ec="echo"
 alias nt='newsboat'
 alias todo='pter ~/Dropbox/todo.txt'
 alias zshconfig="vim ~/.zshrc"

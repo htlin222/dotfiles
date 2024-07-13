@@ -8,12 +8,11 @@ lint.linters_by_ft = {
   },
   python = {
     "ruff",
-    -- "mypy",
     -- "codespell",
   },
   json = {
-    -- "eslint_d",
     "jsonlint",
+    -- "eslint_d",
     -- "write_good",
   },
   markdown = {
