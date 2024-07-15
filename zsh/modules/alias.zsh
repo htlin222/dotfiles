@@ -8,6 +8,7 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias man='colored man'
+alias ztop='zenith'
 alias f="fix"
 alias ec="echo"
 alias nt='newsboat'
@@ -27,7 +28,7 @@ alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
 alias mac_gdrive="cd /Users/mac/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
 alias up="ffsend upload"
 alias uvinit="uv venv && source .venv/bin/activate"
-alias upip="uv pip install"
+# alias upip="uv pip install"
 alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
 alias "brewcask"="brew install --cask --no-quarantine"
 alias bc='bc --quiet <(echo "scale=5;print\"scale=5\n\"")'
