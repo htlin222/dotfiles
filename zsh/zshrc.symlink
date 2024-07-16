@@ -71,6 +71,7 @@ source "$DOTFILES/zsh/modules/alias.zsh"
 source "$DOTFILES/zsh/modules/functions.zsh"
 source "$DOTFILES/zsh/modules/fzf.zsh"
 source "$DOTFILES/zsh/modules/biosyntax.zsh"
+source "$HOME/.uvv"
 
 # fnm
 FNM_PATH="/Users/mac/Library/Application Support/fnm"

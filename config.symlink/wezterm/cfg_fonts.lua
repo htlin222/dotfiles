@@ -22,7 +22,8 @@ local function font_with_fallback(font_family)
 	-- family names, not file names
 	return wezterm.font_with_fallback({
 		font_family,
-		-- "Font Awesome 6 Free Solid", -- nice double-spaced symbols!
+		"Font Awesome 6 Free Solid", -- nice double-spaced symbols!
+		{ family = "jf open 粉圓 2.0" },
 	})
 end
 

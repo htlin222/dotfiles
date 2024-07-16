@@ -1,3 +1,4 @@
+local vim = vim
 return {
   "evanpurkhiser/image-paste.nvim",
   keys = {
@@ -8,11 +9,15 @@ return {
       desc = "paste_image",
     },
   },
-
   config = function()
-    require("image-paste").setup {
+    local opts = {
       imgur_client_id = "713cacc415ed391",
-      image_name = "height:450px",
     }
+    if vim.bo.filetype == "markdown" then
+      opts.image_name = "h:450px"
+    elseif vim.bo.filetype == "quarto" then
+      opts.image_name = "Caption:"
+    end
+    require("image-paste").setup(opts)
   end,
 }
