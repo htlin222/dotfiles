@@ -4,6 +4,7 @@ return {
   config = function()
     -- Create a table with the options to be passed to setup()
     local opts = {
+      pdfviewer = "",
       R_args = { "--quiet", "--no-save" },
       hook = {
         on_filetype = function()
