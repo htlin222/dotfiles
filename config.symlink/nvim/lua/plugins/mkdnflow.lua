@@ -1,7 +1,7 @@
 return { --mkdnflow
   "jakewvincent/mkdnflow.nvim",
   evnt = "VeryLazy",
-  ft = { "markdown", "quarto" },
+  ft = { "markdown", "quarto", "qmd" },
   config = function()
     -- by default, the fold method was set by tree-sitter expr
     vim.opt.foldmethod = "manual"
@@ -22,7 +22,15 @@ return { --mkdnflow
         tables = true,
         yaml = false,
       },
-      filetypes = { md = true, rmd = true, markdown = true, telekasten = true, vimiwki = true },
+      filetypes = {
+        md = true,
+        rmd = true,
+        markdown = true,
+        telekasten = true,
+        vimiwki = true,
+        quarto = true,
+        qmd = true,
+      },
       perspective = {
         priority = "current",
         fallback = "root",
