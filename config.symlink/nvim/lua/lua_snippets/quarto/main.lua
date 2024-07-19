@@ -5,14 +5,19 @@ local t = ls.text_node
 local i = ls.insert_node
 return {
   s({ trig = "inc" }, { t { "::: {.incremental}", "", "" }, i(0), t { "", "", ":::", "", "" } }),
+  s({ trig = "stack" }, { t { '{data-stack-name="' }, i(0), t { '"}' } }),
   s({ trig = "small" }, { i(0), t { "{.smaller}" } }),
+  s({ trig = "fit" }, { i(0), t { "{.r-fit-text}" } }),
   s({ trig = "scroll" }, { i(0), t { "{.scrollable}" } }),
+  s({ trig = "v-center" }, { i(0), t { ".v-center-container" } }),
+  s({ trig = "br" }, { t { "<br>" } }),
+  s({ trig = "hr" }, { t { "<hr>" } }),
   s({ trig = "col" }, {
-    t { ":::: {.columns}", "", "::: {.column width='50%'}", "", "" },
+    t { "<!-- 👉👉👉👉👉👉 Two Columns -->", ":::: {.columns}", "::: {.column width='50%'}", "", "" },
     i(1),
-    t { "", "", ":::", "", "::: {.column width='50%'}", "", "" },
+    t { "", "", ":::", "::: {.column width='50%'}", "", "" },
     i(0),
-    t { "", "", ":::", "", "::::", "" },
+    t { "", "", ":::", "::::", "<!-- 👉👉👉👉👉 End of Two Columns -->" },
   }),
   s({ trig = "note" }, {
     t { "", "::: {.notes}", "", "" },

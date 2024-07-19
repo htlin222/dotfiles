@@ -85,3 +85,4 @@ eval "$(atuin init zsh)"
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
 fi
+source /Users/htlin/.uvv

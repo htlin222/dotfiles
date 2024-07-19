@@ -7,5 +7,10 @@ return {
   },
   opts = {
     -- Your setup opts here
+    providers = {
+      markdown = {
+        filetypes = { "markdown", "rmarkdown", "quarto" },
+      },
+    },
   },
 }

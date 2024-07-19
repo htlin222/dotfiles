@@ -40,7 +40,7 @@ return {
     -- enable completion/diagnostics
     -- defaults are true
     local completion = true
-    local diagnostics = true
+    local diagnostics = false
     -- treesitter query to look for embedded languages
     -- uses injections if nil or not set
     local tsquery = nil
