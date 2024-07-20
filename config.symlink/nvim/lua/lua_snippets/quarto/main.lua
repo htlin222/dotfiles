@@ -9,6 +9,11 @@ return {
   s({ trig = "small" }, { i(0), t { "{.smaller}" } }),
   s({ trig = "fit" }, { i(0), t { "{.r-fit-text}" } }),
   s({ trig = "scroll" }, { i(0), t { "{.scrollable}" } }),
+  s({ trig = "qrcode" }, {
+    t { "{{< qrcode < " },
+    i(0),
+    t { '> width="200" height="200" >}}' },
+  }),
   s({ trig = "v-center" }, { i(0), t { ".v-center-container" } }),
   s({ trig = "br" }, { t { "<br>" } }),
   s({ trig = "hr" }, { t { "<hr>" } }),

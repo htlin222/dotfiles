@@ -737,3 +737,59 @@ function notify() {
   local content="$2"
   osascript -e "display notification \"$content\" with title \"$title\""
 }
+syncq() {
+  # 定義顏色
+  RED='\033[0;31m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
+  NC='\033[0m' # 無顏色
+
+  printf "${YELLOW}Are you sure you want to sync the files? (y/n)${NC} "
+  read confirm
+  if [ "$confirm" = "y" ]; then
+    printf "${GREEN}Syncing files...${NC}\n"
+    rsync -av --exclude '.*' /Users/htlin/quarto-revealjs-starter/_extensions /Users/htlin/quarto-revealjs-starter/assets /Users/htlin/quarto-revealjs-starter/_quarto.yml ./
+    printf "${GREEN}Sync complete.${NC}\n"
+  else
+    printf "${RED}Sync canceled.${NC}\n"
+  fi
+}
+# 在 .zshrc 中定義函數
+function delete_line_with_fzf() {
+  local file="$1"
+
+  # 檢查文件是否存在
+  if [[ ! -f "$file" ]]; then
+    echo "文件 $file 不存在"
+    return 1
+  fi
+
+  # 用 fzf 選擇一行
+  local selected_line=$(cat "$file" | fzf)
+
+  # 檢查是否選定了某行
+  if [[ -n "$selected_line" ]]; then
+    # 顯示上下文行和被刪除行
+    echo "上下文行："
+    grep -C 1 -F "$selected_line" "$file" | sed "s/$selected_line/\x1b[31m&\x1b[0m/"
+
+    # 使用 mktemp 創建臨時文件
+    local temp_file=$(mktemp)
+
+    # 刪除選定的那一行並寫入臨時文件
+    grep -vF "$selected_line" "$file" >"$temp_file"
+
+    # 檢查 grep 命令是否成功
+    if [[ $? -eq 0 ]]; then
+      # 替換原文件
+      mv "$temp_file" "$file"
+      echo -e "\n已刪除的行：\x1b[31m$selected_line\x1b[0m"
+    else
+      echo "刪除過程中發生錯誤"
+      rm "$temp_file"
+      return 1
+    fi
+  else
+    echo "未選定任何行"
+  fi
+}

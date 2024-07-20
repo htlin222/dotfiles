@@ -1,6 +1,4 @@
 # general settings
-auto-reload yes
-max-items 50
 
 # externel browser
 browser "open -g -a 'Thorium' %u"
@@ -16,6 +14,8 @@ unbind-key K
 # bind keys - vim style
 bind-key j down
 bind-key k up
+bind-key ^U pagedown
+bind-key ^D pageup
 bind-key l open
 bind-key h quit
 bind-key t select-tag feedlist
@@ -40,3 +40,12 @@ highlight article "^(Feed|Title|Author|Link|Date):" color14 default bold
 highlight article "\\((link|image|video)\\)" color8 default
 highlight article "https?://[^ ]+" color4 default
 highlight article "\[[0-9]+\]" color6 default bold
+
+# Config
+keep-articles-days 15
+max-items 10
+show-read-feeds no
+reload-time 720
+auto-reload no
+save-path "~/Dropbox/tmp/"
+# define-filter "last_week" "age <= 7"
