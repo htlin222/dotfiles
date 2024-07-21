@@ -9,6 +9,7 @@ return {
   s({ trig = "small" }, { i(0), t { "{.smaller}" } }),
   s({ trig = "fit" }, { i(0), t { "{.r-fit-text}" } }),
   s({ trig = "scroll" }, { i(0), t { "{.scrollable}" } }),
+  s({ trig = "center" }, { i(0), t { '{fig-align="center"}' } }),
   s({ trig = "qrcode" }, {
     t { "{{< qrcode < " },
     i(0),
@@ -57,5 +58,10 @@ return {
     t { '" height="' },
     i(0),
     t { '"}' },
+  }),
+  s({ trig = "absfrag" }, {
+    t { "", "::: {.absolute bottom=25 left=100 .fragment}", "", "" },
+    i(0),
+    t { "", "", ":::" },
   }),
 }
