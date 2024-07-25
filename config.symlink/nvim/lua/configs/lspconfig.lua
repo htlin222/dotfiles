@@ -53,8 +53,8 @@ require("lspconfig").groovyls.setup {
   },
 }
 
-require("lspconfig").markdown_oxide.setup {
-  filetypes = {
-    "quarto",
-  },
-}
+-- require("lspconfig").markdown_oxide.setup {
+--   filetypes = {
+--     "quarto",
+--   },
+-- }

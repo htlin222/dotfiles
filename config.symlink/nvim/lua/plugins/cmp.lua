@@ -30,14 +30,14 @@ return { -- this table will override the default cmp setting
           },
         },
       },
-      { name = "codeium" },
+      -- { name = "codeium" },
       -- { name = "supermaven" },
       { name = "luasnip" },
       -- { name = "cmp_zotcite" },
       -- { name = "papis" },
       { name = "nvim_lsp_document_symbol" },
       { name = "nvim_lsp_signature_help" },
-      { name = "otter" },
+      -- { name = "otter" },
       { name = "plugins" },
       -- { name = "mkdnflow" },
       { name = "buffer" },
@@ -54,7 +54,7 @@ return { -- this table will override the default cmp setting
       { name = "cmp_yanky" },
       -- { name = "cmp_tabnine" },
       { name = "emoji" },
-      { name = "pandoc_references" },
+      -- { name = "pandoc_references" },
       { name = "treesitter" },
       { name = "cmp_r" },
       -- { name = "buffer-lines",            option = {} },
@@ -108,7 +108,7 @@ return { -- this table will override the default cmp setting
           fallback()
         end
       end, { "i", "s" }),
-      ["<C-j>"] = require("cmp").mapping(function(fallback)
+      ["<C-n>"] = require("cmp").mapping(function(fallback)
         if require("luasnip").choice_active() then
           require("luasnip").change_choice(1)
         else
@@ -118,7 +118,7 @@ return { -- this table will override the default cmp setting
         "i",
         "s",
       }),
-      ["<C-k>"] = require("cmp").mapping(function(fallback)
+      ["<C-p>"] = require("cmp").mapping(function(fallback)
         if require("luasnip").choice_active() then
           require("luasnip").change_choice(-1)
         else
