@@ -96,7 +96,7 @@ map("i", "<C-c>", "<ESC>", { desc = "Escape" })
 -- visual mode --
 map("v", "<", "<gv", { desc = "Indent left" })
 map("v", ">", ">gv", { desc = "Indent right" })
-map("v", ";", ":", { desc = "enter command mode" })
+map("v", ";", ":", { desc = "enter command mode", silent = false })
 map("v", "<leader>ga", ":'<,'>!aicomp<cr>", { desc = "Aider Append" })
 map("v", "p", '"_dP', { desc = "paste but don't overwrite the clipboard" })
 map("v", "ih", "i(", { desc = "same as i[" })
