@@ -10,6 +10,9 @@ opt.autochdir = true
 opt.lbr = true
 opt.expandtab = true
 opt.shiftround = false
+opt.wrap = true
+opt.linebreak = true
+opt.textwidth = 80
 opt.shiftwidth = 2
 opt.tabstop = 2
 

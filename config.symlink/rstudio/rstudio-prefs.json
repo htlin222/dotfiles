@@ -46,6 +46,7 @@
         ],
         "tabSet1": [
             "Files",
+            "Plots",
             "Presentation"
         ],
         "tabSet2": [
@@ -54,7 +55,6 @@
         "hiddenTabSet": [
             "Environment",
             "History",
-            "Plots",
             "Connections",
             "Packages",
             "Help",
