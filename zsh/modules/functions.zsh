@@ -89,7 +89,7 @@ function check_and_start_marp_serve() {
     echo "Starting Marp serve..."
     # Start Marp serve in the background
     marp ~/Dropbox/slides -s \
-      --engine ~/Dropbox/slides/engine.js \
+      --engine ~/Dropbox/slides/src/engine.js \
       --html --bespoke.progress \
       "$@" &
   fi
