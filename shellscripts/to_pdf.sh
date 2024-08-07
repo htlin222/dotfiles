@@ -14,7 +14,7 @@ NEW_FILE="${FILE_PATH%.*}-no-animation.css"
 sed '/\/\* animation \*\//q' "$FILE_PATH" >"$NEW_FILE"
 
 # Run Marp with the new CSS file
-marp --theme "$NEW_FILE" "$1" --engine "$HOME/Dropbox/slides/engine.js" --html -o "$HOME/Dropbox/tmp/${1%.*}.pdf" --allow-local-files --pdf-outlines --pdf-outlines.pages=false --pdf-notes
+marp --theme "$NEW_FILE" "$1" --engine "$HOME/Dropbox/slides/src/engine.js" --html -o "$HOME/Dropbox/tmp/${1%.*}.pdf" --allow-local-files --pdf-outlines --pdf-outlines.pages=false --pdf-notes
 
 # Open the output directory
 open "$HOME/Dropbox/tmp/"
