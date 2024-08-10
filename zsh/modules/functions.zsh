@@ -793,3 +793,18 @@ function delete_line_with_fzf() {
     echo "未選定任何行"
   fi
 }
+topdf() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: convert_to_pdf <file1> [file2 ...]"
+    return 1
+  fi
+
+  for file in "$@"; do
+    if [ -f "$file" ]; then
+      soffice --headless --convert-to pdf "$file"
+      echo "Converted $file to PDF."
+    else
+      echo "File $file not found."
+    fi
+  done
+}
