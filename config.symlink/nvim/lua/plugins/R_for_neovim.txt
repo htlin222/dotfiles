@@ -1,7 +1,7 @@
 local vim = vim
 return {
   "R-nvim/R.nvim",
-  lazy = false,
+  lazy = true,
   opts = {
     -- Create a table with the options to be passed to setup()
     R_args = { "--quiet", "--no-save" },
