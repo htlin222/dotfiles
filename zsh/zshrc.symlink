@@ -54,7 +54,7 @@ ZSH_WEB_SEARCH_ENGINES=(
 )
 
 source "$ZSH/oh-my-zsh.sh"
-eval "$(fixit init zsh)"
+# eval "$(fixit init zsh)"
 # eval $(thefuck --alias)
 
 # ---- Source API ----
