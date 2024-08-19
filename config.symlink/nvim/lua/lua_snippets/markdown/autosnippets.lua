@@ -18,6 +18,7 @@ ls.add_snippets("all", {
   s("rx:", { t "treatment: " }),
   s("pfx", { t 'prefix: "', i(0), t '"' }),
   s("desc.", { t 'description: "', i(0), t '"' }),
+  s("incl", { t "{{ ", i(0), t " }}" }),
   s("adju", { t "adjuvant", i(0) }),
   s("b9", { t "benign", i(0) }),
   s("pt", { t "patient", i(0) }),

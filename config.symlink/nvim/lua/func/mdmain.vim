@@ -78,7 +78,7 @@ augroup MarkdownFrontMatter
   autocmd BufNewFile ~/Dropbox/Medical/*.md call CreateMedicalDiary()
   autocmd BufNewFile ~/Dropbox/patients/*.md call CreateRegular()
   autocmd BufNewFile ~/Dropbox/inbox/*.md call CreateRegular()
-  autocmd BufNewFile ~/Dropbox/slides/*.md call MarpYaml()
+  " autocmd BufNewFile ~/Dropbox/slides/*.md call MarpYaml()
   autocmd BufNewFile ~/Dropbox/blog/*.md call NewBlogPost()
 augroup END
 
