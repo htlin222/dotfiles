@@ -1,13 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# title: split_by_h2
-# author: Hsieh-Ting Lin, the Lizard 🦎
-# description: split_by_h2 is a script about...
-# date: "2024-03-06"
-# --END-- #
-
 import os
 import re
+from collections import OrderedDict
 from datetime import datetime
 
 
@@ -21,7 +14,7 @@ class MarkdownProcessor:
         with open(self.file_path, "r", encoding="utf-8") as f:
             return f.read()
 
-    def _create_new_md_file(self, title, content, yaml_extra=""):
+    def _create_new_md_file(self, title, content):
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         yaml_header = f"""---
 title: "{title}"
@@ -35,71 +28,84 @@ tags:
         info_block = f"> [!info]\n>\n> 🌱來自: [[{self.original_filename}]]\n\n"
         return yaml_header + info_block + f"# {title}\n\n{content}"
 
-    def _search_siblings_to_next_heading(
-        self, pattern=r"### Siblings.*?(?=\n[#]+ |$)", flags=re.DOTALL
-    ):
-        match = re.search(pattern, self.content, flags=flags)
-        return match.group(0).strip() if match else ""
-
-    def _delete_siblings_from_text(
-        self, pattern=r"### Siblings.*?(?=\n[#]+ |$)", flags=re.DOTALL
-    ):
-        self.content = re.sub(pattern, "", self.content, flags=flags)
-
-    def _get_content_before_first_h2(self):
-        match = re.search(r"##(?!#)", self.content)
-        if match:
-            return self.content[: match.start()].strip()
-        else:
-            return self.content.strip()
-
     def _process_markdown_content(self):
-        self._delete_siblings_from_text()
-        # 使用正則表達式直接分割和提取所需內容
-        pre_h1_content, h1_title, post_h1_content = re.split(
-            r"#\s(.+?)\n", self.content, 1
+        # Extract YAML front matter and content before first H1
+        yaml_and_pre_h1 = re.match(
+            r"^(---\n.*?\n---\n)?(.+?)(?=^# |\Z)",
+            self.content,
+            re.DOTALL | re.MULTILINE,
         )
-        between_h1_h2 = self._get_content_before_first_h2()
-        # 提取二級標題及其後的內容
-        level_2_headings = re.findall(
-            r"##\s(.+?)\n(.*?)(?=\n## |\Z)", post_h1_content, re.DOTALL
-        )
-        return pre_h1_content, h1_title, between_h1_h2, level_2_headings
+        yaml_content = yaml_and_pre_h1.group(1) or ""
+        pre_h1_content = yaml_and_pre_h1.group(2) or ""
+
+        # Split content into sections based on H1 headings
+        h1_sections = re.split(r"(^# .+?$)", self.content, flags=re.MULTILINE)[
+            1:
+        ]  # Skip content before first H1
+
+        h1_contents = OrderedDict()
+        h2_headings = OrderedDict()
+        all_h2 = OrderedDict()
+
+        for i in range(0, len(h1_sections), 2):
+            h1_title = h1_sections[i].strip()
+            h1_content = h1_sections[i + 1].strip() if i + 1 < len(h1_sections) else ""
+
+            # Process H2 headings within H1 content
+            h2_parts = re.split(r"(^## .+?$)", h1_content, flags=re.MULTILINE)
+
+            h1_content_without_h2 = h2_parts[0].strip()
+            h1_contents[h1_title] = h1_content_without_h2
+            h2_headings[h1_title] = []
+
+            for j in range(1, len(h2_parts), 2):
+                h2_title = h2_parts[j].strip()[3:]  # Remove '## '
+                h2_content = h2_parts[j + 1].strip() if j + 1 < len(h2_parts) else ""
+                h2_headings[h1_title].append((h2_title, h2_content))
+                all_h2[h2_title] = h2_content
+
+        return yaml_content, pre_h1_content, h1_contents, h2_headings, all_h2
+
+    def _lint_content(self, content):
+        # Replace multiple consecutive newlines with a single newline
+        return re.sub(r"\n{3,}", "\n\n", content)
 
     def save_new_markdown_files(self):
-        (
-            pre_h1_content,
-            h1_title,
-            between_h1_h2,
-            level_2_headings,
-        ) = self._process_markdown_content()
-        new_md_files = {
-            heading: self._create_new_md_file(heading, content)
-            for heading, content in level_2_headings
-        }
-
-        wikilink_list = "\n".join(
-            [
-                f"- [[{heading.lower().replace(' ', '_')}.md|{heading}]]"
-                for heading in new_md_files
-            ]
+        yaml_content, pre_h1_content, h1_contents, h2_headings, all_h2 = (
+            self._process_markdown_content()
         )
 
-        for filename, content in new_md_files.items():
-            # 在生成wikilink_list時排除當前的filename
-            filtered_wikilink_list = "\n".join(
-                link
-                for link in wikilink_list.split("\n")
-                if f'[[{filename.lower().replace(" ", "_")}.md|' not in link
-            )
+        new_md_files = {}
+        for h2_title, h2_content in all_h2.items():
+            new_md_files[h2_title] = self._create_new_md_file(h2_title, h2_content)
 
+        for filename, content in new_md_files.items():
             with open(
                 f"{filename.lower().replace(' ', '_')}.md", "w", encoding="utf-8"
             ) as f:
-                to_write = f"{content}\n\n### Siblings\n\n{filtered_wikilink_list}\n\n"
+                siblings = "\n".join(
+                    [
+                        f"- [[{h2.lower().replace(' ', '_')}.md|{h2}]]"
+                        for h2 in all_h2
+                        if h2 != filename
+                    ]
+                )
+                to_write = self._lint_content(
+                    f"{content}\n\n### Siblings\n\n{siblings}\n\n"
+                )
                 f.write(to_write)
-                main_content_updated = f"{between_h1_h2}\n\n{wikilink_list}\n\n"
-                self._update_original_file(main_content_updated)
+
+        # Reconstruct original file structure with wikilinks
+        main_content = yaml_content + pre_h1_content
+        for h1, h1_content in h1_contents.items():
+            main_content += f"\n\n{h1}\n{h1_content}\n"
+            for h2_title, _ in h2_headings[h1]:
+                main_content += (
+                    f"- [[{h2_title.lower().replace(' ', '_')}.md|{h2_title}]]\n"
+                )
+
+        main_content = self._lint_content(main_content.strip() + "\n")
+        self._update_original_file(main_content)
 
     def _update_original_file(self, content):
         with open(self.file_path, "w", encoding="utf-8") as f:
