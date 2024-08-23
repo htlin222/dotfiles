@@ -37,6 +37,84 @@ function M.splitbyh2()
     print "Current buffer is not a Markdown file."
   end
 end
--- require("func.anki").add_to_anki()
--- Create the Vim command
+
+local function split_md_content(content)
+  -- 找到第一個一級標題的位置
+  local first_heading_index = content:find "# "
+  if not first_heading_index then
+    print "未找到一級標題 '# '"
+    return nil, nil
+  end
+
+  -- 找到第一個一級標題的結尾（換行符號之後）
+  local first_heading_end = content:find("\n", first_heading_index)
+
+  -- 提取 front（第一個一級標題的文字內容）
+  local front = vim.trim(content:sub(first_heading_index + 2, first_heading_end - 1))
+
+  -- 提取 back（去掉第一個一級標題後的所有內容）
+  local back = vim.trim(content:sub(first_heading_end + 1))
+
+  -- 將 back 中的所有二級標題替換為三級標題
+  back = back:gsub("## ", "### ")
+
+  return front, back
+end
+
+local function create_note_template(front, back)
+  local template = string.format(
+    [[
+model: Basic
+deck: 00_Inbox
+tags:
+
+# Note
+
+## Front
+
+%s
+
+## Back
+
+%s
+]],
+    front,
+    back
+  )
+  return template
+end
+
+local function save_note_template(template, original_filename)
+  -- 建立目錄（如果不存在）
+  local directory = "/tmp/anki_note"
+  vim.fn.mkdir(directory, "p")
+
+  -- 取得當前時間
+  local current_time = os.date "%Y%m%d%H%M%S"
+  -- 取得檔案名（不包含副檔名）
+  local filename_without_extension = vim.fn.fnamemodify(original_filename, ":t:r")
+  -- 組合新的檔案名
+  local new_filename = directory .. "/" .. filename_without_extension .. "_" .. current_time .. ".md"
+
+  -- 寫入檔案
+  local file = io.open(new_filename, "w")
+  file:write(template)
+  file:close()
+
+  print("筆記已儲存至 " .. new_filename)
+end
+
+function M.convert_to_note()
+  local buffer_content = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+  local file_path = vim.api.nvim_buf_get_name(0)
+
+  local front, back = split_md_content(buffer_content)
+  if front and back then
+    local template = create_note_template(front, back)
+    save_note_template(template, file_path)
+  end
+end
+
 return M
+
+-- you should require("func.anki").fu()
