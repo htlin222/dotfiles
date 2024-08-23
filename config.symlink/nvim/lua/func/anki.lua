@@ -21,6 +21,22 @@ function M.add_to_anki(deck)
     end
   end)
 end
+
+function M.splitbyh2()
+  -- 檢查當前緩衝區是否為 .md 文件
+  if vim.fn.expand "%:e" == "md" then
+    local filepath = vim.fn.expand "%:p"
+    local command = 'python ~/pyscripts/split_by_h2.py "' .. filepath .. '"'
+    os.execute(command)
+    vim.cmd "echohl Blue"
+    vim.cmd 'echom "🤞領域展開✨領域展開🤞"'
+    vim.cmd 'echom "✨ むりょうくうきょ ✨"'
+    vim.cmd "echohl None"
+    vim.cmd "edit"
+  else
+    print "Current buffer is not a Markdown file."
+  end
+end
 -- require("func.anki").add_to_anki()
 -- Create the Vim command
 return M
