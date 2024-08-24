@@ -9,3 +9,9 @@ end, { nargs = "?" })
 vim.api.nvim_create_user_command("AddCard", function(args)
   require("func.anki").convert_to_note()
 end, { nargs = "?" })
+
+-- remove_under_score_and_capitalize
+
+vim.api.nvim_create_user_command("RemoveSpaceAndCap", function(args)
+  require("func").remove_under_score_and_capitalize()
+end, { nargs = "?" })

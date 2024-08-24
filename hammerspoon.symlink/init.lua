@@ -1,8 +1,7 @@
-print("==================================================")
+require("reload")
 -- require "headphone"
 -- require "hotkey"
-require("ime") -- Change input method on different app
-require("reload")
+-- require("ime") -- Change input method on different app
 -- require "usb"
 -- require "wifi"
 -- require "window"
@@ -12,9 +11,29 @@ require("reload")
 -- require "weather"
 -- require "speaker"
 
--- Private use
-if hs.host.localizedName() == "kaboom的MacBook Pro" then
-	require("autoscript")
+-- 定義一個函數來執行 AppleScript
+function mergeAllWindows(appName)
+	local script = string.format(
+		[[
+        tell application "System Events"
+            tell process "%s"
+                click menu item "合併所有視窗" of menu "視窗" of menu bar 1
+            end tell
+        end tell
+    ]],
+		appName
+	)
+	hs.osascript.applescript(script)
 end
 
-hs.alert.show("Hammerspoon Config Loaded", 1)
+-- 監控應用程式切換事件
+hs.application.watcher
+	.new(function(appName, eventType, appObject)
+		if eventType == hs.application.watcher.activated then
+			if appName == "Skim" or appName == "Finder" then
+				mergeAllWindows(appName)
+			end
+		end
+	end)
+	:start()
+hs.alert.show("成功載入", 1)

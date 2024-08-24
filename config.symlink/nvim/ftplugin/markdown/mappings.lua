@@ -7,14 +7,14 @@ local function map(modes, lhs, rhs, opts)
 end
 -- normal mode --
 
--- 👉 [[wiwki link]]
+-- 👉 [[wiki link]]
 map("n", "<leader>yw", function()
   local file_name = vim.fn.expand "%:t:r"
   local formatted_file_name = "[[" .. file_name .. "]]"
   vim.fn.setreg("+", formatted_file_name, "y")
   print(formatted_file_name)
 end, { desc = "Yank Filename as wikilink" })
--- add to anki
+-- add to anki -- deprecated...
 map("n", "<leader>an", function()
   require("func.anki").add_to_anki()
 end, { desc = "Add this note to anki" })
@@ -33,17 +33,19 @@ map("n", "<leader>of", function()
   local line_length = string.len(vim.api.nvim_buf_get_lines(buf, line - 1, line, false)[1])
   vim.api.nvim_win_set_cursor(win, { line, line_length })
   local file_name = vim.fn.expand "%:t:r"
-  local formatted_file_name = "-of-" .. file_name
+  local formatted_file_name = "_of_" .. file_name
   local clipboard_content = vim.fn.getreg "+" -- 獲取剪貼板原本內容
   vim.api.nvim_put({ formatted_file_name }, "c", true, true)
   vim.fn.setreg("+", clipboard_content) -- 恢復剪貼板內容
   print(formatted_file_name)
 end, { desc = "create text: of this file", silent = false })
+-- use <leader>aa to add level 2 heading
 map("n", "<leader>aa", function()
   local current_line = vim.api.nvim_get_current_line()
   local new_line = "## " .. current_line
   vim.api.nvim_set_current_line(new_line)
 end, { desc = "add level 2", silent = false, nowait = true })
+-- this will be deprecated since no need to use for divider
 map("n", "<leader><CR>", function()
   local lines = { "", "", "---", "", "" }
   local current_line = vim.fn.line "."
@@ -69,7 +71,19 @@ map(
   { desc = "split line", silent = false, nowait = true }
 )
 
-map("n", "<leader>ak", ":AddCard()<CR>", { desc = "Add Card to /tmp/anki_note/", silent = true, nowait = true })
+map(
+  "n",
+  "<leader>ak",
+  ":AddCard()<CR>",
+  { desc = "Add Card in apy reqruied form to /tmp/anki_note/", silent = true, nowait = true }
+)
+-- RemoveSpaceAndCap
+map(
+  "n",
+  "<leader>-",
+  ":RemoveSpaceAndCap()<CR>",
+  { desc = "Add Card to /tmp/anki_note/", silent = true, nowait = true }
+)
 map(
   "n",
   "<leader>s.",

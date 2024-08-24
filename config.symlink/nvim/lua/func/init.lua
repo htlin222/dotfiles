@@ -60,4 +60,20 @@ function M.open_with_default_app()
   end
 end
 
+function M.remove_under_score_and_capitalize()
+  -- 獲取當前行內容
+  local line = vim.api.nvim_get_current_line()
+
+  -- 移除底線並在每個詞之間加入空格
+  line = line:gsub("_", " ")
+
+  -- 將每個詞的首字母大寫
+  line = line:gsub("(%a)(%w*)", function(first, rest)
+    return string.upper(first) .. rest
+  end)
+
+  -- 設置當前行內容
+  vim.api.nvim_set_current_line(line)
+end
+
 return M

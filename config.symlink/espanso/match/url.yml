@@ -17,4 +17,6 @@ matches:
     replace: "site:ascopubs.org"
   - trigger: "site:uptodate"
     replace: "https://www.uptodate.com/contents/search"
-    # /ascopubs.org
+  - trigger: "site:cco"
+    replace: "site:https://clinicaloptions.com/ after:2023/09/01"
+# https://clinicaloptions.com/
