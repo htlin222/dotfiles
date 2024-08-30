@@ -112,6 +112,23 @@ function killmarp() {
 function openai() {
   export OPENAI_API_KEY=$(op read "op://Dev/chat_GPT/api key")
 }
+function rgtodo() {
+  rg_prefix='rg -i --column --line-number --no-heading --sort=modified --color=always --smart-case --glob "*.md" "TODO:"'
+  local result=$(fzf --bind "start:reload($rg_prefix '' | uniq)" \
+    --bind "change:reload($rg_prefix {q} | uniq || true)" \
+    --bind "enter:execute(echo {} | tee /tmp/fzf_result)+abort" \
+    --ansi --disabled \
+    --height 80% --layout=reverse \
+    --exit-0)
+
+  if [ -s /tmp/fzf_result ]; then
+    local result=$(cat /tmp/fzf_result)
+    local filename=$(echo $result | cut -d':' -f1)
+    local number=$(echo $result | sed 's/^[^:]*://; s/:.*//')
+    rm -f /tmp/fzf_result
+    nvim +$number "$filename"
+  fi
+}
 function rgnv() {
   rg_prefix='rg -i --column --line-number --no-heading --sort=modified --color=always --smart-case --glob "*.md" --max-depth 1'
   local result=$(fzf --bind "start:reload($rg_prefix '' | uniq)" \
