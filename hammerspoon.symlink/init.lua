@@ -25,6 +25,21 @@ function mergeAllWindows(appName)
 	)
 	hs.osascript.applescript(script)
 end
+function organize(appName)
+	local script = string.format(
+		[[
+        tell application "%s" to activate
+        tell application "System Events"
+            tell process "%s"
+                click menu item "名稱" of menu "整理方式" of menu item "顯示方式" of menu "編輯" of menu bar 1
+            end tell
+        end tell
+    ]],
+		appName,
+		appName
+	)
+	hs.osascript.applescript(script)
+end
 
 -- 監控應用程式切換事件
 hs.application.watcher
@@ -33,6 +48,9 @@ hs.application.watcher
 			if appName == "Skim" or appName == "Finder" then
 				mergeAllWindows(appName)
 			end
+			-- if appName == "Finder" then
+			-- 	organize(appName)
+			-- end
 		end
 	end)
 	:start()
