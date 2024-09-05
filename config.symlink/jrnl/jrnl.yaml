@@ -11,7 +11,7 @@ highlight: true
 indent_character: '|'
 journals:
   default:
-    encrypt: false
+    encrypt: true
     journal: ~/Dropbox/jrnl.txt
   fleet:
     encrypt: false

@@ -825,3 +825,32 @@ topdf() {
     fi
   done
 }
+chore() {
+  for file in *; do
+    # 檢查是否是檔案，並且非資料夾或符號連結
+    if [[ -f "$file" && ! -L "$file" ]]; then
+      # 獲取檔案最後修改時間
+      mod_date=$(date -r "$file" +"%Y-%m-%d")
+
+      # 檢查檔案名稱是否已經以 yyyy-mm-dd 開頭
+      if [[ ! "$file" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}_ ]]; then
+        # 去掉副檔名來建立資料夾名稱
+        filename_no_ext="${file%.*}"
+        new_folder="${mod_date}_${filename_no_ext}"
+
+        # 建立新目錄
+        mkdir -p "$new_folder"
+
+        # 移動檔案
+        mv "$file" "$new_folder/"
+
+        # 顯示成功訊息
+        echo "Moved $file to $new_folder/"
+      else
+        echo "$file already starts with a date, skipping."
+      fi
+    elif [[ -L "$file" ]]; then
+      echo "$file is a symlink, skipping."
+    fi
+  done
+}
