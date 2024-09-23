@@ -40,7 +40,7 @@ map("n", "<leader>of", function()
   print(formatted_file_name)
 end, { desc = "create text: of this file", silent = false })
 -- use <leader>aa to add level 2 heading
-map("n", "<leader>aa", function()
+map("n", "<leader>a2", function()
   local current_line = vim.api.nvim_get_current_line()
   local new_line = "## " .. current_line
   vim.api.nvim_set_current_line(new_line)

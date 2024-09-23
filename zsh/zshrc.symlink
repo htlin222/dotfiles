@@ -1,4 +1,8 @@
-if [ "$TMUX" = "" ]; then tmux; fi
+if [ "$TERM_PROGRAM" = "WezTerm" ]; then
+  if [ "$TMUX" = "" ]; then
+    tmux
+  fi
+fi
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zmodload zsh/zprof
 fi
