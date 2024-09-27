@@ -42,7 +42,7 @@ if git -C ~/blog/ rev-parse --git-dir >/dev/null 2>&1; then
   git -C ~/blog/ commit -m "routine blogging ✏️ "
   git -C ~/blog/ push
   echo "👉 see action at https://app.netlify.com/sites/htlin/deploys"
-  echo "👉 see website at https://htlin.site"
+  echo "👉 see website at https://oncologist.tw"
 else
   echo "🔔 Not a git repo"
 fi
