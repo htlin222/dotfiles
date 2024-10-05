@@ -56,6 +56,7 @@ return { -- this table will override the default cmp setting
       { name = "emoji" },
       -- { name = "pandoc_references" },
       { name = "treesitter" },
+      { name = "supermaven" },
       { name = "cmp_r" },
       -- { name = "buffer-lines",            option = {} },
       {
@@ -132,7 +133,11 @@ return { -- this table will override the default cmp setting
     formatting = {
       fields = { "kind", "abbr" },
       format = function(entry, vim_item)
-        local kind = require("lspkind").cmp_format { mode = "symbol_text", maxwidth = 50 }(entry, vim_item)
+        local kind = require("lspkind").cmp_format {
+          mode = "symbol_text",
+          maxwidth = 50,
+          symbol_map = { Supermaven = "" },
+        }(entry, vim_item)
         local strings = vim.split(kind.kind, "%s", { trimempty = true })
         kind.kind = " " .. (strings[1] or "") .. " "
         local label = vim_item.abbr
@@ -156,6 +161,7 @@ return { -- this table will override the default cmp setting
     -- { "jalvesaq/zotcite" },
     { "amarakon/nvim-cmp-buffer-lines" },
     { "lukas-reineke/cmp-rg" },
+    { "supermaven-inc/supermaven-nvim" },
     -- { "jalvesaq/cmp-nvim-r" },
     -- { "jalvesaq/Nvim-R" },
     { "R-nvim/cmp-r" },
