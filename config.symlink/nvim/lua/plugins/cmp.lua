@@ -12,7 +12,6 @@ end
 return { -- this table will override the default cmp setting
   "hrsh7th/nvim-cmp",
   event = { "InsertEnter" },
-  -- event = { "VeryLazy" },
   opts = {
     performance = {
       max_view_entries = 15,
@@ -42,7 +41,7 @@ return { -- this table will override the default cmp setting
       -- { name = "mkdnflow" },
       { name = "buffer" },
       { name = "bufname" },
-      { name = "rg", keyword_length = 3 },
+      -- { name = "rg", keyword_length = 3 },
       -- { name = "omni",                    option = { disable_omnifuncs = { "v:lua.vim.lsp.omnifunc" } } },
       -- { name = "calc" },
       -- { name = "rpncalc" },
@@ -56,7 +55,6 @@ return { -- this table will override the default cmp setting
       { name = "emoji" },
       -- { name = "pandoc_references" },
       { name = "treesitter" },
-      { name = "supermaven" },
       { name = "cmp_r" },
       -- { name = "buffer-lines",            option = {} },
       {
@@ -161,7 +159,7 @@ return { -- this table will override the default cmp setting
     -- { "jalvesaq/zotcite" },
     { "amarakon/nvim-cmp-buffer-lines" },
     { "lukas-reineke/cmp-rg" },
-    { "supermaven-inc/supermaven-nvim" },
+    -- { "supermaven-inc/supermaven-nvim" },
     -- { "jalvesaq/cmp-nvim-r" },
     -- { "jalvesaq/Nvim-R" },
     { "R-nvim/cmp-r" },

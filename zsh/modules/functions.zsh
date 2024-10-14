@@ -88,24 +88,14 @@ function check_and_start_marp_serve() {
   else
     echo "Starting Marp serve..."
     # Start Marp serve in the background
-    marp ~/Dropbox/slides -s \
+    marp ~/Dropbox/slides/contents/ -s \
       --engine ~/Dropbox/slides/src/engine.js \
+      --ignore ~/Dropbox/slides/node_modules \
       --html --bespoke.progress \
       "$@" &
   fi
 }
 
-function marp_serve() {
-  # kill -9 $(pgrep -f marp)
-  if kill -9 $(pgrep -f marp) 2>/dev/null; then
-    echo "進程已經成功終止"
-  fi
-
-  marp ~/Dropbox/slides -s \
-    --engine ~/Dropbox/slides/engine.js \
-    --html --bespoke.progress \
-    "$@"
-}
 function killmarp() {
   pkill -f marp
 }
@@ -162,7 +152,7 @@ function kavita() {
   cd -
 }
 function make_exec_and_slide() {
-  cd $HOME/Dropbox/slides/
+  cd $HOME/Dropbox/slides/contents
   file=$(find . -type f -name "*.md" | sed 's|^\./||' | fzf-pre)
   chmod +x "$file"
   slides "$file"
@@ -353,7 +343,7 @@ function pdf() {
   fi
 }
 function slide() {
-  cd ~/Dropbox/slides
+  cd ~/Dropbox/slides/contents
   (check_and_start_marp_serve >/dev/null 2>&1 &)
   FILE=$(find . \
     -path ./node_modules \

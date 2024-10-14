@@ -21,7 +21,7 @@ setopt no_nomatch
 
 # (ffplay -v 0 -nodisp -autoexit $HOME/.dotfiles/config.symlink/media/rat_tail.mp3 &> /dev/null &)
 export ZSH="$HOME/.oh-my-zsh"
-
+ulimit -n 4096
 DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"

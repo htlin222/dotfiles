@@ -6,7 +6,7 @@ return {
   config = function()
     require("nvim-surround").setup {
       surrounds = {
-        ["s"] = {
+        ["x"] = {
           add = function()
             return { { "**" }, { "**" } }
           end,

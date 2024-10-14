@@ -1,8 +1,14 @@
 -- avante.nvim is a Neovim plugin designed to emulate the behaviour of the Cursor AI IDE. It provides users with AI-driven code suggestions and the ability to apply these recommendations directly to their source files with minimal effort.
 return {
   "yetone/avante.nvim",
-  event = "VeryLazy",
-  lazy = false,
+  keys = {
+    { -- example for lazy-loading on keystroke
+      "<leader>aa",
+      "<cmd>AvanteChat<CR>",
+      mode = { "n", "o", "x" },
+      desc = "JABSOpen",
+    },
+  },
   version = false, -- set this if you want to always pull the latest change
   opts = {
     -- add any opts here
@@ -16,7 +22,6 @@ return {
     "MunifTanjim/nui.nvim",
     --- The below dependencies are optional,
     "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-    "zbirenbaum/copilot.lua", -- for providers='copilot'
     {
       -- support for image pasting
       "HakonHarnes/img-clip.nvim",
