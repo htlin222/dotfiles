@@ -5,7 +5,7 @@
 #
 # Path to the CSS file
 # Define the path to the CSS file
-FILE_PATH="$HOME/Dropbox/slides/themes/my-theme.css"
+FILE_PATH="$HOME/Dropbox/slides/contents/themes/my-theme.css"
 
 # Automatically create the new file name based on FILE_PATH
 NEW_FILE="${FILE_PATH%.*}-no-animation.css"

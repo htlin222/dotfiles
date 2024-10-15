@@ -18,7 +18,7 @@ local servers = {
   -- "basedpyright",
   "r_language_server",
   "ruff_lsp",
-  "tsserver",
+  -- "tsserver",
   "vimls",
   "jdtls",
 }
