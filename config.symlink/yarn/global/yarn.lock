@@ -1884,13 +1884,6 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
-  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
-  dependencies:
-    argparse "^2.0.1"
-
 json-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
@@ -2087,81 +2080,81 @@ markdown-table@^1.1.0:
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.3.tgz#9fcb69bcfdb8717bfd0398c6ec2d93036ef8de60"
   integrity sha512-1RUZVgQlpJSPWYbFSpmudq5nHY1doEIv89gBtF0s4gW1GF2XorxcA/70M5vq7rLv0a6mhOUccRsqkwhwLCIQ2Q==
 
-markmap-cli@^0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-cli/-/markmap-cli-0.17.0.tgz#80391afada305ec81f97562389d9a587f13bbb6d"
-  integrity sha512-XSOFPKYwUWJqkTWIsMUFqWYH0maKHCcBXuMOcZ+pWaKVJuyvoLqnR4+mFh0TO0ImVwi9vz9WH8ZG/njWtym2pQ==
+markmap-cli@^0.17.2:
+  version "0.17.2"
+  resolved "https://registry.yarnpkg.com/markmap-cli/-/markmap-cli-0.17.2.tgz#6cf9f23781f05e2033fccf0ff1ab4cb167f5498c"
+  integrity sha512-69PoG+/R2Bv4EWE7SQdNTN1zvRRjSZY9x1zY66yE6+vef+nUTKrFOnBkiDBtoLdkwRr8odmoxP2rFjkwHaNsew==
   dependencies:
     "@babel/runtime" "^7.23.6"
     "@hono/node-server" "^1.3.3"
     chokidar "^3.5.3"
     commander "^11.1.0"
     hono "^3.11.8"
-    markmap-common "0.17.0"
-    markmap-lib "0.17.0"
-    markmap-render "0.17.0"
-    markmap-toolbar "0.17.0"
+    markmap-common "0.17.1"
+    markmap-lib "0.17.2"
+    markmap-render "0.17.2"
+    markmap-toolbar "0.17.2"
     open "^10.0.0"
     pkg-dir "^8.0.0"
     read-package-up "^11.0.0"
     update-notifier "^7.0.0"
 
-markmap-common@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-common/-/markmap-common-0.17.0.tgz#3f94dae657b974f9cda7d448763937fd187d105b"
-  integrity sha512-3tuU6PxjrQxivZD18czJKcGKTTRJKMNne1bBflcHqu7yASznJRBM80CC4DzIVGiAb74hTuX8tTfkEQUMu0yKMg==
+markmap-common@0.17.1:
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/markmap-common/-/markmap-common-0.17.1.tgz#820be373f0bdea15692e69e87b6512caced7a089"
+  integrity sha512-U1v2+CkdE9OzNgONvBwUW26RMcu27Bqlv/JuAG+l1qRkTduD2aT4cGew6qb4VLjpqhcBwS3mcj0Xd7LVW01QFA==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@gera2ld/jsx-dom" "^2.2.2"
     npm2url "^0.2.4"
 
-markmap-html-parser@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-html-parser/-/markmap-html-parser-0.17.0.tgz#ac19d3450580ad3beb49f08b81d73d14cbb0bc30"
-  integrity sha512-eB8jmSTY0waKT8c9lNFxLRCKS5HaXAAeA9za0Smt3q6/F/yqCkUH2eYAU7+AIxrY2T90+QDP4xbB8wyRoZCBxA==
+markmap-html-parser@0.17.1:
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/markmap-html-parser/-/markmap-html-parser-0.17.1.tgz#aca509bbb04005cfce94c395633be69a93ab1a65"
+  integrity sha512-wdzneAsNXNIYH3R8xZVNYi/4MXhswuZ4wmZxHS3+BLp9jO6kBCoQybICB90tcAcXUjiSAYRnirq3EvkSK0AdDw==
   dependencies:
     "@babel/runtime" "^7.22.6"
     cheerio "1.0.0-rc.12"
 
-markmap-lib@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-lib/-/markmap-lib-0.17.0.tgz#6c1b8cecd61a9fb9334c7481576a29b5bc14ff63"
-  integrity sha512-YYf/nq+Zr4q6T5E7lVfZGWEUK/0ItDPKwePOiUmuR/k5UUIR8s+UZvLMrFAnu4E1aveM0Tzg9/QPANAWGWmfBw==
+markmap-lib@0.17.2:
+  version "0.17.2"
+  resolved "https://registry.yarnpkg.com/markmap-lib/-/markmap-lib-0.17.2.tgz#1524f2cb0e52306bdf0274bcce9486cddb9012ff"
+  integrity sha512-zS5nL8OBR4hRpqegxeXAd4jQq/wd+Xn21bHhW0QHgGzE3dJTG55pLDi1rmdaHLCTpN7lUtO5MBOZ1HyXGYuHwQ==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@iktakahiro/markdown-it-katex" "^4.0.1"
     highlight.js "^11.8.0"
-    js-yaml "^4.1.0"
     katex "^0.16.8"
     markdown-it "^14.1.0"
     markdown-it-ins "^4.0.0"
     markdown-it-mark "^4.0.0"
     markdown-it-sub "^2.0.0"
     markdown-it-sup "^2.0.0"
-    markmap-html-parser "0.17.0"
-    markmap-view "0.17.0"
+    markmap-html-parser "0.17.1"
+    markmap-view "0.17.2"
     prismjs "^1.29.0"
+    yaml "^2.5.1"
 
-markmap-render@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-render/-/markmap-render-0.17.0.tgz#e9a8f56cb90c7af8c7321ff26ac2790418eb9ed9"
-  integrity sha512-xSJ7stB2nhdVD5FImCNc6lKfDSt8P9zqV4K5GbbqS/5ByJei4Ssdnl7aI2iKOTkM9m8NlJcDrn+jHorNIgFwbQ==
+markmap-render@0.17.2:
+  version "0.17.2"
+  resolved "https://registry.yarnpkg.com/markmap-render/-/markmap-render-0.17.2.tgz#1c99dc36e27b1d03b8625d3ad78306ad275ea9dd"
+  integrity sha512-tfwwBXUPU5bYVGiqWoZjAtvQX0uUwYc+CmwvHtw98EPJ1gPP395Wm2NjDFHqH4pWZ6/UhMQt0DhFuguGZyzMog==
   dependencies:
     "@babel/runtime" "^7.22.6"
-    markmap-view "0.17.0"
+    markmap-view "0.17.2"
 
-markmap-toolbar@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-toolbar/-/markmap-toolbar-0.17.0.tgz#bdbc02a1f79995370f4ea3334c5d019e021f67b9"
-  integrity sha512-zRkg+pYtjDefJ4lSG0KownAN3eqkJcrTei+HbobBWsWTsc7qdUMn2Ewd97SFHCkGoo1nrG0aW7dzDP6lHWuDkw==
+markmap-toolbar@0.17.2:
+  version "0.17.2"
+  resolved "https://registry.yarnpkg.com/markmap-toolbar/-/markmap-toolbar-0.17.2.tgz#d1770384728f05ebcdd46953da4414ad60a52ea0"
+  integrity sha512-WQ05P2xvQmZT0ybRUE0uRzrs30aXlJ6/yEUsA6A9nYEwm8T9jSwBxIM/5zYlkH/XzUcsRRxtCa4k1IWR74gkpQ==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@gera2ld/jsx-dom" "^2.2.2"
 
-markmap-view@0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/markmap-view/-/markmap-view-0.17.0.tgz#389bd7f99030a581429e8fa2c42701b5a0fa94b3"
-  integrity sha512-V4n5gXbIk7b/ns/gzoNoMaRu7Es+9OLUqfRqj/EiWuiYMlmmQ/rN8NDCgPcuTAnr0hJmor7UXaKYqWL275LspA==
+markmap-view@0.17.2:
+  version "0.17.2"
+  resolved "https://registry.yarnpkg.com/markmap-view/-/markmap-view-0.17.2.tgz#2d4d690f8fbd31cf659acdf8056ebfe05c5adc79"
+  integrity sha512-kF9bbXWF/10UBFTatv0kPQSBgVb8+Xn4Bttep78i9879nzqRaIjCNzZYGtpxK0gx9B4U9NGMZrx/B4cTTwmeQA==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@gera2ld/jsx-dom" "^2.2.2"
@@ -3428,6 +3421,11 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
+yaml@^2.5.1:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.6.0.tgz#14059ad9d0b1680d0f04d3a60fe00f3a857303c3"
+  integrity sha512-a6ae//JvKDEra2kdi1qzCyrJW/WZCgFi8ydDV+eXExl95t+5R+ijnqHJbz9tmMh8FUjx3iv2fCQ4dclAQlO2UQ==
 
 yargs-parser@^10.0.0:
   version "10.1.0"
