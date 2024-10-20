@@ -23,6 +23,6 @@ mkdir -p "./output/$filename"
 # cp "$1" "./output/$filename/backup_$(date '+%Y-%m-%d-%H-%M').md"
 # mv "$1" "./$filename/"
 
-marp --theme ./themes/my-theme.css "$1" --engine src/engine.js --bespoke.progress --html -o "./output/$filename/index.html"
+marp --theme "$HOME/Dropbox/slides/contents/themes/my-theme.css" "$1" --engine "$HOME/Dropbox/slides/src/engine.js" --bespoke.progress --html -o "$HOME/Dropbox/slides/contents/output/$filename/index.html"
 
 exit 0
