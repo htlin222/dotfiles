@@ -1401,6 +1401,10 @@
                     "manipulate_caps_lock_led": false,
                     "simple_modifications": [
                         {
+                            "from": { "key_code": "caps_lock" },
+                            "to": [{ "key_code": "left_control" }]
+                        },
+                        {
                             "from": { "key_code": "f5" },
                             "to": [{ "consumer_key_code": "dictation" }]
                         },
@@ -1409,8 +1413,8 @@
                             "to": [{ "apple_vendor_top_case_key_code": "keyboard_fn" }]
                         },
                         {
-                            "from": { "key_code": "caps_lock" },
-                            "to": [{ "key_code": "left_control" }]
+                            "from": { "key_code": "escape" },
+                            "to": [{ "key_code": "grave_accent_and_tilde" }]
                         }
                     ],
                     "treat_as_built_in_keyboard": true
