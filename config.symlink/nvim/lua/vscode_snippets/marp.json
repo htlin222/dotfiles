@@ -291,5 +291,41 @@
       ""
     ],
     "description": "creativecommons 4.0"
+  },
+  "marpstart": {
+    "prefix": "marpstart",
+    "body": [
+      "---",
+      "title: \"${1:example}\"",
+      "marp: true",
+      "author: Hsieh-Ting Lin",
+      "paginate: true",
+      "headingDivider: 3",
+      "theme: my-theme",
+      "footer: \"[TOC](#table-of-contents)\"",
+      "---",
+      "",
+      "# ${1:example}",
+      "",
+      "#### 林協霆醫師，和信治癌中心醫院",
+      "",
+      "**Hsieh-Ting Lin, <htlin222@kfsyscc.org>**",
+      "",
+      "![h:50px](https://i.imgur.com/TLuxHNS.png)",
+      "",
+      "<!-- ![RLQ h:50](https://i.imgur.com/3fIm24v.png) -->",
+      "",
+      "# Preface",
+      "",
+      "# Takeaway",
+      "",
+      "---",
+      "",
+      "## Table of Contents",
+      "",
+      "[[TOC]]",
+      ""
+    ],
+    "description": "Marp YAML"
   }
 }

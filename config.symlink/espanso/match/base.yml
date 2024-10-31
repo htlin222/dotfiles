@@ -1,5 +1,5 @@
 matches:
-  - trigger: "blue"
+  - trigger: "#blue"
     replace: "#3D6869"
   - trigger: ":clipboardtest"
     replace: "\"$|$\",\"{{clipboard}}\""
