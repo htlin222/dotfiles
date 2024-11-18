@@ -1,0 +1,3 @@
+matches:
+  - trigger: ".THX"
+    replace: "治療後，情況獲得控制，目前維持穩定，請惠予同意續用"
