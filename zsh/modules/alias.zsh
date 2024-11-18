@@ -12,6 +12,9 @@ alias ztop='zenith'
 alias f="fix"
 alias ec="echo"
 alias nt='newsboat'
+alias claupub="cd ~/claude_lab && npm run build && netlify deploy --prod --dir=dist"
+alias ripnetlify="rip ./.netlify"
+alias artifact="cd ~/claude_lab/src/ && vim ~/claude_lab/src/App.jsx"
 alias todo='pter ~/Dropbox/todo.txt'
 alias zshconfig="vim ~/.zshrc"
 alias clens="csvlens"
