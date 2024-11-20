@@ -1,88 +1,112 @@
 #!/bin/bash
-# title: "claude_start"
-# author: Hsieh-Ting Lin
-# date: "2024-08-24"
-# version: 1.0.0
-# description:
-# --END-- #
-set -ue
-set -o pipefail
-trap "echo 'END'" EXIT
 
-# 檢查是否有提供專案名稱
-if [ -z "$1" ]; then
-  echo "請提供專案名稱作為參數。"
-  exit 1
-fi
+# Prompt for project name
+read -p "Enter your project name: " project_name
 
-PROJECT_NAME=$1
+read -p "What components would you like to install (space delimited, enter for none)? " components
 
-# 移除已有的專案目錄
-rm -rf $PROJECT_NAME
+# Create Vite React project
+npm create vite@latest $project_name -- --template react
 
-# 使用非互動模式創建新的 React app
-npm create vite@latest $PROJECT_NAME -- --template react
-cd $PROJECT_NAME
+cd $project_name
+
 npm install
-
-# 安裝 TailwindCSS 和其他依賴
+# Install Tailwind CSS and its dependencies
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 
-# 更新 vite.config.js
-cat <<EOL >vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+# Base URL for raw content
+BASE_URL="https://raw.githubusercontent.com/mattppal/shadcn-ui-vite-react/main"
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-})
-EOL
+# Check if curl is installed
+if ! command -v curl &>/dev/null; then
+  echo "Error: curl is not installed. Please install curl and try again."
+  exit 1
+fi
 
-# 創建 jsconfig.json
-cat <<EOL >jsconfig.json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  },
-  "include": ["src/**/*"]
+# List of files to download
+FILES=(
+  "src/App.jsx"
+  "public/vite.svg"
+  "public/react.svg"
+  "public/shadcn-ui.svg"
+  "components.json"
+  "jsconfig.json"
+  "vite.config.js"
+)
+
+# Function to download a file
+download_file() {
+  local remote_path="$1"
+  local local_path="$2"
+  local url="$BASE_URL/$remote_path"
+
+  # Create directory if it doesn't exist
+  mkdir -p "$(dirname "$local_path")"
+
+  if curl -sSf "$url" -o "$local_path"; then
+    echo "Successfully downloaded: $remote_path"
+  else
+    echo "Failed to download: $remote_path"
+  fi
 }
-EOL
 
-# 顯示配置提示
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+# Check if curl is installed
+if ! command -v curl &>/dev/null; then
+  echo "Error: curl is not installed. Please install curl and try again."
+  exit 1
+fi
 
-echo -e "
-✔ Would you like to use TypeScript (recommended)? ${GREEN}no${NC}
-✔ Which style would you like to use? › ${GREEN}Default${NC}
-✔ Which color would you like to use as base color? › ${GREEN}Slate${NC}
-✔ Where is your global CSS file? … ${GREEN}src/index.css${NC}
-✔ Would you like to use CSS variables for colors? … ${GREEN}yes${NC}
-✔ Are you using a custom tailwind prefix eg. tw-? (Leave blank if not) …
-✔ Where is your tailwind.config.js located? … ${GREEN}tailwind.config.js${NC}
-✔ Configure the import alias for components: … ${GREEN}@/components${NC}
-✔ Configure the import alias for utils: … ${GREEN}@/lib/utils${NC}
-✔ Are you using React Server Components? … ${GREEN}no${NC}
-✔ Write configuration to components.json. Proceed? … ${GREEN}yes${NC}
-"
+# Download each file
+for file in "${FILES[@]}"; do
+  download_file "$file" "$file"
+done
 
-# 初始化 shadcn-ui（會觸發互動式配置）
-npx shadcn-ui@latest init
+echo "Download process completed."
 
-# 添加所有 shadcn-ui 組件
-npx shadcn-ui@latest add all -y
+# Function to process each component
+process_component() {
+  local component=$1
+  echo "Processing component: $component"
+  # Replace the following line with your desired command
+  npx shadcn-ui@latest add $component
+}
 
-# 安裝其他依賴
-npm install lucide-react
+# Default components
+default_components=("card" "button")
 
-echo " 🎉 Project '${GREEN}$PROJECT_NAME${NC}' is ready to go! 🎉"
+# Check if components variable is set
+if [ -z "${components}" ]; then
+  # If not set, use only default components
+  component_array=("${default_components[@]}")
+else
+  # Convert the space-separated string to an array
+  IFS=' ' read -ra user_components <<<"$components"
+
+  # Combine default and user components, removing duplicates
+  component_array=()
+  for component in "${default_components[@]}" "${user_components[@]}"; do
+    # Convert to lowercase for case-insensitive comparison
+    component_lower=$(echo "$component" | tr '[:upper:]' '[:lower:]')
+    # Check if component is already in the array
+    if [[ ! " ${component_array[*]} " =~ " ${component_lower} " ]]; then
+      component_array+=("$component_lower")
+    fi
+  done
+fi
+
+# Check if the array is empty (this should never happen due to defaults, but just in case)
+if [ ${#component_array[@]} -eq 0 ]; then
+  echo "Component list is empty. This shouldn't happen. Exiting."
+  exit 1
+fi
+
+# Loop through all components
+for component in "${component_array[@]}"; do
+  process_component "$component"
+done
+
+# npx shadcn-ui@latest init -y -d
+
+npm run dev
+Click to switch to the original text.Click to Translate Page.SettingsPDF Translate
