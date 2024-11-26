@@ -1,19 +1,22 @@
 local options = {
   formatters_by_ft = {
-    lua = { "stylua" },
+    lua = {
+      "stylua" ,
+      -- "ast-grep",
+    },
     -- css = { "prettier" },
     -- html = { "prettier" },
-    javascript = { "prettier" },
-    javascriptreact = { "eslint", "prettier" },
+    javascript = { "biome" },
+    javascriptreact = { "biome", "biome" },
     dot = { "clang_format" },
-    typescript = { "prettier" },
+    typescript = { "biome" },
     -- javascriptreact = { "prettier" },
-    typescriptreact = { "prettier" },
+    typescriptreact = { "biome" },
     css = { "prettier", "stylelint" },
     -- r = { "styler", "squeeze_blanks", "trim_whitespace" }, -- remotes::install_github("devOpifex/r.nvim")
     scss = { "prettier", "stylelint" },
     html = { "prettier" },
-    json = { "fixjson" },
+    json = { "biome" },
     yaml = { "yamlfmt" },
     toml = { "taplo" },
     bib = { "bibtex-tidy" },

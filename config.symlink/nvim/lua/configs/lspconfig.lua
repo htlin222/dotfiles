@@ -15,6 +15,7 @@ local servers = {
   -- "markdown_oxide",
   "pyright",
   "pylsp",
+  "eslint_lsp",
   -- "basedpyright",
   "r_language_server",
   "ruff_lsp",

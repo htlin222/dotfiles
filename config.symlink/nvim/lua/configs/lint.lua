@@ -15,6 +15,13 @@ lint.linters_by_ft = {
     -- "eslint_d",
     -- "write_good",
   },
+  javascriptreact = {
+    -- "eslint_d",
+    "quick-lint-js",
+  },
+  typescript = {
+    "quick-lint-js",
+  },
   markdown = {
     -- "codespell",
     -- "proselint",
