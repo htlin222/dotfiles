@@ -88,13 +88,21 @@ function check_and_start_marp_serve() {
   else
     echo "Starting Marp serve..."
     # Start Marp serve in the background
-    marp ~/Dropbox/slides/contents/ -s \
-      --engine ~/Dropbox/slides/src/engine.js \
-      --ignore ~/Dropbox/slides/node_modules \
+    SLIDES="$HOME/Dropbox/slides"
+    marp "$SLIDES/contents/" -s \
+      --engine "$SLIDES/src/engine.js" \
+      --ignore "$SLIDES/node_modules" \
+      --theme-set "$SLIDES/themes/" \
       --html --bespoke.progress \
       "$@" &
   fi
 }
+
+# marp ~/Dropbox/slides/contents/ -s \
+#   --engine ~/Dropbox/slides/src/engine.js \
+#   --ignore ~/Dropbox/slides/node_modules \
+#   --theme-set ~/Dropbox/slides/themes/ \
+#   --html --bespoke.progress \
 
 function killmarp() {
   pkill -f marp
