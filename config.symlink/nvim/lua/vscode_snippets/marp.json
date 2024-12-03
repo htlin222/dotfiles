@@ -1,331 +1,336 @@
 {
-  "marp header": {
-    "prefix": "header",
-    "body": [
-      "<!-- header: '**${1:example}**' -->",
-      ""
-    ],
-    "description": "create marp header"
-  },
-  "cc": {
-    "prefix": "cc",
-    "body": [
-      "<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\"><img alt=\"Creative Commons License\" style=\"border-width:20\" src=\"https://i.creativecommons.org/l/by-nc/4.0/88x31.png\" />",
-      ""
-    ],
-    "description": "cc"
-  },
-  "marp class": {
-    "prefix": "class",
-    "body": [
-      "<!-- _class: ${1:example} -->",
-      ""
-    ],
-    "description": "marp class"
-  },
-  "marp header one": {
-    "prefix": "headerthis",
-    "body": [
-      "<!-- _header: '**${1:example}**' -->",
-      ""
-    ],
-    "description": "marp header only on this page"
-  },
-  "no header at this page": {
-    "prefix": "noheader",
-    "body": [
-      "<!-- _header: '' -->"
-    ],
-    "description": "no header at this page"
-  },
-  "no footer at this page": {
-    "prefix": "nofooter",
-    "body": [
-      "<!-- _footer: '' -->"
-    ],
-    "description": "no footer at this page"
-  },
-  "footer": {
-    "prefix": "footer",
-    "body": [
-      "<!-- _footer: '${1:YOUR_FOOTER_HERE}' -->"
-    ],
-    "description": "no footer at this page"
-  },
-  "section": {
-    "prefix": "sec",
-    "body": [
-      "----",
-      "",
-      "<!-- header: '${1:example}' -->",
-      "",
-      "# ${1:example}",
-      "",
-      "---"
-    ],
-    "description": "section"
-  },
-  "material": {
-    "prefix": "material",
-    "body": [
-      "<span class=\"material-symbols-outlined\" style=\"font-size:150px\">${1:example}</span>",
-      ""
-    ],
-    "description": "material"
-  },
-  "mermaidsetup": {
-    "prefix": "mermaidsetup",
-    "body": [
-      "<!-- Add this anywhere in your Markdown file -->",
-      "<script type=\"module\">",
-      "  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';",
-      "  mermaid.initialize({ startOnLoad: true });",
-      "</script>",
-      ""
-    ],
-    "description": "mermaidsetup"
-  },
-  "imgconfig": {
-    "prefix": "imgconfig",
-    "body": [
-      "width:600px blur:0px invert:100% opacity:1.0 drop-shadow:0,15px,10px,rgba(0,0,0,.4)"
-    ],
-    "description": "imgconfig"
-  },
-  "largeh2": {
-    "prefix": "largeh2",
-    "body": [
-      "<!-- Scoped style -->",
-      "<style scoped>h2 {font-size: 3em; font-weight:700;}</style>"
-    ],
-    "description": "largeh2"
-  },
-  "center": {
-    "prefix": "center",
-    "body": [
-      "section { display: flex; justify-content: center; align-items: center; }"
-    ],
-    "description": "center"
-  },
-  "style": {
-    "prefix": "style",
-    "body": [
-      "<!-- Scoped style -->",
-      "<style scoped>",
-      "${1:example}",
-      "</style>",
-      ""
-    ],
-    "description": "style"
-  },
-  "newslide": {
-    "prefix": "newslide",
-    "body": [
-      "",
-      "",
-      "---",
-      "",
-      "## ${1:example}",
-      "",
-      "",
-      ""
-    ],
-    "description": "newslide"
-  },
-  "theend": {
-    "prefix": "theend",
-    "body": [
-      "<!-- Scoped style -->",
-      "<style scoped>",
-      "h2 {font-size: 8em; font-weight:700; animation: move 3s infinite; }",
-      "section { display: flex; justify-content: center; align-items: center; }",
-      "@keyframes move {",
-      "    0% {transform: translateY(0);}",
-      "    50% {transform: translateY(-5px);}",
-      "    100% {transform: translateY(0);}",
-      "}",
-      "</style>",
-      "",
-      "## THE END",
-      "",
-      "---",
-      ""
-    ],
-    "description": "add large THE END with animation"
-  },
-  "cover": {
-    "prefix": "cover",
-    "body": [
-      "<!-- Scoped style -->",
-      "<style scoped>h1 {font-size: 4em; font-weight:800;}</style>",
-      "",
-      "# ${1:example} ",
-      "<hr>",
-      "",
-      "## 林協霆, Fellow 1",
-      "",
-      "<br>",
-      "<h5 id=\"date2\"></p>",
-      "<script>",
-      "    const now = new Date()",
-      "    document.getElementById(\"date2\").innerHTML = now.toLocaleDateString(\"zh-TW\");",
-      "</script>",
-      ""
-    ],
-    "description": "cover page with date updated"
-  },
-  "bgh": {
-    "prefix": "bgh",
-    "body": [
-      "bg height:650px"
-    ],
-    "description": "bg height:650px"
-  },
-  "show": {
-    "prefix": "show",
-    "body": [
-      "<button onclick=\"document.getElementById('${1:example}').style.display='block'\">${2:Show}</button>",
-      "",
-      "<p id=\"${1:example}\" style=\"display:none\">${3:This is concealed text}</p>",
-      ""
-    ],
-    "description": "show"
-  },
-  "detail": {
-    "prefix": "detail",
-    "body": [
-      "<details>",
-      "    <summary>${1:Show}</summary>",
-      "    ${1:The content folded}",
-      "</details>"
-    ],
-    "description": "detail"
-  },
-  "emojik": {
-    "prefix": "emojki",
-    "body": [
-      "![emojik height:100px](https://emojik.vercel.app/s/${1:😀}_${2:😍}?size=256)",
-      ""
-    ],
-    "description": "emojik"
-  },
-  "a4marp": {
-    "prefix": "a4marp",
-    "body": [
-      "---",
-      "marp: true",
-      "author: Hsieh-Ting Lin",
-      "paginate: true",
-      "theme: a4",
-      "header: \"${1:header here}\"",
-      "---",
-      ""
-    ],
-    "description": "marp in a4 format, when export, run `to_a4.sh filename.md"
-  },
-  "Marp Default": {
-    "prefix": "slide",
-    "body": [
-      "---",
-      "title: \"${1:example}\"",
-      "slug: \"${1:example}\"",
-      "marp: true",
-      "author: Hsieh-Ting Lin",
-      "paginate: true",
-      "theme: my-theme",
-      "---",
-      "",
-      "<!-- _paginate: false -->",
-      "",
-      "![badge](https://img.shields.io/badge/KFSYSCC-Rounds-6c9a77)![badge](https://img.shields.io/badge/Date-YYYY--MM--DD-6c9a77)",
-      "",
-      "### Yet another review on",
-      "",
-      "# ${1:example}",
-      "",
-      "## 林協霆,",
-      "",
-      "<br>",
-      "",
-      "#### Fellow 1, 和信治癌中心醫院腫瘤內科部",
-      "",
-      "",
-      "---",
-      "",
-      "<!-- _header: '**Outline**' -->",
-      "",
-      "# Outline",
-      "",
-      "---",
-      "",
-      "(content here)",
-      "",
-      "---",
-      "",
-      "# Thank you for your time and attention",
-      "",
-      "## <!--fit-->_Have a nice day_",
-      "",
-      "![bg right:50% height:550px](https://media.tenor.com/Q-OWuADzjMQAAAAC/burp-leo.gif)",
-      "",
-      "---",
-      "",
-      "<!-- header: 'Addendum' -->",
-      "",
-      "## Addendum",
-      ""
-    ],
-    "description": "Marp Default"
-  },
-  "fit": {
-    "prefix": "fit",
-    "body": [
-      "<!--fit-->"
-    ],
-    "description": "fit"
-  },
-  "creativecommons 4.0": {
-    "prefix": "cc4",
-    "body": [
-      "[![CC 4.0 h:45px](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hant)",
-      ""
-    ],
-    "description": "creativecommons 4.0"
-  },
-  "marpstart": {
-    "prefix": "marpstart",
-    "body": [
-      "---",
-      "title: \"${1:example}\"",
-      "marp: true",
-      "author: Hsieh-Ting Lin",
-      "paginate: true",
-      "headingDivider: 3",
-      "theme: my-theme",
-      "footer: \"[TOC](#table-of-contents)\"",
-      "---",
-      "",
-      "# ${1:example}",
-      "",
-      "#### 林協霆醫師，和信治癌中心醫院",
-      "",
-      "**Hsieh-Ting Lin, <htlin222@kfsyscc.org>**",
-      "",
-      "![h:50px](https://i.imgur.com/TLuxHNS.png)",
-      "",
-      "<!-- ![RLQ h:50](https://i.imgur.com/3fIm24v.png) -->",
-      "",
-      "# Preface",
-      "",
-      "# Takeaway",
-      "",
-      "---",
-      "",
-      "## Table of Contents",
-      "",
-      "[[TOC]]",
-      ""
-    ],
-    "description": "Marp YAML"
-  }
+	"marp header": {
+		"prefix": "header",
+		"body": ["<!-- header: '**${1:example}**' -->", ""],
+		"description": "create marp header"
+	},
+	"cc": {
+		"prefix": "cc",
+		"body": [
+			"<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\"><img alt=\"Creative Commons License\" style=\"border-width:20\" src=\"https://i.creativecommons.org/l/by-nc/4.0/88x31.png\" />",
+			""
+		],
+		"description": "cc"
+	},
+	"marp class": {
+		"prefix": "class",
+		"body": ["<!-- _class: ${1:example} -->", ""],
+		"description": "marp class"
+	},
+	"marp header one": {
+		"prefix": "headerthis",
+		"body": ["<!-- _header: '**${1:example}**' -->", ""],
+		"description": "marp header only on this page"
+	},
+	"no header at this page": {
+		"prefix": "noheader",
+		"body": ["<!-- _header: '' -->"],
+		"description": "no header at this page"
+	},
+	"no footer at this page": {
+		"prefix": "nofooter",
+		"body": ["<!-- _footer: '' -->"],
+		"description": "no footer at this page"
+	},
+	"footer": {
+		"prefix": "footer",
+		"body": ["<!-- _footer: '${1:YOUR_FOOTER_HERE}' -->"],
+		"description": "no footer at this page"
+	},
+	"section": {
+		"prefix": "sec",
+		"body": [
+			"----",
+			"",
+			"<!-- header: '${1:example}' -->",
+			"",
+			"# ${1:example}",
+			"",
+			"---"
+		],
+		"description": "section"
+	},
+	"material": {
+		"prefix": "material",
+		"body": [
+			"<span class=\"material-symbols-outlined\" style=\"font-size:150px\">${1:example}</span>",
+			""
+		],
+		"description": "material"
+	},
+	"mermaidsetup": {
+		"prefix": "mermaidsetup",
+		"body": [
+			"<!-- Add this anywhere in your Markdown file -->",
+			"<script type=\"module\">",
+			"  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';",
+			"  mermaid.initialize({ startOnLoad: true });",
+			"</script>",
+			""
+		],
+		"description": "mermaidsetup"
+	},
+	"imgconfig": {
+		"prefix": "imgconfig",
+		"body": [
+			"width:600px blur:0px invert:100% opacity:1.0 drop-shadow:0,15px,10px,rgba(0,0,0,.4)"
+		],
+		"description": "imgconfig"
+	},
+	"largeh2": {
+		"prefix": "largeh2",
+		"body": [
+			"<!-- Scoped style -->",
+			"<style scoped>h2 {font-size: 3em; font-weight:700;}</style>"
+		],
+		"description": "largeh2"
+	},
+	"center": {
+		"prefix": "center",
+		"body": [
+			"section { display: flex; justify-content: center; align-items: center; }"
+		],
+		"description": "center"
+	},
+	"style": {
+		"prefix": "style",
+		"body": [
+			"<!-- Scoped style -->",
+			"<style scoped>",
+			"${1:example}",
+			"</style>",
+			""
+		],
+		"description": "style"
+	},
+	"newslide": {
+		"prefix": "newslide",
+		"body": ["", "", "---", "", "## ${1:example}", "", "", ""],
+		"description": "newslide"
+	},
+	"theend": {
+		"prefix": "theend",
+		"body": [
+			"<!-- Scoped style -->",
+			"<style scoped>",
+			"h2 {font-size: 8em; font-weight:700; animation: move 3s infinite; }",
+			"section { display: flex; justify-content: center; align-items: center; }",
+			"@keyframes move {",
+			"    0% {transform: translateY(0);}",
+			"    50% {transform: translateY(-5px);}",
+			"    100% {transform: translateY(0);}",
+			"}",
+			"</style>",
+			"",
+			"## THE END",
+			"",
+			"---",
+			""
+		],
+		"description": "add large THE END with animation"
+	},
+	"cover": {
+		"prefix": "cover",
+		"body": [
+			"<!-- Scoped style -->",
+			"<style scoped>h1 {font-size: 4em; font-weight:800;}</style>",
+			"",
+			"# ${1:example} ",
+			"<hr>",
+			"",
+			"## 林協霆, Fellow 1",
+			"",
+			"<br>",
+			"<h5 id=\"date2\"></p>",
+			"<script>",
+			"    const now = new Date()",
+			"    document.getElementById(\"date2\").innerHTML = now.toLocaleDateString(\"zh-TW\");",
+			"</script>",
+			""
+		],
+		"description": "cover page with date updated"
+	},
+	"bgh": {
+		"prefix": "bgh",
+		"body": ["bg height:650px"],
+		"description": "bg height:650px"
+	},
+	"show": {
+		"prefix": "show",
+		"body": [
+			"<button onclick=\"document.getElementById('${1:example}').style.display='block'\">${2:Show}</button>",
+			"",
+			"<p id=\"${1:example}\" style=\"display:none\">${3:This is concealed text}</p>",
+			""
+		],
+		"description": "show"
+	},
+	"detail": {
+		"prefix": "detail",
+		"body": [
+			"<details>",
+			"    <summary>${1:Show}</summary>",
+			"    ${1:The content folded}",
+			"</details>"
+		],
+		"description": "detail"
+	},
+	"emojik": {
+		"prefix": "emojki",
+		"body": [
+			"![emojik height:100px](https://emojik.vercel.app/s/${1:😀}_${2:😍}?size=256)",
+			""
+		],
+		"description": "emojik"
+	},
+	"a4marp": {
+		"prefix": "a4marp",
+		"body": [
+			"---",
+			"marp: true",
+			"author: Hsieh-Ting Lin",
+			"paginate: true",
+			"theme: a4",
+			"header: \"${1:header here}\"",
+			"---",
+			""
+		],
+		"description": "marp in a4 format, when export, run `to_a4.sh filename.md"
+	},
+	"Marp Default": {
+		"prefix": "slide",
+		"body": [
+			"---",
+			"title: \"${1:example}\"",
+			"slug: \"${1:example}\"",
+			"marp: true",
+			"author: Hsieh-Ting Lin",
+			"paginate: true",
+			"theme: my-theme",
+			"---",
+			"",
+			"<!-- _paginate: false -->",
+			"",
+			"![badge](https://img.shields.io/badge/KFSYSCC-Rounds-6c9a77)![badge](https://img.shields.io/badge/Date-YYYY--MM--DD-6c9a77)",
+			"",
+			"### Yet another review on",
+			"",
+			"# ${1:example}",
+			"",
+			"## 林協霆,",
+			"",
+			"<br>",
+			"",
+			"#### Fellow 2, 和信治癌中心醫院腫瘤內科部",
+			"",
+			"",
+			"---",
+			"",
+			"<!-- _header: '**Outline**' -->",
+			"",
+			"# Outline",
+			"",
+			"---",
+			"",
+			"(content here)",
+			"",
+			"---",
+			"",
+			"# Thank you for your time and attention",
+			"",
+			"## <!--fit-->_Have a nice day_",
+			"",
+			"![bg right:50% height:550px](https://media.tenor.com/Q-OWuADzjMQAAAAC/burp-leo.gif)",
+			"",
+			"---",
+			"",
+			"<!-- header: 'Addendum' -->",
+			"",
+			"## Addendum",
+			""
+		],
+		"description": "Marp Default"
+	},
+	"fit": {
+		"prefix": "fit",
+		"body": ["<!--fit-->"],
+		"description": "fit"
+	},
+	"creativecommons 4.0": {
+		"prefix": "cc4",
+		"body": [
+			"[![CC 4.0 h:45px](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hant)",
+			""
+		],
+		"description": "creativecommons 4.0"
+	},
+	"marpstart": {
+		"prefix": "marpstart",
+		"body": [
+			"---",
+			"title: \"${1:example}\"",
+			"marp: true",
+			"author: Hsieh-Ting Lin",
+			"paginate: true",
+			"headingDivider: 3",
+			"theme: main",
+			"footer: \"[■](#table-of-contents)\"",
+			"---",
+			"",
+			"# ${1:example}",
+			"",
+			"#### 林協霆醫師，和信治癌中心醫院",
+			"",
+			"**Hsieh-Ting Lin, <htlin222@kfsyscc.org>**",
+			"",
+			"![h:50px](https://i.imgur.com/TLuxHNS.png)",
+			"",
+			"<!-- ![RLQ h:50](https://i.imgur.com/3fIm24v.png) -->",
+			"",
+			"# Preface",
+			"",
+			"# Takeaway",
+			"",
+			"---",
+			"",
+			"## <!--fit-->Thanks",
+			"",
+			"<hr>",
+			"",
+			"##### <!--fit-->${1:example}",
+			"",
+			"<hr>",
+			"",
+			"#### <!--fit-->Let’s Take Some <br>Questions",
+			"",
+			"![bg right:50% h:450px](https://i.imgur.com/DzOMiaW.png)",
+			"",
+			"<!-- ![bg right:50% h:250px](https://i.imgur.com/ZxXHT4V.png) -->",
+			"",
+			"## Table of Contents",
+			"",
+			"[[TOC]]",
+			""
+		],
+		"description": "Marp YAML"
+	},
+	"thanks": {
+		"prefix": "thanks",
+		"body": [
+			"## <!--fit-->Thanks",
+			"",
+			"<hr>",
+			"",
+			"##### <!--fit-->Introduction to Propensity Score Method",
+			"",
+			"<hr>",
+			"",
+			"#### <!--fit-->Let’s Take Some <br>Questions",
+			"",
+			"<!-- ![bg right:50% h:550px](https://i.imgur.com/ZxXHT4V.png) -->",
+			"",
+			""
+		],
+		"description": "thanks"
+	}
 }
