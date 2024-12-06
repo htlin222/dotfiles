@@ -1,6 +1,6 @@
 [user]
-	email = hsieh.ting.lin@gmail.com
-	name = htlin222
+	email = 61491860+htlin222@users.noreply.github.com
+	name = Hsieh-Ting Lin (林協霆)
 [init]
 	defaultBranch = master
 [core]
@@ -21,3 +21,8 @@
 
 [diff]
     colorMoved = default
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

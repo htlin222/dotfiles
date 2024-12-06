@@ -90,3 +90,6 @@ if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
 fi
 source /Users/htlin/.uvv
+
+# Added by Windsurf
+export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
