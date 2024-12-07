@@ -1,15 +1,12 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
-
 # ---- start export ----
 export DOTFILES=$HOME/.dotfiles
 export EDITOR="nvim"
 export ML=$HOME/Dropbox/scripts/ml/
 export SMEAR=$HOME/Documents/images/smear/
 export DOTFONTPATH=$HOME/Library/Fonts
-export BETTER_EXCEPTIONS=1  # Linux / macOS
+export BETTER_EXCEPTIONS=1 # Linux / macOS
 export VISUAL="nvim"
 export DISPLAY=:0
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
@@ -75,3 +72,5 @@ alias bam-less='sam-less'
 # Auxillary syntaxes (uncomment to activate)
 alias fai-less='source-highlight      -f esc --lang-def=faidx.lang    --outlang-def=bioSyntax.outlang   --style-file=sam.style   | less'
 alias flagstat-less='source-highlight -f esc --lang-def=flagstat.lang --outlang-def=bioSyntax.outlang   --style-file=sam.style   | less'
+
+eval "$(/opt/homebrew/bin/brew shellenv)"

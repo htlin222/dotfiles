@@ -1,4 +1,5 @@
 # [tmux(1) - Linux manual page](https://man7.org/linux/man-pages/man1/tmux.1.html)
+set-option -g default-command "zsh -l"
 unbind C-b
 # Setting two prefix: 'Ctrl+b' to 'Ctrl+A'
 set-option -g prefix C-a
