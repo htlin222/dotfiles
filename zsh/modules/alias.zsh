@@ -9,6 +9,7 @@ fi
 alias dtc='tmux detach-client'
 alias man='colored man'
 alias ztop='zenith'
+alias gitop="cd $(git rev-parse --show-toplevel)"
 alias f="fix"
 alias ec="echo"
 alias nt='newsboat'
