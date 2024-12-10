@@ -1,7 +1,7 @@
 local options = {
   formatters_by_ft = {
     lua = {
-      "stylua" ,
+      "stylua",
       -- "ast-grep",
     },
     -- css = { "prettier" },
@@ -24,7 +24,7 @@ local options = {
     sql = { "sql_formatter" },
     sh = { "shfmt" },
     zsh = { "shfmt" },
-    markdown = { "prettier", "markdownlint-cli2" },
+    markdown = { "markdownlint-cli2" },
     quarto = { "prettier", "markdownlint-cli2", "jupytext" },
     graphql = { "prettier" },
     groovy = { "google-java-format" },

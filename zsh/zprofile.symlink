@@ -9,6 +9,8 @@ export DOTFONTPATH=$HOME/Library/Fonts
 export BETTER_EXCEPTIONS=1 # Linux / macOS
 export VISUAL="nvim"
 export DISPLAY=:0
+# 確保 PIPX 使用特定的 Python 版本：PIPX 預設會使用系統環境中的 python3，但你可能需要固定在 Homebrew 安裝的 Python 3.11 版本，避免版本衝突或相容性問題。
+export PIPX_DEFAULT_PYTHON="/opt/homebrew/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/bin/python3.11"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export NODE_OPTIONS="--no-deprecation"
 export PATH="/usr/bin/python3:$PATH"
@@ -33,6 +35,10 @@ export PATH=$PATH:/Users/htlin/.spicetify
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$PATH:/Users/htlin/.local/bin"
 export PATH="Users/htlin/edirect:${PATH}"
+export NODE_OPTIONS='--disable-warning=ExperimentalWarning'
+export AIDER_YES_ALWAYS=true
+export AIDER_AUTO_TEST=true
+export AIDER_WATCH_FILES=true
 ##   __     __   __           ___
 ##  |__) | /  \ /__` \ / |\ |  |   /\  \_/
 ##  |__) | \__/ .__/  |  | \|  |  /~~\ / \
