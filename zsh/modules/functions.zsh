@@ -1,3 +1,10 @@
+function gitop() {
+  if git rev-parse --show-toplevel >/dev/null 2>&1; then
+    cd "$(git rev-parse --show-toplevel)"
+  else
+    echo "\033[31mNot in a git repository\033[0m" # 紅色提示
+  fi
+}
 function rename_in_sqb() {
   for file in *[*]*.txt; do
     newname=$(echo "$file" | sed -E 's/\[[^]]*\]//g')
