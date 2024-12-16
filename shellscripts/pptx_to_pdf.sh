@@ -39,6 +39,6 @@ else
     # fi
     mv "$file" "$CONVERTED_FOLDER/"
     echo "\033[0;32m轉換完成\033[0m"
-    osascript -e 'display notification "轉換完成" with title "通知"'
+    osascript -e "display notification \"轉換完成\" with title \"$base_name\""
   done
 fi
