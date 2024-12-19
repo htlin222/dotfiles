@@ -57,6 +57,7 @@ return {
         -- Notification messages have their level and other properties set.
         -- event is always "notify" and kind can be any log level as a string
         -- The default routes will forward notifications to nvim-notify
+        background_colour = "#1E1E1E", -- 替換為您想要的 RGB hex 值
         -- Benefit of using Noice for this is the routing and consistent history view
         enabled = true,
         view = "mini",
