@@ -13,21 +13,29 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 
+local is_wezterm = os.getenv "WEZTERM_EXECUTABLE" ~= nil
+
+if is_wezterm then
+  require("lazy").setup({
+    {
+      "NvChad/NvChad",
+      lazy = false,
+      branch = "v2.5",
+      import = "nvchad.plugins",
+      config = function()
+        require "options"
+      end,
+    },
+
+    { import = "plugins" },
+  }, lazy_config)
+
+  -- 在這裡加入 WezTerm 特定的配置
+else
+  print "Not running inside WezTerm."
+  -- 其他配置
+end
 -- load plugins
-require("lazy").setup({
-  {
-    "NvChad/NvChad",
-    lazy = false,
-    branch = "v2.5",
-    import = "nvchad.plugins",
-    config = function()
-      require "options"
-    end,
-  },
-
-  { import = "plugins" },
-}, lazy_config)
-
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
