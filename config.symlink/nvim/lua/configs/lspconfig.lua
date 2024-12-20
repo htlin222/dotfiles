@@ -4,8 +4,8 @@ local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 local lspconfig = require "lspconfig"
 local servers = {
-  "ast_grep",
-  "awk_ls",
+  -- "ast_grep",
+  -- "awk_ls",
   "bashls",
   "cssls",
   -- "harper_ls",
@@ -15,7 +15,7 @@ local servers = {
   -- "markdown_oxide",
   "pyright",
   "eslint",
-  "pylsp",
+  -- "pylsp",
   -- "basedpyright",
   "r_language_server",
   "ruff_lsp",
