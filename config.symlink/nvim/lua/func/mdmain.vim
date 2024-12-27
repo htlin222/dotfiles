@@ -100,7 +100,7 @@ function! CreateRegular()
           \ '> 🌱 created from: [[' . g:previous . ']] 🧬',
           \ '',
           \ ])
-    echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
+    echo 'From: ' . g:previous . '. Create ' . split(expand('%:r'),'/')[-1]
 endfunction
 
 function! CreateLitNote()
@@ -120,7 +120,7 @@ function! CreateLitNote()
           \ '',
           \ ])
     " call Slug()
-    echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
+    echo 'From: ' . g:previous . '. Create ' . split(expand('%:r'),'/')[-1]
 endfunction
 
 function! CreateMedicalDiary()
@@ -139,7 +139,7 @@ function! CreateMedicalDiary()
           \ '',
           \ ])
     " call Slug()
-    echo '領域展開🔪伏魔御廚子🍴' . g:previous . '🔀' . split(expand('%:r'),'/')[-1]
+    echo 'From: ' . g:previous . '. Create ' . split(expand('%:r'),'/')[-1]
   endif
 endfunction
 

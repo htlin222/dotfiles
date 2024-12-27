@@ -9,7 +9,7 @@ M.base46 = {
   theme = "ayu_dark",
 
   -- hl_override = {
-  -- 	Comment = { italic = true },
+  - 	Comment = { italic = true },
   -- 	["@comment"] = { italic = true },
   -- },
 }
