@@ -1,7 +1,7 @@
 matches:
   - trigger: "thx"
     replace: "🙏乾蝦🍤"
-  - trigger: ";;"
+  - trigger: "default-to-snippet"
     replace: "{{output}}"
     vars:
       - name: output
