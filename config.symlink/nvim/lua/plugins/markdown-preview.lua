@@ -10,9 +10,7 @@ return {
       desc = "Start Markdown Preview",
     },
   },
-  build = function()
-    vim.fn["mkdp#util#install"]()
-  end,
+  build = "npm install",
   init = function()
     vim.g.mkdp_theme = "dark"
     vim.g.mkdp_filetypes = { "markdown", "quarto" }
