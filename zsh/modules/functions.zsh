@@ -1,3 +1,53 @@
+function claude() {
+  # 移動到 $HOME
+  cd $HOME || {
+    echo "無法切換到 $HOME"
+    return 1
+  }
+
+  # Clone 專案
+  echo "正在克隆 htlin222/claude-artifact-runner..."
+  if ! gh repo clone htlin222/claude-artifact-runner; then
+    echo "克隆失敗，請檢查 gh CLI 是否正確安裝並登入。"
+    return 1
+  fi
+
+  # 提示輸入新的資料夾名稱
+  while true; do
+    echo -n "請輸入新的資料夾名稱: "
+    read -r new_folder_name
+
+    if [[ -z "$new_folder_name" ]]; then
+      echo "資料夾名稱不可為空，請重新輸入。"
+    elif [[ -d "$new_folder_name" ]]; then
+      echo "資料夾名稱已存在，請重新輸入。"
+    else
+      break
+    fi
+  done
+
+  # 重命名資料夾
+  mv claude-artifact-runner "$new_folder_name" || {
+    echo "移動資料夾失敗"
+    return 1
+  }
+
+  # 進入新資料夾
+  cd "$new_folder_name" || {
+    echo "無法進入資料夾 $new_folder_name"
+    return 1
+  }
+
+  # 安裝 npm 依賴
+  echo "正在執行 npm install..."
+  if ! npm install; then
+    echo "npm install 失敗，請檢查環境設定。"
+    return 1
+  fi
+
+  echo "專案已成功設定完成！"
+}
+
 function gitop() {
   if git rev-parse --show-toplevel >/dev/null 2>&1; then
     cd "$(git rev-parse --show-toplevel)"
