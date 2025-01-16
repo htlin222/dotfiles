@@ -38,6 +38,32 @@ function claude() {
     return 1
   }
 
+  # 移除 .git 資料夾
+  echo "正在移除 .git 資料夾..."
+  if ! rm -rf .git; then
+    echo "移除 .git 資料夾失敗"
+    return 1
+  fi
+
+  # 初始化新的 Git 儲存庫
+  echo "正在初始化新的 Git 儲存庫..."
+  if ! git init; then
+    echo "git init 失敗"
+    return 1
+  fi
+
+  # 添加檔案並提交
+  echo "正在執行 git 操作..."
+  if ! git add .; then
+    echo "git add 失敗"
+    return 1
+  fi
+
+  if ! git commit -m 'init'; then
+    echo "git commit 失敗"
+    return 1
+  fi
+
   # 安裝 npm 依賴
   echo "正在執行 npm install..."
   if ! npm install; then
