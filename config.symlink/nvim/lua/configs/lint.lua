@@ -26,8 +26,8 @@ lint.linters_by_ft = {
     -- "codespell",
     -- "proselint",
     -- "vale",
-    "typos",
-    "write_good",
+    -- "typos",
+    -- "write_good",
   },
   vim = { "vint" },
   bash = {
