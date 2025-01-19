@@ -38,6 +38,13 @@ function claude() {
     return 1
   }
 
+  # 安裝 npm 依賴
+  echo "正在執行 npm install..."
+  if ! npm install; then
+    echo "npm install 失敗，請檢查環境設定。"
+    return 1
+  fi
+
   # 移除 .git 資料夾
   echo "正在移除 .git 資料夾..."
   if ! rm -rf .git; then
@@ -61,13 +68,6 @@ function claude() {
 
   if ! git commit -m 'init'; then
     echo "git commit 失敗"
-    return 1
-  fi
-
-  # 安裝 npm 依賴
-  echo "正在執行 npm install..."
-  if ! npm install; then
-    echo "npm install 失敗，請檢查環境設定。"
     return 1
   fi
 
