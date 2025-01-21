@@ -18,7 +18,7 @@ local servers = {
   -- "pylsp",
   -- "basedpyright",
   "r_language_server",
-  "ruff_lsp",
+  "ruff",
   "ts_ls",
   "vimls",
   "jdtls",
