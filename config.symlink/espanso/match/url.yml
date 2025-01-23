@@ -1,6 +1,6 @@
 matches:
-  - trigger: ":latest"
-    replace: "after:2024/07/01"
+  - trigger: "after2025"
+    replace: "after:2025/01/01"
   - trigger: "site:pubmed"
     replace: "site:pubmed.ncbi.nlm.nih.gov"
   - trigger: "site:ash"
