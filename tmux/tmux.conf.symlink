@@ -106,6 +106,7 @@ set -g @catppuccin_datetime_icon "󰔚"
 # set -g @catppuccin_host_icon "F"
 # List of plugins prefix I to install
 set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'laktak/tome'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'christoomey/vim-tmux-navigator'
 set -g @plugin 'tmux-plugins/tmux-copycat'
