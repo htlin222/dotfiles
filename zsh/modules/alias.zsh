@@ -8,6 +8,7 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias npm='pnpm'
+alias ask='~/.local/pipx/venvs/gpt-command-line/bin/gpt -p'
 alias man='colored man'
 alias ztop='zenith'
 # alias gitop="cd $(git rev-parse --show-toplevel)"
