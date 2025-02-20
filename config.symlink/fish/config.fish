@@ -11,3 +11,6 @@ set -gx MAMBA_EXE "/Users/htlin/.micromamba/bin/micromamba"
 set -gx MAMBA_ROOT_PREFIX "/Users/htlin/micromamba"
 $MAMBA_EXE shell hook --shell fish --prefix $MAMBA_ROOT_PREFIX | source
 # <<< mamba initialize <<<
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/htlin/.cache/lm-studio/bin
