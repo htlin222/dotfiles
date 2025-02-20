@@ -25,11 +25,6 @@ return {
         -- If a function is provided both of these values are provided in the context using 1 based indexing
         -- If a list is provided we index into it using a cycle based on the level
         -- If the value at that level is also a list we further index into it using a clamp based on the index
-        ordered_icons = function(ctx)
-          local value = vim.trim(ctx.value)
-          local index = tonumber(value:sub(1, #value - 1))
-          return string.format("%d.", index > 1 and index or ctx.index)
-        end,
         right_pad = 1,
         highlight = "RenderMarkdownBullet",
       },
