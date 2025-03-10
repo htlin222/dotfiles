@@ -7,7 +7,7 @@ else
 fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
-# alias npm='pnpm'
+alias n='pnpm'
 # alias yarn='pnpm'
 alias cd..='cd ..'
 alias ask='~/.local/pipx/venvs/gpt-command-line/bin/gpt -p'
