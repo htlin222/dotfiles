@@ -9,6 +9,7 @@ fi
 alias dtc='tmux detach-client'
 # alias npm='pnpm'
 # alias yarn='pnpm'
+alias cd..='cd ..'
 alias ask='~/.local/pipx/venvs/gpt-command-line/bin/gpt -p'
 alias man='colored man'
 alias ztop='zenith'
