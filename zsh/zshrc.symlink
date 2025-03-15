@@ -14,6 +14,8 @@ if [ -f ".venv/bin/activate" ]; then
   screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
   echo "uv .venv is activated ✨"
 fi
+
+[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 # ---- oh-my-zsh stuff and p10k ----
 
 setopt no_nomatch
