@@ -29,10 +29,20 @@ return {
   -- s({ trig = "ins" }, { t({ "<ins>" }), i(0), t({ "</ins>" })},
   -- s({ trig = "split" }, { t({ "", ":::split", "", "" }), i(0), t({ "", "", ":::", "" }) }),
   s({ trig = "even" }, { t { "", ":::columns", "", "" } }),
-  s({ trig = "bgrt" }, { t { "bg right:50%" } }),
+  s({ trig = "bgr" }, { t { "bg right:" }, i(0), t { "0%" } }),
+  s({ trig = "bgl" }, { t { "bg left:" }, i(0), t { "0%" } }),
   -- bg right:50%
   s({ trig = "shadow" }, { t { "drop-shadow:0px,45px,30px,rgba(0,0,0,.7) Figure: width:1150px" }, i(0) }),
   s({ trig = "opacity" }, { t { "bg opacity:.3 h:500px" }, i(0) }),
   s({ trig = "frag" }, { t { '{data-marpit-fragment="' }, i(0), t { '"}' } }),
+  s({ trig = "fontsize" }, { t { '<div style="font-size: ' }, i(0), t { 'px">' } }),
+  s({ trig = "flexlist" }, { t { '<div class="flex-list">', "" }, i(0), t { "</div>" } }),
+  s({ trig = "div" }, { t { "<div>" } }),
+  s({ trig = "/div" }, { t { "</div>" } }),
+  s({ trig = "abs" }, {
+    t { '<div style="position: absolute; left: 100px; top: 350px; font-size: 24px;">', "" },
+    i(0),
+    t { "", "</div>" },
+  }),
   --
 }
