@@ -8,6 +8,7 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias n='pnpm'
+alias ndist='netlify deploy --prod --dir=dist'
 alias win='windsurf'
 # alias yarn='pnpm'
 alias cd..='cd ..'
