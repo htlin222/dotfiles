@@ -8,6 +8,7 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias n='pnpm'
+alias win='windsurf'
 # alias yarn='pnpm'
 alias cd..='cd ..'
 alias mcpconfig='vim ~/Library/Application\ Support/Claude/claude_desktop_config.json'
