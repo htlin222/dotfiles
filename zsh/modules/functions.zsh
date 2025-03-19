@@ -926,3 +926,17 @@ chore() {
     fi
   done
 }
+start_fetch_mcp() {
+  local TARGET_DIR="/Users/htlin/fetch-mcp"
+  # 檢查目錄是否存在
+  if [ ! -d "$TARGET_DIR" ]; then
+    echo "Error: Directory $TARGET_DIR does not exist."
+    return 1
+  fi
+  # 進入目錄
+  cd "$TARGET_DIR" || return 1
+  # 啟動 pnpm 並讓其在背景執行，不受終端影響
+  nohup pnpm start >pnpm.log 2>&1 &
+  disown
+  echo "pnpm started in background. Logs: $TARGET_DIR/pnpm.log"
+}
