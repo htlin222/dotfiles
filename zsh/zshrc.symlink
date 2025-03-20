@@ -99,3 +99,11 @@ export PIPX_DEFAULT_PYTHON=/opt/homebrew/opt/python@3.13/bin/python3.13
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
+
+# pnpm
+export PNPM_HOME="/Users/htlin/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
