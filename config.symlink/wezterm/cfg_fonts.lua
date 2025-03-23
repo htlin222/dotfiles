@@ -2,12 +2,14 @@ local wezterm = require("wezterm")
 
 local cfg = {}
 
+-- 預設字體大小
+cfg.font_size = 24.0
+
 -- Disable annoying default behaviors
 cfg.adjust_window_size_when_changing_font_size = false
 -- that one was opening a separate win on first unknown glyph, stealing windows focus (!!)
 cfg.warn_about_missing_glyphs = false
 
-cfg.font_size = 18.0
 cfg.cell_width = 1.0
 cfg.window_decorations = "RESIZE"
 
