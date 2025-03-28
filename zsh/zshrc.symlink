@@ -1,16 +1,18 @@
 zmodload zsh/zprof
 
-# Initialize Powerlevel10k instant prompt for faster startup
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # Launch tmux if in WezTerm
 if [ "$TERM_PROGRAM" = "WezTerm" ]; then
   if [ "$TMUX" = "" ]; then
     tmux
   fi
 fi
+
+
+# Initialize Powerlevel10k instant prompt for faster startup
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 
 # Cache directory setup
 ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$HOME/.cache/zsh}"
