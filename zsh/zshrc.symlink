@@ -1,55 +1,104 @@
+zmodload zsh/zprof
+
+# Initialize Powerlevel10k instant prompt for faster startup
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Launch tmux if in WezTerm
 if [ "$TERM_PROGRAM" = "WezTerm" ]; then
   if [ "$TMUX" = "" ]; then
     tmux
   fi
 fi
-if [ -n "${ZSH_DEBUGRC+1}" ]; then
-  zmodload zsh/zprof
-fi
 
-# ---- Welcome Message ----
-# cfonts "Lizard" --colors white,"#f80"
+# Cache directory setup
+ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$HOME/.cache/zsh}"
+mkdir -p $ZSH_CACHE_DIR
+ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump-$SHORT_HOST-$ZSH_VERSION"
+
+# Skip global compinit - we'll handle it ourselves
+skip_global_compinit=1
+
+# Async completion loading - without job messages
+_load_completions_async() {
+  # Load completions in the background
+  {
+    autoload -Uz compinit
+    setopt localoptions extendedglob
+
+    # Use fast loading with -C unless dump is older than 7 days
+    if [[ -f "${ZSH_COMPDUMP}" && $(find "${ZSH_COMPDUMP}" -mtime +7 2>/dev/null) ]]; then
+      compinit -d "${ZSH_COMPDUMP}"
+    else
+      compinit -C -d "${ZSH_COMPDUMP}"
+    fi
+
+    # Compile the completion dump to speed up loading
+    if [[ -s "${ZSH_COMPDUMP}" && (! -s "${ZSH_COMPDUMP}.zwc" || "${ZSH_COMPDUMP}" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
+      zcompile "${ZSH_COMPDUMP}"
+    fi
+  } >/dev/null 2>&1 &|
+}
+
+# Run the async function
+_load_completions_async
+
+# Python venv activation
 if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
   screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
   echo "uv .venv is activated ✨"
 fi
 
+# Load forgit if available
 [ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
-# ---- oh-my-zsh stuff and p10k ----
 
+# Basic zsh settings
 setopt no_nomatch
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# (ffplay -v 0 -nodisp -autoexit $HOME/.dotfiles/config.symlink/media/rat_tail.mp3 &> /dev/null &)
+# Oh-My-Zsh configuration
 export ZSH="$HOME/.oh-my-zsh"
 ulimit -n 4096
 DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
-plugins+=(
+
+# Enhanced plugin loading system
+# Categorize plugins by loading strategy
+EAGER_PLUGINS=(
   colored-man-pages
   copyfile
-  fast-syntax-highlighting
-  fzf-tab
   git
   gitignore
   jsontools
-  lol
   man
-  rsync
   sudo
   web-search
   you-should-use
-  zsh-autosuggestions
   zsh-lazyload
+)
+
+PROMPT_PLUGINS=(
+  zsh-autosuggestions
+)
+
+KEYPRESS_PLUGINS=(
   zsh-vi-mode
+  fzf-tab
   zsh-autopair
 )
 
+DELAYED_PLUGINS=(
+  fast-syntax-highlighting
+)
+
+# Add the eager plugins to the OMZ plugins array
+plugins=("${EAGER_PLUGINS[@]}")
+
 ZSH_WEB_SEARCH_ENGINES=(
-  # reddit "https://www.reddit.com/search/?q="
   anna "https://tw.annas-archive.org/search?index=&ext=epub&sort=newest&q="
   pubmed "https://pubmed-ncbi-nlm-nih-gov.autorpa.kfsyscc.org/?sort=date&term="
   cco "https://clinicaloptions.com/CE-CME?specialities=hematology,oncology&contenttypes=pdf,slideset,slideset-download,text-module&searchtext="
@@ -59,45 +108,123 @@ ZSH_WEB_SEARCH_ENGINES=(
   google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
 )
 
+# Load oh-my-zsh with only the eager plugins
 source "$ZSH/oh-my-zsh.sh"
-# eval "$(fixit init zsh)"
-# eval $(thefuck --alias)
 
-# ---- Source API ----
+# Function to standardize plugin path finding
+_find_plugin_path() {
+  local plugin=$1
+  local plugin_paths=(
+    "$ZSH/custom/plugins/$plugin/$plugin.plugin.zsh"
+    "$ZSH/custom/plugins/$plugin/${plugin}.zsh"
+    "$ZSH/plugins/$plugin/$plugin.plugin.zsh"
+  )
+
+  for path in "${plugin_paths[@]}"; do
+    if [[ -f "$path" ]]; then
+      echo "$path"
+      return 0
+    fi
+  done
+
+  echo ""
+  return 1
+}
+
+# Lazy load plugins based on prompt (precmd)
+_load_prompt_plugins() {
+  # Only run once
+  _load_prompt_plugins() { :; }
+
+  for plugin in "${PROMPT_PLUGINS[@]}"; do
+    local plugin_path=$(_find_plugin_path "$plugin")
+    if [[ -n "$plugin_path" ]]; then
+      source "$plugin_path"
+    fi
+  done
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _load_prompt_plugins
+
+# Lazy load plugins on keypress
+_load_keypress_plugins() {
+  # Only run once
+  zle -D zle-line-init
+
+  for plugin in "${KEYPRESS_PLUGINS[@]}"; do
+    local plugin_path=$(_find_plugin_path "$plugin")
+    if [[ -n "$plugin_path" ]]; then
+      source "$plugin_path"
+    fi
+  done
+}
+zle -N zle-line-init _load_keypress_plugins
+
+# Improved delayed plugin loading without job messages
+_load_delayed_plugins() {
+  {
+    sleep 0.5
+    for plugin in "${DELAYED_PLUGINS[@]}"; do
+      local plugin_path=$(_find_plugin_path "$plugin")
+      if [[ -n "$plugin_path" ]]; then
+        source "$plugin_path"
+      fi
+    done
+  } >/dev/null 2>&1 &|
+}
+_load_delayed_plugins
+
+# Continue with rest of initialization while compinit runs in background
+_load_completions() {
+  # Only run once
+  _load_completions() { :; }
+
+  # Reload line if needed
+  zle -R
+}
+add-zsh-hook precmd _load_completions
+
+# Source API files
 for file in ~/API/*; do
   source "$file"
 done
 
-# ---- Key Binding ----
+# Key bindings
 bindkey -s '^o' 'ya\n' # zsh
 bindkey -s '^n' 'tmux new-window\n'
 
-# --- source need files
+# Source modules
 source "$DOTFILES/zsh/modules/alias.zsh"
 source "$DOTFILES/zsh/modules/functions.zsh"
 source "$DOTFILES/zsh/modules/fzf.zsh"
 source "$DOTFILES/zsh/modules/biosyntax.zsh"
 source "$HOME/.uvv"
 
-# fnm
+# Lazy load functions for external tools
+_load_fnm() {
+  if [ -d "$FNM_PATH" ]; then
+    export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
+    eval "$(fnm env)"
+  fi
+}
+
+_load_broot() {
+  source /Users/htlin/.config/broot/launcher/bash/br
+}
+
+_load_atuin() {
+  eval "$(atuin init zsh)"
+}
+
+# Lazy load tools
 FNM_PATH="/Users/mac/Library/Application Support/fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
-  eval "$(fnm env)"
-fi
+lazyload fnm node npm -- _load_fnm
+lazyload br -- _load_broot
+lazyload atuin -- _load_atuin
 
-source /Users/htlin/.config/broot/launcher/bash/br
-eval "$(atuin init zsh)"
-if [ -n "${ZSH_DEBUGRC+1}" ]; then
-  zprof
-fi
-source /Users/htlin/.uvv
-
-# Added by Windsurf
+# Paths
 export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
 export PIPX_DEFAULT_PYTHON=/opt/homebrew/opt/python@3.13/bin/python3.13
-
-# Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
 
 # pnpm
@@ -106,4 +233,8 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
+
+# Only run zprof when debugging
+if [ -n "${ZSH_DEBUGRC+1}" ]; then
+  zprof
+fi
