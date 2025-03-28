@@ -3,9 +3,6 @@
 	name = Hsieh-Ting Lin (林協霆)
 [init]
 	defaultBranch = master
-[core]
-    pager = delta
-
 [interactive]
     diffFilter = delta --color-only
 
@@ -19,12 +16,51 @@
 [merge]
     conflictstyle = diff3
 
+[log]
+    date = iso
+
+[format]
+    pretty = format:%C(yellow)%h%C(reset) - %C(cyan)%an%C(reset): %C(bold green)%s%C(reset) %C(dim white)(%ar)%C(reset)
+
 [diff]
+    mnemonicPrefix = true
+    algorithm = histogram  # 更好的 diff 比對算法
     colorMoved = default
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[pull]
+    rebase = true
+
+[gc]
+    auto = 256  # 當有 256 個鬆散物件時自動執行 `git gc`
+    autoPackLimit = 50  # 當有 50 個 packfile 時自動壓縮
+[status]
+    showUntrackedFiles = all
+    aheadBehind = true
+[rebase]
+    autosquash = true
+
+[core]
+    editor = "nvim"  # 如果你使用 Neovim
+    pager = delta
+
 [push]
-	autoSetupRemote = true
+    default = current
+    autoSetupRemote = true
+    followTags = true
+[color]
+    ui = always
+    diff = auto
+    status = auto
+    branch = auto
+    interactive = auto
+    grep = auto
+
+[color "status"]
+    added = green bold
+    changed = yellow bold
+    untracked = red bold
