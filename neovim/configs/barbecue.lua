@@ -18,8 +18,6 @@ return {
 			"WinScrolled", -- or WinResized on NVIM-v0.9 and higher
 			"BufWinEnter",
 			"CursorHold",
-			"InsertLeave",
-
 			-- include this if you have set `show_modified` to `true`
 			"BufModifiedSet",
 		}, {

@@ -79,8 +79,8 @@ EAGER_PLUGINS=(
   man
   sudo
   web-search
-  you-should-use
   zsh-lazyload
+  fast-syntax-highlighting
 )
 
 PROMPT_PLUGINS=(
@@ -161,21 +161,6 @@ _load_keypress_plugins() {
   done
 }
 zle -N zle-line-init _load_keypress_plugins
-
-# Improved delayed plugin loading without job messages
-_load_delayed_plugins() {
-  {
-    sleep 0.5
-    for plugin in "${DELAYED_PLUGINS[@]}"; do
-      local plugin_path=$(_find_plugin_path "$plugin")
-      if [[ -n "$plugin_path" ]]; then
-        source "$plugin_path"
-      fi
-    done
-  } >/dev/null 2>&1 &|
-}
-_load_delayed_plugins
-
 # Continue with rest of initialization while compinit runs in background
 _load_completions() {
   # Only run once

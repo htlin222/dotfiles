@@ -26,10 +26,13 @@ return {
 			text = { "vale" },
 		}
 		local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
-		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, { -- Remove InsertLeave
 			group = lint_augroup,
 			callback = function()
-				lint.try_lint()
+				-- Optional: Add a slight delay
+				vim.defer_fn(function()
+					lint.try_lint()
+				end, 100) -- 100ms delay
 			end,
 		})
 		vim.keymap.set("n", "<leader>l", function()

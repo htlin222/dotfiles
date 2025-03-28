@@ -10,14 +10,19 @@ autocmd("InsertEnter", {
 	end,
 })
 
--- switch to ABC when back to normal mode
+-- Replace in macos.lua
 autocmd("InsertLeavePre", {
 	group = augroup("IMswitch", { clear = true }),
 	callback = function()
+		-- Use a more efficient way to detect input method
+		-- Only switch if needed
 		local im_select_output = vim.fn.system("im-select")
-		if not string.match(im_select_output, "ABC") then
+		if not im_select_output:match("ABC") then
 			Boshiamy = true
-			vim.fn.system("im-select com.apple.keylayout.ABC")
+			-- Use vim.schedule to make this non-blocking
+			vim.schedule(function()
+				vim.fn.system("im-select com.apple.keylayout.ABC")
+			end)
 		else
 			Boshiamy = false
 		end
