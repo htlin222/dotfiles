@@ -13,7 +13,6 @@ local servers = {
   "jsonls",
   "julials",
   "markdown_oxide",
-  "pyright",
   "eslint",
   -- "pylsp",
   -- "basedpyright",
@@ -26,7 +25,7 @@ local servers = {
 -- too slow in large valut"markdown_oxide",
 capabilities.workspace = {
   didChangeWatchedFiles = {
-    dynamicRegistration = true,
+    dynamicRegistration = false,
   },
 }
 -- lsps with default config
@@ -35,6 +34,9 @@ for _, lsp in ipairs(servers) do
     on_attach = on_attach,
     on_init = on_init,
     capabilities = capabilities,
+    flags = {
+      debounce_text_changes = 150, -- 增加防抖動時間，減少過度觸發
+    },
   }
 end
 
@@ -53,6 +55,12 @@ require("lspconfig").groovyls.setup {
     "groovy",
   },
 }
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  update_in_insert = false, -- 避免插入模式時過度更新
+  signs = true,
+  virtual_text = false,
+})
 
 -- require("lspconfig").markdown_oxide.setup {
 --   filetypes = {
