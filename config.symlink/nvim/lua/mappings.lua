@@ -24,6 +24,12 @@ map("n", "H", "^", { desc = "Beginning of line" }) -- 使用 H 跳到行首
 map("n", "L", "$", { desc = "End of line" }) -- 使用 L 跳到行尾
 map("n", "<Right>", ":bn<CR>", { desc = "Next buffer" }) -- 使用右箭頭切換到下一個緩衝區
 map("n", "<Left>", ":bp<CR>", { desc = "Previous buffer" }) -- 使用左箭頭切換到上一個緩衝區
+map("n", "<leader>yy", ':let @+ = expand("%:p")<CR>', { desc = "Yank current buffer file full path" })
+map("n", "<leader>yr", ':let @+ = expand("%:.")<CR>', { desc = "Yank current buffer file relative path" })
+map("n", "<leader>yp", ':let @+ = expand("%:h")<CR>', { desc = "Yank current buffer parent folder path" })
+map("n", "<leader>yw", ":let @+ = getcwd()<CR>", { desc = "Yank current working directory" })
+map("n", "<leader>yf", ':let @+ = expand("%:t")<CR>', { desc = "Yank current file name" })
+map("n", "<leader>yb", ':let @+ = expand("%:t:r")<CR>', { desc = "Yank current file name without extension" })
 map("n", "<Down>", ":tabnext<CR>", { desc = "tab next" }) -- 使用下箭頭切換到下一個標籤頁
 map("n", "<Up>", ":tabprevious<CR>", { desc = "tab previous" }) -- 使用上箭頭切換到上一個標籤頁
 map("n", "<ESC>", ":", { desc = "Enter Cmdline" }) -- 使用 ESC 進入命令行模式
@@ -37,24 +43,21 @@ map("n", "<leader>=", "i<CR>-<Space><ESC>$", { desc = "Create a new list item ti
 map("n", "gf", ":e <cfile><CR>", { desc = "gf new file" }) -- 在新文件中打開游標下的文件名
 map("n", "<leader><", "V`[<", { desc = "indent the pasted words" }) -- 縮進剛貼上的文本
 map("n", "<leader>>", "V`]>", { desc = "redo indent the pasted words" }) -- 重新縮進剛貼上的文本
-map("n", "yih", "yi(", { desc = "same as i[" }) -- 複製括號內內容，使用 h 代替 (
-map("n", "yij", "yi[", { desc = "same as i[" }) -- 複製方括號內內容，使用 j 代替 [
-map("n", "yik", "yi{", { desc = "same as i{" }) -- 複製花括號內內容，使用 k 代替 {
-map("n", "dih", "di(", { desc = "same as i[" }) -- 刪除括號內內容，使用 h 代替 (
-map("n", "dij", "di[", { desc = "same as i[" }) -- 刪除方括號內內容，使用 j 代替 [
-map("n", "dik", "di{", { desc = "same as i{" }) -- 刪除花括號內內容，使用 k 代替 {
-map("n", "cih", "ci(", { desc = "same as i[" }) -- 更改括號內內容，使用 h 代替 (
-map("n", "cij", "ci[", { desc = "same as i[" }) -- 更改方括號內內容，使用 j 代替 [
-map("n", "cik", "ci{", { desc = "same as i{" }) -- 更改花括號內內容，使用 k 代替 {
-map("n", "yih", "yi(", { desc = "same as i[" }) -- 複製括號內內容，使用 h 代替 (（重複）
-map("n", "yij", "yi[", { desc = "same as i[" }) -- 複製方括號內內容，使用 j 代替 [（重複）
-map("n", "yik", "yi{", { desc = "same as i{" }) -- 複製花括號內內容，使用 k 代替 {（重複）
-map("n", "dah", "da(", { desc = "same as i[" }) -- 刪除括號及其內容，使用 h 代替 (
-map("n", "daj", "da[", { desc = "same as i[" }) -- 刪除方括號及其內容，使用 j 代替 [
-map("n", "dak", "da{", { desc = "same as i{" }) -- 刪除花括號及其內容，使用 k 代替 {
-map("n", "cah", "ca(", { desc = "same as i[" }) -- 更改括號及其內容，使用 h 代替 (
-map("n", "caj", "ca[", { desc = "same as i[" }) -- 更改方括號及其內容，使用 j 代替 [
-map("n", "cak", "ca{", { desc = "same as i{" }) -- 更改花括號及其內容，使用 k 代替 {
+map("n", "yih", "yi(", { desc = "複製括號內內容，使用 h 代替 (" })
+map("n", "yij", "yi[", { desc = "複製方括號內內容，使用 j 代替 [" })
+map("n", "yik", "yi{", { desc = "複製花括號內內容，使用 k 代替 {" })
+map("n", "dih", "di(", { desc = "刪除括號內內容，使用 h 代替 (" })
+map("n", "dij", "di[", { desc = "刪除方括號內內容，使用 j 代替 [" })
+map("n", "dik", "di{", { desc = "刪除花括號內內容，使用 k 代替 {" })
+map("n", "cih", "ci(", { desc = "更改括號內內容，使用 h 代替 (" })
+map("n", "cij", "ci[", { desc = "更改方括號內內容，使用 j 代替 [" })
+map("n", "cik", "ci{", { desc = "更改花括號內內容，使用 k 代替 {" })
+map("n", "dah", "da(", { desc = "刪除括號及其內容，使用 h 代替 (" })
+map("n", "daj", "da[", { desc = "刪除方括號及其內容，使用 j 代替 [" })
+map("n", "dak", "da{", { desc = "刪除花括號及其內容，使用 k 代替 {" })
+map("n", "cah", "ca(", { desc = "更改括號及其內容，使用 h 代替 (" })
+map("n", "caj", "ca[", { desc = "更改方括號及其內容，使用 j 代替 [" })
+map("n", "cak", "ca{", { desc = "更改花括號及其內容，使用 k 代替 {" })
 map( ---------------  -- 將每個單詞的首字母大寫
   "n",
   "<leader>fc",
