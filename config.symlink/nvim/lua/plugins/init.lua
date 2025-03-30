@@ -6,6 +6,7 @@ return {
       require "configs.conform"
     end,
   },
+  { "echasnovski/mini.nvim", version = false },
   { "nvim-java/nvim-java" },
   {
     "neovim/nvim-lspconfig",

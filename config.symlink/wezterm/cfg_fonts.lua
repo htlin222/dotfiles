@@ -3,7 +3,7 @@ local wezterm = require("wezterm")
 local cfg = {}
 
 -- 預設字體大小
-cfg.font_size = 24.0
+cfg.font_size = 18.0
 
 -- Disable annoying default behaviors
 cfg.adjust_window_size_when_changing_font_size = false

@@ -22,6 +22,7 @@ map("n", "_", "<C-x>", { desc = "decrease number" }) -- 使用下劃線減少數
 map("n", "x", '"_x', { desc = "do not yank x when x" }) -- 使用 x 刪除時不複製到剪貼板
 map("n", "H", "^", { desc = "Beginning of line" }) -- 使用 H 跳到行首
 map("n", "L", "$", { desc = "End of line" }) -- 使用 L 跳到行尾
+map("n", "zj", "z=", { desc = "列出建議的修正選項" }) -- 使用 L 跳到行尾
 map("n", "<Right>", ":bn<CR>", { desc = "Next buffer" }) -- 使用右箭頭切換到下一個緩衝區
 map("n", "<Left>", ":bp<CR>", { desc = "Previous buffer" }) -- 使用左箭頭切換到上一個緩衝區
 map("n", "<leader>yy", ':let @+ = expand("%:p")<CR>', { desc = "Yank current buffer file full path" })
@@ -43,21 +44,20 @@ map("n", "<leader>=", "i<CR>-<Space><ESC>$", { desc = "Create a new list item ti
 map("n", "gf", ":e <cfile><CR>", { desc = "gf new file" }) -- 在新文件中打開游標下的文件名
 map("n", "<leader><", "V`[<", { desc = "indent the pasted words" }) -- 縮進剛貼上的文本
 map("n", "<leader>>", "V`]>", { desc = "redo indent the pasted words" }) -- 重新縮進剛貼上的文本
-map("n", "yih", "yi(", { desc = "複製括號內內容，使用 h 代替 (" })
-map("n", "yij", "yi[", { desc = "複製方括號內內容，使用 j 代替 [" })
-map("n", "yik", "yi{", { desc = "複製花括號內內容，使用 k 代替 {" })
-map("n", "dih", "di(", { desc = "刪除括號內內容，使用 h 代替 (" })
-map("n", "dij", "di[", { desc = "刪除方括號內內容，使用 j 代替 [" })
-map("n", "dik", "di{", { desc = "刪除花括號內內容，使用 k 代替 {" })
-map("n", "cih", "ci(", { desc = "更改括號內內容，使用 h 代替 (" })
-map("n", "cij", "ci[", { desc = "更改方括號內內容，使用 j 代替 [" })
-map("n", "cik", "ci{", { desc = "更改花括號內內容，使用 k 代替 {" })
-map("n", "dah", "da(", { desc = "刪除括號及其內容，使用 h 代替 (" })
-map("n", "daj", "da[", { desc = "刪除方括號及其內容，使用 j 代替 [" })
-map("n", "dak", "da{", { desc = "刪除花括號及其內容，使用 k 代替 {" })
-map("n", "cah", "ca(", { desc = "更改括號及其內容，使用 h 代替 (" })
-map("n", "caj", "ca[", { desc = "更改方括號及其內容，使用 j 代替 [" })
-map("n", "cak", "ca{", { desc = "更改花括號及其內容，使用 k 代替 {" })
+map("o", "ii", 'i"', { desc = 'inner "' })
+map("o", "io", "i'", { desc = "inner '" })
+map("o", "ih", "i(", { desc = "inner (" })
+map("o", "ij", "i[", { desc = "inner [" })
+map("o", "ik", "i{", { desc = "inner {" })
+map("o", "il", "i<", { desc = "inner <" })
+map("o", "iq", "i`", { desc = "inner `" })
+map("o", "ai", 'a"', { desc = 'inner "' })
+map("o", "ao", "a'", { desc = "inner '" })
+map("o", "ah", "a(", { desc = "inner (" })
+map("o", "aj", "a[", { desc = "inner [" })
+map("o", "ak", "a{", { desc = "inner {" })
+map("o", "al", "a<", { desc = "inner <" })
+map("o", "aq", "a`", { desc = "inner `" })
 map( ---------------  -- 將每個單詞的首字母大寫
   "n",
   "<leader>fc",
