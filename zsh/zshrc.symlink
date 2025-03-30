@@ -225,13 +225,7 @@ fi
 # Check if Atuin binary exists before sourcing
 if [ -f "$HOME/.atuin/bin/env" ]; then
     . "$HOME/.atuin/bin/env"
-else
-    echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
-fi
-
-# Check if the `atuin` command is available before initializing
-if command -v atuin >/dev/null 2>&1; then
     eval "$(atuin init zsh)"
 else
-    echo "Warning: Atuin is not installed or not in PATH."
+    echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
 fi
