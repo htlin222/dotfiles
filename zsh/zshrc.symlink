@@ -20,6 +20,8 @@ ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump-$SHORT_HOST-$ZSH_VERSION"
 
 # Skip global compinit - we'll handle it ourselves
 skip_global_compinit=1
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' menu select
 
 # Async completion loading - without job messages
 _load_completions_async() {
@@ -217,10 +219,6 @@ esac
 export PATH="$PATH:$(brew --prefix)/share/forgit"
 [ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 
-# Only run zprof when debugging
-if [ -n "${ZSH_DEBUGRC+1}" ]; then
-  zprof
-fi
 
 # Check if Atuin binary exists before sourcing
 if [ -f "$HOME/.atuin/bin/env" ]; then
@@ -228,4 +226,10 @@ if [ -f "$HOME/.atuin/bin/env" ]; then
     eval "$(atuin init zsh)"
 else
     echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
+fi
+
+
+# Only run zprof when debugging
+if [ -n "${ZSH_DEBUGRC+1}" ]; then
+  zprof
 fi
