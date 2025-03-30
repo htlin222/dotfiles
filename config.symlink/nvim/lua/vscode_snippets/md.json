@@ -142,19 +142,24 @@
 		],
 		"description": "請按照以下的分類來為片語命名"
 	},
-	"hugopost": {
+	"hugofront": {
 		"prefix": "hugo",
 		"body": [
 			"---",
-			"title: ${1:example}",
-			"slug: ${2:slug}",
+			"title: \"title\"",
+			"linkTitle: \"shortTitle\"",
+			"date: 2025-01-01",
 			"draft: false",
-			"category: tutorial",
-			"date: ${3:example}",
-			"description: ",
-			"---",
-			""
+			"tags: [\"tutorial\", \"dev\"]",
+			"categories: [\"web development\"]",
+			"author: \"林協霆\"",
+			"description: \"An introduction to Hugo static site generator.\"",
+			"slug: \"my-first-hugo-post\"",
+			"isCJKLanguage: true",
+			"aliases:",
+			"  - \"/old-url/\"",
+			"---"
 		],
-		"description": "hugopost"
+		"description": "hugofront"
 	}
 }

@@ -13,7 +13,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-
 # Cache directory setup
 ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$HOME/.cache/zsh}"
 mkdir -p $ZSH_CACHE_DIR
@@ -49,12 +48,10 @@ _load_completions_async
 # Python venv activation
 if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
-  screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
+  # screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
   echo "uv .venv is activated ✨"
 fi
 
-# Load forgit if available
-[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 
 # Basic zsh settings
 setopt no_nomatch
@@ -190,7 +187,7 @@ source "$HOME/.uvv"
 # Lazy load functions for external tools
 _load_fnm() {
   if [ -d "$FNM_PATH" ]; then
-    export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
+    export PATH="/Users/mac/Library/Application\ Support/fnm:$PATH"
     eval "$(fnm env)"
   fi
 }
@@ -199,21 +196,16 @@ _load_broot() {
   source /Users/htlin/.config/broot/launcher/bash/br
 }
 
-_load_atuin() {
-  eval "$(atuin init zsh)"
-}
-
 # Lazy load tools
 FNM_PATH="/Users/mac/Library/Application Support/fnm"
 lazyload fnm node npm -- _load_fnm
 lazyload br -- _load_broot
-lazyload atuin -- _load_atuin
+# lazyload atuin -- _load_atuin
 
 # Paths
 export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
 export PIPX_DEFAULT_PYTHON=/opt/homebrew/opt/python@3.13/bin/python3.13
 export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
-
 # pnpm
 export PNPM_HOME="/Users/htlin/Library/pnpm"
 case ":$PATH:" in
@@ -221,7 +213,25 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
+# Load forgit if available
+export PATH="$PATH:$(brew --prefix)/share/forgit"
+[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
+
 # Only run zprof when debugging
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
+fi
+
+# Check if Atuin binary exists before sourcing
+if [ -f "$HOME/.atuin/bin/env" ]; then
+    . "$HOME/.atuin/bin/env"
+else
+    echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
+fi
+
+# Check if the `atuin` command is available before initializing
+if command -v atuin >/dev/null 2>&1; then
+    eval "$(atuin init zsh)"
+else
+    echo "Warning: Atuin is not installed or not in PATH."
 fi
