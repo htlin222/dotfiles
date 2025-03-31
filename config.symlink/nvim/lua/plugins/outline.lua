@@ -11,6 +11,9 @@ return {
       markdown = {
         filetypes = { "markdown", "rmarkdown", "quarto" },
       },
+      python = {
+        filetypes = { "python" },
+      },
     },
   },
 }
