@@ -1,4 +1,4 @@
-function claude() {
+function cloneclaude() {
   # 移動到 $HOME
   cd $HOME || {
     echo "無法切換到 $HOME"
