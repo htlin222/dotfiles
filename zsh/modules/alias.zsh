@@ -8,6 +8,7 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias n='pnpm'
+alias print7f='lp -d _172_21_75_1'
 alias ndist='netlify deploy --prod --dir=dist'
 alias win='windsurf'
 alias forgit='git-forgit'
@@ -110,8 +111,9 @@ alias tree='lsd --tree'
 alias uptodate="ddgr -n 5 'https://www.uptodate.com/'"
 alias ur=undelfile
 alias v='nvim'
+alias vim='nvim'
 alias vf='neovim_fzf'
-alias vim='nvim --listen /tmp/nvim'
+alias viml='nvim --listen /tmp/nvim'
 alias vimdiff='nvim -d'
 alias vs='nvim -S'
 alias vsauto='nvim -S .vim_auto_session.vim'
