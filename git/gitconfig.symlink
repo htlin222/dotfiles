@@ -3,6 +3,7 @@
 	name = Hsieh-Ting Lin (林協霆)
 [init]
 	defaultBranch = master
+	templateDir = /Users/htlin/.git-templates
 [interactive]
     diffFilter = delta --color-only
 
