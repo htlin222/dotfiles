@@ -940,3 +940,44 @@ start_fetch_mcp() {
   disown
   echo "pnpm started in background. Logs: $TARGET_DIR/pnpm.log"
 }
+
+toslides() {
+  local fontsize=${1:-72}
+  local foldername="${PWD##*/}"
+  local output="${foldername}_slides.pdf"
+  local tmp_prefix="wm_"
+  local exts=("jpg" "png")
+  local has_images=false
+
+  # 檢查是否有圖片
+  for ext in $exts; do
+    if ls *.$ext(N) >/dev/null; then
+      has_images=true
+      break
+    fi
+  done
+
+  if ! $has_images; then
+    echo "⚠️ No .jpg or .png files found in current directory."
+    return 1
+  fi
+
+  echo "🔧 Adding filename watermark with font size $fontsize..."
+
+  for ext in $exts; do
+    for img in *.$ext(N); do
+      local out="${tmp_prefix}${img}"
+      magick "$img" -gravity southeast -pointsize $fontsize \
+        -fill white -undercolor black \
+        -annotate +20+20 "$img" "$out"
+    done
+  done
+
+  echo "🧾 Combining into $output..."
+  img2pdf ${tmp_prefix}*.{jpg,png}(N) -o "$output" --auto-orient
+
+  echo "🧹 Cleaning up..."
+  rm -f ${tmp_prefix}*.{jpg,png}(N)
+
+  echo "✅ Done! Output: $output"
+}
