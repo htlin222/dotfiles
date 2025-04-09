@@ -1,5 +1,4 @@
 zmodload zsh/zprof
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # Launch tmux if in WezTerm
 if [ "$TERM_PROGRAM" = "WezTerm" ]; then
   if [ "$TMUX" = "" ]; then
@@ -7,9 +6,9 @@ if [ "$TERM_PROGRAM" = "WezTerm" ]; then
   fi
 fi
 
-
 # Initialize Powerlevel10k instant prompt for faster startup
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
@@ -47,12 +46,6 @@ _load_completions_async() {
 # Run the async function
 _load_completions_async
 
-# Python venv activation
-if [ -f ".venv/bin/activate" ]; then
-  source .venv/bin/activate
-  # screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
-  echo "uv .venv is activated ✨"
-fi
 
 
 # Basic zsh settings
@@ -206,7 +199,6 @@ lazyload br -- _load_broot
 
 # Paths
 export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
-export PIPX_DEFAULT_PYTHON=/opt/homebrew/opt/python@3.13/bin/python3.13
 export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
 # pnpm
 export PNPM_HOME="/Users/htlin/Library/pnpm"
@@ -228,6 +220,11 @@ else
     echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
 fi
 
+# Python venv activation
+if [ -f ".venv/bin/activate" ]; then
+  source .venv/bin/activate
+  screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
+fi
 
 # Only run zprof when debugging
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
