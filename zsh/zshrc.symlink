@@ -1,5 +1,5 @@
 zmodload zsh/zprof
-
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # Launch tmux if in WezTerm
 if [ "$TERM_PROGRAM" = "WezTerm" ]; then
   if [ "$TMUX" = "" ]; then
