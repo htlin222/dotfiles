@@ -26,7 +26,7 @@ if [ "$#" -eq 0 ]; then
   exit 1
 fi
 
-DEFAULT_MODEL="deepseek-coder-v2"
+DEFAULT_MODEL="4o"
 
 auto_execute=false
 MODEL="${HOW_SH_MODEL:-$DEFAULT_MODEL}"
@@ -57,12 +57,15 @@ SHELL=$(ps -p $$ -o command= | awk '{print $1}')
 
 spinner() {
   pid=$!
-  local delay=0.2
-  while kill -0 "$pid" 2>/dev/null; do for X in '◴' '◷' '◶' '◵'; do
-    echo -en "\b$X"
-    sleep $delay
-  done; done
-  printf "\r" # Clear the spinner
+  local delay=0.05
+  local spin=('▖' '▘' '▝' '▗' '▖' '▘' '▝' '▗')
+  while kill -0 "$pid" 2>/dev/null; do
+    for X in "${spin[@]}"; do
+      echo -ne "\r$X"
+      sleep $delay
+    done
+  done
+  echo -ne "\r" # 清掉最後 spinner 字元
 }
 
 PROMPT="
