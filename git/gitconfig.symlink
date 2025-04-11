@@ -1,8 +1,8 @@
 [user]
-	email = 61491860+htlin222@users.noreply.github.com
-	name = Hsieh-Ting Lin (林協霆)
+	email = your.email@example.com
+	name = Your Name
 [init]
-	defaultBranch = master
+	defaultBranch = main
 	templateDir = /Users/htlin/.git-templates
 [interactive]
     diffFilter = delta --color-only
@@ -46,8 +46,9 @@
     autosquash = true
 
 [core]
-    editor = "nvim"  # 如果你使用 Neovim
+	editor = vim
     pager = delta
+	autocrlf = input
 
 [push]
     default = current
