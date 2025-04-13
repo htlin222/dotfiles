@@ -27,7 +27,7 @@ alias claupub="npm run build && netlify deploy --prod --dir=dist"
 alias claupub_lab="cd ~/claude_lab && npm run build && netlify deploy --prod --dir=dist"
 alias ripnetlify="rip ./.netlify"
 alias artifact="cd ~/claude_lab/src/ && vim ~/claude_lab/src/App.jsx"
-alias todo='pter ~/Dropbox/todo.txt'
+alias todo='pter ~/Dropbox/todo/todo.txt'
 alias zshconfig="vim ~/.zshrc"
 alias clens="csvlens"
 alias mkdir="mkdir -p"

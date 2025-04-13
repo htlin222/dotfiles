@@ -981,3 +981,11 @@ toslides() {
 
   echo "✅ Done! Output: $output"
 }
+
+td() {
+  [ -f ./todo.txt ] || touch ./todo.txt
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    grep -qxF "todo.txt" .gitignore || echo "todo.txt" >> .gitignore
+  fi
+  pter ./todo.txt
+}

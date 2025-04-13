@@ -11,7 +11,7 @@ highlight: true
 indent_character: '|'
 journals:
   default:
-    encrypt: true
+    encrypt: false
     journal: ~/Dropbox/jrnl.txt
   fleet:
     encrypt: false
@@ -20,4 +20,4 @@ linewrap: 79
 tagsymbols: '#@'
 template: false
 timeformat: '%F %r'
-version: v4.1
+version: v4.2.1
