@@ -6,8 +6,6 @@ return { --mkdnflow
     -- by default, the fold method was set by tree-sitter expr
     vim.opt.foldmethod = "manual"
     vim.opt.foldlevel = 3
-    vim.cmd "source $HOME/.config/nvim/lua/func/mdfmt.vim"
-    vim.cmd "source $HOME/.config/nvim/lua/func/mdmain.vim"
     require("mkdnflow").setup {
       modules = {
         bib = false,
@@ -34,7 +32,7 @@ return { --mkdnflow
       perspective = {
         priority = "current",
         fallback = "root",
-        root_tell = "~/Dropbox/Medical/",
+        -- root_tell = "~/Dropbox/Medical/",
         nvim_wd_heel = false,
         update = false,
       },
@@ -46,10 +44,6 @@ return { --mkdnflow
         conceal = true,
         context = 0,
         implicit_extension = nil,
-        transform_implicit = function(text)
-          text = text:gsub("%s+$", "")
-          return text
-        end,
         transform_explicit = function(text)
           text = text:gsub("%s+$", "")
           text = text:gsub(" ", "_")

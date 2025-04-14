@@ -57,3 +57,60 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
     vim.api.nvim_win_set_cursor(0, { target_line, 0 })
   end,
 })
+vim.api.nvim_create_autocmd("BufNewFile", {
+  group = vim.api.nvim_create_augroup("CreateMedicalDiaryGroup", {}),
+  callback = function()
+    vim.b._should_add_header = true
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufNewFile", {
+  group = vim.api.nvim_create_augroup("CreateMedicalDiaryGroup", {}),
+  callback = function()
+    vim.b._should_add_header = true
+    print("🪄 BufNewFile triggered:", vim.fn.expand "%")
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = vim.api.nvim_create_augroup("InsertHeaderIfNeeded", {}),
+  callback = function()
+    if not vim.b._should_add_header then
+      return
+    end
+    vim.b._should_add_header = false
+
+    print("🚪 BufWinEnter:", vim.fn.expand "%")
+    print("📁 CWD:", vim.fn.getcwd())
+    print("📄 Extension:", vim.fn.expand "%:e")
+    print("📌 Full path:", vim.api.nvim_buf_get_name(0))
+  end,
+})
+
+-- 建立專屬 group，避免被覆蓋
+local group = vim.api.nvim_create_augroup("MyAutoHeaderDebug", { clear = true })
+
+-- 監聽 BufNewFile（新檔案建立時）
+vim.api.nvim_create_autocmd("BufNewFile", {
+  group = group,
+  pattern = "*.md", -- 只針對 .md 檔案
+  callback = function()
+    vim.b._should_add_header = true
+    print("🆕 BufNewFile: " .. vim.fn.expand "%")
+  end,
+})
+
+-- 監聽 BufEnter（切進 buffer）
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = group,
+  pattern = "*.md",
+  callback = function()
+    if not vim.b._should_add_header then
+      return
+    end
+    vim.b._should_add_header = false
+
+    print("🚪 BufEnter: " .. vim.fn.expand "%")
+    print("📄 Full path: " .. vim.api.nvim_buf_get_name(0))
+  end,
+})

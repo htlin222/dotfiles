@@ -349,7 +349,7 @@ function neovim_fzf() {
 
 function hh() {
   cd ~/Dropbox/
-  (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
+  # (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
   (python3 ~/Dropbox/scripts/gen_recent_list.py &)
   FILE=$(find . -type f -name "*.md" | sed 's|^\./||' | fzf-pre)
 
@@ -364,7 +364,7 @@ function hh() {
 }
 function study() {
   cd ~/Dropbox/Medical/
-  (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
+  # (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
   (python3 ~/Dropbox/scripts/gen_recent_list.py &)
   FILE=$(find . -type f -name "*.md" | sed 's|^\./||' | fzf-pre)
 
@@ -384,7 +384,7 @@ function recent_note() {
 }
 function studyrg() {
   cd ~/Dropbox/Medical/
-  (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
+  # (rsync -a --delete ~/Dropbox/Medical/ ~/.backup/medical/ &)
   # (python3 ~/Dropbox/scripts/gen_recent_list.py &)
   rgnv
 }
@@ -608,21 +608,6 @@ function draft() {
     echo "" >>"$filename"
     echo "## Fleet" >>"$filename"
     nvim +10 "$filename"
-  fi
-}
-
-function updateblog() {
-  blog="$HOME/Dropbox/blog/"
-  git -C ~/blog/ pull
-  rsync -az --delete --include="*.md" --exclude="*" "$blog" ~/blog/content/posts/
-  if git -C ~/blog/ rev-parse --git-dir >/dev/null 2>&1; then
-    git -C ~/blog/ add .
-    git -C ~/blog/ commit -m "routine blogging ✏️ "
-    git -C ~/blog/ push
-    echo "👉 see action at https://app.netlify.com/sites/htlin/deploys"
-    echo "👉 see website at https://oncologist.tw"
-  else
-    echo "🔔 Not a git repo"
   fi
 }
 
