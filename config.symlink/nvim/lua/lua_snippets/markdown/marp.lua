@@ -29,6 +29,7 @@ return {
   -- s({ trig = "ins" }, { t({ "<ins>" }), i(0), t({ "</ins>" })},
   -- s({ trig = "split" }, { t({ "", ":::split", "", "" }), i(0), t({ "", "", ":::", "" }) }),
   s({ trig = "even" }, { t { "", ":::columns", "", "" } }),
+  s({ trig = "keypoints" }, { t { "", "<!-- _class: keypoints -->", "" } }),
   s({ trig = "bgr" }, { t { "bg right:" }, i(0), t { "0%" } }),
   s({ trig = "bgl" }, { t { "bg left:" }, i(0), t { "0%" } }),
   -- bg right:50%
