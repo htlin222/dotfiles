@@ -117,7 +117,6 @@ alias vf='neovim_fzf'
 alias viml='nvim --listen /tmp/nvim'
 alias vimdiff='nvim -d'
 alias vs='nvim -S'
-alias remind='reminders add Inbox'
 alias vsauto='nvim -S .vim_auto_session.vim'
 alias wpy="pyenv which python"
 alias yt-mp4='yt-dlp --merge-output-format mp4'

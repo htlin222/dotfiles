@@ -81,6 +81,14 @@ function gitop() {
     echo "\033[31mNot in a git repository\033[0m" # 紅色提示
   fi
 }
+remind() {
+  if ! command -v reminders >/dev/null 2>&1; then
+    echo "reminders 未安裝" >&2
+    return 1
+  fi
+  local list=${3:-Inbox}
+  reminders add "$list" "$1" --due-date "$2"
+}
 function rename_in_sqb() {
   for file in *[*]*.txt; do
     newname=$(echo "$file" | sed -E 's/\[[^]]*\]//g')
@@ -966,11 +974,15 @@ toslides() {
 
   echo "✅ Done! Output: $output"
 }
-
-td() {
+function td() {
   [ -f ./todo.txt ] || touch ./todo.txt
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     grep -qxF "todo.txt" .gitignore || echo "todo.txt" >> .gitignore
   fi
   pter ./todo.txt
+}
+function capimg() {
+  command -v magick >/dev/null 2>&1 || { echo "magick 未安裝或不在 PATH 中"; return 1 }
+  local file="${1:-info.txt}"
+  magick -size 1720x880 -background white -fill black -font Courier -pointsize 48 caption:@"$file" -gravity center -extent 1920x1080 00_cover.png
 }

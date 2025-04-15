@@ -11,7 +11,7 @@ local has_words_before = function()
 end
 return { -- this table will override the default cmp setting
   "hrsh7th/nvim-cmp",
-  event = { "InsertEnter" },
+  event = { "BufEnter" },
   opts = {
     performance = {
       max_view_entries = 15,
