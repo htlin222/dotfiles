@@ -9,6 +9,7 @@ fi
 alias dtc='tmux detach-client'
 alias n='pnpm'
 alias print7f='lp -d _172_21_75_1'
+alias ymd='date +%F'
 alias ndist='netlify deploy --prod --dir=dist'
 alias win='windsurf'
 alias forgit='git-forgit'

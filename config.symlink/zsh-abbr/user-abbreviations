@@ -1,1 +1,2 @@
 abbr "hw"="echo hello world"
+abbr "hww"="echo hello world"

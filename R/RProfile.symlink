@@ -1,7 +1,4 @@
-local({r <- getOption("repos")
-      r["CRAN"] <- "https://cran.csie.ntu.edu.tw/"
-      options(repos=r)})
-
+options(repos = c(CRAN = "https://packagemanager.posit.co/cran/latest"))
 options(stringsAsFactors=FALSE)
 options(max.print=100)
 options(scipen=10)
@@ -11,11 +8,6 @@ options(menu.graphics=FALSE)
 options(prompt = '\u1b[34m»\u1b[0m ')
 options(continue="... ")
 options(width = 80)
-options(
-  repos = c(CRAN = "https://packagemanager.posit.co/cran/latest"),
-  pkgType = if (.Platform$OS.type == "windows") "win.binary" else "mac.binary",
-  install.packages.check.source = "no"
-)
 
 utils::rc.settings(ipck=TRUE)
 

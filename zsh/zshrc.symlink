@@ -176,6 +176,7 @@ bindkey -s '^n' 'tmux new-window\n'
 source "$DOTFILES/zsh/modules/alias.zsh"
 source "$DOTFILES/zsh/modules/functions.zsh"
 source "$DOTFILES/zsh/modules/fzf.zsh"
+source "$DOTFILES/zsh/modules/snippets.zsh"
 source "$HOME/.uvv"
 
 # Lazy load functions for external tools
