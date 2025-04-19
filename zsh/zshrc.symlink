@@ -1,11 +1,9 @@
 zmodload zsh/zprof
 # Launch tmux if in WezTerm
-if [ "$TERM_PROGRAM" = "WezTerm" ]; then
-  if [ "$TMUX" = "" ]; then
-    tmux
-  fi
-fi
 
+if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
+  exec tmux
+fi
 # Initialize Powerlevel10k instant prompt for faster startup
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
@@ -164,8 +162,8 @@ _load_completions() {
 add-zsh-hook precmd _load_completions
 
 # Source API files
-for file in ~/API/*; do
-  source "$file"
+[ -d ~/API ] && for file in ~/API/*; do
+  [ -f "$file" ] && source "$file"
 done
 
 # Key bindings
@@ -188,7 +186,9 @@ _load_fnm() {
 }
 
 _load_broot() {
-  source /Users/htlin/.config/broot/launcher/bash/br
+  if [ -f /Users/htlin/.config/broot/launcher/bash/br ]; then
+    source /Users/htlin/.config/broot/launcher/bash/br
+  fi
 }
 
 # Lazy load tools
