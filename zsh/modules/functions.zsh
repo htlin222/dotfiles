@@ -939,15 +939,16 @@ toslides() {
   local foldername="${PWD##*/}"
   local output="${foldername}_slides.pdf"
   local tmp_prefix="wm_"
-  local exts=("jpg" "png")
+  local exts=("jpg" "png" "JPG" "PNG")
   local has_images=false
 
   # 檢查是否有圖片
-  for ext in $exts; do
-    if ls *.$ext(N) >/dev/null; then
+  for ext in "${exts[@]}"; do
+    for img in *."$ext"; do
+      [[ -e "$img" ]] || continue
       has_images=true
-      break
-    fi
+      break 2
+    done
   done
 
   if ! $has_images; then
@@ -957,8 +958,9 @@ toslides() {
 
   echo "🔧 Adding filename watermark with font size $fontsize..."
 
-  for ext in $exts; do
-    for img in *.$ext(N); do
+  for ext in "${exts[@]}"; do
+    for img in *."$ext"; do
+      [[ -e "$img" ]] || continue
       local out="${tmp_prefix}${img}"
       magick "$img" -gravity southeast -pointsize $fontsize \
         -fill white -undercolor black \
@@ -967,10 +969,10 @@ toslides() {
   done
 
   echo "🧾 Combining into $output..."
-  img2pdf ${tmp_prefix}*.{jpg,png}(N) -o "$output" --auto-orient
+  img2pdf ${tmp_prefix}* -o "$output" --auto-orient
 
   echo "🧹 Cleaning up..."
-  rm -f ${tmp_prefix}*.{jpg,png}(N)
+  rm -f ${tmp_prefix}*
 
   echo "✅ Done! Output: $output"
 }
