@@ -1004,3 +1004,41 @@ ignore_dropbox_folder() {
     echo "❌ 未選擇資料夾"
   fi
 }
+function icloudownload() {
+  if ! command -v find >/dev/null; then
+    echo "❌ 'find' is not installed. Please install it first."
+    return 1
+  fi
+
+  if [[ -z "$1" ]]; then
+    echo "📂 Usage: icloudownload /path/to/icloud/file_or_folder"
+    return 1
+  fi
+
+  local target="$1"
+
+  if [[ -f "$target" ]]; then
+    local size=$(stat -f%z "$target")
+    echo -ne "📄 [1/1] Processing: $target (${size} bytes) \r"
+    head -c 1 "$target" > /dev/null
+    echo -e "✅ Done: $target (${size} bytes)                    "
+  elif [[ -d "$target" ]]; then
+    # 正確抓取檔案名，支援空白路徑
+    local IFS=$'\n'
+    local files=($(find "$target" -type f))
+    local total=${#files[@]}
+    local count=0
+
+    for file in "${files[@]}"; do
+      ((count++))
+      local size=$(stat -f%z "$file")
+      echo -ne "📄 [$count/$total] Processing: $file (${size} bytes) \r"
+      head -c 1 "$file" > /dev/null
+    done
+
+    echo -e "\n✅ Folder download complete: $target ($total files)"
+  else
+    echo "❌ '$target' is not a valid file or folder."
+    return 1
+  fi
+}
