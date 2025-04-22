@@ -988,3 +988,19 @@ function capimg() {
   local file="${1:-info.txt}"
   magick -size 1720x880 -background white -fill black -font Courier -pointsize 48 caption:@"$file" -gravity center -extent 1920x1080 00_cover.png
 }
+ignore_dropbox_file() {
+  local filepath
+  filepath=$(find "$HOME/Library/CloudStorage/Dropbox" -type f | fzf)
+  [ -n "$filepath" ] && xattr -w 'com.apple.fileprovider.ignore#P' 1 "$filepath"
+}
+ignore_dropbox_folder() {
+  local folderpath
+  echo "🔍 選擇要忽略的 Dropbox 資料夾..."
+  folderpath=$(find "$HOME/Library/CloudStorage/Dropbox" -type d | fzf)
+  if [ -n "$folderpath" ]; then
+    xattr -w 'com.apple.fileprovider.ignore#P' 1 "$folderpath"
+    echo "✅ 成功忽略：$folderpath"
+  else
+    echo "❌ 未選擇資料夾"
+  fi
+}

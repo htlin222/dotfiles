@@ -230,3 +230,7 @@ fi
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
 fi
+
+# Task Master aliases added on 4/21/2025
+alias tm='task-master'
+alias taskmaster='task-master'
