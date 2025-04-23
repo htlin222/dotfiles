@@ -4,7 +4,6 @@ function cloneclaude() {
     echo "無法切換到 $HOME"
     return 1
   }
-
   # Clone 專案
   echo "正在克隆 htlin222/claude-artifact-runner..."
   if ! gh repo clone htlin222/claude-artifact-runner; then
@@ -230,15 +229,6 @@ function joinmp3() {
   cd $1
   for f in ./*.mp3; do echo "file '$f'" >>mylist.txt; done
   ffmpeg -y -f concat -safe 0 -i mylist.txt -c copy output.mp3
-  cd -
-}
-function kavita() {
-  GREEN="\033[32m"
-  RESET="\033[0m"
-  cd $HOME/Kavita
-  echo "${GREEN}Serve at http://localhost:5555${RESET}"
-  ./Kavita
-  echo "${GREEN}ByeBye${RESET}"
   cd -
 }
 function make_exec_and_slide() {
@@ -473,83 +463,6 @@ function brewforget() {
 }
 function unblock() {
   sudo xattr -r -d com.apple.quarantine "$@"
-}
-function loading_animation() {
-  chars=("⠇" "⠋" "⠙" "⠸" "⠴" "⠤" "⠦")
-  while :; do
-    for char in "${chars[@]}"; do
-      printf "\rNow Start to Create a pyenv %s" "$char"
-      sleep 0.1
-    done
-  done
-}
-function pyinit() {
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init - | sed s/precmd/chpwd/g)"
-}
-function mkpy() {
-  GREEN="\033[32m"
-  RESET="\033[0m"
-  # loading_animation &
-  # local anim_pid=$!
-
-  echo "Creating new virtualenv: ${GREEN}$1${RESET}"
-  # eval "$(pyenv init --path)"
-  # eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
-  # pyenv virtualenv 3.10.5 "$1"
-  pyenv virtualenv 3.11.6 "$1"
-  mkdir ./$1
-  cd ./$1
-  pyenv local $1
-  pyenv activate $1
-  # kill $anim_pid
-  touch .gitignore
-  pip freeze >requirements.txt
-  echo ".python-version" >>.gitignore
-  echo ".DS_Store" >>.gitignore
-  echo "\rVirtualenv ${GREEN}$1${RESET} is created"
-}
-function jupyter-init() {
-  pip install --upgrade pip
-  pip install pandas jupyter notebook
-  python3 -m ipykernel install --user --name $(pyenv version-name) --display-name "Python: $(pyenv version-name)"
-  jupyter-lab
-}
-function playground() {
-  current_datetime=$(date +'%Y%m%d-%H%M')
-
-  if [ $# -eq 0 ]; then
-    folder_name=~/Desktop/playground.nosync/${current_datetime}
-  else
-    folder_name=~/Desktop/playground.nosync/$1
-  fi
-  # 創建目錄及其子目錄
-  mkdir -p "$folder_name"
-  mkdir -p "$folder_name/src"
-  mkdir -p "$folder_name/doc"
-  # 創建一個空的.env檔案
-  touch $folder_name/.env
-  # 創建.gitignore檔案，忽略.env檔案
-  echo "**/.env" >$folder_name/.gitignore
-  echo "# $folder_name\n\n> $current_datetime" >$folder_name/README.md
-  # 進入新創建的目錄
-  cd "$folder_name" || exit 1
-  # uv venv source .venv/bin/activate
-  # tmux new-window
-  # cd -
-}
-function act!() {
-  [ -f 'bin/activate' ] && source bin/activate
-  [ -f '.venv/bin/activate' ] && source .venv/bin/activate
-  [ -f 'environment.yml' ] && conda activate $(cat environment.yml | grep name: | head -n 1 | cut -f 2 -d ':')
-  [ -f 'environment.yaml' ] && conda activate $(cat environment.yaml | grep name: | head -n 1 | cut -f 2 -d ':')
-  return 0
-}
-function act() {
-  [ -z "$TMUX" ] && return 0
-  act!
 }
 function dia() {
   (python3 ~/pyscripts/inbox.py &)
