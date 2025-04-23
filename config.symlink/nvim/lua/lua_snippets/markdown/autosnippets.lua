@@ -20,7 +20,7 @@ ls.add_snippets("all", {
   s("r/r", { t "relapse and refractory" }),
   s("pfx", { t 'prefix: "', i(0), t '"' }),
   s("desc.", { t 'description: "', i(0), t '"' }),
-  s("incl", { t "{{ ", i(0), t " }}" }),
+  s(".incl", { t "{{ ", i(0), t " }}" }),
   s("b9", { t "benign", i(0) }),
   s("pt", { t "patient", i(0) }),
   s("trail", { t "trial", i(0) }),
