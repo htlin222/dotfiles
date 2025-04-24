@@ -1042,3 +1042,12 @@ function icloudownload() {
     return 1
   fi
 }
+
+function chpwd() {
+  echo "你現在在 $(pwd)"
+  for dir in .venv node_modules; do
+    if [[ -d $dir ]]; then
+      xattr -w 'com.apple.fileprovider.ignore#P' 1 "$dir"
+    fi
+  done
+}
