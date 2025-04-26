@@ -7,13 +7,11 @@ zmodload zsh/zprof
 setopt no_beep
 setopt interactive_comments
 setopt prompt_subst
-
 setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushd_minus
 setopt pushd_silent
-
 setopt append_history
 setopt inc_append_history
 setopt extended_history
@@ -22,11 +20,9 @@ setopt hist_ignore_all_dups
 setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt share_history
-
 setopt hup
 setopt long_list_jobs
 setopt notify
-
 unsetopt nomatch
 
 # Initialize Powerlevel10k instant prompt for faster startup
@@ -37,7 +33,7 @@ fi
 
 # Cache directory setup
 ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$HOME/.cache/zsh}"
-mkdir -p $ZSH_CACHE_DIR
+mkdir -p "$ZSH_CACHE_DIR"
 ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump-$SHORT_HOST-$ZSH_VERSION"
 
 # Skip global compinit - we'll handle it ourselves
@@ -45,38 +41,44 @@ skip_global_compinit=1
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select
 zstyle ':completion:*:default' list-colors ''
-# case-insensitive, partial-word, and then substring completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' completer _complete _approximate
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 
-# Async completion loading - without job messages
+##############################
+### FAST compinit settings ###
+##############################
+
+# 1. 快速同步 compinit 讓 plugins 不卡
+autoload -Uz compinit
+compinit -C -d "${ZSH_COMPDUMP}"
+
+# 2. 背景重新整理 compdump
+#
+#
 _load_completions_async() {
-  # Load completions in the background
   {
     autoload -Uz compinit
     setopt localoptions extendedglob
 
-    # Use fast loading with -C unless dump is older than 7 days
     if [[ -f "${ZSH_COMPDUMP}" && $(find "${ZSH_COMPDUMP}" -mtime +7 2>/dev/null) ]]; then
       compinit -d "${ZSH_COMPDUMP}"
     else
       compinit -C -d "${ZSH_COMPDUMP}"
     fi
 
-    # Compile the completion dump to speed up loading
     if [[ -s "${ZSH_COMPDUMP}" && (! -s "${ZSH_COMPDUMP}.zwc" || "${ZSH_COMPDUMP}" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
       zcompile "${ZSH_COMPDUMP}"
     fi
   } >/dev/null 2>&1 &|
 }
-
-# Run the async function
 _load_completions_async
 
-
+##############################
+### Oh-My-Zsh and Plugins ###
+##############################
 
 # Basic zsh settings
 setopt no_nomatch
@@ -90,8 +92,7 @@ DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
 
-# Enhanced plugin loading system
-# Categorize plugins by loading strategy
+# Plugin loading
 EAGER_PLUGINS=(
   colored-man-pages
   copyfile
@@ -103,7 +104,7 @@ EAGER_PLUGINS=(
   web-search
   zsh-lazyload
   fast-syntax-highlighting
-pnpm
+  pnpm
 )
 
 PROMPT_PLUGINS=(
@@ -120,7 +121,7 @@ DELAYED_PLUGINS=(
   fast-syntax-highlighting
 )
 
-# Add the eager plugins to the OMZ plugins array
+# Set plugins for oh-my-zsh
 plugins=("${EAGER_PLUGINS[@]}")
 
 ZSH_WEB_SEARCH_ENGINES=(
@@ -133,10 +134,14 @@ ZSH_WEB_SEARCH_ENGINES=(
   google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
 )
 
-# Load oh-my-zsh with only the eager plugins
+# Load oh-my-zsh
 source "$ZSH/oh-my-zsh.sh"
 
-# Function to standardize plugin path finding
+##############################
+### Plugin Lazy Loading    ###
+##############################
+
+# Function to find plugin paths
 _find_plugin_path() {
   local plugin=$1
   local plugin_paths=(
@@ -151,56 +156,48 @@ _find_plugin_path() {
       return 0
     fi
   done
-
-  echo ""
   return 1
 }
 
-# Lazy load plugins based on prompt (precmd)
+# Prompt-based loading
 _load_prompt_plugins() {
-  # Only run once
   _load_prompt_plugins() { :; }
-
   for plugin in "${PROMPT_PLUGINS[@]}"; do
     local plugin_path=$(_find_plugin_path "$plugin")
-    if [[ -n "$plugin_path" ]]; then
-      source "$plugin_path"
-    fi
+    [[ -n "$plugin_path" ]] && source "$plugin_path"
   done
 }
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _load_prompt_plugins
 
-# Lazy load plugins on keypress
+# Keypress-based loading
 _load_keypress_plugins() {
-  # Only run once
   zle -D zle-line-init
-
   for plugin in "${KEYPRESS_PLUGINS[@]}"; do
     local plugin_path=$(_find_plugin_path "$plugin")
-    if [[ -n "$plugin_path" ]]; then
-      source "$plugin_path"
-    fi
+    [[ -n "$plugin_path" ]] && source "$plugin_path"
   done
 }
 zle -N zle-line-init _load_keypress_plugins
-# Continue with rest of initialization while compinit runs in background
-_load_completions() {
-  # Only run once
-  _load_completions() { :; }
 
-  # Reload line if needed
+# Fix line refresh
+_load_completions() {
+  _load_completions() { :; }
   zle -R
 }
 add-zsh-hook precmd _load_completions
 
-# Source API files
+##############################
+### Extra Configs          ###
+##############################
+
+# API files
 [ -d ~/API ] && for file in ~/API/*; do
   [ -f "$file" ] && source "$file"
 done
 
 # Key bindings
-bindkey -s '^o' 'ya\n' # zsh
+bindkey -s '^o' 'ya\n'
 bindkey -s '^n' 'tmux new-window\n'
 
 # Source modules
@@ -210,62 +207,56 @@ source "$DOTFILES/zsh/modules/fzf.zsh"
 source "$DOTFILES/zsh/modules/snippets.zsh"
 source "$HOME/.uvv"
 
-# Lazy load functions for external tools
+# Lazy load external tools
 _load_fnm() {
   if [ -d "$FNM_PATH" ]; then
-    export PATH="/Users/mac/Library/Application\ Support/fnm:$PATH"
+    export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
     eval "$(fnm env)"
   fi
 }
-
 _load_broot() {
   if [ -f /Users/htlin/.config/broot/launcher/bash/br ]; then
     source /Users/htlin/.config/broot/launcher/bash/br
   fi
 }
 
-# Lazy load tools
 FNM_PATH="/Users/mac/Library/Application Support/fnm"
 lazyload fnm node npm -- _load_fnm
 lazyload br -- _load_broot
-# lazyload atuin -- _load_atuin
 
 # Paths
 export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
 export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
-# pnpm
 export PNPM_HOME="/Users/htlin/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
-# Load forgit if available
+# Forgit
 export PATH="$PATH:$(brew --prefix)/share/forgit"
 [ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 
-
-# Check if Atuin binary exists before sourcing
+# Atuin
 if [ -f "$HOME/.atuin/bin/env" ]; then
-    . "$HOME/.atuin/bin/env"
-    eval "$(atuin init zsh)"
+  . "$HOME/.atuin/bin/env"
+  eval "$(atuin init zsh)"
 else
-    echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
+  echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
 fi
 
-# Python venv activation
+# Python venv
 if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
   screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
 fi
 
-# Only run zprof when debugging
+# Debug Zprof
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
 fi
 
-
-
+# Auto-Tmux (WezTerm)
 if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
   exec tmux
 fi
