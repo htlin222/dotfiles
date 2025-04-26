@@ -8,6 +8,8 @@ fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
 alias n='pnpm'
+alias tm='task-master'
+alias taskmaster='task-master'
 alias print7f='lp -d _172_21_75_1'
 alias ymd='date +%F'
 alias ndist='netlify deploy --prod --dir=dist'

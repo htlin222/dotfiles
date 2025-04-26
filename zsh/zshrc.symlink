@@ -1,9 +1,34 @@
 zmodload zsh/zprof
-# Launch tmux if in WezTerm
 
-if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
-  exec tmux
-fi
+#############################
+### General configuration ###
+#############################
+
+setopt no_beep
+setopt interactive_comments
+setopt prompt_subst
+
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushd_minus
+setopt pushd_silent
+
+setopt append_history
+setopt inc_append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt share_history
+
+setopt hup
+setopt long_list_jobs
+setopt notify
+
+unsetopt nomatch
+
 # Initialize Powerlevel10k instant prompt for faster startup
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
@@ -19,6 +44,13 @@ ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump-$SHORT_HOST-$ZSH_VERSION"
 skip_global_compinit=1
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select
+zstyle ':completion:*:default' list-colors ''
+# case-insensitive, partial-word, and then substring completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' completer _complete _approximate
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 
 # Async completion loading - without job messages
 _load_completions_async() {
@@ -71,6 +103,7 @@ EAGER_PLUGINS=(
   web-search
   zsh-lazyload
   fast-syntax-highlighting
+pnpm
 )
 
 PROMPT_PLUGINS=(
@@ -231,6 +264,8 @@ if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
 fi
 
-# Task Master aliases added on 4/21/2025
-alias tm='task-master'
-alias taskmaster='task-master'
+
+
+if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
+  exec tmux
+fi
