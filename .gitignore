@@ -24,6 +24,7 @@ config.symlink/thefuck/__pycache__/settings.cpython-310.pyc
 config.symlink/thefuck/__pycache__/**
 config.symlink/yarn/
 **/config.symlink/op/**
+/config.symlink/op/**
 config.symlink/fish/
 config.symlink/gcloud/
 config.symlink/karabiner/

@@ -180,6 +180,7 @@ _load_keypress_plugins() {
 }
 zle -N zle-line-init _load_keypress_plugins
 
+
 # Fix line refresh
 _load_completions() {
   _load_completions() { :; }
@@ -195,6 +196,10 @@ add-zsh-hook precmd _load_completions
 [ -d ~/API ] && for file in ~/API/*; do
   [ -f "$file" ] && source "$file"
 done
+
+if [ -f /Users/htlin/.config/op/plugins.sh ]; then
+  source /Users/htlin/.config/op/plugins.sh
+fi
 
 # Key bindings
 bindkey -s '^o' 'ya\n'
