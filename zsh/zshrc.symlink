@@ -105,6 +105,7 @@ EAGER_PLUGINS=(
   zsh-lazyload
   fast-syntax-highlighting
   pnpm
+  wd
 )
 
 PROMPT_PLUGINS=(
