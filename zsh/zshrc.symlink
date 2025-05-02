@@ -209,6 +209,7 @@ bindkey -s '^n' 'tmux new-window\n'
 # Source modules
 source "$DOTFILES/zsh/modules/alias.zsh"
 source "$DOTFILES/zsh/modules/functions.zsh"
+source "$DOTFILES/zsh/modules/note_related.zsh"
 source "$DOTFILES/zsh/modules/fzf.zsh"
 source "$DOTFILES/zsh/modules/snippets.zsh"
 source "$HOME/.uvv"
