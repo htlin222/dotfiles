@@ -1,6 +1,6 @@
 [user]
-	email = your.email@example.com
-	name = Your Name
+	email = hsieh.ting.lin@gmail.com
+	name = Hsiehting Lin
 [init]
 	defaultBranch = main
 	templateDir = /Users/htlin/.git-templates
