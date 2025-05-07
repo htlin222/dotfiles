@@ -46,6 +46,34 @@ map("n", "<leader>a2", function()
   vim.api.nvim_set_current_line(new_line)
 end, { desc = "add level 2", silent = false, nowait = true })
 -- this will be deprecated since no need to use for divider
+map("x", "<C-n>", function()
+  -- Save the current visual selection range
+  local start_line = vim.fn.line "'<"
+  local end_line = vim.fn.line "'>"
+
+  -- Iterate through each line in the selection
+  for line = start_line, end_line do
+    local content = vim.fn.getline(line)
+    local leading_spaces = content:match "^%s*" or ""
+    local main_text = content:match "^%s*(.*)" or ""
+
+    -- Toggle the dash at the beginning of the line
+    if main_text:match "^%- " then
+      -- Remove the dash if present
+      main_text = main_text:gsub("^%-%s*", "")
+    else
+      -- Add the dash if not present
+      main_text = "- " .. main_text
+    end
+
+    -- Set the modified line back to the buffer
+    vim.fn.setline(line, leading_spaces .. main_text)
+  end
+
+  -- Use feedkeys to properly exit visual mode
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+end, { desc = "Toggle - at BOL (Any Visual Mode, Exit to Normal)", silent = false, nowait = true })
+
 map("n", "<leader><CR>", function()
   local lines = { "", "", "---", "", "" }
   local current_line = vim.fn.line "."

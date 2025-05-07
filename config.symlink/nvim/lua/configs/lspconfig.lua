@@ -12,7 +12,7 @@ local servers = {
   "html",
   "jsonls",
   "julials",
-  "markdown_oxide",
+  -- "markdown_oxide",
   "eslint",
   "pylsp",
   -- "basedpyright",
