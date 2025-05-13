@@ -9,7 +9,11 @@ cfg.keys = {
 		mods = "CMD",
 		action = wezterm.action.CloseCurrentTab({ confirm = true }),
 	},
-
+	{
+		key = "r",
+		mods = "CMD|SHIFT",
+		action = wezterm.action.ReloadConfiguration,
+	},
 	{
 		key = "q",
 		mods = "CMD",

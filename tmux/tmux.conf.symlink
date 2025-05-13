@@ -96,6 +96,7 @@ set-window-option -g pane-base-index 1
 set-option -g renumber-windows on
 # set-window-option -g clock-mode-colour colour64 #green
 set -g @catppuccin_flavour 'frappe'
+# set -g @catppuccin_flavour 'latte'
 # set -g @catppuccin_no_patched_fonts_theme_enabled on
 # set -g @catppuccin_date_time "%H:%M"
 set -g @catppuccin_datetime_icon "󰔚"
