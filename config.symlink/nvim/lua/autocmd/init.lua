@@ -48,6 +48,7 @@ autocmd({ "BufRead", "BufNewFile" }, {
 
 -- sets the filetype to zsh for any new or existing buffer with a .gp file extension
 autocmd({ "BufRead", "BufNewFile" }, { pattern = "*.gp", command = "set filetype=zsh" })
+autocmd({ "BufRead", "BufNewFile" }, { pattern = "*.gs", command = "set filetype=javascript" })
 autocmd({ "BufRead", "BufNewFile" }, { pattern = "*.conf", command = "set filetype=bash" })
 
 -- for goovy
