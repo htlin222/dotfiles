@@ -3,7 +3,7 @@ return {
   "evanpurkhiser/image-paste.nvim",
   keys = {
     { -- example for lazy-loading on keystroke
-      "<leader>pp",
+      "<leader>pa",
       "<cmd>lua require('image-paste').paste_image()<cr>",
       mode = { "n" },
       desc = "paste_image",
