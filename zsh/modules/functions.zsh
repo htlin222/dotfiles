@@ -964,3 +964,43 @@ function chpwd() {
     fi
   done
 }
+
+function anki() {
+    local anki_dir="${ANKI_DIR:-$HOME/anki}"
+    local filename="$(date +%Y%m%d).md"
+    local filepath="$anki_dir/$filename"
+    local date_formatted="$(date +%Y%m%d)"
+
+    # Create directory if it doesn't exist
+    if [[ ! -d "$anki_dir" ]]; then
+        mkdir -p "$anki_dir" || {
+            echo "Error: Failed to create directory $anki_dir" >&2
+            return 1
+        }
+    fi
+
+    # Check if nvim is available
+    if ! command -v nvim >/dev/null 2>&1; then
+        echo "Error: nvim not found in PATH" >&2
+        return 1
+    fi
+
+    # Create file with initial content if it doesn't exist
+    if [[ ! -f "$filepath" ]]; then
+        {
+            echo "# 00_Inbox "
+            echo ""
+            echo "## Subdeck: $date_formatted"
+            echo ""
+            echo "### "
+        } > "$filepath" || {
+            echo "Error: Failed to create file $filepath" >&2
+            return 1
+        }
+        echo "Created new anki file: $filepath"
+    fi
+
+    # Open with nvim, cursor at end
+    nvim + "$filepath"
+}
+

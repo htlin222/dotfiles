@@ -114,3 +114,28 @@ vim.api.nvim_create_autocmd("BufEnter", {
     print("📄 Full path: " .. vim.api.nvim_buf_get_name(0))
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "markdown-toggle.nvim keymaps",
+  pattern = { "markdown", "markdown.mdx" },
+  callback = function(args)
+    local opts = { silent = true, noremap = true, buffer = args.buf }
+    local toggle = require "markdown-toggle"
+
+    -- Keymap configurations will be added here for each feature
+    opts.expr = true -- required for dot-repeat in Normal mode
+    vim.keymap.set("n", "<C-q>", toggle.quote_dot, opts)
+    vim.keymap.set("n", "<Leader>li", toggle.list_dot, opts)
+    vim.keymap.set("n", "<Leader>lo", toggle.olist_dot, opts)
+    vim.keymap.set("n", "<M-x>", toggle.checkbox_dot, opts)
+    vim.keymap.set("n", "<Leader><M-x>", toggle.checkbox_cycle_dot, opts)
+
+    opts.expr = false -- required for Visual mode
+    vim.keymap.set("x", "<C-q>", toggle.quote, opts)
+    vim.keymap.set("x", "<C-n>", toggle.list, opts)
+    vim.keymap.set("x", "<Leader><C-l>", toggle.list_cycle, opts)
+    vim.keymap.set("x", "<Leader>lo", toggle.olist, opts)
+    vim.keymap.set("x", "<M-x>", toggle.checkbox, opts)
+    vim.keymap.set("x", "<Leader><M-x>", toggle.checkbox_cycle, opts)
+  end,
+})
