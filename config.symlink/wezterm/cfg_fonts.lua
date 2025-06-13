@@ -24,8 +24,11 @@ local function font_with_fallback(font_family)
 	-- family names, not file names
 	return wezterm.font_with_fallback({
 		font_family,
+		{ family = "PingFang TC", weight = "Bold" },
+		{ family = "Noto Sans CJK TC", weight = "Bold" }, -- Google Noto 字型
+		{ family = "思源黑體 TC" }, -- Source Han Sans (繁體)
+		{ family = "思源宋體 TC" }, -- Source Han Serif (繁體)
 		"Font Awesome 6 Free Solid", -- nice double-spaced symbols!
-		{ family = "jf open 粉圓 2.0" },
 	})
 end
 
