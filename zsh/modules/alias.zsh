@@ -85,7 +85,7 @@ alias index='vim ~/Dropbox/Medical/index.md'
 alias ffmpeg='ffmpeg-bar'
 alias garden='publi.sh'
 alias lf="lfcd"
-alias ls='lsd'
+alias ls='lsd -1'
 alias fdfzf="fd --type f | fzf --preview 'bat --style=numbers --color=always {}'"
 alias marp-serve="marp_serve"
 alias marpimg="marp --theme-set ~/Dropbox/slides/themes --html --images png"
