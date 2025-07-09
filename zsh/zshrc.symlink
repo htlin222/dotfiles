@@ -258,6 +258,14 @@ if [ -f ".venv/bin/activate" ]; then
   screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
 fi
 
+# Load Tmux Layout
+if [ -n "$TMUX" ] && [ -f ./tmux.layout.conf ]; then
+  panes=$(tmux list-panes | wc -l)
+  if [ "$panes" -eq 1 ]; then
+    tmux source-file ./tmux.layout.conf
+  fi
+fi
+
 # Debug Zprof
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
