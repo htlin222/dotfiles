@@ -4,6 +4,12 @@ return { --telescope
   dependencies = {
     "nvim-lua/plenary.nvim",
     "debugloop/telescope-undo.nvim",
+    {
+      "nvim-telescope/telescope-live-grep-args.nvim",
+      -- This will not install any breaking changes.
+      -- For major updates, this must be adjusted manually.
+      version = "^1.0.0",
+    },
   },
   opts = {
     extensions = {
@@ -36,6 +42,7 @@ return { --telescope
         wrap = false,
         citation_format = "[[{{label}}]]",
       },
+      "live_grep_args",
     },
 
     defaults = { prompt_prefix = "  ", selection_caret = "  ", entry_prefix = " " },
