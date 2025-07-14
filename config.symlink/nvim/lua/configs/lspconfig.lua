@@ -3,24 +3,24 @@ local on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 local lspconfig = require "lspconfig"
-local servers = {
-  -- "ast_grep",
-  -- "awk_ls",
+-- 將常用的輕量級LSP服務器分離出來
+local lightweight_servers = {
   "bashls",
   "cssls",
-  -- "harper_ls",
   "html",
   "jsonls",
-  "julials",
-  -- "markdown_oxide",
-  "eslint",
-  "pylsp",
-  -- "basedpyright",
-  "r_language_server",
-  "ruff",
-  "ts_ls",
   "vimls",
-  "jdtls",
+}
+
+-- 重型LSP服務器，按需加載
+local heavy_servers = {
+  julials = { "julia" },
+  eslint = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  pylsp = { "python" },
+  r_language_server = { "r", "rmd", "quarto" },
+  ruff = { "python" },
+  ts_ls = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  jdtls = { "java" },
 }
 -- too slow in large valut"markdown_oxide",
 capabilities.workspace = {
@@ -28,19 +28,38 @@ capabilities.workspace = {
     dynamicRegistration = false,
   },
 }
--- lsps with default config
-for _, lsp in ipairs(servers) do
+-- 設置輕量級LSP服務器（始終加載）
+for _, lsp in ipairs(lightweight_servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
     on_init = on_init,
     capabilities = capabilities,
     flags = {
-      debounce_text_changes = 150, -- 增加防抖動時間，減少過度觸發
+      debounce_text_changes = 1000, -- 增加防抖動時間到1秒，大幅減少LSP請求
+    },
+  }
+end
+
+-- 設置重型LSP服務器（按需加載）
+for lsp, filetypes in pairs(heavy_servers) do
+  lspconfig[lsp].setup {
+    on_attach = on_attach,
+    on_init = on_init,
+    capabilities = capabilities,
+    filetypes = filetypes, -- 只在特定文件類型時加載
+    flags = {
+      debounce_text_changes = 1000, -- 增加防抖動時間到1秒，大幅減少LSP請求
     },
   }
 end
 
 require("lspconfig").lua_ls.setup {
+  on_attach = on_attach,
+  on_init = on_init,
+  capabilities = capabilities,
+  flags = {
+    debounce_text_changes = 1000,
+  },
   settings = {
     Lua = {
       diagnostics = {

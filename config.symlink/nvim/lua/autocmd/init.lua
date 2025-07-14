@@ -10,14 +10,12 @@ local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
 -- Autocommand functions
 -----------------------------------------------------------
 
-local handle = io.popen "uname -a" -- 執行 uname -a 並取得輸出
-local result = handle:read "*a"
-handle:close()
-
-if string.match(result, "GNU") then -- 如果輸出中包含 "GNU"
+-- 優化：使用vim.loop.os_uname()代替系統調用，性能更好
+local uname = vim.loop.os_uname()
+if uname.sysname == "Linux" then
   require "autocmd.linux"
 else
-  require "autocmd.macos" -- 否則加載 macOS 專用模組
+  require "autocmd.macos" -- macOS, FreeBSD, etc.
 end
 -----------------------------------------------------------
 
@@ -34,9 +32,27 @@ autocmd("TextYankPost", {
   end,
 })
 
--- removes trailing whitespace from any file before saving
-autocmd("BufWritePre", { pattern = "", command = ":%s/\\s\\+$//e" })
-autocmd("BufWritePre", { pattern = { "*.txt", "*.md" }, command = "PanguAll" })
+-- removes trailing whitespace from any file before saving (加入文件大小檢查)
+autocmd("BufWritePre", {
+  pattern = "",
+  callback = function()
+    local file_size = vim.fn.getfsize(vim.fn.expand "%")
+    if file_size < 1024 * 1024 * 10 then -- 只處理小於 10MB 的文件
+      vim.cmd ":%s/\\s\\+$//e"
+    end
+  end,
+})
+
+-- PanguAll 格式化中文文本 (加入文件大小檢查)
+autocmd("BufWritePre", {
+  pattern = { "*.txt", "*.md" },
+  callback = function()
+    local file_size = vim.fn.getfsize(vim.fn.expand "%")
+    if file_size < 1024 * 1024 * 5 then -- 只處理小於 5MB 的文件
+      vim.cmd "PanguAll"
+    end
+  end,
+})
 
 autocmd({ "BufRead", "BufNewFile" }, {
   callback = function()
@@ -82,20 +98,22 @@ autocmd("BufWritePost", {
 -- disables automatic line breaking based on comments (c), the 'textwidth' option (r), and list formatting (o)
 autocmd("BufEnter", { pattern = "", command = "set fo-=c fo-=r fo-=o" })
 
--- save on exit
-autocmd("BufLeave", {
-  group = augroup("SaveOnExit", { clear = true }),
-  callback = function()
-    local filename = vim.fn.expand "%:t"
-    local readonly = vim.bo.readonly
-    if filename ~= "plugins.lua" and not readonly then
-      vim.cmd "silent! write"
-      -- vim.cmd(
-      -- 	"execute 'silent !ffplay -v 0 -nodisp -autoexit ' . shellescape(expand('$HOME/.config/nvim/lua/custom/media/save.wav')) . ' &'"
-      -- )
-    end
-  end,
-})
+-- save on exit (已禁用以提升性能 - 可通過設置 vim.g.auto_save_on_leave = true 啟用)
+if vim.g.auto_save_on_leave then
+  autocmd("BufLeave", {
+    group = augroup("SaveOnExit", { clear = true }),
+    callback = function()
+      local filename = vim.fn.expand "%:t"
+      local readonly = vim.bo.readonly
+      if filename ~= "plugins.lua" and not readonly then
+        vim.cmd "silent! write"
+        -- vim.cmd(
+        -- 	"execute 'silent !ffplay -v 0 -nodisp -autoexit ' . shellescape(expand('$HOME/.config/nvim/lua/custom/media/save.wav')) . ' &'"
+        -- )
+      end
+    end,
+  })
+end
 
 -- Disable line length marker; set the 'colorcolumn' option to 0 for specific file types (text, markdown, html, xhtml, javascript, typescript).
 augroup("setLineLength", { clear = true })
@@ -113,12 +131,16 @@ autocmd("Filetype", {
   command = "setlocal shiftwidth=2 tabstop=2",
 })
 
--- set lines
+-- set lines (優化：只在沒有設置時才更新，避免重複設置)
+local colorcolumn_set = false
 autocmd("InsertEnter", {
   group = augroup("column", { clear = true }),
   pattern = "*",
   callback = function()
-    vim.opt.colorcolumn = "80," .. table.concat(vim.fn.range(120, 999), ",")
+    if not colorcolumn_set then
+      vim.opt.colorcolumn = "80,120"
+      colorcolumn_set = true
+    end
   end,
 })
 

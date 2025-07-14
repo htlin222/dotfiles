@@ -77,12 +77,24 @@ autocmd("BufWritePost", {
 	group = augroup("R_fomrat", { clear = true }),
 	pattern = "*.R",
 	callback = function()
+		-- 檢查文件大小，避免對大文件進行格式化
+		local file_size = vim.fn.getfsize(vim.fn.expand "%")
+		if file_size > 1024 * 1024 * 5 then -- 5MB
+			return
+		end
+		
 		local file = vim.fn.expand("%:p")
 		local cmd = "Rscript $HOME/.dotfiles/neovim/func/styler_i_INPUT.R " .. file
-		vim.cmd("silent! RSend system('clear')")
-		vim.cmd("silent ! " .. cmd) -- Run the command
-		align_comments()
-		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/r.json")
+		-- 使用 jobstart 異步執行，避免阻塞編輯器
+		vim.fn.jobstart(cmd, {
+			on_exit = function(_, exit_code)
+				if exit_code == 0 then
+					vim.cmd("checktime") -- 重新加載文件
+					align_comments()
+					add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/r.json")
+				end
+			end,
+		})
 	end,
 })
 

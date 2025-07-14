@@ -1,6 +1,7 @@
 return {
   "iamcco/markdown-preview.nvim",
-  lazy = false,
+  lazy = true, -- 修正：已有cmd和keys觸發器，應該啟用lazy加載
+  ft = { "markdown", "quarto" }, -- 只在markdown文件時加載
   cmd = { "MarkdownPreview", "MarkdownPreviewStop" },
   keys = {
     { -- example for lazy-loading on keystroke

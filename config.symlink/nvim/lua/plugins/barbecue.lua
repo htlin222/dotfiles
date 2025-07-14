@@ -12,7 +12,7 @@ return {
     -- configurations go here
   },
   config = function()
-    vim.opt.updatetime = 200
+    -- 移除重複的updatetime設置，已在options.lua中設置
     require("barbecue").setup()
     vim.api.nvim_create_autocmd({
       "WinScrolled", -- or WinResized on NVIM-v0.9 and higher

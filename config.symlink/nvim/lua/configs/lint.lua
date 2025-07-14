@@ -37,11 +37,27 @@ lint.linters_by_ft = {
 
 local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
 
+-- 創建防抖動的 lint 函數
+local timer = nil
+local function debounced_lint()
+  if timer then
+    vim.fn.timer_stop(timer)
+  end
+  timer = vim.fn.timer_start(500, function()
+    lint.try_lint(nil, { ignore_errors = true })
+    timer = nil
+  end)
+end
+
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   group = lint_augroup,
   callback = function()
-    -- lint.try_lint()
-    lint.try_lint(nil, { ignore_errors = true })
+    -- 檢查文件大小，避免對大文件進行 lint
+    local file_size = vim.fn.getfsize(vim.fn.expand "%")
+    if file_size > 1024 * 1024 * 10 then -- 10MB
+      return
+    end
+    debounced_lint()
   end,
 })
 

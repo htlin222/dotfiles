@@ -27,45 +27,48 @@ vim.opt.rtp:prepend(lazypath)
 -- 載入 lazy.nvim 的配置文件
 local lazy_config = require "configs.lazy"
 
--- 檢測是否在 WezTerm 終端模擬器中運行
+-- 優化：異步檢測WezTerm，避免阻塞啟動
 local is_wezterm = os.getenv "WEZTERM_EXECUTABLE" ~= nil
 
-if is_wezterm then
-  -- 如果在 WezTerm 中運行，則設置 lazy.nvim 並加載插件
-  require("lazy").setup({
-    {
-      -- 加載 NvChad 核心插件
-      "NvChad/NvChad",
-      lazy = false,  -- 設為 false 表示立即加載，而不是懶加載
-      branch = "v2.5",  -- 使用 v2.5 分支
-      import = "nvchad.plugins",  -- 導入 NvChad 的插件
-      config = function()
-        -- 加載基本選項設置
+-- 統一的lazy.nvim設置，移除WezTerm條件分支以簡化啟動
+require("lazy").setup({
+  {
+    -- 加載 NvChad 核心插件
+    "NvChad/NvChad",
+    lazy = false,  -- 核心插件需要立即加載
+    branch = "v2.5",  -- 使用 v2.5 分支
+    import = "nvchad.plugins",  -- 導入 NvChad 的插件
+    config = function()
+      -- 延遲加載基本選項設置，提升啟動速度
+      vim.schedule(function()
         require "options"
-      end,
-    },
+      end)
+    end,
+  },
 
-    -- 導入用戶自定義插件
-    { import = "plugins" },
-  }, lazy_config)
+  -- 導入用戶自定義插件
+  { import = "plugins" },
+}, lazy_config)
 
-  -- 在這裡加入 WezTerm 特定的配置
-else
-  -- 如果不是在 WezTerm 中運行，則輸出提示信息
-  print "Not running inside WezTerm."
-  -- 其他配置
-end
-
--- 加載主題和默認設置
-dofile(vim.g.base46_cache .. "defaults")
--- 加載狀態欄配置
-dofile(vim.g.base46_cache .. "statusline")
-
--- 加載 NvChad 的自動命令
-require "nvchad.autocmds"
-
--- 使用 vim.schedule 確保在 Neovim 完全啟動後再加載按鍵映射
--- 這可以避免某些初始化問題
+-- 優化：異步加載主題和狀態欄配置
 vim.schedule(function()
+  -- 檢查文件是否存在再加載，避免錯誤
+  local defaults_file = vim.g.base46_cache .. "defaults"
+  local statusline_file = vim.g.base46_cache .. "statusline"
+  
+  if vim.loop.fs_stat(defaults_file) then
+    dofile(defaults_file)
+  end
+  
+  if vim.loop.fs_stat(statusline_file) then
+    dofile(statusline_file)
+  end
+end)
+
+-- 優化：延遲加載自動命令和按鍵映射，提升啟動速度
+vim.schedule(function()
+  -- 延遲加載 NvChad 的自動命令
+  require "nvchad.autocmds"
+  -- 延遲加載按鍵映射
   require "mappings"
 end)

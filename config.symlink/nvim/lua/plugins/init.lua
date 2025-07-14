@@ -25,52 +25,36 @@ return {
           package_uninstalled = "✗",
         },
       },
+      -- 優化：移除重複和未使用的工具，按需安裝以提升啟動速度
       ensure_installed = {
-        "ast-grep",
+        -- LSP servers (核心)
         "bash-language-server",
-        "beautysh",
-        "bibtex-tidy",
-        "cbfmt",
-        "checkstyle",
-        "clang-format",
-        "clang_format",
-        "codespell",
-        "docformatter",
-        "quick-lint-js",
-        "dot-language-server",
-        "eslint-lsp",
-        "fixjson",
-        "google-java-format",
-        "groovy-language-server",
-        "harper-ls",
-        "isort",
+        "lua-language-server", 
         "json-lsp",
-        "jsonlint",
-        "julia-lsp",
-        "jupytext",
-        "lua-language-server",
-        "markdown-oxide",
-        "markdown-toc",
-        "markdownlint-cli2",
-        "misspell",
-        "mypy",
-        "npm-groovy-lint",
-        "prettier",
-        "pylyzer",
-        "pyright",
-        "ruff",
-        "ruff-lsp",
+        "typescript-language-server",
+        
+        -- Python 工具 (合併重複)
+        "ruff", -- 替代 ruff-lsp, pyright, pylyzer, isort, docformatter
+        
+        -- 格式化工具
+        "stylua",
+        "prettier", 
+        "beautysh",
+        "shfmt",
+        
+        -- Linting (核心)
         "selene",
         "shellcheck",
-        "shfmt",
-        "stylua",
-        "taplo",
-        "tailwindcss-language-server",
-        "typescript-language-server",
-        "typos",
-        "vale",
-        "vale-ls",
-        "write-good",
+        "jsonlint",
+        "quick-lint-js",
+        
+        -- 特定語言支持
+        "julia-lsp",
+        "groovy-language-server",
+        
+        -- 實用工具
+        "bibtex-tidy",
+        "fixjson",
       },
     },
   },

@@ -26,12 +26,16 @@ opt.scrolloff = 10 -- 保持游標上下至少有 10 行可見
 opt.sidescrolloff = 8 -- 保持游標左右至少有 8 列可見
 opt.ttimeoutlen = 5 -- 終端按鍵碼超時時間為 5 毫秒
 opt.timeoutlen = 1000 -- 按鍵映射超時時間為 1000 毫秒
+opt.updatetime = 1000 -- CursorHold 事件觸發時間為 1000 毫秒（優化性能）
 opt.tabstop = 2 -- Tab 字符顯示寬度為 2 個空格
-opt.colorcolumn = "80," .. table.concat(vim.fn.range(120, 999), ",") -- 在第 80 列和 120-999 列顯示垂直參考線
+opt.colorcolumn = "80,120" -- 只在第 80 列和 120 列顯示垂直參考線（優化性能）
 wo.relativenumber = true -- 啟用相對行號
 vim.cmd [[highlight ColorColumn ctermbg=235 guibg=#2c2d27]] -- 設定參考線顏色
 vim.g.did_load_netrw = 1 -- 禁用 Netrw 文件瀏覽器
 vim.markdown_folding = 1 -- 啟用 Markdown 文件折疊
 vim.cmd [[highlight NotifyBackground guibg=#1e1e1e]] -- 設定背景顏色
 
-require "autocmd" -- 載入自動命令配置
+-- 優化：延遲加載自動命令配置，避免阻塞啟動
+vim.defer_fn(function()
+  require "autocmd"
+end, 50) -- 延遲50ms加載

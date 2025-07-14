@@ -15,57 +15,50 @@ return { -- this table will override the default cmp setting
   opts = {
     performance = {
       max_view_entries = 15,
+      debounce = 100, -- 增加防抖動時間
+      throttle = 50, -- 限制觸發頻率
+      fetching_timeout = 200, -- 設置獲取超時時間
     },
     window = {
       completion = cmp.config.window.bordered(nil),
       documentation = cmp.config.window.bordered(nil),
     },
-    sources = {
+    -- 優化：減少並優化completion sources，提升性能
+    sources = cmp.config.sources({
+      -- 主要LSP源，優先級最高
       {
         name = "nvim_lsp",
+        priority = 1000,
+        max_item_count = 20,
         option = {
           markdown_oxide = {
             keyword_pattern = [[\(\k\| \|\/\|#\)\+]],
           },
         },
       },
-      -- { name = "codeium" },
-      -- { name = "supermaven" },
-      { name = "luasnip" },
-      -- { name = "cmp_zotcite" },
-      -- { name = "papis" },
-      { name = "nvim_lsp_document_symbol" },
-      { name = "nvim_lsp_signature_help" },
-      -- { name = "otter" },
-      { name = "plugins" },
-      -- { name = "mkdnflow" },
-      { name = "buffer" },
-      { name = "bufname" },
-      -- { name = "rg", keyword_length = 3 },
-      -- { name = "omni",                    option = { disable_omnifuncs = { "v:lua.vim.lsp.omnifunc" } } },
-      -- { name = "calc" },
-      -- { name = "rpncalc" },
-      -- { name = "cmdline_history" },
-      { name = "nvim_lua" },
-      { name = "treesitter" },
-      { name = "async_path" },
-      { name = "path" },
-      { name = "cmp_yanky" },
-      -- { name = "cmp_tabnine" },
-      -- { name = "emoji" },
-      -- { name = "pandoc_references" },
-      -- { name = "treesitter" },
-      -- { name = "cmp_r" },
-      -- { name = "buffer-lines",            option = {} },
+      -- 片段系統
+      { name = "luasnip", priority = 900, max_item_count = 15 },
+      -- LSP相關功能
+      { name = "nvim_lsp_signature_help", priority = 800 },
+    }, {
+      -- 次要源，只在主要源不足時使用
+      { name = "buffer", priority = 500, max_item_count = 10, keyword_length = 3 },
+      { name = "path", priority = 400, max_item_count = 10 },
+    }, {
+      -- 特定文件類型源
+      { name = "nvim_lua", priority = 600, ft = { "lua" } },
+      { name = "treesitter", priority = 300, max_item_count = 10 },
       {
         name = "look",
-        keyword_length = 3,
+        priority = 200,
+        keyword_length = 4, -- 增加最小長度減少觸發
+        max_item_count = 5,
         option = {
           convert_case = true,
           loud = true,
         },
       },
-    },
+    }),
     mapping = {
       ["<C-d>"] = require("cmp").mapping.scroll_docs(-4),
       ["<C-f>"] = require("cmp").mapping.scroll_docs(4),
