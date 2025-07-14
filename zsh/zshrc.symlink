@@ -92,20 +92,11 @@ DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
 
-# Plugin loading
+# Plugin loading - reduced eager loading for faster startup
 EAGER_PLUGINS=(
-  colored-man-pages
-  copyfile
   git
-  gitignore
-  jsontools
-  man
-  sudo
-  web-search
   zsh-lazyload
   fast-syntax-highlighting
-  pnpm
-  wd
 )
 
 PROMPT_PLUGINS=(
@@ -118,11 +109,19 @@ KEYPRESS_PLUGINS=(
   zsh-autopair
 )
 
-DELAYED_PLUGINS=(
-  fast-syntax-highlighting
+DEFERRED_PLUGINS=(
+  colored-man-pages
+  copyfile
+  gitignore
+  jsontools
+  man
+  sudo
+  web-search
+  pnpm
+  wd
 )
 
-# Set plugins for oh-my-zsh
+# Set plugins for oh-my-zsh - minimal initial load
 plugins=("${EAGER_PLUGINS[@]}")
 
 ZSH_WEB_SEARCH_ENGINES=(
@@ -142,9 +141,11 @@ source "$ZSH/oh-my-zsh.sh"
 ### Plugin Lazy Loading    ###
 ##############################
 
-# Function to find plugin paths
+# Function to find plugin paths with error handling
 _find_plugin_path() {
   local plugin=$1
+  [[ -z "$plugin" || -z "$ZSH" ]] && return 1
+  
   local plugin_paths=(
     "$ZSH/custom/plugins/$plugin/$plugin.plugin.zsh"
     "$ZSH/custom/plugins/$plugin/${plugin}.zsh"
@@ -152,7 +153,7 @@ _find_plugin_path() {
   )
 
   for path in "${plugin_paths[@]}"; do
-    if [[ -f "$path" ]]; then
+    if [[ -f "$path" && -r "$path" ]]; then
       echo "$path"
       return 0
     fi
@@ -160,34 +161,44 @@ _find_plugin_path() {
   return 1
 }
 
-# Prompt-based loading
+# Prompt-based loading with error handling
 _load_prompt_plugins() {
   _load_prompt_plugins() { :; }
   for plugin in "${PROMPT_PLUGINS[@]}"; do
     local plugin_path=$(_find_plugin_path "$plugin")
-    [[ -n "$plugin_path" ]] && source "$plugin_path"
+    if [[ -n "$plugin_path" ]]; then
+      source "$plugin_path" 2>/dev/null || echo "Warning: Failed to load prompt plugin: $plugin" >&2
+    fi
   done
 }
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _load_prompt_plugins
 
-# Keypress-based loading
+# Keypress-based loading with error handling
 _load_keypress_plugins() {
-  zle -D zle-line-init
+  zle -D zle-line-init 2>/dev/null
   for plugin in "${KEYPRESS_PLUGINS[@]}"; do
     local plugin_path=$(_find_plugin_path "$plugin")
-    [[ -n "$plugin_path" ]] && source "$plugin_path"
+    if [[ -n "$plugin_path" ]]; then
+      source "$plugin_path" 2>/dev/null || echo "Warning: Failed to load keypress plugin: $plugin" >&2
+    fi
   done
 }
 zle -N zle-line-init _load_keypress_plugins
 
-
-# Fix line refresh
-_load_completions() {
-  _load_completions() { :; }
-  zle -R
+# Deferred plugin loading with error handling (silent background)
+_load_deferred_plugins() {
+  _load_deferred_plugins() { :; }
+  for plugin in "${DEFERRED_PLUGINS[@]}"; do
+    local plugin_path=$(_find_plugin_path "$plugin")
+    if [[ -n "$plugin_path" ]]; then
+      (source "$plugin_path" 2>/dev/null || echo "Warning: Failed to load deferred plugin: $plugin" >&2) &!
+    fi
+  done
+  wait
+  zle -R 2>/dev/null
 }
-add-zsh-hook precmd _load_completions
+add-zsh-hook precmd _load_deferred_plugins
 
 ##############################
 ### Extra Configs          ###
@@ -231,26 +242,49 @@ FNM_PATH="/Users/mac/Library/Application Support/fnm"
 lazyload fnm node npm -- _load_fnm
 lazyload br -- _load_broot
 
-# Paths
-export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
-export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
-export PNPM_HOME="/Users/htlin/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+# Paths - cached checks for better performance
+_cached_path_check() {
+  local cache_file="$ZSH_CACHE_DIR/.path_cache"
+  if [[ ! -f "$cache_file" || "$cache_file" -ot ~/.zshrc ]]; then
+    {
+      [[ -d "/Users/htlin/.codeium/windsurf/bin" ]] && echo "CODEIUM_EXISTS=1"
+      [[ -d "/Users/htlin/.cache/lm-studio/bin" ]] && echo "LMSTUDIO_EXISTS=1"
+      [[ -d "/Users/htlin/Library/pnpm" ]] && echo "PNPM_EXISTS=1"
+    } > "$cache_file"
+  fi
+  source "$cache_file"
+}
+_cached_path_check
 
-# Forgit
-export PATH="$PATH:$(brew --prefix)/share/forgit"
-[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
-
-# Atuin
-if [ -f "$HOME/.atuin/bin/env" ]; then
-  . "$HOME/.atuin/bin/env"
-  eval "$(atuin init zsh)"
-else
-  echo "Warning: Atuin environment file not found at $HOME/.atuin/bin/env"
+# Add paths only if they exist
+[[ "$CODEIUM_EXISTS" == "1" ]] && export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
+[[ "$LMSTUDIO_EXISTS" == "1" ]] && export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
+if [[ "$PNPM_EXISTS" == "1" ]]; then
+  export PNPM_HOME="/Users/htlin/Library/pnpm"
+  case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
 fi
+
+# Deferred initialization for heavy tools
+_deferred_init() {
+  # Forgit (deferred)
+  if command -v brew >/dev/null 2>&1; then
+    local forgit_path="$(brew --prefix)/share/forgit"
+    export PATH="$PATH:$forgit_path"
+    [[ -f "$HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh" ]] && source "$HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh"
+  fi
+
+  # Atuin (deferred)
+  if [[ -f "$HOME/.atuin/bin/env" ]]; then
+    . "$HOME/.atuin/bin/env"
+    eval "$(atuin init zsh)"
+  fi
+}
+
+# Schedule deferred initialization (silent background)
+(sleep 0.1 && _deferred_init) &!
 
 # Python venv
 if [ -f ".venv/bin/activate" ]; then
