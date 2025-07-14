@@ -45,7 +45,24 @@ return { --telescope
       "live_grep_args",
     },
 
-    defaults = { prompt_prefix = "  ", selection_caret = "  ", entry_prefix = " " },
+    defaults = {
+      prompt_prefix = "  ",
+      selection_caret = "  ",
+      entry_prefix = " ",
+      vimgrep_arguments = {
+        "rg",
+        "--color=never",
+        "--no-heading",
+        "--with-filename",
+        "--line-number",
+        "--column",
+        "--smart-case",
+        "--hidden", -- 搜尋隱藏檔案
+        "-L", -- 跟隨 symlink
+        "--glob",
+        "!**/.git/*", -- 排除 .git 資料夾
+      },
+    },
 
     -- projects settings
     manual_mode = false,

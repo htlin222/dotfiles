@@ -20,6 +20,7 @@ local heavy_servers = {
   r_language_server = { "r", "rmd", "quarto" },
   ruff = { "python" },
   ts_ls = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  tailwindcss = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
   jdtls = { "java" },
 }
 -- too slow in large valut"markdown_oxide",
