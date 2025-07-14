@@ -145,7 +145,7 @@ source "$ZSH/oh-my-zsh.sh"
 _find_plugin_path() {
   local plugin=$1
   [[ -z "$plugin" || -z "$ZSH" ]] && return 1
-  
+
   local plugin_paths=(
     "$ZSH/custom/plugins/$plugin/$plugin.plugin.zsh"
     "$ZSH/custom/plugins/$plugin/${plugin}.zsh"
@@ -276,12 +276,8 @@ _deferred_init() {
     [[ -f "$HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh" ]] && source "$HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh"
   fi
 
-  # Atuin (deferred)
-  if [[ -f "$HOME/.atuin/bin/env" ]]; then
-    . "$HOME/.atuin/bin/env"
-    eval "$(atuin init zsh)"
-  fi
 }
+
 
 # Schedule deferred initialization (silent background)
 (sleep 0.1 && _deferred_init) &!
@@ -308,4 +304,10 @@ fi
 # Auto-Tmux (WezTerm)
 if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
   exec tmux
+fi
+
+# Atuin (deferred)
+if [[ -f "$HOME/.atuin/bin/env" ]]; then
+  . "$HOME/.atuin/bin/env"
+  eval "$(atuin init zsh)"
 fi
