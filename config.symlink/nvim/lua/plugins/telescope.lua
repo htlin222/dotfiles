@@ -42,6 +42,19 @@ return { --telescope
         wrap = false,
         citation_format = "[[{{label}}]]",
       },
+      project = {
+        base_dirs = {
+          "~/dev",
+          "~/projects",
+          "~/dotfiles",
+          "~/Documents",
+        },
+        hidden_files = true,
+        theme = "dropdown",
+        order_by = "asc",
+        search_by = "title",
+        sync_with_nvim_tree = true,
+      },
       "live_grep_args",
     },
 

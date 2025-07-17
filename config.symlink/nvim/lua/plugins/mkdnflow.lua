@@ -61,7 +61,7 @@ return { --mkdnflow
       },
       create_dirs = true,
       mappings = {
-        MkdnEnter = { { "n", "v" }, "<CR>" },
+        MkdnEnter = { { "n", "v" }, "<CR>" }, -- Restore original <CR> mapping
         MkdnTab = false,
         MkdnSTab = false,
         MkdnNextLink = { "n", "<Tab>" },
