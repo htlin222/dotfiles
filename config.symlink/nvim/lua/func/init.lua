@@ -76,4 +76,33 @@ function M.remove_under_score_and_capitalize()
   vim.api.nvim_set_current_line(line)
 end
 
+function M.yank_with_context()
+  -- Get visual selection range
+  local start_line = vim.fn.line("'<")
+  local end_line = vim.fn.line("'>")
+  
+  -- Get file path and filetype
+  local file_path = vim.fn.expand("%:p")
+  local filetype = vim.bo.filetype
+  
+  -- Get selected lines
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+  local content = table.concat(lines, "\n")
+  
+  -- Format the yanked text with code block
+  local formatted
+  if start_line == end_line then
+    formatted = string.format("@%s line %d:\n```%s\n%s\n```", file_path, start_line, filetype, content)
+  else
+    formatted = string.format("@%s line %d to %d:\n```%s\n%s\n```", file_path, start_line, end_line, filetype, content)
+  end
+  
+  -- Yank to clipboard
+  vim.fn.setreg("+", formatted)
+  vim.fn.setreg('"', formatted)
+  
+  -- Notify user
+  vim.notify(string.format("Yanked %d line(s) with context", end_line - start_line + 1), vim.log.levels.INFO)
+end
+
 return M

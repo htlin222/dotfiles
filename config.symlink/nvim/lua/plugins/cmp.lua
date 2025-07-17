@@ -25,33 +25,39 @@ return { -- this table will override the default cmp setting
     },
     -- 優化：減少並優化completion sources，提升性能
     sources = cmp.config.sources({
-      -- 主要LSP源，優先級最高
+      -- Group 1: Primary sources (always active)
       {
         name = "nvim_lsp",
         priority = 1000,
         max_item_count = 20,
+        keyword_length = 3,
         option = {
           markdown_oxide = {
             keyword_pattern = [[\(\k\| \|\/\|#\)\+]],
           },
         },
       },
-      -- 片段系統
-      { name = "luasnip", priority = 900, max_item_count = 15 },
-      -- LSP相關功能
-      { name = "nvim_lsp_signature_help", priority = 800 },
-    }, {
-      -- 次要源，只在主要源不足時使用
+      { name = "luasnip", priority = 900, max_item_count = 15, keyword_length = 3 },
+      { name = "nvim_lsp_signature_help", priority = 800, keyword_length = 3 },
+      { name = "codeium", priority = 850, keyword_length = 3 },
       { name = "buffer", priority = 500, max_item_count = 10, keyword_length = 3 },
-      { name = "path", priority = 400, max_item_count = 10 },
+      { name = "async_path", priority = 400, max_item_count = 10, keyword_length = 3 },
     }, {
-      -- 特定文件類型源
-      { name = "nvim_lua", priority = 600, ft = { "lua" } },
-      { name = "treesitter", priority = 300, max_item_count = 10 },
+      -- Group 2: Secondary sources (when primary has few results)
+      { name = "nvim_lua", priority = 600, ft = { "lua" }, keyword_length = 3 },
+      { name = "emoji", priority = 350, keyword_length = 3 },
+      { name = "cmp_yanky", priority = 340, max_item_count = 5, keyword_length = 3 },
+      { name = "treesitter", priority = 300, max_item_count = 10, keyword_length = 3 },
+      { name = "spell", priority = 330, max_item_count = 5, keyword_length = 3 },
+      { name = "npm", priority = 320, keyword_length = 3, max_item_count = 5 },
+    }, {
+      -- Group 3: Heavy/slow sources (only when needed)
+      { name = "buffer-lines", priority = 280, max_item_count = 5, keyword_length = 3 },
+      { name = "rg", priority = 270, max_item_count = 5, keyword_length = 3 },
       {
         name = "look",
         priority = 200,
-        keyword_length = 4, -- 增加最小長度減少觸發
+        keyword_length = 3,
         max_item_count = 5,
         option = {
           convert_case = true,
@@ -151,6 +157,33 @@ return { -- this table will override the default cmp setting
     },
     -- End of options
   },
+  config = function(_, opts)
+    local cmp = require "cmp"
+    cmp.setup(opts)
+
+    -- Setup cmdline completion for '/'
+    cmp.setup.cmdline("/", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = {
+        { name = "buffer" },
+      },
+    })
+
+    -- Setup cmdline completion for ':'
+    cmp.setup.cmdline(":", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources({
+        { name = "path" },
+      }, {
+        {
+          name = "cmdline",
+          option = {
+            ignore_cmds = { "Man", "!" },
+          },
+        },
+      }),
+    })
+  end,
 
   dependencies = {
     { "hrsh7th/cmp-emoji" },
@@ -168,6 +201,9 @@ return { -- this table will override the default cmp setting
     { "onsails/lspkind.nvim" },
     { "ray-x/cmp-treesitter" },
     { "jc-doyle/cmp-pandoc-references" },
+    { "f3fora/cmp-spell" },
+    { "David-Kunz/cmp-npm" },
+    { "hrsh7th/cmp-cmdline" },
     { -- [aspeddro/cmp-pandoc.nvim: Pandoc source for nvim-cmp](https://github.com/aspeddro/cmp-pandoc.nvim)
       "aspeddro/cmp-pandoc.nvim",
       dependencies = {

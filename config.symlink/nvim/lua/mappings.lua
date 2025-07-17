@@ -31,6 +31,7 @@ map("n", "<leader>yp", ':let @+ = expand("%:h")<CR>', { desc = "Yank current buf
 map("n", "<leader>yw", ":let @+ = getcwd()<CR>", { desc = "Yank current working directory" })
 map("n", "<leader>yf", ':let @+ = expand("%:t")<CR>', { desc = "Yank current file name" })
 map("n", "<leader>yb", ':let @+ = expand("%:t:r")<CR>', { desc = "Yank current file name without extension" })
+map("v", "<leader>gy", ":lua require('func').yank_with_context()<CR>", { desc = "Yank selection with file path and line numbers" })
 map("n", "<Down>", ":tabnext<CR>", { desc = "tab next" }) -- 使用下箭頭切換到下一個標籤頁
 map("n", "<Up>", ":tabprevious<CR>", { desc = "tab previous" }) -- 使用上箭頭切換到上一個標籤頁
 map("n", "<ESC>", ":", { desc = "Enter Cmdline" }) -- 使用 ESC 進入命令行模式
@@ -130,3 +131,67 @@ map("v", "H", "^", { desc = "begining of line" }) -- 跳到行首
 map("n", "<leader>lo", "<cmd>Lspsaga outline<CR>", { desc = "Lspsaga Code Outline" }) -- 顯示代碼大綱
 map("n", "K", "<cmd>Lspsaga hover_doc<CR>", { desc = "Hover Doc" }) -- 顯示懸停文檔
 map("n", "<leader>fd", "<cmd>ArenaToggle<CR>", { desc = "ArenaToggle", nowait = true, silent = false }) -- 切換 Arena 面板
+
+-- Diagnostic 診斷按鍵映射 --
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" }) -- 跳到上一個診斷
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" }) -- 跳到下一個診斷
+map("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Go to previous error" }) -- 跳到上一個錯誤
+map("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Go to next error" }) -- 跳到下一個錯誤
+map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Show diagnostic in float window" }) -- 在浮動窗口顯示診斷
+map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Add diagnostics to location list" }) -- 將診斷添加到位置列表
+map("n", "<leader>dt", function() require("tiny-inline-diagnostic").toggle() end, { desc = "Toggle inline diagnostics" }) -- 切換內聯診斷顯示
+
+-- FeMaco 代碼區塊編輯按鍵映射 --
+map("n", "<leader>ce", function() require("femaco.edit").edit_code_block() end, { desc = "Edit code block in floating window" }) -- 在浮動窗口編輯代碼區塊
+map("n", "<leader>cc", function() require("femaco.edit").edit_code_block() end, { desc = "Edit code block (alias)" }) -- 編輯代碼區塊（別名）
+
+-- Markdown 文件中的代碼區塊 Enter 鍵映射 --
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.keymap.set("n", "<CR>", function()
+      -- Check if cursor is in a code block
+      local line = vim.api.nvim_get_current_line()
+      local cursor_pos = vim.api.nvim_win_get_cursor(0)
+      local row = cursor_pos[1]
+      
+      -- Get all lines in buffer
+      local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      
+      -- Find if we're inside a code block
+      local in_code_block = false
+      local code_block_start = nil
+      
+      for i = row, 1, -1 do
+        local current_line = lines[i]
+        if current_line and current_line:match("^```") then
+          -- Check if this is a closing ``` or opening ```
+          local code_blocks_above = 0
+          for j = 1, i - 1 do
+            if lines[j] and lines[j]:match("^```") then
+              code_blocks_above = code_blocks_above + 1
+            end
+          end
+          
+          -- If even number of ``` above, this is an opening ```
+          if code_blocks_above % 2 == 0 then
+            in_code_block = true
+            code_block_start = i
+            break
+          else
+            -- This is a closing ```, we're not in a code block
+            break
+          end
+        end
+      end
+      
+      if in_code_block then
+        -- We're in a code block, use FeMaco to edit
+        require("femaco.edit").edit_code_block()
+      else
+        -- Not in a code block, use default Enter behavior
+        vim.cmd("normal! o")
+      end
+    end, { buffer = true, desc = "Edit code block or new line" })
+  end,
+})
