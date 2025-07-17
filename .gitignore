@@ -49,3 +49,5 @@ Application_Support/Anki2/HTLIN/
 config.symlink/thefuck/__pycache__/settings.cpython-310.pyc
 
 claude.symlink/statsig/
+claude.symlink/todos/
+claude.symlink/shells-snapshots/
