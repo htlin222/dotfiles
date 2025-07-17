@@ -35,7 +35,5 @@ vim.g.did_load_netrw = 1 -- 禁用 Netrw 文件瀏覽器
 vim.markdown_folding = 1 -- 啟用 Markdown 文件折疊
 vim.cmd [[highlight NotifyBackground guibg=#1e1e1e]] -- 設定背景顏色
 
--- 優化：延遲加載自動命令配置，避免阻塞啟動
-vim.defer_fn(function()
-  require "autocmd"
-end, 50) -- 延遲50ms加載
+-- 立即加載自動命令配置，確保 BufNewFile 事件能正常觸發
+require "autocmd"

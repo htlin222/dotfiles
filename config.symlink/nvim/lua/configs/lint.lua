@@ -25,7 +25,7 @@ lint.linters_by_ft = {
   markdown = {
     -- "codespell",
     -- "proselint",
-    -- "vale",
+    "vale",
     -- "typos",
     -- "write_good",
   },

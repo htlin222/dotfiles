@@ -30,6 +30,7 @@ local lazy_config = require "configs.lazy"
 -- 優化：異步檢測WezTerm，避免阻塞啟動
 local is_wezterm = os.getenv "WEZTERM_EXECUTABLE" ~= nil
 
+
 -- 統一的lazy.nvim設置，移除WezTerm條件分支以簡化啟動
 require("lazy").setup({
   {

@@ -50,4 +50,6 @@ config.symlink/thefuck/__pycache__/settings.cpython-310.pyc
 
 claude.symlink/statsig/
 claude.symlink/todos/
-claude.symlink/shells-snapshots/
+claude.symlink/projects/
+claude.symlink/logs
+claude.symlink/shell-snapshots/

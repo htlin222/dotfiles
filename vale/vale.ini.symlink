@@ -4,6 +4,7 @@ MinAlertLevel = suggestion
 
 Packages = Google, alex, Hugo
 
+Vocab = medical, python
 [*]
-BasedOnStyles = Vale, Google, alex
+BasedOnStyles = Vale, Google, alex, write-good, Readability
 

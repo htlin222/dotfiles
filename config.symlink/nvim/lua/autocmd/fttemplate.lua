@@ -42,7 +42,7 @@ autocmd("BufNewFile", {
 -- python template
 
 autocmd("BufNewFile", {
-  group = augroup("Python", { clear = true }),
+  group = augroup("PythonTemplate", { clear = true }),
   pattern = "*.py",
   callback = function()
     local lines = {
