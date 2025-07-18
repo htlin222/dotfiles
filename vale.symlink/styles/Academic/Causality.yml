@@ -1,0 +1,71 @@
+extends: existence
+message: "Appropriate causality phrase: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/explaining-causality/
+level: suggestion
+ignorecase: false
+tokens:
+  # Direct causation
+  - causes
+  - leads to
+  - results in
+  - brings about
+  - gives rise to
+  - produces
+  - generates
+  - triggers
+  - induces
+  - provokes
+  - precipitates
+
+  # Indirect causation
+  - contributes to
+  - is associated with
+  - is linked to
+  - is correlated with
+  - plays a role in
+  - is a factor in
+  - influences
+  - affects
+  - has an impact on
+  - has an effect on
+
+  # Causal relationships
+  - as a result of
+  - as a consequence of
+  - due to
+  - owing to
+  - because of
+  - on account of
+  - by virtue of
+  - in light of
+  - in view of
+  - given that
+
+  # Effect expressions
+  - consequently
+  - therefore
+  - thus
+  - hence
+  - accordingly
+  - as a result
+  - for this reason
+  - this is why
+  - it follows that
+
+  # Conditional causality
+  - if...then
+  - provided that
+  - on condition that
+  - in the event that
+  - assuming that
+  - given that
+  - when
+  - whenever
+
+  # Causal chains
+  - which in turn
+  - thereby
+  - subsequently leading to
+  - ultimately resulting in
+  - eventually causing
+  - culminating in

@@ -1,0 +1,73 @@
+extends: existence
+message: "Good trend description: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/describing-trends/
+level: suggestion
+ignorecase: false
+tokens:
+  # Upward trends
+  - increased significantly
+  - rose sharply
+  - climbed steadily
+  - grew substantially
+  - increased dramatically
+  - showed an upward trend
+  - exhibited growth
+  - demonstrated an increase
+  - expanded rapidly
+  - surged
+  - soared
+  - escalated
+
+  # Downward trends
+  - decreased significantly
+  - fell sharply
+  - declined steadily
+  - dropped substantially
+  - decreased dramatically
+  - showed a downward trend
+  - exhibited a decline
+  - demonstrated a decrease
+  - contracted rapidly
+  - plummeted
+  - plunged
+  - diminished
+
+  # Stability
+  - remained stable
+  - stayed constant
+  - maintained a steady level
+  - showed no significant change
+  - plateaued
+  - leveled off
+  - stabilized
+  - remained unchanged
+  - held steady
+
+  # Fluctuation
+  - fluctuated
+  - varied considerably
+  - showed variation
+  - oscillated
+  - experienced volatility
+  - demonstrated instability
+  - exhibited fluctuation
+
+  # Rate descriptors
+  - gradual increase
+  - steady decline
+  - rapid growth
+  - slow decrease
+  - exponential rise
+  - linear progression
+  - accelerating trend
+  - decelerating rate
+
+  # Peak and trough
+  - reached a peak
+  - hit a maximum
+  - attained the highest point
+  - reached a trough
+  - hit a minimum
+  - reached the lowest point
+  - peaked at
+  - bottomed out at

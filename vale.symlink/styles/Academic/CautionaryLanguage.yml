@@ -1,0 +1,56 @@
+extends: existence
+message: "Good use of cautionary language: '%s'. Academic writing benefits from appropriate caution."
+link: https://www.phrasebank.manchester.ac.uk/being-cautious/
+level: suggestion
+ignorecase: false
+tokens:
+  # Tentative verbs
+  - appear to be
+  - seem to suggest
+  - tend to indicate
+  - may be related to
+  - might be attributed to
+  - could be interpreted as
+  - would appear to
+  - seems likely that
+  - appears probable that
+
+  # Cautionary phrases about findings
+  - with some caution
+  - should be interpreted cautiously
+  - must be viewed with caution
+  - cannot be ruled out
+  - remains to be determined
+  - further research is required
+  - more research is needed
+  - warrants further investigation
+  - preliminary findings suggest
+  - tentative conclusion
+
+  # Distance phrases
+  - to the best of our knowledge
+  - as far as we know
+  - to our knowledge
+  - it is generally accepted that
+  - it is widely believed that
+  - current evidence suggests
+  - available data indicate
+
+  # Limitation acknowledgments
+  - within the limitations of
+  - given the constraints of
+  - bearing in mind that
+  - taking into account
+  - it should be noted that
+  - it is important to note that
+  - one should bear in mind
+
+  # Possibility and probability
+  - it is possible that
+  - there is a possibility that
+  - it is conceivable that
+  - one possible explanation
+  - a plausible interpretation
+  - potentially
+  - presumably
+  - ostensibly

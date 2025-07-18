@@ -1,0 +1,87 @@
+extends: existence
+message: "Good use of transition/stitching word: '%s' helps connect ideas in academic writing."
+link: https://www.brandeis.edu/writing-program/resources/faculty/handouts/
+level: suggestion
+ignorecase: false
+tokens:
+  # Stitching words for academic coherence
+  # Additive transitions
+  - Furthermore
+  - Moreover
+  - Additionally
+  - In addition
+  - Besides
+  - Also
+  - Similarly
+  - Likewise
+  - Equally
+  - Correspondingly
+
+  # Contrastive transitions
+  - However
+  - Nevertheless
+  - Nonetheless
+  - On the contrary
+  - Conversely
+  - In contrast
+  - By contrast
+  - On the other hand
+  - Alternatively
+  - Despite this
+  - In spite of this
+  - Although
+  - Though
+  - Whereas
+  - While
+
+  # Causal transitions
+  - Therefore
+  - Thus
+  - Hence
+  - Consequently
+  - As a result
+  - Accordingly
+  - For this reason
+  - Because of this
+  - Due to this
+
+  # Sequential transitions
+  - First
+  - Second
+  - Third
+  - Finally
+  - Subsequently
+  - Then
+  - Next
+  - Following this
+  - Previously
+  - Meanwhile
+  - Simultaneously
+
+  # Exemplification
+  - For example
+  - For instance
+  - Specifically
+  - In particular
+  - Namely
+  - To illustrate
+  - Such as
+
+  # Emphasis
+  - Indeed
+  - In fact
+  - Certainly
+  - Undoubtedly
+  - Clearly
+  - Obviously
+  - Notably
+  - Particularly
+
+  # Conclusion
+  - In conclusion
+  - To conclude
+  - In summary
+  - To summarize
+  - Overall
+  - In general
+  - Ultimately

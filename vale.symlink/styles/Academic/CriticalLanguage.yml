@@ -1,0 +1,64 @@
+extends: existence
+message: "Appropriate critical language: '%s'. Use critical analysis constructively in academic writing."
+link: https://www.phrasebank.manchester.ac.uk/being-critical/
+level: suggestion
+ignorecase: false
+tokens:
+  # Identifying limitations
+  - fails to consider
+  - overlooks the fact that
+  - does not take into account
+  - neglects to mention
+  - omits to consider
+  - disregards the possibility
+  - insufficient attention has been paid to
+  - little consideration has been given to
+
+  # Questioning methodology
+  - methodological limitations
+  - questionable assumption
+  - problematic approach
+  - flawed methodology
+  - insufficient evidence
+  - inadequate sample size
+  - lacks empirical support
+  - poorly defined
+  - ambiguous criteria
+
+  # Identifying weaknesses
+  - a major weakness
+  - a serious limitation
+  - a significant shortcoming
+  - an important omission
+  - a notable absence
+  - a critical flaw
+  - a fundamental problem
+
+  # Contrasting viewpoints
+  - however, this view has been challenged
+  - this interpretation has been questioned
+  - an alternative perspective suggests
+  - contrary to this assertion
+  - this claim is disputed by
+  - critics have argued that
+  - opponents of this view argue
+
+  # Constructive criticism phrases
+  - would benefit from
+  - could be improved by
+  - might be strengthened by
+  - would be more convincing if
+  - requires further clarification
+  - needs more rigorous analysis
+  - warrants closer examination
+
+  # Evaluative language
+  - unconvincing argument
+  - weak evidence
+  - limited scope
+  - narrow focus
+  - oversimplified
+  - overgeneralized
+  - unsubstantiated claim
+  - circular reasoning
+  - logical fallacy

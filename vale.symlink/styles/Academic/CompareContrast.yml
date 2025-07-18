@@ -1,0 +1,74 @@
+extends: existence
+message: "Good comparison/contrast phrase: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/compare-and-contrast/
+level: suggestion
+ignorecase: false
+tokens:
+  # Similarity phrases
+  - similarly
+  - in the same way
+  - likewise
+  - equally
+  - in a similar manner
+  - corresponds to
+  - parallels can be drawn
+  - is comparable to
+  - bears resemblance to
+  - is analogous to
+  - both X and Y
+  - neither X nor Y
+
+  # Difference phrases
+  - in contrast
+  - by contrast
+  - conversely
+  - on the contrary
+  - differs from
+  - is different from
+  - unlike
+  - whereas
+  - while
+  - on the one hand
+  - on the other hand
+  - alternatively
+
+  # Comparative degree
+  - more significant than
+  - less likely than
+  - greater than
+  - smaller than
+  - higher than
+  - lower than
+  - better than
+  - worse than
+  - more effective than
+  - less effective than
+
+  # Superlative expressions
+  - the most significant
+  - the least likely
+  - the highest
+  - the lowest
+  - the best
+  - the worst
+  - the most effective
+  - the least effective
+
+  # Contrasting results
+  - contrary to expectations
+  - in opposition to
+  - stands in contrast to
+  - contradicts the findings
+  - is at odds with
+  - runs counter to
+  - is inconsistent with
+  - conflicts with
+
+  # Comparative analysis
+  - when compared with
+  - in comparison with
+  - relative to
+  - as opposed to
+  - in relation to
+  - with respect to
+  - vis-à-vis

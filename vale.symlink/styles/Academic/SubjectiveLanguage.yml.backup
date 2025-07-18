@@ -1,0 +1,105 @@
+extends: existence
+message: "Consider removing the subjective expression '%s' or replacing with objective language."
+link: https://www.scribbr.com/academic-writing/objective-language/
+level: suggestion
+ignorecase: true
+tokens:
+  # Personal opinions and beliefs
+  - I believe
+  - I think
+  - I feel
+  - I know
+  - I am sure
+  - I am certain
+  - I assume
+  - I suppose
+  - I imagine
+  - I suspect
+  - I guess
+  - I would say
+  - I would argue
+  - I would suggest
+  - I would propose
+  - in my opinion
+  - in my view
+  - in my experience
+  - from my perspective
+  - personally speaking
+  - I personally
+  - to me
+  - it seems to me
+  - as far as I'm concerned
+  - if you ask me
+
+  # Reader-directed language
+  - you can see
+  - you will notice
+  - you should know
+  - you might think
+  - you may wonder
+  - you probably
+  - as you know
+  - as you can see
+  - as you might expect
+  - if you look at
+  - you will find
+  - you can observe
+  - you should consider
+  - you must understand
+
+  # Emotional/subjective adjectives
+  - amazing
+  - incredible
+  - unbelievable
+  - shocking
+  - surprising
+  - disappointing
+  - encouraging
+  - exciting
+  - boring
+  - interesting
+  - fascinating
+  - wonderful
+  - terrible
+  - awful
+  - fantastic
+  - brilliant
+  - outstanding
+  - excellent
+  - poor
+  - bad
+  - good
+  - nice
+  - ugly
+  - beautiful
+
+  # Judgmental language
+  - unfortunately
+  - fortunately
+  - luckily
+  - unluckily
+  - thankfully
+  - regrettably
+  - surprisingly
+  - shockingly
+  - disappointingly
+  - encouragingly
+  - worryingly
+  - alarmingly
+  - reassuringly
+  - disturbingly
+  - pleasingly
+
+  # Colloquial expressions of certainty
+  - of course
+  - obviously
+  - clearly
+  - naturally
+  - surely
+  - certainly
+  - definitely
+  - undoubtedly
+  - without doubt
+  - no doubt
+  - it goes without saying
+  - needless to say

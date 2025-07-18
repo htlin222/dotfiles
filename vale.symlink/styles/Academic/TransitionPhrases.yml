@@ -1,0 +1,66 @@
+extends: existence
+message: "Good use of academic transition phrase: '%s'"
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: suggestion
+ignorecase: false
+tokens:
+  # Addition/continuation
+  - Furthermore
+  - Moreover
+  - In addition
+  - Additionally
+  - Besides
+  - Similarly
+  - Likewise
+  - Correspondingly
+  - Equally important
+
+  # Contrast/comparison
+  - However
+  - Nevertheless
+  - Nonetheless
+  - On the other hand
+  - Conversely
+  - In contrast
+  - By contrast
+  - Alternatively
+  - Although
+  - Despite this
+  - In spite of
+  - Whereas
+  - While
+
+  # Cause and effect
+  - Therefore
+  - Thus
+  - Hence
+  - Consequently
+  - As a result
+  - Accordingly
+  - For this reason
+  - Due to
+  - Owing to
+  - Because of
+
+  # Examples and clarification
+  - For example
+  - For instance
+  - Such as
+  - Namely
+  - In other words
+  - That is to say
+  - To illustrate
+  - Specifically
+  - In particular
+
+  # Sequence and time
+  - First
+  - Firstly
+  - Initially
+  - Subsequently
+  - Following this
+  - Meanwhile
+  - Simultaneously
+  - Finally
+  - Ultimately
+  - In conclusion

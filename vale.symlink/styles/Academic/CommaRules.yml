@@ -1,0 +1,36 @@
+extends: substitution
+message: "Consider comma usage: %s"
+level: suggestion
+ignorecase: false
+# Comma rules based on Brandeis University Writing Program guidelines
+# https://www.brandeis.edu/writing-program/resources/students/academic/style-grammar/comma-rules.html
+swap:
+  # Independent clauses joined by coordinating conjunctions need commas
+  '(\w+.*?)\s+(and|but|or|nor|for|so|yet)\s+(\w+.*?)(?=\s*[.!?])': "$1, $2 $3"
+
+  # Introductory elements should be followed by commas
+  '(However|Therefore|Furthermore|Moreover|Nevertheless|Consequently|Indeed|In fact|In addition|For example|For instance|On the other hand|In contrast|Similarly|Likewise|Meanwhile|Subsequently|Previously|Initially|Finally|Ultimately|Overall|In conclusion|In summary)\s+([a-z])': "$1, $2"
+
+  # Items in a series (Oxford comma recommended in academic writing)
+  '(\w+),\s+(\w+)\s+and\s+(\w+)': "$1, $2, and $3"
+  '(\w+),\s+(\w+)\s+or\s+(\w+)': "$1, $2, or $3"
+
+  # Nonrestrictive clauses should be set off with commas
+  '(\w+)\s+which\s+': "$1, which "
+  '(\w+)\s+who\s+(is|are|was|were)\s+': "$1, who $2 "
+
+  # Appositives should be set off with commas
+  '(\w+)\s+(a|an|the)\s+(\w+)\s+(who|which|that)': "$1, $2 $3 $4"
+
+  # Direct quotations should be preceded by commas
+  '(\w+)\s+(said|stated|argued|claimed|noted|observed|reported|writes|explains)\s+"': '$1 $2, "'
+
+  # Addresses and dates need commas
+  '(\w+)\s+(\d{1,2})\s+(\d{4})': "$1 $2, $3"
+  '([A-Z][a-z]+)\s+([A-Z][a-z]+)\s+(\d{5})': "$1, $2 $3"
+
+  # Academic titles and degrees
+  '([A-Z][a-z]+\s+[A-Z][a-z]+)\s+(Ph\.?D\.?|M\.?A\.?|M\.?S\.?|B\.?A\.?|B\.?S\.?)': "$1, $2"
+
+  # Coordinate adjectives
+  '(a|an|the)\s+(\w+)\s+(\w+)\s+(and)\s+(\w+)\s+(\w+)': "$1 $2, $3 $4 $5 $6"

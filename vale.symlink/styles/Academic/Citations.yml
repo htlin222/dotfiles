@@ -1,0 +1,31 @@
+extends: existence
+message: "Ensure proper citation format: '%s' appears to be a citation reference."
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: suggestion
+ignorecase: false
+raw:
+  # Common citation patterns
+  - '\([A-Z][a-z]+(?:\s+(?:and|&)\s+[A-Z][a-z]+)*,?\s+\d{4}\)'
+  - '\([A-Z][a-z]+\s+et\s+al\.,?\s+\d{4}\)'
+  - '\[[0-9]+\]'
+  - '\[[0-9]+-[0-9]+\]'
+  - '\[[0-9]+,[0-9]+\]'
+
+tokens:
+  # Citation-related phrases
+  - according to
+  - as cited in
+  - as reported by
+  - as stated by
+  - as noted by
+  - as argued by
+  - as suggested by
+  - as demonstrated by
+  - as shown by
+  - et al.
+  - ibid.
+  - op. cit.
+  - cf.
+  - see also
+  - cited in
+  - quoted in

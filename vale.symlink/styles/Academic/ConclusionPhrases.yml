@@ -1,0 +1,68 @@
+extends: existence
+message: "Appropriate conclusion phrase: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/writing-conclusions/
+level: suggestion
+ignorecase: false
+tokens:
+  # Summarizing
+  - in conclusion
+  - to conclude
+  - in summary
+  - to summarize
+  - in sum
+  - overall
+  - on the whole
+  - taken together
+  - collectively
+  - in light of these findings
+  - based on these results
+
+  # Restating main points
+  - this study has shown that
+  - the research has demonstrated
+  - the findings indicate that
+  - the evidence suggests that
+  - the results confirm that
+  - this investigation has revealed
+  - the analysis has shown
+  - it has been established that
+
+  # Significance of findings
+  - the significance of this research
+  - the importance of these findings
+  - this study contributes to
+  - these findings have implications for
+  - the practical significance
+  - the theoretical significance
+  - this work advances our understanding
+  - this research provides evidence
+
+  # Broader implications
+  - the broader implications
+  - the wider significance
+  - more generally
+  - from a broader perspective
+  - on a larger scale
+  - in the wider context
+  - beyond the scope of this study
+  - in a broader sense
+
+  # Future directions
+  - future research should focus on
+  - further work is needed to
+  - subsequent studies should examine
+  - future investigations could explore
+  - additional research is required
+  - it would be valuable to
+  - there is scope for further research
+  - promising areas for future research
+
+  # Final statements
+  - finally
+  - lastly
+  - in closing
+  - to end
+  - as a final point
+  - ultimately
+  - in the final analysis
+  - all things considered

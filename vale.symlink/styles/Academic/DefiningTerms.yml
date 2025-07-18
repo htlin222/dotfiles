@@ -1,0 +1,68 @@
+extends: existence
+message: "Appropriate definition phrase: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/defining-terms/
+level: suggestion
+ignorecase: false
+tokens:
+  # Definition introductions
+  - is defined as
+  - can be defined as
+  - may be defined as
+  - is understood as
+  - is conceived as
+  - is regarded as
+  - is considered to be
+  - refers to
+  - denotes
+  - signifies
+  - means
+  - is known as
+  - is termed
+  - is called
+
+  # Clarifying definitions
+  - in this context
+  - for the purposes of this study
+  - in the present study
+  - as used herein
+  - in this paper
+  - throughout this work
+  - unless otherwise stated
+  - specifically
+  - more precisely
+  - to be more specific
+  - that is to say
+  - in other words
+
+  # Types and categories
+  - can be classified as
+  - falls into the category of
+  - belongs to the class of
+  - is a type of
+  - is a form of
+  - is a kind of
+  - constitutes a
+  - represents a
+  - comprises
+  - encompasses
+  - includes
+
+  # Distinguishing terms
+  - should be distinguished from
+  - is distinct from
+  - differs from
+  - should not be confused with
+  - is not to be confused with
+  - as opposed to
+  - in contrast to
+  - unlike
+
+  # Operational definitions
+  - operationally defined as
+  - measured by
+  - assessed through
+  - determined by
+  - characterized by
+  - identified by
+  - recognized by
+  - marked by

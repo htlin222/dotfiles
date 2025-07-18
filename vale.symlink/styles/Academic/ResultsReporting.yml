@@ -1,0 +1,70 @@
+extends: existence
+message: "Appropriate results reporting: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/reporting-results/
+level: suggestion
+ignorecase: false
+tokens:
+  # General reporting
+  - the results show that
+  - the findings indicate that
+  - the data demonstrate that
+  - analysis revealed that
+  - it was found that
+  - the study found that
+  - results suggest that
+  - evidence indicates that
+  - observations showed that
+
+  # Statistical significance
+  - statistically significant
+  - significant difference
+  - significant effect
+  - significant correlation
+  - significant relationship
+  - no significant difference
+  - marginally significant
+  - highly significant
+  - not statistically significant
+
+  # Describing results
+  - as shown in Table
+  - as illustrated in Figure
+  - as can be seen from
+  - as demonstrated in
+  - as depicted in
+  - the table shows
+  - the figure illustrates
+  - the graph demonstrates
+
+  # Quantifying results
+  - the majority of
+  - a large proportion of
+  - a small percentage of
+  - approximately
+  - roughly
+  - nearly
+  - more than half
+  - less than half
+  - one-third of
+  - two-thirds of
+
+  # Reporting statistics
+  - the mean was
+  - the average was
+  - the median was
+  - standard deviation
+  - confidence interval
+  - correlation coefficient
+  - regression coefficient
+  - p-value
+  - effect size
+
+  # Presenting trends
+  - there was an increase in
+  - there was a decrease in
+  - showed an upward trend
+  - showed a downward trend
+  - remained constant
+  - fluctuated between
+  - varied considerably
+  - ranged from

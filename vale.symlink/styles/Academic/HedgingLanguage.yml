@@ -1,0 +1,45 @@
+extends: existence
+message: "Good use of hedging language ('%s'). Academic writing requires appropriate hedging."
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: suggestion
+ignorecase: false
+tokens:
+  # Modal verbs for hedging
+  - may
+  - might
+  - could
+  - would
+
+  # Hedging adverbs
+  - possibly
+  - probably
+  - presumably
+  - perhaps
+  - apparently
+  - seemingly
+  - arguably
+
+  # Hedging adjectives
+  - possible
+  - probable
+  - likely
+  - unlikely
+  - plausible
+  - conceivable
+  - potential
+  - apparent
+  - tentative
+
+  # Hedging phrases
+  - appears to
+  - seems to
+  - tends to
+  - suggests that
+  - indicates that
+  - implies that
+  - it is possible that
+  - it is likely that
+  - it appears that
+  - it seems that
+  - to some extent
+  - to a certain degree

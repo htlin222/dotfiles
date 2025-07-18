@@ -1,0 +1,59 @@
+extends: existence
+message: "Appropriate academic research phrase: '%s'"
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: suggestion
+ignorecase: false
+tokens:
+  # Introducing research
+  - The present study
+  - This research
+  - The current investigation
+  - This paper examines
+  - This study investigates
+  - The purpose of this study
+  - The aim of this research
+
+  # Research gap phrases
+  - Little is known about
+  - There is limited research on
+  - Few studies have examined
+  - remains unclear
+  - has not been thoroughly investigated
+  - warrants further investigation
+  - There is a paucity of research
+
+  # Methods phrases
+  - Data were collected
+  - The sample consisted of
+  - Participants were recruited
+  - A mixed-methods approach
+  - Quantitative analysis
+  - Qualitative analysis
+  - Statistical analysis was performed
+  - The methodology employed
+
+  # Results phrases
+  - The findings suggest
+  - Results indicate
+  - The data demonstrate
+  - Analysis revealed
+  - A significant difference was found
+  - No significant correlation
+  - The results show that
+
+  # Discussion phrases
+  - These findings are consistent with
+  - In accordance with previous research
+  - Contrary to expectations
+  - This is in line with
+  - The implications of these findings
+  - Future research should
+  - It is worth noting that
+
+  # Limitation phrases
+  - The study has several limitations
+  - It should be noted that
+  - Caution should be exercised
+  - The generalizability of these findings
+  - Due to the limited sample size
+  - Further research is needed

@@ -1,0 +1,82 @@
+extends: existence
+message: "Avoid absolute statement '%s'. Consider using more nuanced language in academic writing."
+link: https://www.phrasebank.manchester.ac.uk/being-cautious/
+level: warning
+ignorecase: true
+tokens:
+  # Absolute certainty words to avoid
+  - proves
+  - proves that
+  - proof that
+  - proves conclusively
+  - definitely proves
+  - undeniably
+  - unquestionably
+  - without a doubt
+  - beyond doubt
+  - certainly
+  - definitely
+  - absolutely
+  - clearly shows
+  - obviously shows
+  - evidently
+  - undoubtedly
+  - indisputable
+  - irrefutable
+  - incontestable
+  - uncontroversial
+  - beyond question
+  - without question
+  - there is no doubt
+  - it is certain that
+  - it is obvious that
+  - it is clear that
+  - it is evident that
+  - it goes without saying
+  - needless to say
+  - of course
+
+  # All/none statements to avoid
+  - all people
+  - everyone
+  - no one
+  - nobody
+  - everybody
+  - always happens
+  - never happens
+  - in all cases
+  - in every case
+  - without exception
+  - every single
+  - each and every
+  - all research shows
+  - all studies show
+  - no research shows
+  - no studies show
+  - all experts agree
+  - everyone agrees
+  - no one disagrees
+
+  # Oversimplified causal statements
+  - causes
+  - is caused by
+  - results from
+  - leads to
+  - produces
+  - creates
+  - brings about
+  - gives rise to
+  - is due to
+  - stems from
+  - originates from
+  - is responsible for
+  - accounts for
+
+  # Perfect correlation claims
+  - perfectly correlated
+  - directly proportional
+  - inversely proportional
+  - one-to-one relationship
+  - perfect relationship
+  - exact relationship
+  - precise relationship

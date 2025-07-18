@@ -1,0 +1,58 @@
+extends: substitution
+message: "Replace the vague term '%s' with more precise language: %s."
+link: https://advice.writing.utoronto.ca/revising/eliminating-wordiness/
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  # Vague quantifiers
+  "a lot": "numerous|substantial|considerable|many"
+  "lots": "numerous|many|substantial"
+  "tons of": "numerous|substantial|many"
+  "loads of": "numerous|substantial|many"
+  "plenty of": "abundant|sufficient|ample"
+  "some": "several|numerous|certain|specific"
+  "many": "numerous|substantial|considerable"
+  "few": "several|limited|minimal"
+  "several": "multiple|various|numerous"
+  "various": "multiple|diverse|different"
+  "different": "distinct|diverse|varied"
+  "numerous": "multiple|extensive|substantial"
+
+  # Vague descriptors
+  "good": "effective|beneficial|advantageous|successful"
+  "bad": "ineffective|detrimental|problematic|inadequate"
+  "nice": "beneficial|favorable|positive|appropriate"
+  "great": "significant|substantial|excellent|remarkable"
+  "huge": "substantial|significant|considerable|extensive"
+  "tiny": "minimal|limited|negligible|small"
+  "big": "substantial|significant|considerable|large"
+  "small": "limited|minimal|modest|minor"
+  "important": "significant|crucial|essential|critical"
+  "interesting": "notable|significant|remarkable|noteworthy"
+  "normal": "typical|standard|conventional|usual"
+  "weird": "unusual|atypical|anomalous|irregular"
+  "strange": "unusual|atypical|anomalous|peculiar"
+
+  # Vague connectors and transitions
+  "also": "furthermore|additionally|moreover|in addition"
+  "and": "furthermore|additionally|moreover"
+  "plus": "furthermore|additionally|in addition"
+  "too": "furthermore|additionally|also|as well"
+  "as well": "furthermore|additionally|moreover"
+
+  # Vague time references
+  "recently": "in recent years|within the past decade|lately"
+  "nowadays": "currently|presently|in contemporary times"
+  "these days": "currently|presently|in recent times"
+  "today": "currently|presently|in contemporary society"
+  "back then": "previously|formerly|in earlier periods"
+  "ages ago": "previously|in earlier periods|historically"
+
+  # Vague frequency
+  "often": "frequently|regularly|commonly"
+  "sometimes": "occasionally|periodically|intermittently"
+  "usually": "typically|generally|commonly"
+  "always": "consistently|invariably|without exception"
+  "never": "not once|at no time|under no circumstances"

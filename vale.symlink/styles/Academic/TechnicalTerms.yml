@@ -1,0 +1,46 @@
+extends: existence
+message: "Ensure consistent use of technical term: '%s'"
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: suggestion
+ignorecase: false
+tokens:
+  # Statistical terms
+  - p-value
+  - statistical significance
+  - correlation coefficient
+  - standard deviation
+  - confidence interval
+  - regression analysis
+  - null hypothesis
+  - alternative hypothesis
+  - Type I error
+  - Type II error
+  - effect size
+  - sample size
+  - population
+  - variable
+  - dependent variable
+  - independent variable
+  - control group
+  - experimental group
+
+  # Research methodology terms
+  - methodology
+  - theoretical framework
+  - conceptual framework
+  - literature review
+  - systematic review
+  - meta-analysis
+  - case study
+  - longitudinal study
+  - cross-sectional study
+  - qualitative research
+  - quantitative research
+  - mixed methods
+  - triangulation
+  - validity
+  - reliability
+  - generalizability
+  - transferability
+  - credibility
+  - confirmability

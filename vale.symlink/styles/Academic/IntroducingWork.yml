@@ -1,0 +1,60 @@
+extends: existence
+message: "Good introduction phrase: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/introducing-work/
+level: suggestion
+ignorecase: false
+tokens:
+  # Establishing importance
+  - plays a crucial role in
+  - is of paramount importance
+  - is essential for
+  - is fundamental to
+  - is central to
+  - has attracted considerable attention
+  - has been the subject of
+  - has generated significant interest
+  - is widely recognized as
+  - is increasingly important
+
+  # Background and context
+  - in recent years
+  - over the past decade
+  - traditionally
+  - historically
+  - it is well established that
+  - it is generally accepted that
+  - previous research has shown
+  - extensive research has been conducted
+  - considerable attention has been paid to
+
+  # Research gap identification
+  - however, little is known about
+  - nevertheless, few studies have
+  - despite this, there is limited research
+  - to date, no study has
+  - there is a lack of
+  - remains poorly understood
+  - has received little attention
+  - has been largely overlooked
+  - has not been systematically investigated
+
+  # Stating objectives
+  - the aim of this study is to
+  - this paper aims to
+  - the purpose of this research is to
+  - this study seeks to
+  - the objective of this work is to
+  - this investigation attempts to
+  - we set out to
+  - this paper addresses
+  - this research examines
+
+  # Outlining structure
+  - this paper is organized as follows
+  - the remainder of this paper is structured
+  - this paper begins by
+  - the first section examines
+  - the second section presents
+  - the final section discusses
+  - this is followed by
+  - we conclude with

@@ -1,0 +1,33 @@
+extends: existence
+message: "Avoid dummy subject '%s'. Consider revising for more direct academic writing."
+link: https://www.brandeis.edu/writing-program/resources/faculty/handouts/
+level: warning
+ignorecase: true
+raw:
+  # Dummy subject patterns that weaken academic writing
+  - '\bThere is\b'
+  - '\bThere are\b'
+  - '\bThere was\b'
+  - '\bThere were\b'
+  - '\bThere will be\b'
+  - '\bThere would be\b'
+  - '\bThere might be\b'
+  - '\bThere could be\b'
+  - '\bThere seems to be\b'
+  - '\bThere appears to be\b'
+  - '\bThere tends to be\b'
+  - '\bIt is\s+\w+\s+that\b'
+  - '\bIt was\s+\w+\s+that\b'
+  - '\bIt will be\s+\w+\s+that\b'
+  - '\bIt would be\s+\w+\s+that\b'
+  - '\bIt seems that\b'
+  - '\bIt appears that\b'
+  - '\bIt is clear that\b'
+  - '\bIt is obvious that\b'
+  - '\bIt is evident that\b'
+  - '\bIt is important that\b'
+  - '\bIt is necessary that\b'
+  - '\bIt is possible that\b'
+  - '\bIt is likely that\b'
+  - '\bIt should be noted that\b'
+  - '\bIt must be emphasized that\b'

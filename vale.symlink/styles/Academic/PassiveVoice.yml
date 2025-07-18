@@ -1,0 +1,16 @@
+extends: existence
+message: "Consider passive voice for methods/results: '%s' can emphasize the action over the actor."
+link: https://www.brandeis.edu/writing-program/resources/faculty/handouts/active-and-passive-voice.html
+level: suggestion
+ignorecase: true
+raw:
+  # Research methods where passive voice may be appropriate
+  - '\b(I|we)\s+(conducted|performed|carried out|executed)\b'
+  - '\b(I|we)\s+(measured|calculated|determined|assessed)\b'
+  - '\b(I|we)\s+(collected|gathered|obtained|acquired)\b'
+  - '\b(I|we)\s+(selected|chose|recruited)\b'
+  - '\b(I|we)\s+(analyzed|examined|processed)\b'
+  - '\b(I|we)\s+(tested|evaluated|validated)\b'
+  - '\b(I|we)\s+(used|employed|utilized)\b'
+  - '\b(I|we)\s+(observed|recorded|documented)\b'
+  - '\b(I|we)\s+(administered|applied|implemented)\b'

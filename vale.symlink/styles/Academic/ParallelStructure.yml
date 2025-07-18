@@ -1,0 +1,28 @@
+extends: existence
+message: "Check parallel structure: '%s' may indicate inconsistent grammatical forms."
+link: https://www.brandeis.edu/writing-program/resources/faculty/handouts/
+level: warning
+ignorecase: true
+raw:
+  # Patterns that often indicate parallelism issues
+  - '\b(and|or)\s+to\s+\w+'
+  - '\b(not only|either)\b.*\b(but also|or)\b'
+  - '\b(both)\b.*\b(and)\b'
+  - '\b(neither)\b.*\b(nor)\b'
+  - '\b(whether)\b.*\b(or)\b'
+  - '\b(first|second|third|finally)\b.*\b(second|third|fourth|lastly)\b'
+  - '\b(firstly|secondly|thirdly)\b.*\b(second|third|fourth)\b'
+  - '\w+ing\s+(and|or)\s+to\s+\w+'
+  - '\bto\s+\w+\s+(and|or)\s+\w+ing\b'
+  - '\w+ed\s+(and|or)\s+\w+ing\b'
+  - '\w+ing\s+(and|or)\s+\w+ed\b'
+
+tokens:
+  # Common parallelism markers to check
+  - not only...but also
+  - either...or
+  - neither...nor
+  - both...and
+  - whether...or
+  - first...second
+  - on one hand...on the other hand

@@ -9,6 +9,7 @@ fi
 alias dtc='tmux detach-client'
 alias n='pnpm'
 alias tm='task-master'
+alias yolo='claude --dangerously-skip-permissions'
 alias taskmaster='task-master'
 alias print7f='lp -d _172_21_75_1'
 alias ymd='date +%F'

@@ -1,0 +1,70 @@
+extends: existence
+message: "Remove redundant phrase '%s' to improve conciseness."
+link: https://advice.writing.utoronto.ca/revising/eliminating-wordiness/
+level: warning
+ignorecase: true
+tokens:
+  # Redundant phrases
+  - advance planning
+  - added bonus
+  - already existing
+  - basic fundamentals
+  - close proximity
+  - completely eliminate
+  - consensus of opinion
+  - continue to remain
+  - each individual
+  - end result
+  - exact same
+  - false pretense
+  - final outcome
+  - first priority
+  - free gift
+  - future plans
+  - general consensus
+  - important essentials
+  - join together
+  - mutual cooperation
+  - new innovation
+  - past history
+  - personal opinion
+  - present time
+  - reason why
+  - repeat again
+  - revert back
+  - same identical
+  - temporary reprieve
+  - totally destroyed
+  - true facts
+  - unexpected surprise
+  - usual custom
+  - various different
+  - whether or not
+  - written down
+
+  # Wordy constructions
+  - at this point in time
+  - due to the fact that
+  - in spite of the fact that
+  - in view of the fact that
+  - on account of the fact that
+  - considering the fact that
+  - notwithstanding the fact that
+  - regardless of the fact that
+  - in the event that
+  - in the final analysis
+  - for the purpose of
+  - in order to
+  - with regard to
+  - with respect to
+  - in relation to
+  - in connection with
+  - by means of
+  - by virtue of
+  - on the basis of
+  - in terms of
+  - in the context of
+  - in the area of
+  - in the field of
+  - in the realm of
+  - in the sphere of

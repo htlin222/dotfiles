@@ -1,0 +1,63 @@
+extends: existence
+message: "Consider removing weak qualifier '%s' or replacing with more precise language."
+link: https://www.brandeis.edu/writing-program/resources/faculty/handouts/
+level: suggestion
+ignorecase: true
+tokens:
+  # Weak qualifiers that dilute academic writing
+  - kind of
+  - sort of
+  - type of
+  - somewhat
+  - rather
+  - quite
+  - fairly
+  - pretty
+  - very
+  - really
+  - extremely
+  - incredibly
+  - amazingly
+  - absolutely
+  - totally
+  - completely
+  - entirely
+  - wholly
+  - utterly
+  - perfectly
+  - exactly
+  - precisely
+  - literally
+  - actually
+  - basically
+  - essentially
+  - fundamentally
+  - generally
+  - typically
+  - usually
+  - normally
+  - commonly
+  - frequently
+  - often
+  - sometimes
+  - occasionally
+  - rarely
+  - seldom
+  - hardly
+  - barely
+  - scarcely
+  - almost
+  - nearly
+  - virtually
+  - practically
+  - effectively
+  - relatively
+  - comparatively
+  - considerably
+  - substantially
+  - significantly
+  - remarkably
+  - notably
+  - particularly
+  - especially
+  - specifically

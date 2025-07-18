@@ -1,0 +1,82 @@
+extends: existence
+message: "Consider whether the qualifier '%s' weakens your argument. Use more precise language when possible."
+level: suggestion
+ignorecase: false
+# Qualifier usage guidance based on UNC Writing Center
+# https://writingcenter.unc.edu/tips-and-tools/qualifiers/
+tokens:
+  # Weak qualifiers that often weaken academic writing
+  - basically
+  - essentially
+  - generally
+  - kind of
+  - sort of
+  - somewhat
+  - rather
+  - pretty
+  - quite
+  - fairly
+  - relatively
+  - more or less
+  - to some extent
+  - in a way
+  - in some sense
+  - arguably
+  - presumably
+  - supposedly
+  - allegedly
+  - apparently
+  - seemingly
+  - ostensibly
+  - purportedly
+  - conceivably
+  - potentially
+  - possibly
+  - probably
+  - likely
+  - unlikely
+  - perhaps
+  - maybe
+  - possibly
+
+  # Hedge phrases that may weaken claims
+  - "it could be argued"
+  - "it might be said"
+  - "it would seem"
+  - "it appears that"
+  - "it seems that"
+  - "one might say"
+  - "one could argue"
+  - "to a certain degree"
+  - "to a certain extent"
+  - "to some degree"
+  - "in many ways"
+  - "for the most part"
+  - "by and large"
+  - "on the whole"
+  - "all in all"
+  - "more often than not"
+
+  # Unnecessary intensifiers
+  - very
+  - really
+  - truly
+  - extremely
+  - incredibly
+  - amazingly
+  - absolutely
+  - completely
+  - totally
+  - entirely
+  - perfectly
+  - utterly
+  - thoroughly
+  - highly
+  - deeply
+  - seriously
+  - definitely
+  - certainly
+  - surely
+  - clearly
+  - obviously
+  - undoubtedly

@@ -1,0 +1,73 @@
+extends: existence
+message: "Avoid the informal/colloquial term '%s' in academic writing."
+link: https://www.scribbr.com/academic-writing/taboo-words/
+level: error
+ignorecase: true
+tokens:
+  # Slang and colloquial expressions
+  - awesome
+  - cool
+  - gonna
+  - gotta
+  - wanna
+  - yeah
+  - yep
+  - nope
+  - kinda
+  - sorta
+  - ain't
+  - 'cause
+  - coz
+  - thru
+  - tho
+  - altho
+  - dunno
+  - lemme
+  - gimme
+  - outta
+  - coulda
+  - shoulda
+  - woulda
+  - alright
+  - anyways
+  - for sure
+  - no way
+  - way too
+  - super
+  - totally
+  - basically
+  - literally
+  - obviously
+  - clearly
+  - simply
+  - just
+  - actually
+  - honestly
+  - frankly
+  - seriously
+  - personally
+  - definitely
+  - absolutely
+  - whatever
+  - whenever
+  - whoever
+  - wherever
+  - etc\.?
+  - and so on
+  - and so forth
+  - you know
+  - I mean
+  - like I said
+  - as I said
+  - the thing is
+  - the fact is
+  - at the end of the day
+  - when all is said and done
+  - bottom line
+  - long story short
+  - to be honest
+  - to tell the truth
+  - believe it or not
+  - needless to say
+  - goes without saying
+  - last but not least

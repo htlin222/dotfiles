@@ -1,0 +1,27 @@
+extends: substitution
+message: "Define '%s' before using the abbreviation."
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: warning
+ignorecase: false
+action:
+  name: replace
+swap:
+  # Common Latin abbreviations
+  "e.g.": "for example (e.g.)"
+  "i.e.": "that is (i.e.)"
+  "cf.": "compare (cf.)"
+  "et al.": "and others (et al.)"
+  "vs.": "versus (vs.)"
+  "etc.": "and so forth (etc.)"
+  "viz.": "namely (viz.)"
+  "N.B.": "note well (N.B.)"
+
+  # Common undefined abbreviations
+  "IMO": "in my opinion (IMO)"
+  "FWIW": "for what it's worth (FWIW)"
+  "AFAIK": "as far as I know (AFAIK)"
+  "BTW": "by the way (BTW)"
+  "FYI": "for your information (FYI)"
+  "TBD": "to be determined (TBD)"
+  "TBA": "to be announced (TBA)"
+  "ASAP": "as soon as possible (ASAP)"

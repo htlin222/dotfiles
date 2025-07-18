@@ -1,0 +1,17 @@
+extends: substitution
+message: "Check word usage: '%s' instead of '%s'."
+link: https://www.brandeis.edu/writing-program/resources/faculty/handouts/
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  # Common academic writing mistakes
+  "its'": "its"
+  "loose": "lose"
+  "accept": "except"
+  "principle": "principal"
+  "discrete": "discreet"
+  "emigrate": "immigrate"
+  "fewer": "less"
+  "amount": "number"

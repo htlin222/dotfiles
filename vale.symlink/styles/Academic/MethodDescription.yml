@@ -1,0 +1,64 @@
+extends: existence
+message: "Appropriate methods description: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/describing-methods/
+level: suggestion
+ignorecase: false
+tokens:
+  # Study design
+  - a cross-sectional study
+  - a longitudinal study
+  - a case-control study
+  - a randomized controlled trial
+  - a systematic review
+  - a meta-analysis
+  - a mixed-methods approach
+  - a qualitative study
+  - a quantitative study
+  - an experimental design
+  - an observational study
+
+  # Data collection
+  - data were collected
+  - data were obtained
+  - data were gathered
+  - information was collected
+  - participants were recruited
+  - subjects were selected
+  - samples were taken
+  - measurements were made
+  - surveys were conducted
+  - interviews were carried out
+
+  # Sampling methods
+  - random sampling
+  - stratified sampling
+  - purposive sampling
+  - convenience sampling
+  - systematic sampling
+  - cluster sampling
+  - the sample consisted of
+  - the sample comprised
+  - inclusion criteria were
+  - exclusion criteria included
+
+  # Procedures
+  - the procedure involved
+  - the following steps were taken
+  - participants were asked to
+  - subjects were instructed to
+  - the experiment was conducted
+  - the protocol consisted of
+  - measurements were performed
+  - tests were administered
+  - analyses were conducted
+
+  # Analysis methods
+  - statistical analysis was performed using
+  - data were analyzed using
+  - thematic analysis was conducted
+  - content analysis was performed
+  - regression analysis was used
+  - ANOVA was conducted
+  - t-tests were performed
+  - chi-square tests were used
+  - qualitative data were coded

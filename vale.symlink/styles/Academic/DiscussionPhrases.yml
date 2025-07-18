@@ -1,0 +1,69 @@
+extends: existence
+message: "Appropriate discussion phrase: '%s'"
+link: https://www.phrasebank.manchester.ac.uk/discussing-findings/
+level: suggestion
+ignorecase: false
+tokens:
+  # Interpreting results
+  - these findings suggest that
+  - the results indicate that
+  - this implies that
+  - this supports the view that
+  - this is consistent with
+  - this contradicts
+  - this is contrary to
+  - this can be attributed to
+  - this may be due to
+  - a possible explanation for this is
+
+  # Comparing with literature
+  - in accordance with previous research
+  - consistent with earlier studies
+  - in line with
+  - these findings confirm
+  - these results support
+  - contrary to expectations
+  - in contrast to previous findings
+  - this contradicts earlier research
+  - this challenges the view that
+
+  # Implications
+  - the implications of this finding
+  - this has important implications for
+  - this suggests that
+  - this indicates that
+  - the practical implications
+  - the theoretical implications
+  - from a practical standpoint
+  - from a theoretical perspective
+
+  # Limitations
+  - a limitation of this study
+  - the study has several limitations
+  - it should be noted that
+  - caution should be exercised
+  - the generalizability is limited
+  - the findings are limited by
+  - one limitation is that
+  - a major limitation
+  - despite these limitations
+
+  # Future research
+  - future research should
+  - further investigation is needed
+  - additional research is required
+  - subsequent studies should
+  - it would be interesting to
+  - future studies could examine
+  - more research is needed to
+  - this warrants further investigation
+
+  # Significance
+  - the significance of this finding
+  - this is particularly important
+  - this is noteworthy because
+  - of particular interest is
+  - what is striking is
+  - remarkably
+  - surprisingly
+  - unexpectedly

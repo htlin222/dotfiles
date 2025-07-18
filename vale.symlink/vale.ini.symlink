@@ -6,8 +6,7 @@ StylesPath = .vale/styles
 
 # 醫學寫作必需的樣式包
 #
-[*]
-BasedOnStyles = Vale, Microsoft, Google, Readability, write-good, proselint, alex
+Packages = Microsoft, Google, Readability, write-good, proselint, alex
 # 忽略醫學寫作中常見的特殊格式
 
 # Markdown 擴展格式支持
@@ -20,7 +19,7 @@ qmd = md
 # 通用醫學文件設定 (所有 .md, .tex, .txt 文件)
 # ===========================================
 [*.{md,tex,txt,adoc,rst,qmd}]
-BasedOnStyles = Vale, Microsoft, Google, Readability, write-good, proselint, alex
+BasedOnStyles = Vale, Microsoft, Google, Readability, write-good, proselint, alex, Academic
 
 # 停用不適合醫學寫作的通用規則
 Vale.Spelling = NO

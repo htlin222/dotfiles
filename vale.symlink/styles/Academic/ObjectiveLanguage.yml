@@ -1,0 +1,53 @@
+extends: existence
+message: "Avoid subjective language: '%s' may be too personal or emotional for academic writing."
+link: https://www.ref-n-write.com/academic-phrasebank/
+level: warning
+ignorecase: true
+tokens:
+  # Personal opinions
+  - I believe
+  - I think
+  - I feel
+  - In my opinion
+  - To me
+  - Personally
+  - I am convinced
+
+  # Emotional language
+  - amazing
+  - awful
+  - terrible
+  - wonderful
+  - fantastic
+  - horrible
+  - excellent
+  - brilliant
+  - stupid
+  - ridiculous
+  - obviously
+  - clearly
+  - undoubtedly
+  - definitely
+  - certainly
+
+  # Overly strong claims
+  - always
+  - never
+  - every
+  - all
+  - none
+  - proves
+  - proof
+  - undeniable
+  - unquestionable
+  - impossible
+
+  # Informal evaluations
+  - good idea
+  - bad idea
+  - great
+  - nice
+  - cool
+  - awesome
+  - weird
+  - strange
