@@ -30,7 +30,6 @@ Google.Acronyms = NO
 Microsoft.We = NO                   # 研究團隊常用 "we"
 Google.We = NO                      # 同上
 write-good.E-Prime = NO             # 醫學定義需要 "is/are"
-write-good.Passive = NO             # 醫學研究常用被動語態
 Microsoft.Passive = NO              # 同上
 Google.Passive = NO                 # 同上
 alex.ProfanityUnlikely = NO
@@ -56,7 +55,7 @@ Readability.AutomatedReadability = NO
 # 摘要 - 稍微嚴格但現實
 # ===========================================
 [*abstract*.{md,txt}, abstract/*.{md,txt}]
-BasedOnStyles = Vale, Microsoft, Google, Readability
+BasedOnStyles = Microsoft, Google, Readability
 
 # 摘要的現實可讀性要求
 Readability.FleschKincaid = warning        # ≤16 (仍然是研究生水平)
@@ -67,7 +66,7 @@ Readability.FleschReadingEase = suggestion # ≥25 (仍然很難但可接受)
 # 患者相關文件 - 嚴格標準
 # ===========================================
 [*patient*.{md,txt}, *consent*.{md,txt}, *information*.{md,txt}]
-BasedOnStyles = Vale, Readability, alex
+BasedOnStyles = Readability, alex
 
 # 患者文件必須易讀
 Readability.SMOG = error                   # ≤12
