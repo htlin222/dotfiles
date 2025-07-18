@@ -1,0 +1,121 @@
+# Medical Research Writing Configuration for Vale
+# 基本設定
+#
+MinAlertLevel = suggestion
+StylesPath = .vale/styles
+
+# 醫學寫作必需的樣式包
+#
+[*]
+BasedOnStyles = Vale, Microsoft, Google, Readability, write-good, proselint, alex
+# 忽略醫學寫作中常見的特殊格式
+
+# Markdown 擴展格式支持
+[formats]
+mdx = md
+adoc = md
+qmd = md
+
+# ===========================================
+# 通用醫學文件設定 (所有 .md, .tex, .txt 文件)
+# ===========================================
+[*.{md,tex,txt,adoc,rst,qmd}]
+BasedOnStyles = Vale, Microsoft, Google, Readability, write-good, proselint, alex
+
+# 停用不適合醫學寫作的通用規則
+Vale.Spelling = NO
+Microsoft.FirstPerson = NO          # 醫學研究需要 "we conducted", "I observed"
+Microsoft.Acronyms = NO
+Google.FirstPerson = NO             # 同上
+Google.Acronyms = NO
+Microsoft.We = NO                   # 研究團隊常用 "we"
+Google.We = NO                      # 同上
+write-good.E-Prime = NO             # 醫學定義需要 "is/are"
+write-good.Passive = NO             # 醫學研究常用被動語態
+Microsoft.Passive = NO              # 同上
+Google.Passive = NO                 # 同上
+alex.ProfanityUnlikely = NO
+alex.ProfanityMaybe = NO
+
+# 調整為現實的學術寫作標準
+Microsoft.SentenceLength = NO              # 學術句子本來就較長
+Google.SentenceLength = NO
+write-good.TooWordy = suggestion           # 提醒但不強制
+
+# 現實的可讀性標準 - 學術期刊水平
+Readability.SMOG = NO                      # 對學術寫作太嚴格
+Readability.FleschKincaid = suggestion     # 提醒但閾值放寬到 ≤18
+Readability.FleschReadingEase = NO         # 學術寫作本來就難讀
+Readability.GunningFog = suggestion        # 提醒但閾值放寬到 ≤20
+
+# 停用不適用的指標
+Readability.ColemanLiau = NO
+Readability.LIX = NO
+Readability.AutomatedReadability = NO
+
+# ===========================================
+# 摘要 - 稍微嚴格但現實
+# ===========================================
+[*abstract*.{md,txt}, abstract/*.{md,txt}]
+BasedOnStyles = Vale, Microsoft, Google, Readability
+
+# 摘要的現實可讀性要求
+Readability.FleschKincaid = warning        # ≤16 (仍然是研究生水平)
+Readability.GunningFog = suggestion        # ≤18
+Readability.FleschReadingEase = suggestion # ≥25 (仍然很難但可接受)
+
+# ===========================================
+# 患者相關文件 - 嚴格標準
+# ===========================================
+[*patient*.{md,txt}, *consent*.{md,txt}, *information*.{md,txt}]
+BasedOnStyles = Vale, Readability, alex
+
+# 患者文件必須易讀
+Readability.SMOG = error                   # ≤12
+Readability.FleschKincaid = error          # ≤10
+Readability.FleschReadingEase = error      # ≥50
+
+# 嚴格的倫理語言要求
+alex.Condescending = error
+alex.Insensitive = error
+
+# ===========================================
+# 方法論 - 最寬鬆標準
+# ===========================================
+[*method*.{md,txt}, *procedure*.{md,txt}, *protocol*.{md,txt}]
+BasedOnStyles = Vale, Microsoft
+
+# 方法論允許高複雜度
+Readability.FleschKincaid = NO             # 不限制
+Readability.GunningFog = NO                # 不限制
+Readability.FleschReadingEase = NO         # 不限制
+Microsoft.SentenceLength = NO             # 詳細程序需要長句
+write-good.Weasel = NO                     # 允許 "approximately" 等
+
+# ===========================================
+# 討論和結論 - 平衡標準
+# ===========================================
+[*discussion*.{md,txt}, *conclusion*.{md,txt}]
+BasedOnStyles = Vale, Microsoft, Google, Readability, write-good
+
+# 討論需要平衡複雜性和可讀性
+Readability.FleschKincaid = suggestion     # ≤16
+Readability.GunningFog = suggestion        # ≤18
+write-good.Weasel = suggestion             # 提醒避免模糊語言
+
+# ===========================================
+# 草稿和工作文件 - 最寬鬆
+# ===========================================
+[*draft*.{md,txt}, *temp*.{md,txt}, *work*.{md,txt}]
+BasedOnStyles = Vale
+
+# ===========================================
+# 會議摘要和簡報 - 中等嚴格
+# ===========================================
+[*conference*.{md,txt}, *presentation*.{md,txt}, *poster*.{md,txt}]
+BasedOnStyles = Vale, Readability
+
+# 會議材料需要相對易讀
+Readability.FleschKincaid = warning        # ≤14
+Readability.GunningFog = warning           # ≤16
+Microsoft.SentenceLength = warning         # 簡報需要簡潔
