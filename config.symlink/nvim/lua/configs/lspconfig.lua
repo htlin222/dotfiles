@@ -82,6 +82,9 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
   virtual_text = false,
 })
 
+-- Load robust LSP floating window fix
+require("configs.lsp-floating-fix")
+
 -- require("lspconfig").markdown_oxide.setup {
 --   filetypes = {
 --     "quarto",

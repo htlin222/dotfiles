@@ -221,3 +221,17 @@ autocmd("BufEnter", {
     end
   end,
 })
+
+-- LSP Floating Window Resize Fix
+local lsp_resize_group = augroup("LspFloatingResize", { clear = true })
+autocmd("VimResized", {
+  group = lsp_resize_group,
+  callback = function()
+    -- Force refresh LSP floating window dimensions on terminal resize
+    if vim.o.columns <= 0 or vim.o.lines <= 0 then
+      vim.schedule(function()
+        vim.cmd("redraw!")
+      end)
+    end
+  end,
+})

@@ -53,3 +53,4 @@ claude.symlink/todos/
 claude.symlink/projects/
 claude.symlink/logs
 claude.symlink/shell-snapshots/
+**/logs/

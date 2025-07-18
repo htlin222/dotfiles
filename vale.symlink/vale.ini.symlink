@@ -38,7 +38,7 @@ alex.ProfanityMaybe = NO
 # 調整為現實的學術寫作標準
 Microsoft.SentenceLength = NO              # 學術句子本來就較長
 Google.SentenceLength = NO
-write-good.TooWordy = suggestion           # 提醒但不強制
+write-good.TooWordy = NO                   # Academic.UnnecessaryWords covers this
 
 # 現實的可讀性標準 - 學術期刊水平
 Readability.SMOG = NO                      # 對學術寫作太嚴格
@@ -50,6 +50,17 @@ Readability.GunningFog = suggestion        # 提醒但閾值放寬到 ≤20
 Readability.ColemanLiau = NO
 Readability.LIX = NO
 Readability.AutomatedReadability = NO
+
+# === PERFORMANCE OPTIMIZATION: Remove duplicate rules ===
+# Since Academic rules handle these better, disable overlapping rules
+Microsoft.Adverbs = NO                     # Academic.WeakQualifiers covers this
+write-good.Weasel = NO                     # Academic.WeakQualifiers covers this
+write-good.Very = NO                       # Academic.WeakQualifiers covers this
+proselint.Very = NO                        # Academic.WeakQualifiers covers this
+Microsoft.Contractions = NO               # Personal choice for academic writing
+Google.Contractions = NO                   # Personal choice for academic writing
+Microsoft.Wordiness = NO                   # Academic.UnnecessaryWords covers this
+write-good.TooWordy = NO                   # Academic.UnnecessaryWords covers this
 
 # ===========================================
 # 摘要 - 稍微嚴格但現實
@@ -94,7 +105,7 @@ write-good.Weasel = NO                     # 允許 "approximately" 等
 # 討論和結論 - 平衡標準
 # ===========================================
 [*discussion*.{md,txt}, *conclusion*.{md,txt}]
-BasedOnStyles = Vale, Microsoft, Google, Readability, write-good
+BasedOnStyles = Microsoft, Google, Readability, write-good
 
 # 討論需要平衡複雜性和可讀性
 Readability.FleschKincaid = suggestion     # ≤16
@@ -102,16 +113,10 @@ Readability.GunningFog = suggestion        # ≤18
 write-good.Weasel = suggestion             # 提醒避免模糊語言
 
 # ===========================================
-# 草稿和工作文件 - 最寬鬆
-# ===========================================
-[*draft*.{md,txt}, *temp*.{md,txt}, *work*.{md,txt}]
-BasedOnStyles = Vale
-
-# ===========================================
 # 會議摘要和簡報 - 中等嚴格
 # ===========================================
 [*conference*.{md,txt}, *presentation*.{md,txt}, *poster*.{md,txt}]
-BasedOnStyles = Vale, Readability
+BasedOnStyles = Readability
 
 # 會議材料需要相對易讀
 Readability.FleschKincaid = warning        # ≤14

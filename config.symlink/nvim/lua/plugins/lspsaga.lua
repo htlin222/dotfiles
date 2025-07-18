@@ -12,6 +12,26 @@ return {
       diagnostic = {
         on_insert = false,
       },
+      hover = {
+        max_width = 0.5,
+        max_height = 0.6,
+        open_link = "gx",
+        open_browser = "!open",
+      },
+      ui = {
+        border = "rounded",
+        winblend = 0,
+        title = false,
+      },
+      lightbulb = {
+        enable = false,
+      },
+      symbol_in_winbar = {
+        enable = false,
+      },
+      beacon = {
+        enable = false,
+      },
     }
     vim.api.nvim_set_keymap(
       "n",
