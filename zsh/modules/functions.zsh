@@ -1004,3 +1004,23 @@ function anki() {
     nvim + "$filepath"
 }
 
+add_path_to_claude_filesystem() {
+  local config_path="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+  local current_path="$(pwd)"
+  local temp_file="$(mktemp)"
+
+  if grep -Fq "$current_path" "$config_path"; then
+    echo "✅ Path already exists in filesystem args."
+    return 0
+  fi
+
+  if command -v jq >/dev/null 2>&1; then
+    jq --arg newPath "$current_path" '
+      .mcpServers.filesystem.args += [$newPath]
+    ' "$config_path" > "$temp_file" && mv "$temp_file" "$config_path"
+    echo "✅ Added $current_path to filesystem args."
+  else
+    echo "⚠️ jq not found. Please install jq or edit manually for safety."
+    return 1
+  fi
+}
