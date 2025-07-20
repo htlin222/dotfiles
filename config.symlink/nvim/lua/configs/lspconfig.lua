@@ -85,6 +85,60 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
 -- Load robust LSP floating window fix
 require("configs.lsp-floating-fix")
 
+-- Configure Air LSP as custom server (since it may not be in nvim-lspconfig yet)
+local configs = require('lspconfig.configs')
+if not configs.air then
+  configs.air = {
+    default_config = {
+      cmd = { vim.fn.expand('~/.local/share/nvim/mason/bin/air'), 'language-server' },
+      filetypes = { 'r', 'rmd', 'quarto' },
+      root_dir = function(fname)
+        return lspconfig.util.find_git_ancestor(fname) or vim.fn.getcwd()
+      end,
+      settings = {},
+    },
+  }
+end
+
+-- Setup Air LSP with formatting on save
+require("lspconfig").air.setup({
+  on_attach = function(client, bufnr)
+    -- Apply default on_attach behavior
+    on_attach(client, bufnr)
+    
+    -- Set up automatic formatting on save
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.format({ timeout_ms = 3000 })
+      end,
+    })
+  end,
+  on_init = on_init,
+  capabilities = capabilities,
+  flags = {
+    debounce_text_changes = 1000,
+  },
+})
+
+-- Disable r_language_server formatting to avoid conflicts with Air
+require("lspconfig").r_language_server.setup({
+  on_attach = function(client, bufnr)
+    -- Apply default on_attach behavior
+    on_attach(client, bufnr)
+    
+    -- Disable formatting capabilities to let Air handle it
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+  on_init = on_init,
+  capabilities = capabilities,
+  filetypes = { "r", "rmd", "quarto" },
+  flags = {
+    debounce_text_changes = 1000,
+  },
+})
+
 -- require("lspconfig").markdown_oxide.setup {
 --   filetypes = {
 --     "quarto",
