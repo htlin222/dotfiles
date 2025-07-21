@@ -25,6 +25,7 @@ prettier_exts = {
     ".ts",
     ".json",
     ".md",
+    ".qmd",
     ".mdx",
     ".scss",
     ".less",
@@ -33,7 +34,7 @@ prettier_exts = {
     ".yml",
 }
 python_exts = {".py", ".pyi"}
-markdown_exts = {".md", ".mdx"}
+markdown_exts = {".md", ".mdx", ".qmd"}
 eslint_exts = {".js", ".jsx", ".ts", ".tsx"}
 
 # Process found paths
