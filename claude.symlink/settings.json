@@ -1,6 +1,16 @@
 {
 	"hooks": {
-		"PreToolUse": [],
+		"PreToolUse": [
+			{
+				"matcher": "Write|Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "say '開始編輯'"
+					}
+				]
+			}
+		],
 		"PostToolUse": [
 			{
 				"matcher": "Write|Edit|MultiEdit",
@@ -8,6 +18,15 @@
 					{
 						"type": "command",
 						"command": "python3 ~/.claude/hooks/post_tool_use.py"
+					}
+				]
+			},
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "say '終端指令已完成'"
 					}
 				]
 			}
@@ -18,7 +37,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "say '有通知'"
+						"command": "say '請查看通知'"
 					}
 				]
 			}

@@ -4,7 +4,8 @@ This package contains modular processors for different file types and linters.
 Each processor handles formatting and linting for specific file extensions.
 
 Current Processors:
-- prettier_processor: Prettier formatting for web files (HTML, CSS, JS, etc.)
+- biome_processor: Biome formatting and linting for JS, TS, JSX, TSX, CSS, JSON
+- prettier_processor: Prettier formatting for web files (HTML, MD, SCSS, etc.)
 - vale_processor: Vale linting for markdown files
 - write_good_processor: Write-good linting for markdown files
 - python_processor: Ruff formatting and linting for Python files
@@ -72,6 +73,7 @@ When using exit code 2, the linter output goes to Claude Code which can:
 - Apply best practices and optimizations
 """
 
+from .biome_processor import process_biome_files
 from .prettier_processor import process_prettier_files
 from .vale_processor import process_vale_files
 from .write_good_processor import process_write_good_files
@@ -79,6 +81,7 @@ from .python_processor import process_python_files
 from .eslint_processor import process_eslint_files
 
 __all__ = [
+    "process_biome_files",
     "process_prettier_files",
     "process_vale_files",
     "process_write_good_files",
