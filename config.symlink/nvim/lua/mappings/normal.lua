@@ -29,6 +29,7 @@ return function()
   map("n", "<leader>yw", ":let @+ = getcwd()<CR>", { desc = "Yank current working directory" })
   map("n", "<leader>yf", ':let @+ = expand("%:t")<CR>', { desc = "Yank current file name" })
   map("n", "<leader>yb", ':let @+ = expand("%:t:r")<CR>', { desc = "Yank current file name without extension" })
+  map("n", "<leader>ya", 'ggVG"+y', { desc = "Yank entire file to clipboard" })
   
   -- 其他實用功能
   map("n", "<ESC>", ":", { desc = "Enter Cmdline" })
