@@ -1,0 +1,266 @@
+*manual.txt*    Academic Neovim Configuration Manual    *nvim-manual* *Manual*
+
+==============================================================================
+CONTENTS                                                      *manual-contents*
+
+1. Introduction ................................ |manual-introduction|
+2. Commands .................................... |manual-commands|
+3. Architecture ................................ |manual-architecture|
+4. Key Bindings ................................ |manual-keybindings|
+5. Plugin Management ........................... |manual-plugins|
+6. LSP Configuration ........................... |manual-lsp|
+7. Snippets .................................... |manual-snippets|
+8. Data Science Features ....................... |manual-datascience|
+9. Academic Tools .............................. |manual-academic|
+10. Development Tips ........................... |manual-development|
+
+==============================================================================
+1. INTRODUCTION                                           *manual-introduction*
+
+This is a sophisticated Neovim configuration built on NvChad v2.5, heavily
+customized for academic/research workflows with focus on:
+
+• Markdown/Quarto document authoring
+• Data science (Python, R, Julia)
+• Multilingual support (English/Chinese)
+• Note-taking and knowledge management
+
+==============================================================================
+2. COMMANDS                                                  *manual-commands*
+
+Plugin Management (lazy.nvim)~
+                                                              *manual-lazy*
+:Lazy sync            Update all plugins
+:Lazy                 Check plugin status
+:Lazy profile         Profile plugin load times
+:Lazy reload {plugin} Reload specific plugin during development
+
+Linting & Formatting~
+                                                        *manual-lint-format*
+:lua require("lint").try_lint()      Manually trigger linting
+<leader>ll                           Trigger linting (shortcut)
+:lua require("conform").format()     Format current buffer
+:ConformInfo                         Check formatters for buffer
+
+LSP Commands~
+                                                               *manual-lsp*
+:LspInfo              LSP info for current buffer
+:LspRestart           Restart LSP server
+:Mason                Check Mason-installed tools
+
+==============================================================================
+3. ARCHITECTURE                                           *manual-architecture*
+
+Core Structure~
+                                                         *manual-structure*
+• init.lua           Entry point, bootstraps lazy.nvim and loads NvChad
+• lua/init.lua       Environment detection (VSCode, WezTerm)
+• lua/options.lua    Neovim settings and options
+• lua/mappings.lua   Key bindings organized by functionality
+• lua/plugins/       Individual plugin specifications
+• lua/configs/       Plugin configurations (LSP, formatters, linters)
+• lua/autocmd/       Autocommands organized by purpose
+
+Key Design Patterns~
+                                                          *manual-patterns*
+1. Environment-Aware Configuration
+   Adapts based on environment:
+   • Regular Neovim
+   • VSCode Neovim extension
+   • WezTerm terminal
+
+2. Language Server Protocol (LSP)
+   • Debounced text changes (1.5s) for performance
+   • Custom handlers for diagnostics and hover
+   • Language-specific server configurations
+
+3. Snippet System
+   • LuaSnip-based snippets in lua/lua_snippets/
+   • VSCode-compatible snippets in lua/vscode_snippets/
+   • Academic/medical focused snippets
+
+4. Autocommand Organization
+   • editing.lua     Text manipulation, Chinese spacing
+   • filetype.lua    Filetype-specific behaviors
+   • misc.lua        General utilities (auto-save, last position)
+   • folding.lua     Code folding with TreeSitter
+
+5. Data-Driven Features
+   JSON data files in lua/data/ for:
+   • Emoji picker
+   • Mathematical symbols
+   • LaTeX shortcuts
+   • Symbol mappings
+
+Plugin Management Strategy~
+                                                    *manual-plugin-strategy*
+Uses lazy.nvim with:
+• Lazy loading by default (unless lazy = false)
+• Event-based loading (BufReadPost, InsertEnter, etc.)
+• Command-based loading
+• Version locking via lazy-lock.json
+
+Formatting & Linting Architecture~
+                                                      *manual-format-lint*
+Conform.nvim handles formatting:
+• Format on save (3.5s timeout)
+• Language-specific formatters
+• Fallback chains (e.g., prettier → prettierd)
+
+nvim-lint handles linting:
+• Triggers on BufWritePost
+• Debounced execution
+• Multiple linters per filetype
+
+==============================================================================
+4. KEY BINDINGS                                           *manual-keybindings*
+
+The configuration uses modular key bindings organized in mappings/ directory:
+• normal.lua          Normal mode bindings
+• insert.lua          Insert mode bindings
+• visual.lua          Visual mode bindings
+• operator.lua        Operator-pending mode bindings
+• plugins.lua         Plugin-specific bindings
+• autocmd.lua         Autocommand-triggered bindings
+
+Check lua/mappings.lua before adding new keybindings to avoid conflicts.
+
+==============================================================================
+5. PLUGIN MANAGEMENT                                          *manual-plugins*
+
+Notable Integrations~
+                                                     *manual-integrations*
+
+Academic Tools:
+• Zotero citations
+• BibTeX support
+• Quarto integration
+
+Note-Taking:
+• Markdown enhancements
+• Wiki links
+• Anki integration
+
+Terminal:
+• Toggleterm with custom terminals
+• IPython integration
+• Julia REPL
+
+AI/Completion:
+• Codeium integration for AI completions
+
+Version Control:
+• Gitsigns
+• Diffview
+• Git-conflict resolution
+
+==============================================================================
+6. LSP CONFIGURATION                                              *manual-lsp*
+
+Extensive LSP configurations in lua/configs/lspconfig.lua with:
+• Debounced text changes (1.5s) for performance
+• Custom handlers for diagnostics and hover
+• Language-specific server configurations
+
+Common LSP servers configured:
+• lua_ls (Lua)
+• pyright/pylsp (Python)
+• r_language_server (R)
+• julials (Julia)
+• marksman (Markdown)
+• And many more...
+
+==============================================================================
+7. SNIPPETS                                                   *manual-snippets*
+
+Two parallel snippet systems:
+
+LuaSnip-based snippets (lua/lua_snippets/):
+• all.lua                Global snippets
+• markdown/              Markdown-specific snippets
+• python/                Python snippets
+• quarto/                Quarto snippets
+• r/                     R snippets
+
+VSCode-compatible snippets (lua/vscode_snippets/):
+• md.json                Markdown snippets
+• python.json            Python snippets
+• r.json                 R snippets
+• quarto.json            Quarto snippets
+
+Academic/medical focused snippets include:
+• Oncology terminology
+• Statistical functions
+• Mathematical symbols
+
+==============================================================================
+8. DATA SCIENCE FEATURES                                   *manual-datascience*
+
+Python Integration:
+• LSP with pyright/pylsp
+• Formatting with black/ruff
+• Linting with ruff/pylint
+• IPython terminal integration
+• Jupyter notebook support
+
+R Integration:
+• R LSP server
+• REPL integration
+• Quarto/RMarkdown support
+• Statistical snippets
+
+Julia Integration:
+• Julia LSP
+• REPL integration
+• Mathematical notation support
+
+==============================================================================
+9. ACADEMIC TOOLS                                            *manual-academic*
+
+Markdown & Documentation:
+• Enhanced markdown support
+• LaTeX integration
+• Citation management
+• Academic snippets
+
+Quarto:
+• Full Quarto support
+• Code execution
+• Academic publishing formats
+
+Note-taking:
+• Wiki-style linking
+• Anki card generation
+• Mathematical notation
+
+Multilingual Support:
+• English/Chinese support
+• Proper spacing for mixed scripts
+• Locale-aware formatting
+
+==============================================================================
+10. DEVELOPMENT TIPS                                       *manual-development*
+
+1. Plugin modifications go in lua/plugins/ directory
+2. LSP server configurations go in lua/configs/lspconfig.lua
+3. Formatter/linter configs in lua/configs/conform.lua and 
+   lua/configs/nvim-lint.lua
+4. Use :Lazy reload {plugin} to reload plugins during development
+5. Check lua/mappings.lua before adding new keybindings
+6. Configuration uses Traditional Chinese comments - maintain convention
+7. Test changes in both regular Neovim and VSCode for compatibility
+8. Use lazy loading for better performance
+9. Follow existing patterns for autocommand organization
+10. Utilize data-driven features for extensibility
+
+Configuration Structure:
+• Modular design for maintainability
+• Environment-aware loading
+• Performance-optimized with lazy loading
+• Academic workflow optimized
+
+For more specific help on any topic, use the tag references above or
+explore the source files directly.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
