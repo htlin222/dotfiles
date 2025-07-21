@@ -6,7 +6,16 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "say '開始編輯'"
+						"command": "say ' 開始編輯'"
+					}
+				]
+			},
+			{
+				"matcher": "Read",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "afplay /System/Library/Sounds/Funk.aiff"
 					}
 				]
 			}
@@ -17,7 +26,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "python3 ~/.claude/hooks/post_tool_use.py"
+						"command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
 					}
 				]
 			},
@@ -37,7 +46,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "say '請查看通知'"
+						"command": "python3 ~/.claude/hooks/notification.py"
 					}
 				]
 			}
@@ -48,7 +57,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "say -r 200 '完成'"
+						"command": "say -r 220 ' 對話已經完成'"
 					}
 				]
 			}

@@ -2,10 +2,11 @@
 import json
 import os
 import re
+import subprocess
 import sys
 
 # Import processors
-from processors import (process_biome_files, process_prettier_files, 
+from processors import (process_biome_files, process_prettier_files,
                         process_python_files, process_vale_files)
 
 # Read input
@@ -19,7 +20,7 @@ file_paths = re.findall(pattern, raw_input)
 biome_exts = {
     ".js",
     ".jsx",
-    ".tsx", 
+    ".tsx",
     ".ts",
     ".json",
     ".css",
@@ -38,10 +39,13 @@ prettier_exts = {
 python_exts = {".py", ".pyi"}
 markdown_exts = {".md", ".mdx", ".qmd"}
 
+
 # Process found paths
 for file_path in file_paths:
     if os.path.exists(file_path):
         _, ext = os.path.splitext(file_path)
+        filename = os.path.basename(file_path)
+        subprocess.run(["say", f"{filename} 已經編輯完成"], check=False)
 
         if ext in biome_exts:
             process_biome_files(file_path)
@@ -59,7 +63,7 @@ try:
     # Try to parse and re-output as valid JSON
     data = json.loads(raw_input)
     print(json.dumps(data))
-except:
+except json.JSONDecodeError:
     # If JSON is malformed, try to clean it
     cleaned = raw_input.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
     print(cleaned)
