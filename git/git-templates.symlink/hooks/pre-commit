@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "Running pre-commit hook!"
+# Add your custom logic here

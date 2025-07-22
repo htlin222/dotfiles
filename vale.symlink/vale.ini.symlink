@@ -22,6 +22,7 @@ qmd = md
 BasedOnStyles = Vale, Microsoft, Google, Readability, write-good, proselint, alex, Academic
 
 # 停用不適合醫學寫作的通用規則
+Google.Parens = NO
 Vale.Spelling = NO
 Microsoft.FirstPerson = NO          # 醫學研究需要 "we conducted", "I observed"
 Microsoft.Acronyms = NO

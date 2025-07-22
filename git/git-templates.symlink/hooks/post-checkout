@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Only run when initializing a repo (when HEAD is checked out)
+if [ "$1" = "0000000000000000000000000000000000000000" ]; then
+  if [ ! -f .gitignore ]; then
+    cat > .gitignore << 'GITIGNORE'
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Package files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Build directories
+/dist
+/build
+/node_modules
+/vendor
+GITIGNORE
+
+    echo "Created .gitignore file"
+  fi
+fi

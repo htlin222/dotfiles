@@ -6,7 +6,16 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "say ' 開始編輯'"
+						"command": "afplay /System/Library/Sounds/Funk.aiff && say ' 開始編輯'"
+					}
+				]
+			},
+			{
+				"matcher": "Read|Grep",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node ~/.claude/hooks/read_hook.js"
 					}
 				]
 			},

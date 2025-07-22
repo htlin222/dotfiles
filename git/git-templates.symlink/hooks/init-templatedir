@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Create .gitignore file if it doesn't exist
+if [ ! -f "$(git rev-parse --show-toplevel)/.gitignore" ]; then
+  cat >"$(git rev-parse --show-toplevel)/.gitignore" <<'GITIGNORE'
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Package files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+.env
+
+# Build directories
+/dist
+/build
+/node_modules
+/vendor
+GITIGNORE
+
+  echo "Created .gitignore file"
+fi

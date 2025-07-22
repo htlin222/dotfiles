@@ -1,0 +1,3 @@
+#!/bin/bash
+cp ~/.git-templates/gitignore .gitignore
+echo "Created .gitignore from global template"
