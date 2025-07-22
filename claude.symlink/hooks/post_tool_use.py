@@ -12,6 +12,7 @@ from processors import (
     process_python_files,
     process_vale_files,
     process_bibtex_files,
+    process_shellcheck_files,
 )
 
 # Read input
@@ -43,6 +44,7 @@ prettier_exts = {
 }
 python_exts = {".py", ".pyi"}
 bibtex_exts = {".bib"}
+shell_exts = {".sh", ".bash", ".zsh", ".fish"}
 markdown_exts = {".md", ".mdx", ".qmd"}
 
 
@@ -64,6 +66,8 @@ for file_path in file_paths:
             process_python_files(file_path)
         elif ext in bibtex_exts:
             process_bibtex_files(file_path)
+        elif ext in shell_exts:
+            process_shellcheck_files(file_path)
 
 
 # Output the original input (with control chars escaped if needed)
