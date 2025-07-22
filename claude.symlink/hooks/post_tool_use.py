@@ -6,8 +6,13 @@ import subprocess
 import sys
 
 # Import processors
-from processors import (process_biome_files, process_prettier_files,
-                        process_python_files, process_vale_files)
+from processors import (
+    process_biome_files,
+    process_prettier_files,
+    process_python_files,
+    process_vale_files,
+    process_bibtex_files,
+)
 
 # Read input
 raw_input = sys.stdin.read()
@@ -37,6 +42,7 @@ prettier_exts = {
     ".yml",
 }
 python_exts = {".py", ".pyi"}
+bibtex_exts = {".bib"}
 markdown_exts = {".md", ".mdx", ".qmd"}
 
 
@@ -56,6 +62,8 @@ for file_path in file_paths:
                 process_vale_files(file_path)
         elif ext in python_exts:
             process_python_files(file_path)
+        elif ext in bibtex_exts:
+            process_bibtex_files(file_path)
 
 
 # Output the original input (with control chars escaped if needed)

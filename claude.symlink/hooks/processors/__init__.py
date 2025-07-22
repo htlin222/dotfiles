@@ -9,6 +9,7 @@ Current Processors:
 - vale_processor: Vale linting for markdown files
 - write_good_processor: Write-good linting for markdown files
 - python_processor: Ruff formatting and linting for Python files
+- bibtex_processor: BibTeX-tidy formatting and validation for BibTeX files
 
 Adding New Processors:
 To add a new processor for a file type or linter:
@@ -79,6 +80,7 @@ from .vale_processor import process_vale_files
 from .write_good_processor import process_write_good_files
 from .python_processor import process_python_files
 from .eslint_processor import process_eslint_files
+from .bibtex_processor import process_bibtex_files
 
 __all__ = [
     "process_biome_files",
@@ -87,4 +89,5 @@ __all__ = [
     "process_write_good_files",
     "process_python_files",
     "process_eslint_files",
+    "process_bibtex_files",
 ]

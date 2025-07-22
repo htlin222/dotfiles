@@ -66,7 +66,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "say -r 220 ' 對話已經完成'"
+						"command": "say -r 220 ' 對話已經完成' && ntfy publish lizard 'Claude Code 對話結束'"
 					}
 				]
 			}
