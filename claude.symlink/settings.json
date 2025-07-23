@@ -6,7 +6,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "afplay /System/Library/Sounds/Funk.aiff && say ' 開始編輯'"
+						"command": "afplay /System/Library/Sounds/Funk.aiff"
 					}
 				]
 			},

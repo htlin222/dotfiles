@@ -2,18 +2,12 @@
 import json
 import os
 import re
-import subprocess
 import sys
 
 # Import processors
-from processors import (
-    process_biome_files,
-    process_prettier_files,
-    process_python_files,
-    process_vale_files,
-    process_bibtex_files,
-    process_shellcheck_files,
-)
+from processors import (process_bibtex_files, process_biome_files,
+                        process_prettier_files, process_python_files,
+                        process_shellcheck_files, process_vale_files)
 
 # Read input
 raw_input = sys.stdin.read()
@@ -53,7 +47,7 @@ for file_path in file_paths:
     if os.path.exists(file_path):
         _, ext = os.path.splitext(file_path)
         filename = os.path.basename(file_path)
-        subprocess.run(["say", f"{filename} 已經編輯完成"], check=False)
+        # subprocess.run(["say", f"{filename} 編輯完成"], check=False)
 
         if ext in biome_exts:
             process_biome_files(file_path)
