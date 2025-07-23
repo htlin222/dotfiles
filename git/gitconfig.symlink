@@ -34,7 +34,7 @@
 	required = true
 
 [pull]
-    rebase = true
+	rebase = true
 
 [gc]
     auto = 256  # 當有 256 個鬆散物件時自動執行 `git gc`
