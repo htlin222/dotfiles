@@ -22,7 +22,7 @@ def main():
         if message:
             # Use macOS 'say' command to speak the message
             subprocess.run(["say", "--rate=200", message], check=False)
-            
+
             # Send notification via ntfy
             subprocess.run(["ntfy", "publish", "lizard", message], check=False)
 
