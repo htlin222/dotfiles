@@ -11,6 +11,7 @@ Current Processors:
 - python_processor: Ruff formatting and linting for Python files
 - bibtex_processor: BibTeX-tidy formatting and validation for BibTeX files
 - shellcheck_processor: ShellCheck linting for bash and shell scripts
+- lintr_processor: lintr linting for R files
 
 Adding New Processors:
 To add a new processor for a file type or linter:
@@ -83,6 +84,7 @@ from .python_processor import process_python_files
 from .eslint_processor import process_eslint_files
 from .bibtex_processor import process_bibtex_files
 from .shellcheck_processor import process_shellcheck_files
+from .lintr_processor import process_r_files
 
 __all__ = [
     "process_biome_files",
@@ -93,4 +95,5 @@ __all__ = [
     "process_eslint_files",
     "process_bibtex_files",
     "process_shellcheck_files",
+    "process_r_files",
 ]
