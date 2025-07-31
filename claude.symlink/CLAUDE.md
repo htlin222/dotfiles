@@ -1,3 +1,8 @@
+# Package Manage
+
+node project: pnpm
+python: uv with venv very IMPORTANT
+
 # SuperClaude Entry Point
 
 @COMMANDS.md
@@ -8,8 +13,3 @@
 @PERSONAS.md
 @ORCHESTRATOR.md
 @MODES.md
-
-# Package Manage
-
-node project: pnpm
-python: uv
