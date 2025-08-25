@@ -1,4 +1,6 @@
 matches:
+  - trigger: ".hy"
+    replace: "highlight the high-yield oncology key points for board exams"
   - trigger: "#blue"
     replace: "#3D6869"
   - trigger: ":clipboardtest"
