@@ -5,15 +5,9 @@ import re
 import sys
 
 # Import processors
-from processors import (
-    process_bibtex_files,
-    process_biome_files,
-    process_prettier_files,
-    process_python_files,
-    process_r_files,
-    process_shellcheck_files,
-    process_vale_files,
-)
+from processors import (process_bibtex_files, process_biome_files,
+                        process_prettier_files, process_python_files,
+                        process_r_files, process_vale_files)
 
 # Read input
 raw_input = sys.stdin.read()
@@ -67,8 +61,8 @@ for file_path in file_paths:
             process_python_files(file_path)
         elif ext in bibtex_exts:
             process_bibtex_files(file_path)
-        elif ext in shell_exts:
-            process_shellcheck_files(file_path)
+        # elif ext in shell_exts:
+        # process_shellcheck_files(file_path)
         elif ext in r_exts:
             process_r_files(file_path)
 

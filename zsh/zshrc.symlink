@@ -239,8 +239,8 @@ _load_broot() {
 }
 
 FNM_PATH="/Users/mac/Library/Application Support/fnm"
-lazyload fnm node npm -- _load_fnm
-lazyload br -- _load_broot
+# lazyload fnm node npm -- _load_fnm
+# lazyload br -- _load_broot
 
 # Paths - cached checks for better performance
 _cached_path_check() {
@@ -312,3 +312,4 @@ if [[ -f "$HOME/.atuin/bin/env" ]]; then
   eval "$(atuin init zsh)"
 fi
 eval "$(zoxide init zsh)"
+export PATH=~/.npm-global/bin:$PATH

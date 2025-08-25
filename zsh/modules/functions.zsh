@@ -1024,3 +1024,12 @@ add_path_to_claude_filesystem() {
     return 1
   fi
 }
+
+# Add this to your ~/.zshrc
+chrome-debug() {
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+    --remote-debugging-port=9222 \
+    --user-data-dir="/tmp/chrome-debug" \
+    --no-first-run \
+    --no-default-browser-check "$@"
+}

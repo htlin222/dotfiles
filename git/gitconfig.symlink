@@ -21,7 +21,7 @@
     date = iso
 
 [format]
-    pretty = format:%C(yellow)%h%C(reset) - %C(cyan)%an%C(reset): %C(bold green)%s%C(reset) %C(dim white)(%ar)%C(reset)
+    pretty = format:%C(yellow)%h%C(reset) %C(cyan)%an%C(reset) %C(bold green)%s%C(reset) %C(dim white)(%ar)%C(reset)
 
 [diff]
     mnemonicPrefix = true
