@@ -1033,3 +1033,12 @@ chrome-debug() {
     --no-first-run \
     --no-default-browser-check "$@"
 }
+
+# Detect RSS/Atom/XML feeds in a webpage
+findfeed() {
+  if [ -z "$1" ]; then
+    echo "Usage: findfeed <url>"
+    return 1
+  fi
+  curl -s "$1" | grep -Eoi '<link[^>]+(rss|atom|xml)[^>]*>' | sed 's/.*href=["'\'']\([^"'\'' ]*\).*/\1/'
+}
