@@ -1,6 +1,8 @@
 matches:
   - trigger: ".hy"
     replace: "highlight the high-yield oncology key points for board exams"
+  - trigger: ".pk"
+    replace: "convert the context as Pocket Medicine styled text with nested list"
   - trigger: "#blue"
     replace: "#3D6869"
   - trigger: ":clipboardtest"
