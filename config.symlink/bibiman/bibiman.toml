@@ -1,0 +1,38 @@
+[general]
+# Default files/dirs which are loaded on startup
+# Use absolute paths (~ for HOME works). Otherwise, loading might not work.
+bibfiles = ["/Users/htlin/Dropbox/bib"]
+
+# Default editor to use when editing files. Arguments are possible
+editor = "nvim" # with args: "vim -y"
+
+# Default app to open PDFs/Epubs
+pdf_opener = "open"
+
+# Default app to open URLs/DOIs
+url_opener = "open"
+
+# Prefix which is prepended to the filepath from the `file` field
+# Use absolute paths (~ for HOME works). Otherwise, loading might not work.
+file_prefix = "/Users/htlin/Documents/Journals"
+
+# Path to folder (with subfolders) containing PDF files with the basename
+# of the format "citekey.pdf". Other PDF basenames are not accepted.
+# Use absolute paths (~ for HOME works). Otherwise, loading might not work.
+pdf_path = "/Users/htlin/Documents/Journals"
+
+## Path to folder (with subfolders) containing note files with the basename of
+## the format "citekey.extension". Other basenames are not accepted. The possible
+## extensions can be set through the "note_extensions" array.
+note_path = "/Users/htlin/Dropbox/bib"
+note_extensions = ["md", "txt"]
+
+## Symbols/chars to show if not has specific attachement
+file_symbol = " "
+link_symbol = "󰌹 "
+note_symbol = "󰧮"
+
+## Select a custom column beside standard "author", "title" and "year"
+## Possible values are "journaltitle", "organization", "instituion", "publisher"
+## and "pubtype" (which is the default)
+custom_column = "pubtype"

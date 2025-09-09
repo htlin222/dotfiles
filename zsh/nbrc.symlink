@@ -15,6 +15,7 @@
 
 
 
-export NB_DIR="${NB_DIR:-/Users/mac/Dropbox/inbox}" # Set by `nb` • 2023年10月11日 週三 21時32分53秒 CST
 
 export NB_HEADER="${NB_HEADER:-3}" # Set by `nb` • 2023年10月11日 週三 21時51分32秒 CST
+
+export NB_DIR="${NB_DIR:-/Users/mac/Dropbox/nb}" # Set by `nb` • Fri Sep  5 02:24:33 CST 2025

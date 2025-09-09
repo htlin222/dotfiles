@@ -1,0 +1,9 @@
+# _manifest.yml
+
+name: "kaomoji"
+title: "kaomoji"
+description: "plenty of fun kaomoji"
+version: "0.2.0"
+author: "cnmne"
+tags: ["ascii", "emoji", "fun", "japanese", "kaimoji", "kaomoji", "meme"]
+homepage: "https://gitlab.com/citrusmunch/espanso-kaomoji"

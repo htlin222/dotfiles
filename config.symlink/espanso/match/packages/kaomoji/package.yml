@@ -1,0 +1,3219 @@
+# packages.yml
+
+"matches":
+  # -------------------------------------------------------------------------- #
+  # joy
+  # 
+- "replace": "(* ^ ω ^)"
+  "search_terms": ["'w", "'*"]
+  "trigger": ";kao joy 00"
+  # 
+- "replace": "(´ ∀ ` *)"
+  "search_terms": ["'A", "'*"]
+  "trigger": ";kao joy 01"
+  # 
+- "replace": "٩(◕‿◕｡)۶"
+  "search_terms": ["hand", "blush"]
+  "trigger": ";kao joy 02"
+  # 
+- "replace": "☆*:.｡.o(≧▽≦)o.｡.:*☆"
+  "search_terms": ["'*", "'><", "triangle", "blush"]
+  "trigger": ";kao joy 03"
+  # 
+- "replace": "(o^▽^o)"
+  "search_terms": ["triangle", "blush"]
+  "trigger": ";kao joy 04"
+  # 
+- "replace": "(⌒▽⌒)☆"
+  "search_terms": ["'*", "triangle"]
+  "trigger": ";kao joy 05"
+  #
+- "replace": "<(￣︶￣)>"
+  "search_terms": ["'-", "hand"]
+  "trigger": ";kao joy 06"
+  #
+- "replace": "。.:☆*:･'(*⌒―⌒*)))"
+  "search_terms": ["'*"]
+  "trigger": ";kao joy 07"
+  #
+- "replace": "ヽ(・∀・)ﾉ"
+  "search_terms": ["'A", "hand"]
+  "trigger": ";kao joy 08"
+  #
+- "replace": "(´｡• ω •｡`)"
+  "search_terms": ["'w", "blush"]
+  "trigger": ";kao joy 09"
+  #
+- "replace": "(￣ω￣)"
+  "search_terms": ["'w", "'-"]
+  "trigger": ";kao joy 10"
+  #
+- "replace": "｀;:゛;｀;･(°ε° )"
+  "search_terms": ["'3", "kiss"]
+  "trigger": ";kao joy 11"
+  #
+- "replace": "(o･ω･o)"
+  "search_terms": ["'w", "blush"]
+  "trigger": ";kao joy 12"
+  #
+- "replace": "(＠＾◡＾)"
+  "search_terms": ["'^"]
+  "trigger": ";kao joy 13"
+  #
+- "replace": "ヽ(*・ω・)ﾉ"
+  "search_terms": ["'w", "'*"]
+  "trigger": ";kao joy 14"
+  #
+- "replace": "(o_ _)ﾉ彡☆"
+  "search_terms": ["'*", "'-"]
+  "trigger": ";kao joy 15"
+  #
+- "replace": "(^人^)"
+  "search_terms": ["'^"]
+  "trigger": ";kao joy 16"
+  #
+- "replace": "(o´▽`o)"
+  "search_terms": ["triangle", "blush"]
+  "trigger": ";kao joy 17"
+  #
+- "replace": "(*´▽`*)"
+  "search_terms": ["triangle", "'*", "blush"]
+  "trigger": ";kao joy 18"
+  #
+- "replace": "｡ﾟ( ﾟ^∀^ﾟ)ﾟ｡"
+  "search_terms": ["'A", "'^", "tears"]
+  "trigger": ";kao joy 19"
+  #
+- "replace": "( ´ ω ` )"
+  "search_terms": ["'w"]
+  "trigger": ";kao joy 20"
+  #
+- "replace": "(((o(*°▽°*)o)))"
+  "search_terms": ["triangle", "hands", "'*", "blush"]
+  "trigger": ";kao joy 21"
+  #
+- "replace": "(≧◡≦)"
+  "search_terms": ["'><", "blush"]
+  "trigger": ";kao joy 22"
+  #
+- "replace": "(o´∀`o)"
+  "search_terms": ["'A", "blush"]
+  "trigger": ";kao joy 23"
+  #
+- "replace": "(´• ω •`)"
+  "search_terms": ["'w"]
+  "trigger": ";kao joy 24"
+  #
+- "replace": "(＾▽＾)"
+  "search_terms": ["'^"]
+  "trigger": ";kao joy 25"
+  #
+- "replace": "(⌒ω⌒)"
+  "search_terms": ["'w"]
+  "trigger": ";kao joy 26"
+  #
+- "replace": "∑d(°∀°d)"
+  "search_terms": ["'A", "hand"]
+  "trigger": ";kao joy 27"
+  #
+- "replace": "╰(▔∀▔)╯"
+  "search_terms": ["'A", "hand"]
+  "trigger": ";kao joy 28"
+  #
+- "replace": "(─‿‿─)"
+  "search_terms": ["'-"]
+  "trigger": ";kao joy 29"
+  #
+- "replace": "(*^‿^*)"
+  "search_terms": ["'*", "blush"]
+  "trigger": ";kao joy 30"
+  #
+- "replace": "ヽ(o^ ^o)ﾉ"
+  "search_terms": ["hand", "blush"]
+  "trigger": ";kao joy 31"
+  #
+- "replace": "(✯◡✯)"
+  "search_terms": ["'*"]
+  "trigger": ";kao joy 32"
+  #
+- "replace": "(◕‿◕)"
+  "search_terms": []
+  "trigger": ";kao joy 33"
+  #
+- "replace": "(*≧ω≦*)"
+  "search_terms": ["'w", "'><", "'*", "blush"]
+  "trigger": ";kao joy 34"
+  #
+- "replace": "(☆▽☆)"
+  "search_terms": ["'*"]
+  "trigger": ";kao joy 35"
+  #
+- "replace": "(⌒‿⌒)"
+  "search_terms": []
+  "trigger": ";kao joy 36"
+  #
+- "replace": "＼(≧▽≦)／"
+  "search_terms": ["triangle", "'><", "hand", "blush"]
+  "trigger": ";kao joy 37"
+  #
+- "replace": "ヽ(o＾▽＾o)ノ"
+  "search_terms": ["triangle", "hand", "'^", "blush"]
+  "trigger": ";kao joy 38"
+  #
+- "replace": "☆ ～('▽^人)"
+  "search_terms": ["triangle", "'*", "'~", "'^"]
+  "trigger": ";kao joy 39"
+  #
+- "replace": "(*°▽°*)"
+  "search_terms": ["triangle", "'*", "blush"]
+  "trigger": ";kao joy 40"
+  #
+- "replace": "٩(｡•́‿•̀｡)۶"
+  "search_terms": ["hand", "blush"]
+  "trigger": ";kao joy 41"
+  #
+- "replace": "(✧ω✧)"
+  "search_terms": ["'w", "diamond"]
+  "trigger": ";kao joy 42"
+  #
+- "replace": "ヽ(*⌒▽⌒*)ﾉ"
+  "search_terms": ["hand", "triangle", "'*"]
+  "trigger": ";kao joy 43"
+  #
+- "replace": "(´｡• ᵕ •｡`)"
+  "search_terms": ["blush"]
+  "trigger": ";kao joy 44"
+  #
+- "replace": "( ´ ▽ ` )"
+  "search_terms": ["triangle"]
+  "trigger": ";kao joy 45"
+  #
+- "replace": "(￣▽￣)"
+  "search_terms": ["'-", "triangle"]
+  "trigger": ";kao joy 46"
+  #
+- "replace": "╰(*´︶`*)╯"
+  "search_terms": ["hand", "'*", "blush"]
+  "trigger": ";kao joy 47"
+  #
+- "replace": "ヽ(>∀<☆)ノ"
+  "search_terms": ["'*", "'A", "hand"]
+  "trigger": ";kao joy 48"
+  #
+- "replace": "o(≧▽≦)o"
+  "search_terms": ["triangle", "hand", "'><", "blush"]
+  "trigger": ";kao joy 49"
+  #
+- "replace": "(☆ω☆)"
+  "search_terms": ["'w", "'*"]
+  "trigger": ";kao joy 50"
+  #
+- "replace": "(っ˘ω˘ς )"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao joy 51"
+  #
+- "replace": "＼(￣▽￣)／"
+  "search_terms": ["triangle", "'-", "hand"]
+  "trigger": ";kao joy 52"
+  #
+- "replace": "(*¯︶¯*)"
+  "search_terms": ["'-", "'*", "blush"]
+  "trigger": ";kao joy 53"
+  #
+- "replace": "＼(＾▽＾)／"
+  "search_terms": ["triangle", "'^", "hand"]
+  "trigger": ";kao joy 54"
+  #
+- "replace": "٩(◕‿◕)۶"
+  "search_terms": ["hand"]
+  "trigger": ";kao joy 55"
+  #
+- "replace": "(o˘◡˘o)"
+  "search_terms": ["blush"]
+  "trigger": ";kao joy 56"
+  #
+- "replace": "\\(★ω★)/"
+  "search_terms": ["'w", "'*", "hand"]
+  "trigger": ";kao joy 57"
+  #
+- "replace": "\\(^ヮ^)/"
+  "search_terms": ["hand"]
+  "trigger": ";kao joy 58"
+  #
+- "replace": "(〃＾▽＾〃)"
+  "search_terms": ["triangle", "'^", "blush"]
+  "trigger": ";kao joy 59"
+  #
+- "replace": "(╯✧▽✧)╯"
+  "search_terms": ["hand", "triangle", "diamond"]
+  "trigger": ";kao joy 60"
+  #
+- "replace": "o(>ω<)o"
+  "search_terms": ["'w", "'><", "hand"]
+  "trigger": ";kao joy 61"
+  #
+- "replace": "o( ❛ᴗ❛ )o"
+  "search_terms": ["hand"]
+  "trigger": ";kao joy 62"
+  #
+- "replace": "｡ﾟ(TヮT)ﾟ｡"
+  "search_terms": ["tears"]
+  "trigger": ";kao joy 63"
+  #
+- "replace": "( ‾́ ◡ ‾́ )"
+  "search_terms": ["'-"]
+  "trigger": ";kao joy 64"
+  #
+- "replace": "(ﾉ´ヮ`)ﾉ*: ･ﾟ"
+  "search_terms": ["'*", "hand"]
+  "trigger": ";kao joy 65"
+  #
+- "replace": "(b ᵔ▽ᵔ)b"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao joy 66"
+  #
+- "replace": "(๑˃ᴗ˂)ﻭ"
+  "search_terms": ["'><", "hand", "blush"]
+  "trigger": ";kao joy 67"
+  #
+- "replace": "(๑˘︶˘๑)"
+  "search_terms": ["blush"]
+  "trigger": ";kao joy 68"
+  #
+- "replace": "( ˙꒳​˙ )"
+  "search_terms": ["'w"]
+  "trigger": ";kao joy 69"
+  #
+- "replace": "(*꒦ິ꒳꒦ີ)"
+  "search_terms": ["'w", "'*"]
+  "trigger": ";kao joy 70"
+  #
+- "replace": "°˖✧◝(⁰▿⁰)◜✧˖°"
+  "search_terms": ["triangle", "diamond", "hand"]
+  "trigger": ";kao joy 71"
+  #
+- "replace": "(´･ᴗ･ ` )"
+  "search_terms": []
+  "trigger": ";kao joy 72"
+  #
+- "replace": "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧"
+  "search_terms": ["hand", "'*"]
+  "trigger": ";kao joy 73"
+  #
+- "replace": "(„• ֊ •„)"
+  "search_terms": ["blush"]
+  "trigger": ";kao joy 74"
+  #
+- "replace": "(.❛ ᴗ ❛.)"
+  "search_terms": []
+  "trigger": ";kao joy 75"
+  #
+- "replace": "(⁀ᗢ⁀)"
+  "search_terms": []
+  "trigger": ";kao joy 76"
+  #
+- "replace": "(￢‿￢ )"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao joy 77"
+  #
+- "replace": "(¬‿¬ )"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao joy 78"
+  #
+- "replace": "(*￣▽￣)b"
+  "search_terms": ["'*", "triangle", "'-", "hand", "blush"]
+  "trigger": ";kao joy 79"
+  #
+- "replace": "( ˙▿˙ )"
+  "search_terms": ["triangle"]
+  "trigger": ";kao joy 80"
+  #
+- "replace": "(¯▿¯)"
+  "search_terms": ["triangle", "'-"]
+  "trigger": ";kao joy 81"
+  #
+- "replace": "( ◕▿◕ )"
+  "search_terms": ["triangle"]
+  "trigger": ";kao joy 82"
+  #
+- "replace": "＼(٥⁀▽⁀ )／"
+  "search_terms": ["arm", "triangle", "tear"]
+  "trigger": ";kao joy 83"
+  #
+- "replace": "(„• ᴗ •„)"
+  "search_terms": ["blush"]
+  "trigger": ";kao joy 84"
+  #
+- "replace": "(ᵔ◡ᵔ)"
+  "search_terms": []
+  "trigger": ";kao joy 85"
+  #
+- "replace": "( ´ ▿ ` )"
+  "search_terms": ["triangle"]
+  "trigger": ";kao joy 86"
+  #
+- "replace": "(๑>◡<๑)"
+  "search_terms": ["blush", "'><"]
+  "trigger": ";kao joy 87"
+  #
+- "replace": "( = ⩊ = )"
+  "search_terms": ["'w"]
+  "trigger": ";kao joy 88"
+  #
+- "replace": "( ´ ꒳ ` )"
+  "search_terms": ["'w"]
+  "trigger": ";kao joy 89"
+  #
+- "replace": "⸜( ´ ꒳ ` )⸝"
+  "search_terms": ["'w", "arm"]
+  "trigger": ";kao joy 90"
+  #
+- "replace": "⸜(⸝⸝⸝´꒳`⸝⸝⸝)⸝"
+  "search_terms": ["'w", "arm"]
+  "trigger": ";kao joy 91"
+  #
+- "replace": "⸜(*ˊᗜˋ*)⸝"
+  "search_terms": ["blush", "arm"]
+  "trigger": ";kao joy 92"
+  #
+- "replace": "⸜( *ˊᵕˋ* )⸝"
+  "search_terms": ["blush", "arm"]
+  "trigger": ";kao joy 93"
+
+  # -------------------------------------------------------------------------- #
+  # love
+  #
+- "replace": "(ﾉ´ з `)ノ"
+  "search_terms": ["arm", "'3", "kiss"]
+  "trigger": ";kao love 00"
+  #
+- "replace": "(♡μ_μ)"
+  "search_terms": ["heart", "'u"]
+  "trigger": ";kao love 01"
+  #
+- "replace": "(*^^*)♡"
+  "search_terms": ["'*", "heart"]
+  "trigger": ";kao love 02"
+  #
+- "replace": "☆⌒ヽ(*'､^*)chu"
+  "search_terms": ["'*", "arm", "kiss", "wink", "blow"]
+  "trigger": ";kao love 03"
+  #
+- "replace": "(♡-_-♡)"
+  "search_terms": ["heart", "'-"]
+  "trigger": ";kao love 04"
+  #
+- "replace": "(￣ε￣＠)"
+  "search_terms": ["'-", "'3", "kiss"]
+  "trigger": ";kao love 05"
+  #
+- "replace": "ヽ(♡‿♡)ノ"
+  "search_terms": ["heart", "arm"]
+  "trigger": ";kao love 06"
+  #
+- "replace": "( ´ ∀ `)ノ～ ♡"
+  "search_terms": ["'A", "arm", "'~", "heart"]
+  "trigger": ";kao love 07"
+  #
+- "replace": "(─‿‿─)♡"
+  "search_terms": ["'-", "heart"]
+  "trigger": ";kao love 08"
+  #
+- "replace": "(´｡• ᵕ •｡`) ♡"
+  "search_terms": ["blush", "heart"]
+  "trigger": ";kao love 09"
+  #
+- "replace": "(*♡∀♡)"
+  "search_terms": ["heart", "'*", "'A"]
+  "trigger": ";kao love 10"
+  #
+- "replace": "(｡・//ε//・｡)"
+  "search_terms": ["'3", "kiss", "blush"]
+  "trigger": ";kao love 11"
+  #
+- "replace": "(´ ω `♡)"
+  "search_terms": ["'w", "heart"]
+  "trigger": ";kao love 12"
+  #
+- "replace": "♡( ◡‿◡ )"
+  "search_terms": ["heart"]
+  "trigger": ";kao love 13"
+  #
+- "replace": "(◕‿◕)♡"
+  "search_terms": ["heart"]
+  "trigger": ";kao love 14"
+  #
+- "replace": "(/▽＼*)｡o○♡"
+  "search_terms": ["hand", "triangle", "'*"]
+  "trigger": ";kao love 15"
+  #
+- "replace": "(ღ˘⌣˘ღ)"
+  "search_terms": ["blush"]
+  "trigger": ";kao love 16"
+  #
+- "replace": "(♡°▽°♡)"
+  "search_terms": ["triangle", "heart"]
+  "trigger": ";kao love 17"
+  #
+- "replace": "♡(｡- ω -)"
+  "search_terms": ["heart", "blush", "'-", "'w"]
+  "trigger": ";kao love 18"
+  #
+- "replace": "♡ ～('▽^人)"
+  "search_terms": ["heart", "'~", "wink", "triangle", "'^"]
+  "trigger": ";kao love 19"
+  #
+- "replace": "(´• ω •`) ♡"
+  "search_terms": ["'w", "heart"]
+  "trigger": ";kao love 20"
+  #
+- "replace": "(´ ε ` )♡"
+  "search_terms": ["'3", "kiss", "heart"]
+  "trigger": ";kao love 21"
+  #
+- "replace": "(´｡• ω •｡`) ♡"
+  "search_terms": ["'w", "blush", "heart"]
+  "trigger": ";kao love 22"
+  #
+- "replace": "( ´ ▽ ` ).｡ｏ♡"
+  "search_terms": ["triangle", "heart"]
+  "trigger": ";kao love 23"
+  #
+- "replace": "╰(*´︶`*)╯♡"
+  "search_terms": ["arm", "blush", "heart", "'*"]
+  "trigger": ";kao love 24"
+  #
+- "replace": "(*˘︶˘*).｡.:*♡"
+  "search_terms": ["'*", "blush", "heart"]
+  "trigger": ";kao love 25"
+  #
+- "replace": "(♡˙︶˙♡)"
+  "search_terms": ["heart"]
+  "trigger": ";kao love 26"
+  #
+- "replace": "♡＼(￣▽￣)／♡"
+  "search_terms": ["heart", "arm", "'-", "triangle"]
+  "trigger": ";kao love 27"
+  #
+- "replace": "(≧◡≦) ♡"
+  "search_terms": ["blush", "'><", "heart"]
+  "trigger": ";kao love 28"
+  #
+- "replace": "(⌒▽⌒)♡"
+  "search_terms": ["triangle", "heart"]
+  "trigger": ";kao love 29"
+  #
+- "replace": "(*¯ ³¯*)♡"
+  "search_terms": ["'3", "kiss", "heart", "blush", "heart"]
+  "trigger": ";kao love 30"
+  #
+- "replace": "(っ˘з(˘⌣˘ ) ♡"
+  "search_terms": ["'3", "kiss", "hand", "heart", "multiple"]
+  "trigger": ";kao love 31"
+  #
+- "replace": "♡ (˘▽˘>ԅ( ˘⌣˘)"
+  "search_terms": ["heart", "triangle", "hand", "multiple"]
+  "trigger": ";kao love 32"
+  #
+- "replace": "( ˘⌣˘)♡(˘⌣˘ )"
+  "search_terms": ["heart", "multiple"]
+  "trigger": ";kao love 33"
+  #
+- "replace": "(/^-^(^ ^*)/ ♡"
+  "search_terms": ["hand", "heart", "multiple", "blush"]
+  "trigger": ";kao love 34"
+  #
+- "replace": "٩(♡ε♡)۶"
+  "search_terms": ["arm", "heart", "'3", "kiss"]
+  "trigger": ";kao love 35"
+  #
+- "replace": "σ(≧ε≦σ) ♡"
+  "search_terms": ["arm", "'><", "blush", "heart"]
+  "trigger": ";kao love 36"
+  #
+- "replace": "♡ (⇀ 3 ↼)"
+  "search_terms": ["heart", "'-", "'3", "kiss"]
+  "trigger": ";kao love 37"
+  #
+- "replace": "♡ (￣З￣)"
+  "search_terms": ["heart", "'-", "'3", "kiss"]
+  "trigger": ";kao love 38"
+  #
+- "replace": "(❤ω❤)"
+  "search_terms": ["heart", "'w"]
+  "trigger": ";kao love 39"
+  #
+- "replace": "(˘∀˘)/(μ‿μ) ❤"
+  "search_terms": ["'A", "hand", "heart", "multiple", "'u"]
+  "trigger": ";kao love 40"
+  #
+- "replace": "❤ (ɔˆз(ˆ⌣ˆc)"
+  "search_terms": ["heart", "multiple", "'3", "kiss", "'^", "hand"]
+  "trigger": ";kao love 41"
+  #
+- "replace": "(´♡‿♡`)"
+  "search_terms": ["heart"]
+  "trigger": ";kao love 42"
+  #
+- "replace": "(°◡°♡)"
+  "search_terms": ["heart"]
+  "trigger": ";kao love 43"
+  #
+- "replace": "Σ>―(〃°ω°〃)♡→"
+  "search_terms": ["heart", "'w", "blush", "arrow"]
+  "trigger": ";kao love 44"
+  #
+- "replace": "(´,,•ω•,,)♡"
+  "search_terms": ["blush", "'w", "heart"]
+  "trigger": ";kao love 45"
+  #
+- "replace": "(´꒳`)♡"
+  "search_terms": ["'w", "heart"]
+  "trigger": ";kao love 46"
+  #
+- "replace": "♡(>ᴗ•)"
+  "search_terms": ["heart", "wink"]
+  "trigger": ";kao love 47"
+
+  # -------------------------------------------------------------------------- #
+  # embarrasment
+  #
+- "replace": "(⌒_⌒;)"
+  "search_terms": ["sweat"]
+  "trigger": ";kao embarrassment 00"
+  #
+- "replace": "(o^ ^o)"
+  "search_terms": ["blush"]
+  "trigger": ";kao embarrassment 01"
+  #
+- "replace": "(*/ω＼)"
+  "search_terms": ["'*", "'w", "hand", "blush"]
+  "trigger": ";kao embarrassment 02"
+  #
+- "replace": "(*/。＼)"
+  "search_terms": ["'*", "hand", "blush"]
+  "trigger": ";kao embarrassment 03"
+  #
+- "replace": "(*/_＼)"
+  "search_terms": ["'*", "hand", "blush"]
+  "trigger": ";kao embarrassment 04"
+  #
+- "replace": "(*ﾉωﾉ)"
+  "search_terms": ["'*", "hand", "'w", "blush"]
+  "trigger": ";kao embarrassment 05"
+  #
+- "replace": "(o-_-o)"
+  "search_terms": ["blush"]
+  "trigger": ";kao embarrassment 06"
+  #
+- "replace": "(*μ_μ)"
+  "search_terms": ["'*", "'u"]
+  "trigger": ";kao embarrassment 07"
+  #
+- "replace": "( ◡‿◡ *)"
+  "search_terms": ["'*"]
+  "trigger": ";kao embarrassment 08"
+  #
+- "replace": "(ᵔ.ᵔ)"
+  "search_terms": []
+  "trigger": ";kao embarrassment 09"
+  #
+- "replace": "(*ﾉ∀`*)"
+  "search_terms": ["'*", "hand", "blush", "'A"]
+  "trigger": ";kao embarrassment 10"
+  #
+- "replace": "(//▽//)"
+  "search_terms": ["triangle"]
+  "trigger": ";kao embarrassment 11"
+  #
+- "replace": "(//ω//)"
+  "search_terms": ["'w"]
+  "trigger": ";kao embarrassment 12"
+  #
+- "replace": "(ノ*°▽°*)"
+  "search_terms": ["'*", "triangle", "hand", "blush"]
+  "trigger": ";kao embarrassment 13"
+  #
+- "replace": "(*^.^*)"
+  "search_terms": ["'*", "blush"]
+  "trigger": ";kao embarrassment 14"
+  #
+- "replace": "(*ﾉ▽ﾉ)"
+  "search_terms": ["'*", "triangle", "hand", "blush"]
+  "trigger": ";kao embarrassment 15"
+  #
+- "replace": "(￣▽￣*)ゞ"
+  "search_terms": ["'-", "triangle", "blush", "hand"]
+  "trigger": ";kao embarrassment 16"
+  #
+- "replace": "(⁄ ⁄•⁄ω⁄•⁄ ⁄)"
+  "search_terms": ["blush", "'w"]
+  "trigger": ";kao embarrassment 17"
+  #
+- "replace": "(*/▽＼*)"
+  "search_terms": ["'*", "blush", "triangle", "hand"]
+  "trigger": ";kao embarrassment 18"
+  #
+- "replace": "(⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)"
+  "search_terms": ["triangle", "blush", "'><"]
+  "trigger": ";kao embarrassment 19"
+  #
+- "replace": "(„ಡωಡ„)"
+  "search_terms": ["blush", "'w"]
+  "trigger": ";kao embarrassment 20"
+  #
+- "replace": "(ง ื▿ ื)ว"
+  "search_terms": ["hand", "blush", "triangle"]
+  "trigger": ";kao embarrassment 21"
+  #
+- "replace": "( 〃▽〃)"
+  "search_terms": ["triangle", "blush"]
+  "trigger": ";kao embarrassment 22"
+  #
+- "replace": "(/▿＼ )"
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao embarrassment 23"
+  #
+- "replace": "(///￣ ￣///)"
+  "search_terms": ["blush", "'-"]
+  "trigger": ";kao embarrassment 24"
+
+  # -------------------------------------------------------------------------- #
+  # sympathy
+  #
+- "replace": "(ノ_<。)ヾ(´ ▽ ` )"
+  "search_terms": ["hand", "tear", "triangle", "multiple"]
+  "trigger": ";kao sympathy 00"
+  #
+- "replace": "｡･ﾟ･(ﾉД`)ヽ(￣ω￣ )"
+  "search_terms": ["tear", "hand", "'-", "'w", "multiple", "'D"]
+  "trigger": ";kao sympathy 01"
+  #
+- "replace": "ρ(- ω -、)ヾ(￣ω￣; )"
+  "search_terms": ["hand", "'-", "'w", "sweat", "tear", "multiple"]
+  "trigger": ";kao sympathy 02"
+  #
+- "replace": "ヽ(￣ω￣(。。 )ゝ"
+  "search_terms": ["hand", "'-", "'w", "multiple"]
+  "trigger": ";kao sympathy 03"
+  #
+- "replace": "(*´ I `)ﾉﾟ(ﾉД｀ﾟ)ﾟ｡"
+  "search_terms": ["'*", "hand", "tear", "multiple", "'D"]
+  "trigger": ";kao sympathy 04"
+  #
+- "replace": "ヽ(~_~(・_・ )ゝ"
+  "search_terms": ["hand", "multiple"]
+  "trigger": ";kao sympathy 05"
+  #
+- "replace": "(ﾉ_；)ヾ(´ ∀ ` )"
+  "search_terms": ["hand", "tear", "'A", "multiple"]
+  "trigger": ";kao sympathy 06"
+  #
+- "replace": "(; ω ; )ヾ(´∀`* )"
+  "search_terms": ["tear", "'w", "hand", "'A", "'*", "multiple", "blush"]
+  "trigger": ";kao sympathy 07"
+  #
+- "replace": "(*´ー)ﾉ(ノд`)"
+  "search_terms": ["'*", "'-", "hand", "multiple", "'D"]
+  "trigger": ";kao sympathy 08"
+  #
+- "replace": "(´-ω-`( _ _ )"
+  "search_terms": ["'w", "'-", "multiple"]
+  "trigger": ";kao sympathy 09"
+  #
+- "replace": "(っ´ω`)ﾉ(╥ω╥)"
+  "search_terms": ["hand", "'w", "tear", "multiple"]
+  "trigger": ";kao sympathy 10"
+  #
+- "replace": "(ｏ・_・)ノ”(ノ_<、)"
+  "search_terms": ["blush", "hand", "tear", "multiple"]
+  "trigger": ";kao sympathy 11"
+
+  # -------------------------------------------------------------------------- #
+  # dissatisfaction
+  #
+- "replace": "(＃＞＜)"
+  "search_terms": ["'><", "'#"]
+  "trigger": ";kao dissatisfaction 00"
+  #
+- "replace": "(；⌣̀_⌣́)"
+  "search_terms": ["sweat"]
+  "trigger": ";kao dissatisfaction 01"
+  #
+- "replace": "☆ｏ(＞＜；)○"
+  "search_terms": ["'*", "hand", "'><", "sweat"]
+  "trigger": ";kao dissatisfaction 02"
+  #
+- "replace": "(￣ ￣|||)"
+  "search_terms": ["'-"]
+  "trigger": ";kao dissatisfaction 03"
+  #
+- "replace": "(；￣Д￣)"
+  "search_terms": ["sweat", "'-", "'D"]
+  "trigger": ";kao dissatisfaction 04"
+  #
+- "replace": "(￣□￣」)"
+  "search_terms": ["'-", "square", "hand"]
+  "trigger": ";kao dissatisfaction 05"
+  #
+- "replace": "(＃￣0￣)"
+  "search_terms": ["'-", "'#"]
+  "trigger": ";kao dissatisfaction 06"
+  #
+- "replace": "(＃￣ω￣)"
+  "search_terms": ["'-", "'w", "'#"]
+  "trigger": ";kao dissatisfaction 07"
+  #
+- "replace": "(￢_￢;)"
+  "search_terms": ["side-eye", "sweat"]
+  "trigger": ";kao dissatisfaction 08"
+  #
+- "replace": "(＞ｍ＜)"
+  "search_terms": ["'><"]
+  "trigger": ";kao dissatisfaction 09"
+  #
+- "replace": "(」°ロ°)」"
+  "search_terms": ["hand", "square"]
+  "trigger": ";kao dissatisfaction 10"
+  #
+- "replace": "(〃＞＿＜;〃)"
+  "search_terms": ["blush", "'><", "sweat"]
+  "trigger": ";kao dissatisfaction 11"
+  #
+- "replace": "(＾＾＃)"
+  "search_terms": ["'^", "'#"]
+  "trigger": ";kao dissatisfaction 12"
+  #
+- "replace": "(︶︹︺)"
+  "search_terms": []
+  "trigger": ";kao dissatisfaction 13"
+  #
+- "replace": "(￣ヘ￣)"
+  "search_terms": ["'-", "'^"]
+  "trigger": ";kao dissatisfaction 14"
+  #
+- "replace": "<(￣ ﹌ ￣)>"
+  "search_terms": ["'-"]
+  "trigger": ";kao dissatisfaction 15"
+  #
+- "replace": "(￣︿￣)"
+  "search_terms": ["'-"]
+  "trigger": ";kao dissatisfaction 16"
+  #
+- "replace": "(＞﹏＜)"
+  "search_terms": ["'><", "'~"]
+  "trigger": ";kao dissatisfaction 17"
+  #
+- "replace": "(--_--)"
+  "search_terms": []
+  "trigger": ";kao dissatisfaction 18"
+  #
+- "replace": "凸(￣ヘ￣)"
+  "search_terms": ["hand", "'-", "'^"]
+  "trigger": ";kao dissatisfaction 19"
+  #
+- "replace": "ヾ( ￣O￣)ツ"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao dissatisfaction 20"
+  #
+- "replace": "(⇀‸↼‶)"
+  "search_terms": ["'-", "'><", "'^"]
+  "trigger": ";kao dissatisfaction 21"
+  #
+- "replace": "o(>< )o"
+  "search_terms": ["hand"]
+  "trigger": ";kao dissatisfaction 22"
+  #
+- "replace": "(」＞＜)」"
+  "search_terms": ["hand", "'><"]
+  "trigger": ";kao dissatisfaction 23"
+  #
+- "replace": "(ᗒᗣᗕ)՞"
+  "search_terms": ["'><", "tear"]
+  "trigger": ";kao dissatisfaction 24"
+  #
+- "replace": "(눈_눈)"
+  "search_terms": ["'-"]
+  "trigger": ";kao dissatisfaction 25"
+
+  # -------------------------------------------------------------------------- #
+  # anger
+  #
+- "replace": "(＃`Д´)"
+  "search_terms": ["'D", "'#"]
+  "trigger": ";kao anger 00"
+  #
+- "replace": "(`皿´＃)"
+  "search_terms": ["teeth", "'#"]
+  "trigger": ";kao anger 01"
+  #
+- "replace": "( ` ω ´ )"
+  "search_terms": ["'w"]
+  "trigger": ";kao anger 02"
+  #
+- "replace": "ヽ( `д´*)ノ"
+  "search_terms": ["hand", "'*", "'D"]
+  "trigger": ";kao anger 03"
+  #
+- "replace": "(・`ω´・)"
+  "search_terms": ["'w"]
+  "trigger": ";kao anger 04"
+  #
+- "replace": "(`ー´)"
+  "search_terms": ["'-"]
+  "trigger": ";kao anger 05"
+  #
+- "replace": "ヽ(`⌒´メ)ノ"
+  "search_terms": ["hand", "'#", "'x"]
+  "trigger": ";kao anger 06"
+  #
+- "replace": "凸(`△´＃)"
+  "search_terms": ["hand", "triangle", "'#"]
+  "trigger": ";kao anger 07"
+  #
+- "replace": "( `ε´ )"
+  "search_terms": ["'3"]
+  "trigger": ";kao anger 08"
+  #
+- "replace": "ψ( ` ∇ ´ )ψ"
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao anger 09"
+  #
+- "replace": "ヾ(`ヘ´)ﾉﾞ"
+  "search_terms": ["hand", "'^"]
+  "trigger": ";kao anger 10"
+  #
+- "replace": "ヽ(‵﹏´)ノ"
+  "search_terms": ["hand", "'~"]
+  "trigger": ";kao anger 11"
+  #
+- "replace": "(ﾒ` ﾛ ´)"
+  "search_terms": ["square", "'#"]
+  "trigger": ";kao anger 12"
+  #
+- "replace": "(╬`益´)"
+  "search_terms": ["'#"]
+  "trigger": ";kao anger 13"
+  #
+- "replace": "┌∩┐(◣_◢)┌∩┐"
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao anger 14"
+  #
+- "replace": "凸( ` ﾛ ´ )凸"
+  "search_terms": ["hand", "square"]
+  "trigger": ";kao anger 15"
+  #
+- "replace": "Σ(▼□▼メ)"
+  "search_terms": ["hand", "triangle", "square", "'#", "'x", "'3", "flash"]
+  "trigger": ";kao anger 16"
+  #
+- "replace": "(°ㅂ°╬)"
+  "search_terms": ["'#"]
+  "trigger": ";kao anger 17"
+  #
+- "replace": "ψ(▼へ▼メ)～→"
+  "search_terms": ["triangle", "'~", "arrow", "hand", "'#", "'x"]
+  "trigger": ";kao anger 18"
+  #
+- "replace": "(ノ°益°)ノ"
+  "search_terms": ["hand"]
+  "trigger": ";kao anger 19"
+  #
+- "replace": "(҂ `з´ )"
+  "search_terms": ["'3", "'#"]
+  "trigger": ";kao anger 20"
+  #
+- "replace": "(‡▼益▼)"
+  "search_terms": ["'#", "triangle"]
+  "trigger": ";kao anger 21"
+  #
+- "replace": "(҂` ﾛ ´)凸"
+  "search_terms": ["square"]
+  "trigger": ";kao anger 22"
+  #
+- "replace": "((╬◣﹏◢))"
+  "search_terms": ["triangle", "'#", "'~"]
+  "trigger": ";kao anger 23"
+  #
+- "replace": "٩(╬ʘ益ʘ╬)۶"
+  "search_terms": ["'#", "hand"]
+  "trigger": ";kao anger 24"
+  #
+- "replace": "(╬ Ò﹏Ó)"
+  "search_terms": ["'#", "'~"]
+  "trigger": ";kao anger 25"
+  #
+- "replace": "＼＼٩(๑`^´๑)۶／／"
+  "search_terms": ["hand", "blush"]
+  "trigger": ";kao anger 26"
+  #
+- "replace": "(凸ಠ益ಠ)凸"
+  "search_terms": ["hand"]
+  "trigger": ";kao anger 27"
+  #
+- "replace": "↑_(ΦwΦ)Ψ"
+  "search_terms": ["hand", "arrow"]
+  "trigger": ";kao anger 28"
+  #
+- "replace": "←~(Ψ▼ｰ▼)∈"
+  "search_terms": ["arrow", "triangle"]
+  "trigger": ";kao anger 29"
+  #
+- "replace": "୧((#Φ益Φ#))୨"
+  "search_terms": ["hand", "blush"]
+  "trigger": ";kao anger 30"
+  #
+- "replace": "٩(ఠ益ఠ)۶"
+  "search_terms": ["hand"]
+  "trigger": ";kao anger 31"
+  #
+- "replace": "(ﾉಥ益ಥ)ﾉ"
+  "search_terms": ["hand", "tear"]
+  "trigger": ";kao anger 32"
+  #
+- "replace": "(≖､≖╬)"
+  "search_terms": ["'#"]
+  "trigger": ";kao anger 33"
+
+  # -------------------------------------------------------------------------- #
+  # sad
+  #
+- "replace": "(ノ_<。)"
+  "search_terms": ["hand", "tear"]
+  "trigger": ";kao sad 00"
+  #
+- "replace": "(-_-)"
+  "search_terms": []
+  "trigger": ";kao sad 01"
+  #
+- "replace": "(´-ω-`)"
+  "search_terms": ["'w"]
+  "trigger": ";kao sad 02"
+  #
+- "replace": ".･ﾟﾟ･(／ω＼)･ﾟﾟ･."
+  "search_terms": ["tear", "'w", "hand"]
+  "trigger": ";kao sad 03"
+  #
+- "replace": "(μ_μ)"
+  "search_terms": ["'u"]
+  "trigger": ";kao sad 04"
+  #
+- "replace": "(ﾉД`)"
+  "search_terms": ["hand", "'D"]
+  "trigger": ";kao sad 05"
+  #
+- "replace": "(-ω-、)"
+  "search_terms": ["'w", "tear"]
+  "trigger": ";kao sad 06"
+  #
+- "replace": "。゜゜(´Ｏ`) ゜゜。"
+  "search_terms": ["tear"]
+  "trigger": ";kao sad 07"
+  #
+- "replace": "o(TヘTo)"
+  "search_terms": ["hand", "'^"]
+  "trigger": ";kao sad 08"
+  #
+- "replace": "( ; ω ; )"
+  "search_terms": ["'w", "tear"]
+  "trigger": ";kao sad 09"
+  #
+- "replace": "(｡╯︵╰｡)"
+  "search_terms": ["tear"]
+  "trigger": ";kao sad 10"
+  #
+- "replace": "｡･ﾟﾟ*(>д<)*ﾟﾟ･｡"
+  "search_terms": ["tear", "'D"]
+  "trigger": ";kao sad 11"
+  #
+- "replace": "( ﾟ，_ゝ｀)"
+  "search_terms": ["tear", "hand"]
+  "trigger": ";kao sad 12"
+  #
+- "replace": "(个_个)"
+  "search_terms": []
+  "trigger": ";kao sad 13"
+  #
+- "replace": "(╯︵╰,)"
+  "search_terms": ["hand", "tear"]
+  "trigger": ";kao sad 14"
+  #
+- "replace": "｡･ﾟ(ﾟ><ﾟ)ﾟ･｡"
+  "search_terms": ["tear"]
+  "trigger": ";kao sad 15"
+  #
+- "replace": "( ╥ω╥ )"
+  "search_terms": ["'w", "tear", "'-"]
+  "trigger": ";kao sad 16"
+  #
+- "replace": "(╯_╰)"
+  "search_terms": ["hand"]
+  "trigger": ";kao sad 17"
+  #
+- "replace": "(╥_╥)"
+  "search_terms": ["tear", "'-"]
+  "trigger": ";kao sad 18"
+  #
+- "replace": ".｡･ﾟﾟ･(＞_＜)･ﾟﾟ･｡."
+  "search_terms": ["tear", "'><"]
+  "trigger": ";kao sad 19"
+  #
+- "replace": "(／ˍ・、)"
+  "search_terms": ["hand", "tear"]
+  "trigger": ";kao sad 20"
+  #
+- "replace": "(ノ_<、)"
+  "search_terms": ["hand", "tear"]
+  "trigger": ";kao sad 21"
+  #
+- "replace": "(╥﹏╥)"
+  "search_terms": ["tear", "'-", "'~"]
+  "trigger": ";kao sad 22"
+  #
+- "replace": "｡ﾟ(｡ﾉωヽ｡)ﾟ｡"
+  "search_terms": ["'w", "hand", "tear"]
+  "trigger": ";kao sad 23"
+  #
+- "replace": "(つω`｡)"
+  "search_terms": ["hand", "'w", "tear"]
+  "trigger": ";kao sad 24"
+  #
+- "replace": "(｡T ω T｡)"
+  "search_terms": ["'w", "tear"]
+  "trigger": ";kao sad 25"
+  #
+- "replace": "(ﾉω･､)"
+  "search_terms": ["'w", "hand", "tear"]
+  "trigger": ";kao sad 26"
+  #
+- "replace": "･ﾟ･(｡>ω<｡)･ﾟ･"
+  "search_terms": ["tear", "'w", "blush"]
+  "trigger": ";kao sad 27"
+  #
+- "replace": "(T_T)"
+  "search_terms": []
+  "trigger": ";kao sad 28"
+  #
+- "replace": "(>_<)"
+  "search_terms": []
+  "trigger": ";kao sad 29"
+  #
+- "replace": "(っ˘̩╭╮˘̩)っ"
+  "search_terms": ["hand", "tear"]
+  "trigger": ";kao sad 30"
+  #
+- "replace": "｡ﾟ･ (>﹏<) ･ﾟ｡"
+  "search_terms": ["tear", "'~"]
+  "trigger": ";kao sad 31"
+  #
+- "replace": "o(〒﹏〒)o"
+  "search_terms": ["hand", "'-", "'~"]
+  "trigger": ";kao sad 32"
+  #
+- "replace": "(｡•́︿•̀｡)"
+  "search_terms": ["tear", "'^"]
+  "trigger": ";kao sad 33"
+  #
+- "replace": "(ಥ﹏ಥ)"
+  "search_terms": ["tear", "'~"]
+  "trigger": ";kao sad 34"
+  #
+- "replace": "(ಡ‸ಡ)"
+  "search_terms": ["tear"]
+  "trigger": ";kao sad 35"
+
+  # -------------------------------------------------------------------------- #
+  # pain
+  #
+- "replace": "~(>_<~)"
+  "search_terms": []
+  "trigger": ";kao pain 00"
+  #
+- "replace": "☆⌒(> _ <)"
+  "search_terms": ["'*"]
+  "trigger": ";kao pain 01"
+  #
+- "replace": "☆⌒(>。<)"
+  "search_terms": ["'*"]
+  "trigger": ";kao pain 02"
+  #
+- "replace": "(☆_@)"
+  "search_terms": ["'*"]
+  "trigger": ";kao pain 03"
+  #
+- "replace": "(×_×)"
+  "search_terms": ["'x"]
+  "trigger": ";kao pain 04"
+  #
+- "replace": "(x_x)"
+  "search_terms": []
+  "trigger": ";kao pain 05"
+  #
+- "replace": "(×_×)⌒☆"
+  "search_terms": ["'x", "'*"]
+  "trigger": ";kao pain 06"
+  #
+- "replace": "(x_x)⌒☆"
+  "search_terms": ["'*"]
+  "trigger": ";kao pain 07"
+  #
+- "replace": "(×﹏×)"
+  "search_terms": ["'x", "'~"]
+  "trigger": ";kao pain 08"
+  #
+- "replace": "☆(＃××)"
+  "search_terms": ["'*", "'x", "'#"]
+  "trigger": ";kao pain 09"
+  #
+- "replace": "(＋_＋)"
+  "search_terms": ["'+"]
+  "trigger": ";kao pain 10"
+  #
+- "replace": "[ ± _ ± ]"
+  "search_terms": ["'+"]
+  "trigger": ";kao pain 11"
+  #
+- "replace": "٩(× ×)۶"
+  "search_terms": ["'x"]
+  "trigger": ";kao pain 12"
+  #
+- "replace": "_:(´ཀ`」 ∠):_"
+  "search_terms": ["hand", "leg"]
+  "trigger": ";kao pain 13"
+  #
+- "replace": "(ﾒ﹏ﾒ)"
+  "search_terms": ["'x", "'~"]
+  "trigger": ";kao pain 14"
+
+  # -------------------------------------------------------------------------- #
+  # fear
+  #
+- "replace": "(ノωヽ)"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao fear 00"
+  #
+- "replace": "(／。＼)"
+  "search_terms": ["hand"]
+  "trigger": ";kao fear 01"
+  #
+- "replace": "(ﾉ_ヽ)"
+  "search_terms": ["hand"]
+  "trigger": ";kao fear 02"
+  #
+- "replace": "..・ヾ(。＞＜)シ"
+  "search_terms": ["hand", "'><", "sweat", "tear", "run"]
+  "trigger": ";kao fear 03"
+  #
+- "replace": "(″ロ゛)"
+  "search_terms": ["square"]
+  "trigger": ";kao fear 04"
+  #
+- "replace": "(;;;*_*)"
+  "search_terms": ["sweat", "'*"]
+  "trigger": ";kao fear 05"
+  #
+- "replace": "(・人・)"
+  "search_terms": ["'^"]
+  "trigger": ";kao fear 06"
+  #
+- "replace": "＼(〇_ｏ)／"
+  "search_terms": ["hand"]
+  "trigger": ";kao fear 07"
+  #
+- "replace": "(/ω＼)"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao fear 08"
+  #
+- "replace": "(/_＼)"
+  "search_terms": ["hand"]
+  "trigger": ";kao fear 09"
+  #
+- "replace": "〜(＞＜)〜"
+  "search_terms": ["'~", "'><"]
+  "trigger": ";kao fear 10"
+  #
+- "replace": "Σ(°△°|||)︴"
+  "search_terms": ["hand", "triangle", "flash", "'3"]
+  "trigger": ";kao fear 11"
+  #
+- "replace": "(((＞＜)))"
+  "search_terms": ["'><", "shake"]
+  "trigger": ";kao fear 12"
+  #
+- "replace": "{{ (>_<) }}"
+  "search_terms": ["shake"]
+  "trigger": ";kao fear 13"
+  #
+- "replace": "＼(º □ º l|l)/"
+  "search_terms": ["hand"]
+  "trigger": ";kao fear 14"
+  #
+- "replace": "〣( ºΔº )〣"
+  "search_terms": ["triangle", "shake"]
+  "trigger": ";kao fear 15"
+  #
+- "replace": "▓▒░(°◡°)░▒▓"
+  "search_terms": []
+  "trigger": ";kao fear 16"
+
+  # -------------------------------------------------------------------------- #
+  # indifference
+  #
+- "replace": "ヽ(ー_ー )ノ"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao indifference 00"
+  #
+- "replace": "ヽ(´ー` )┌"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao indifference 01"
+  #
+- "replace": "┐(‘～` )┌"
+  "search_terms": ["hand", "'~"]
+  "trigger": ";kao indifference 02"
+  #
+- "replace": "ヽ(　￣д￣)ノ"
+  "search_terms": ["hand", "'-", "'D"]
+  "trigger": ";kao indifference 03"
+  #
+- "replace": "┐(￣ヘ￣)┌"
+  "search_terms": ["hand", "'-", "'^"]
+  "trigger": ";kao indifference 04"
+  #
+- "replace": "ヽ(￣～￣　)ノ"
+  "search_terms": ["hand", "'-", "'~"]
+  "trigger": ";kao indifference 05"
+  #
+- "replace": "╮(￣_￣)╭"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao indifference 06"
+  #
+- "replace": "ヽ(ˇヘˇ)ノ"
+  "search_terms": ["hand", "'^", "'v"]
+  "trigger": ";kao indifference 07"
+  #
+- "replace": "┐(￣～￣)┌"
+  "search_terms": ["hand", "'-", "'~"]
+  "trigger": ";kao indifference 08"
+  #
+- "replace": "┐(︶▽︶)┌"
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao indifference 09"
+  #
+- "replace": "╮(￣～￣)╭"
+  "search_terms": ["hand", "'-", "'~"]
+  "trigger": ";kao indifference 10"
+  #
+- "replace": "¯\\_(ツ)_/¯"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 11"
+  #
+- "replace": "┐( ´ д ` )┌"
+  "search_terms": ["hand", "'D"]
+  "trigger": ";kao indifference 12"
+  #
+- "replace": "╮(︶︿︶)╭"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 13"
+  #
+- "replace": "┐(￣∀￣)┌"
+  "search_terms": ["hand", "'A", "'-"]
+  "trigger": ";kao indifference 14"
+  #
+- "replace": "┐( ˘ ､ ˘ )┌"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 15"
+  #
+- "replace": "╮(︶▽︶)╭"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 16"
+  #
+- "replace": "╮( ˘ ､ ˘ )╭"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 17"
+  #
+- "replace": "┐( ˘_˘ )┌"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 18"
+  #
+- "replace": "╮( ˘_˘ )╭"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 19"
+  #
+- "replace": "┐(￣ヮ￣)┌"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao indifference 20"
+  #
+- "replace": "ᕕ( ᐛ )ᕗ"
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao indifference 21"
+  #
+- "replace": "┐(シ)┌"
+  "search_terms": ["hand"]
+  "trigger": ";kao indifference 22"
+
+  # -------------------------------------------------------------------------- #
+  # confusion
+  #
+- "replace": "(￣ω￣;)"
+  "search_terms": ["'-", "'w", "sweat"]
+  "trigger": ";kao confusion 00"
+  #
+- "replace": "σ(￣、￣〃)"
+  "search_terms": ["hand", "'-", "blush"]
+  "trigger": ";kao confusion 01"
+  #
+- "replace": "(￣～￣;)"
+  "search_terms": ["'-", "'~", "sweat"]
+  "trigger": ";kao confusion 02"
+  #
+- "replace": "(-_-;)・・・"
+  "search_terms": ["sweat", "..."]
+  "trigger": ";kao confusion 03"
+  #
+- "replace": "┐('～`;)┌"
+  "search_terms": ["hand", "'~", "sweat"]
+  "trigger": ";kao confusion 04"
+  #
+- "replace": "(・_・ヾ"
+  "search_terms": ["hand", "scratch"]
+  "trigger": ";kao confusion 05"
+  #
+- "replace": "(〃￣ω￣〃ゞ"
+  "search_terms": ["'w", "blush", "'-", "scratch"]
+  "trigger": ";kao confusion 06"
+  #
+- "replace": "┐(￣ヘ￣;)┌"
+  "search_terms": ["hand", "'-", "'^", "sweat", "shrug"]
+  "trigger": ";kao confusion 07"
+  #
+- "replace": "(・_・;)"
+  "search_terms": ["sweat"]
+  "trigger": ";kao confusion 08"
+  #
+- "replace": "(￣_￣)・・・"
+  "search_terms": ["'-", "..."]
+  "trigger": ";kao confusion 09"
+  #
+- "replace": "╮(￣ω￣;)╭"
+  "search_terms": ["shrug", "'-", "'w", "sweat"]
+  "trigger": ";kao confusion 10"
+  #
+- "replace": "(¯ . ¯;)"
+  "search_terms": ["'-", "sweat"]
+  "trigger": ";kao confusion 11"
+  #
+- "replace": "(＠_＠)"
+  "search_terms": []
+  "trigger": ";kao confusion 12"
+  #
+- "replace": "(・・;)ゞ"
+  "search_terms": ["sweat", "hand", "scratch"]
+  "trigger": ";kao confusion 13"
+  #
+- "replace": "Σ(￣。￣ﾉ)"
+  "search_terms": ["hand", "'-", "'3", "flash"]
+  "trigger": ";kao confusion 14"
+  #
+- "replace": "(・・ ) ?"
+  "search_terms": []
+  "trigger": ";kao confusion 15"
+  #
+- "replace": "(•ิ_•ิ)?"
+  "search_terms": []
+  "trigger": ";kao confusion 16"
+  #
+- "replace": "(◎ ◎)ゞ"
+  "search_terms": ["scratch"]
+  "trigger": ";kao confusion 17"
+  #
+- "replace": "(ーー;)"
+  "search_terms": ["'-", "sweat"]
+  "trigger": ";kao confusion 18"
+  #
+- "replace": "ლ(ಠ_ಠ ლ)"
+  "search_terms": ["hand"]
+  "trigger": ";kao confusion 19"
+  #
+- "replace": "ლ(¯ロ¯\"ლ)"
+  "search_terms": ["hand", "'-", "square"]
+  "trigger": ";kao confusion 20"
+  #
+- "replace": "(¯ . ¯٥)"
+  "search_terms": ["'-", "sweat"]
+  "trigger": ";kao confusion 21"
+  #
+- "replace": "(¯ ¯٥)"
+  "search_terms": ["'-", "sweat"]
+  "trigger": ";kao confusion 22"
+
+  # -------------------------------------------------------------------------- #
+  # doubt
+  #
+- "replace": "(￢_￢)"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 00"
+  #
+- "replace": "(→_→)"
+  "search_terms": ["side-eye", "arrow"]
+  "trigger": ";kao doubt 01"
+  #
+- "replace": "(￢ ￢)"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 02"
+  #
+- "replace": "(￢‿￢ )"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 03"
+  #
+- "replace": "(¬_¬ )"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 04"
+  #
+- "replace": "(←_←)"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 05"
+  #
+- "replace": "(¬ ¬ )"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 06"
+  #
+- "replace": "(¬‿¬ )"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 07"
+  #
+- "replace": "(↼_↼)"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 08"
+  #
+- "replace": "(⇀_⇀)"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 09"
+  #
+- "replace": "(ᓀ ᓀ)"
+  "search_terms": ["side-eye"]
+  "trigger": ";kao doubt 10"
+
+  # -------------------------------------------------------------------------- #
+  # surprise
+  #
+- "replace": "w(°ｏ°)w"
+  "search_terms": ["hand"]
+  "trigger": ";kao surprise 00"
+  #
+- "replace": "ヽ(°〇°)ﾉ"
+  "search_terms": ["hand"]
+  "trigger": ";kao surprise 01"
+  #
+- "replace": "Σ(O_O)"
+  "search_terms": ["flash", "'3"]
+  "trigger": ";kao surprise 02"
+  #
+- "replace": "Σ(°ロ°)"
+  "search_terms": ["'3", "flash", "square"]
+  "trigger": ";kao surprise 03"
+  #
+- "replace": "(⊙_⊙)"
+  "search_terms": []
+  "trigger": ";kao surprise 04"
+  #
+- "replace": "(o_O)"
+  "search_terms": []
+  "trigger": ";kao surprise 05"
+  #
+- "replace": "(O_O;)"
+  "search_terms": []
+  "trigger": ";kao surprise 06"
+  #
+- "replace": "(O.O)"
+  "search_terms": []
+  "trigger": ";kao surprise 07"
+  #
+- "replace": "(°ロ°) !"
+  "search_terms": ["square"]
+  "trigger": ";kao surprise 08"
+  #
+- "replace": "(o_O) !"
+  "search_terms": []
+  "trigger": ";kao surprise 09"
+  #
+- "replace": "(□_□)"
+  "search_terms": ["square"]
+  "trigger": ";kao surprise 10"
+  #
+- "replace": "Σ(□_□)"
+  "search_terms": ["flash", "'3", "square"]
+  "trigger": ";kao surprise 11"
+  #
+- "replace": "∑(O_O;)"
+  "search_terms": ["flash", "sweat"]
+  "trigger": ";kao surprise 12"
+  #
+- "replace": "( : ౦ ‸ ౦ : )"
+  "search_terms": ["'^"]
+  "trigger": ";kao surprise 13"
+
+  # -------------------------------------------------------------------------- #
+  # greet
+  #
+- "replace": "(*・ω・)ﾉ"
+  "search_terms": ["'*", "'w", "hand"]
+  "trigger": ";kao greet 00"
+  #
+- "replace": "(￣▽￣)ノ"
+  "search_terms": ["'-", "triangle", "hand"]
+  "trigger": ";kao greet 01"
+  #
+- "replace": "(°▽°)/"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao greet 02"
+  #
+- "replace": "( ´ ∀ ` )ﾉ"
+  "search_terms": ["'A", "hand"]
+  "trigger": ";kao greet 03"
+  #
+- "replace": "(^-^*)/"
+  "search_terms": ["'*", "hand"]
+  "trigger": ";kao greet 04"
+  #
+- "replace": "(＠´ー`)ﾉﾞ"
+  "search_terms": ["'-", "hand"]
+  "trigger": ";kao greet 05"
+  #
+- "replace": "(´• ω •`)ﾉ"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao greet 06"
+  #
+- "replace": "( ° ∀ ° )ﾉﾞ"
+  "search_terms": ["'A", "hand"]
+  "trigger": ";kao greet 07"
+  #
+- "replace": "ヾ(*'▽'*)"
+  "search_terms": ["'*", "triangle", "wave"]
+  "trigger": ";kao greet 08"
+  #
+- "replace": "＼(⌒▽⌒)"
+  "search_terms": ["wave", "triangle"]
+  "trigger": ";kao greet 09"
+  #
+- "replace": "ヾ(☆▽☆)"
+  "search_terms": ["hand", "'*", "triangle"]
+  "trigger": ";kao greet 10"
+  #
+- "replace": "( ´ ▽ ` )ﾉ"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao greet 11"
+  #
+- "replace": "(^０^)ノ"
+  "search_terms": ["hand"]
+  "trigger": ";kao greet 12"
+  #
+- "replace": "~ヾ(・ω・)"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao greet 13"
+  #
+- "replace": "(・∀・)ノ"
+  "search_terms": ["'A", "hand"]
+  "trigger": ";kao greet 14"
+  #
+- "replace": "ヾ(・ω・*)"
+  "search_terms": ["hand", "'w", "'*"]
+  "trigger": ";kao greet 15"
+  #
+- "replace": "(*°ｰ°)ﾉ"
+  "search_terms": ["'*", "hand"]
+  "trigger": ";kao greet 16"
+  #
+- "replace": "(・_・)ノ"
+  "search_terms": ["hand"]
+  "trigger": ";kao greet 17"
+  #
+- "replace": "(o´ω`o)ﾉ"
+  "search_terms": ["'w", "blush", "hand"]
+  "trigger": ";kao greet 18"
+  #
+- "replace": "( ´ ▽ ` )/"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao greet 19"
+  #
+- "replace": "(￣ω￣)/"
+  "search_terms": ["'-", "'w", "hand"]
+  "trigger": ";kao greet 20"
+  #
+- "replace": "( ´ ω ` )ノﾞ"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao greet 21"
+  #
+- "replace": "(⌒ω⌒)ﾉ"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao greet 22"
+  #
+- "replace": "(o^ ^o)/"
+  "search_terms": ["blush", "hand"]
+  "trigger": ";kao greet 23"
+  #
+- "replace": "(≧▽≦)/"
+  "search_terms": ["'><", "triangle", "hand", "blush"]
+  "trigger": ";kao greet 24"
+  #
+- "replace": "(✧∀✧)/"
+  "search_terms": ["diamond", "'A", "hand"]
+  "trigger": ";kao greet 25"
+  #
+- "replace": "(o´▽`o)ﾉ"
+  "search_terms": ["blush", "triangle", "hand"]
+  "trigger": ";kao greet 26"
+  #
+- "replace": "(￣▽￣)/"
+  "search_terms": ["'-", "triangle", "hand"]
+  "trigger": ";kao greet 27"
+
+  # -------------------------------------------------------------------------- #
+  # hug
+  #
+- "replace": "(づ￣ ³￣)づ"
+  "search_terms": ["hand", "kiss", "'3", "'-"]
+  "trigger": ";kao hug 00"
+  #
+- "replace": "(つ≧▽≦)つ"
+  "search_terms": ["hand", "'><", "triangle", "blush"]
+  "trigger": ";kao hug 01"
+  #
+- "replace": "(つ✧ω✧)つ"
+  "search_terms": ["hand", "diamond", "'w"]
+  "trigger": ";kao hug 02"
+  #
+- "replace": "(づ ◕‿◕ )づ"
+  "search_terms": ["hand"]
+  "trigger": ";kao hug 03"
+  #
+- "replace": "(⊃｡•́‿•̀｡)⊃"
+  "search_terms": ["hand", "blush"]
+  "trigger": ";kao hug 04"
+  #
+- "replace": "(つ . •́ _ʖ •̀ .)つ"
+  "search_terms": ["hand", "blush", "nose"]
+  "trigger": ";kao hug 05"
+  #
+- "replace": "(っಠ‿ಠ)っ"
+  "search_terms": ["hand"]
+  "trigger": ";kao hug 06"
+  #
+- "replace": "(づ◡﹏◡)づ"
+  "search_terms": ["hand", "'~"]
+  "trigger": ";kao hug 07"
+  #
+- "replace": "⊂(´• ω •`⊂)"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao hug 08"
+  #
+- "replace": "⊂(･ω･*⊂)"
+  "search_terms": ["hand", "'w", "'*"]
+  "trigger": ";kao hug 09"
+  #
+- "replace": "⊂(￣▽￣)⊃"
+  "search_terms": ["'-", "triangle", "hand"]
+  "trigger": ";kao hug 10"
+  #
+- "replace": "⊂( ´ ▽ ` )⊃"
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao hug 11"
+  #
+- "replace": "( ~*-*)~"
+  "search_terms": ["'*", "hand"]
+  "trigger": ";kao hug 12"
+  #
+- "replace": "(ノ= ⩊ = )ノ"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao hug 13"
+  #
+- "replace": "(っ ᵔ◡ᵔ)っ"
+  "search_terms": ["hand"]
+  "trigger": ";kao hug 14"
+  #
+- "replace": "(っ╹ᆺ╹)っ"
+  "search_terms": ["hand"]
+  "trigger": ";kao hug 15"
+
+  # -------------------------------------------------------------------------- #
+  # wink
+  #
+- "replace": "(^_~)"
+  "search_terms": []
+  "trigger": ";kao wink 00"
+  #
+- "replace": "( ﾟｏ⌒)"
+  "search_terms": []
+  "trigger": ";kao wink 01"
+  #
+- "replace": "(^_-)≡☆"
+  "search_terms": ["'*"]
+  "trigger": ";kao wink 02"
+  #
+- "replace": "(^ω~)"
+  "search_terms": ["'w"]
+  "trigger": ";kao wink 03"
+  #
+- "replace": "(>ω^)"
+  "search_terms": ["'w"]
+  "trigger": ";kao wink 04"
+  #
+- "replace": "(~人^)"
+  "search_terms": ["'^"]
+  "trigger": ";kao wink 05"
+  #
+- "replace": "(^_-)"
+  "search_terms": []
+  "trigger": ";kao wink 06"
+  #
+- "replace": "( -_・)"
+  "search_terms": []
+  "trigger": ";kao wink 07"
+  #
+- "replace": "(^_<)〜☆"
+  "search_terms": ["'*", "'~"]
+  "trigger": ";kao wink 08"
+  #
+- "replace": "(^人<)〜☆"
+  "search_terms": ["'~", "'*", "'^"]
+  "trigger": ";kao wink 09"
+  #
+- "replace": "☆⌒(≧▽​° )"
+  "search_terms": ["'*", "'><", "blush"]
+  "trigger": ";kao wink 10"
+  #
+- "replace": "☆⌒(ゝ。∂)"
+  "search_terms": ["'*", "'><"]
+  "trigger": ";kao wink 11"
+  #
+- "replace": "(^_<)"
+  "search_terms": []
+  "trigger": ";kao wink 12"
+  #
+- "replace": "(^_−)☆"
+  "search_terms": ["'*"]
+  "trigger": ";kao wink 13"
+  #
+- "replace": "(･ω<)☆"
+  "search_terms": ["'w", "'*"]
+  "trigger": ";kao wink 14"
+  #
+- "replace": "(^.~)☆"
+  "search_terms": ["'*"]
+  "trigger": ";kao wink 15"
+  #
+- "replace": "(^.~)"
+  "search_terms": []
+  "trigger": ";kao wink 16"
+  #
+- "replace": "(｡•̀ᴗ-)✧"
+  "search_terms": ["diamond", "blush"]
+  "trigger": ";kao wink 17"
+  #
+- "replace": "(>ᴗ•)"
+  "search_terms": []
+  "trigger": ";kao wink 18"
+
+  # -------------------------------------------------------------------------- #
+  # apology
+  #
+- "replace": "m(_ _)m"
+  "search_terms": ["hand"]
+  "trigger": ";kao apology 00"
+  #
+- "replace": "(シ_ _)シ"
+  "search_terms": ["hand"]
+  "trigger": ";kao apology 01"
+  #
+- "replace": "m(. .)m"
+  "search_terms": ["hand"]
+  "trigger": ";kao apology 02"
+  #
+- "replace": "<(_ _)>"
+  "search_terms": ["hand"]
+  "trigger": ";kao apology 03"
+  #
+- "replace": "人(_ _*)"
+  "search_terms": ["'^", "'*", "hand"]
+  "trigger": ";kao apology 04"
+  #
+- "replace": "(*_ _)人"
+  "search_terms": ["'*", "'^"]
+  "trigger": ";kao apology 05"
+  #
+- "replace": "m(_ _;m)"
+  "search_terms": ["hand", "sweat"]
+  "trigger": ";kao apology 06"
+  #
+- "replace": "(m;_ _)m"
+  "search_terms": ["hand", "sweat"]
+  "trigger": ";kao apology 07"
+  #
+- "replace": "(シ. .)シ"
+  "search_terms": ["hand"]
+  "trigger": ";kao apology 08"
+
+  # -------------------------------------------------------------------------- #
+  # nosebleed
+  #
+- "replace": "(*￣ii￣)"
+  "search_terms": ["'*", "'-"]
+  "trigger": ";kao nosebleed 00"
+  #
+- "replace": "(￣ﾊ￣*)"
+  "search_terms": ["'-", "'*"]
+  "trigger": ";kao nosebleed 01"
+  #
+- "replace": "\\(￣ﾊ￣)"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao nosebleed 02"
+  #
+- "replace": "(＾་།＾)"
+  "search_terms": ["'^"]
+  "trigger": ";kao nosebleed 03"
+  #
+- "replace": "(＾〃＾)"
+  "search_terms": ["'^"]
+  "trigger": ";kao nosebleed 04"
+  #
+- "replace": "(￣ ¨ヽ￣)"
+  "search_terms": ["'-"]
+  "trigger": ";kao nosebleed 05"
+  #
+- "replace": "(￣ ;￣)"
+  "search_terms": ["'-"]
+  "trigger": ";kao nosebleed 06"
+  #
+- "replace": "(￣ ;;￣)"
+  "search_terms": ["'-"]
+  "trigger": ";kao nosebleed 07"
+
+  # -------------------------------------------------------------------------- #
+  # hide
+  #
+- "replace": "|･ω･)"
+  "search_terms": ["'w"]
+  "trigger": ";kao hide 00"
+  #
+- "replace": "ﾍ(･_|"
+  "search_terms": ["hand", "'^"]
+  "trigger": ";kao hide 01"
+  #
+- "replace": "|ω･)ﾉ"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao hide 02"
+  #
+- "replace": "ヾ(･|"
+  "search_terms": ["hand"]
+  "trigger": ";kao hide 03"
+  #
+- "replace": "|д･)"
+  "search_terms": ["'D"]
+  "trigger": ";kao hide 04"
+  #
+- "replace": "|_￣))"
+  "search_terms": ["'-"]
+  "trigger": ";kao hide 05"
+  #
+- "replace": "|▽//)"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao hide 06"
+  #
+- "replace": "┬┴┬┴┤(･_├┬┴┬┴"
+  "search_terms": ["brick"]
+  "trigger": ";kao hide 07"
+  #
+- "replace": "┬┴┬┴┤･ω･)ﾉ"
+  "search_terms": ["brick", "'w", "hand"]
+  "trigger": ";kao hide 08"
+  #
+- "replace": "┬┴┬┴┤( ͡° ͜ʖ├┬┴┬┴"
+  "search_terms": ["brick", "nose", "blush"]
+  "trigger": ";kao hide 09"
+  #
+- "replace": "┬┴┬┴┤(･_├┬┴┬┴"
+  "search_terms": ["brick"]
+  "trigger": ";kao hide 10"
+  #
+- "replace": "|_・)"
+  "search_terms": []
+  "trigger": ";kao hide 11"
+  #
+- "replace": "|･д･)ﾉ"
+  "search_terms": ["hand", "'D"]
+  "trigger": ";kao hide 12"
+  #
+- "replace": "|ʘ‿ʘ)╯"
+  "search_terms": ["hand"]
+  "trigger": ";kao hide 13"
+
+  # -------------------------------------------------------------------------- #
+  # write
+  #
+- "replace": "__φ(．．)"
+  "search_terms": ["hand"]
+  "trigger": ";kao write 00"
+  #
+- "replace": "( ￣ー￣)φ__"
+  "search_terms": ["'-", "hand"]
+  "trigger": ";kao write 01"
+  #
+- "replace": "__φ(。。)"
+  "search_terms": ["hand"]
+  "trigger": ";kao write 02"
+  #
+- "replace": "__φ(．．;)"
+  "search_terms": ["hand", "sweat"]
+  "trigger": ";kao write 03"
+  #
+- "replace": "ヾ( `ー´)シφ__"
+  "search_terms": ["hand"]
+  "trigger": ";kao write 04"
+  #
+- "replace": "__〆(￣ー￣ )"
+  "search_terms": ["'-", "hand"]
+  "trigger": ";kao write 05"
+  #
+- "replace": "....φ(・∀・*)"
+  "search_terms": ["hand", "'A", "'*"]
+  "trigger": ";kao write 06"
+  #
+- "replace": "___〆(・∀・)"
+  "search_terms": ["hand", "'A"]
+  "trigger": ";kao write 07"
+  #
+- "replace": "( ^▽^)ψ__"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao write 08"
+  #
+- "replace": "....φ(︶▽︶)φ...."
+  "search_terms": ["hand", "triangle"]
+  "trigger": ";kao write 09"
+  #
+- "replace": "( . .)φ__"
+  "search_terms": ["hand"]
+  "trigger": ";kao write 10"
+  #
+- "replace": "__φ(◎◎ヘ)"
+  "search_terms": ["hand"]
+  "trigger": ";kao write 11"
+
+  # -------------------------------------------------------------------------- #
+  # run
+  #
+- "replace": "☆ﾐ(o*･ω･)ﾉ"
+  "search_terms": ["'*", "'w", "hand"]
+  "trigger": ";kao run 00"
+  #
+- "replace": "C= C= C= C= C=┌(;・ω・)┘"
+  "search_terms": ["hand", "'w", "sweat"]
+  "trigger": ";kao run 01"
+  #
+- "replace": "─=≡Σ((( つ＞＜)つ"
+  "search_terms": ["hand", "'><"]
+  "trigger": ";kao run 02"
+  #
+- "replace": "ε=ε=ε=ε=┌(;￣▽￣)┘"
+  "search_terms": ["hand", "triangle", "'-", "sweat", "'3"]
+  "trigger": ";kao run 03"
+  #
+- "replace": "ε=ε=┌( >_<)┘"
+  "search_terms": ["'3", "hand"]
+  "trigger": ";kao run 04"
+  #
+- "replace": "C= C= C= C=┌( `ー´)┘"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao run 05"
+  #
+- "replace": "ε===(っ≧ω≦)っ"
+  "search_terms": ["'3", "hand", "'><", "'w", "blush"]
+  "trigger": ";kao run 06"
+  #
+- "replace": "ヽ(￣д￣;)ノ=3=3=3"
+  "search_terms": ["hand", "'-", "sweat", "'3", "'D"]
+  "trigger": ";kao run 07"
+  #
+- "replace": "。。。ミヽ(。＞＜)ノ"
+  "search_terms": ["'...", "'><", "sweat", "hand"]
+  "trigger": ";kao run 08"
+
+  # -------------------------------------------------------------------------- #
+  # sleep
+  #
+- "replace": "[(－－)]..zzZ"
+  "search_terms": ["'-", "'..."]
+  "trigger": ";kao sleep 00"
+  #
+- "replace": "(－_－) zzZ"
+  "search_terms": ["'-"]
+  "trigger": ";kao sleep 01"
+  #
+- "replace": "(∪｡∪)｡｡｡zzZ"
+  "search_terms": ["'...", "'U"]
+  "trigger": ";kao sleep 02"
+  #
+- "replace": "(－ω－) zzZ"
+  "search_terms": ["'w", "'-"]
+  "trigger": ";kao sleep 03"
+  #
+- "replace": "(￣o￣) zzZZzzZZ"
+  "search_terms": ["'-"]
+  "trigger": ";kao sleep 04"
+  #
+- "replace": "(( _ _ ))..zzzZZ"
+  "search_terms": ["'..."]
+  "trigger": ";kao sleep 05"
+  #
+- "replace": "(￣ρ￣)..zzZZ"
+  "search_terms": ["'...", "'-"]
+  "trigger": ";kao sleep 06"
+  #
+- "replace": "(－.－)...zzz"
+  "search_terms": ["'-", "'..."]
+  "trigger": ";kao sleep 07"
+  #
+- "replace": "(＿ ＿*) Z z z"
+  "search_terms": ["'-", "'*"]
+  "trigger": ";kao sleep 08"
+  #
+- "replace": "(x . x) ~~zzZ"
+  "search_terms": ["'x", "'~"]
+  "trigger": ";kao sleep 09"
+
+  # -------------------------------------------------------------------------- #
+  # cat
+  #
+- "replace": "(=^･ω･^=)"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 00"
+  #
+- "replace": "(=^･ｪ･^=)"
+  "search_terms": ["'I"]
+  "trigger": ";kao cat 01"
+  #
+- "replace": "(=①ω①=)"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 02"
+  #
+- "replace": "( =ω=)..nyaa"
+  "search_terms": ["'w", "'..."]
+  "trigger": ";kao cat 03"
+  #
+- "replace": "(= ; ｪ ; =)"
+  "search_terms": ["tear", "'I"]
+  "trigger": ";kao cat 04"
+  #
+- "replace": "(=`ω´=)"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 05"
+  #
+- "replace": "(=^‥^=)"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 06"
+  #
+- "replace": "( =ノωヽ=)"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 07"
+  #
+- "replace": "(=⌒‿‿⌒=)"
+  "search_terms": []
+  "trigger": ";kao cat 08"
+  #
+- "replace": "(=^ ◡ ^=)"
+  "search_terms": []
+  "trigger": ";kao cat 09"
+  #
+- "replace": "(=^-ω-^=)"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 10"
+  #
+- "replace": "ヾ(=`ω´=)ノ”"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao cat 11"
+  #
+- "replace": "(＾• ω •＾)"
+  "search_terms": ["'w", "'^"]
+  "trigger": ";kao cat 12"
+  #
+- "replace": "(/ =ω=)/"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao cat 13"
+  #
+- "replace": "ฅ(•ㅅ•❀)ฅ"
+  "search_terms": ["hand", "'^", "flower"]
+  "trigger": ";kao cat 14"
+  #
+- "replace": "ฅ(• ɪ •)ฅ"
+  "search_terms": ["hand"]
+  "trigger": ";kao cat 15"
+  #
+- "replace": "ଲ(ⓛ ω ⓛ)ଲ"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao cat 16"
+  #
+- "replace": "(^=◕ᴥ◕=^)"
+  "search_terms": []
+  "trigger": ";kao cat 17"
+  #
+- "replace": "( =ω= )"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 18"
+  #
+- "replace": "(^˵◕ω◕˵^)"
+  "search_terms": ["'w", "blush"]
+  "trigger": ";kao cat 19"
+  #
+- "replace": "(^◔ᴥ◔^)"
+  "search_terms": []
+  "trigger": ";kao cat 20"
+  #
+- "replace": "(^◕ᴥ◕^)"
+  "search_terms": []
+  "trigger": ";kao cat 21"
+  #
+- "replace": "ต(=ω=)ต"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao cat 22"
+  #
+- "replace": "( Φ ω Φ )"
+  "search_terms": ["'w"]
+  "trigger": ";kao cat 23"
+  #
+- "replace": "ฅ(^◕ᴥ◕^)ฅ"
+  "search_terms": ["hand"]
+  "trigger": ";kao cat 24"
+
+  # -------------------------------------------------------------------------- #
+  # bear
+  #
+- "replace": "( ´(ｴ)ˋ )"
+  "search_terms": ["'I"]
+  "trigger": ";kao bear 00"
+  #
+- "replace": "(*￣(ｴ)￣*)"
+  "search_terms": ["'*", "blush", "'-", "'I"]
+  "trigger": ";kao bear 01"
+  #
+- "replace": "ヽ(￣(ｴ)￣)ﾉ"
+  "search_terms": ["hand", "'-", "'I"]
+  "trigger": ";kao bear 02"
+  #
+- "replace": "(／￣(ｴ)￣)／"
+  "search_terms": ["hand", "'I"]
+  "trigger": ";kao bear 03"
+  #
+- "replace": "(￣(ｴ)￣)"
+  "search_terms": ["'-", "'I"]
+  "trigger": ";kao bear 04"
+  #
+- "replace": "ヽ( ˋ(ｴ)´ )ﾉ"
+  "search_terms": ["hand", "'I"]
+  "trigger": ";kao bear 05"
+  #
+- "replace": "⊂(￣(ｴ)￣)⊃"
+  "search_terms": ["hand", "'-", "'I"]
+  "trigger": ";kao bear 06"
+  #
+- "replace": "(／(ｴ)＼)"
+  "search_terms": ["hand", "'I"]
+  "trigger": ";kao bear 07"
+  #
+- "replace": "⊂(´(ェ)ˋ)⊃"
+  "search_terms": ["hand", "'I"]
+  "trigger": ";kao bear 08"
+  #
+- "replace": "(/-(ｴ)-＼)"
+  "search_terms": ["hand", "'I"]
+  "trigger": ";kao bear 09"
+  #
+- "replace": "(/°(ｴ)°)/"
+  "search_terms": ["hand", "'I"]
+  "trigger": ";kao bear 10"
+  #
+- "replace": "ʕ ᵔᴥᵔ ʔ"
+  "search_terms": ["ear"]
+  "trigger": ";kao bear 11"
+  #
+- "replace": "ʕ •ᴥ• ʔ"
+  "search_terms": ["ear"]
+  "trigger": ";kao bear 12"
+  #
+- "replace": "ʕ •̀ ω •́ ʔ"
+  "search_terms": ["ear", "'w"]
+  "trigger": ";kao bear 13"
+  #
+- "replace": "ʕ •̀ o •́ ʔ"
+  "search_terms": ["ear"]
+  "trigger": ";kao bear 14"
+  #
+- "replace": "ʕಠᴥಠʔ"
+  "search_terms": ["ear"]
+  "trigger": ";kao bear 15"
+
+  # -------------------------------------------------------------------------- #
+  # dog
+  #
+- "replace": "∪＾ェ＾∪"
+  "search_terms": ["ear", "'^", "'I", "'u"]
+  "trigger": ";kao dog 00"
+  #
+- "replace": "∪･ω･∪"
+  "search_terms": ["'u", "'w", "ear"]
+  "trigger": ";kao dog 01"
+  #
+- "replace": "∪￣-￣∪"
+  "search_terms": ["'u", "'-", "ear"]
+  "trigger": ";kao dog 02"
+  #
+- "replace": "∪･ｪ･∪"
+  "search_terms": ["'u", "'I", "ear"]
+  "trigger": ";kao dog 03"
+  #
+- "replace": "Ｕ^皿^Ｕ"
+  "search_terms": ["'u", "ear"]
+  "trigger": ";kao dog 04"
+  #
+- "replace": "ＵＴｪＴＵ"
+  "search_terms": ["'u", "'I", "ear"]
+  "trigger": ";kao dog 05"
+  #
+- "replace": "U^ｪ^U"
+  "search_terms": ["'u", "'I", "ear"]
+  "trigger": ";kao dog 06"
+  #
+- "replace": "V●ᴥ●V"
+  "search_terms": ["ear"]
+  "trigger": ";kao dog 07"
+  #
+- "replace": "U・ᴥ・U"
+  "search_terms": ["'u", "ear"]
+  "trigger": ";kao dog 08"
+
+  # -------------------------------------------------------------------------- #
+  # rabbit
+  #
+- "replace": "／(≧ x ≦)＼"
+  "search_terms": ["ear", "'><", "blush"]
+  "trigger": ";kao rabbit 00"
+  #
+- "replace": "／(･ × ･)＼"
+  "search_terms": ["'x", "ear"]
+  "trigger": ";kao rabbit 01"
+  #
+- "replace": "／(=´x`=)＼"
+  "search_terms": ["ear"]
+  "trigger": ";kao rabbit 02"
+  #
+- "replace": "／(^ x ^)＼"
+  "search_terms": ["ear"]
+  "trigger": ";kao rabbit 03"
+  #
+- "replace": "／(=･ x ･=)＼"
+  "search_terms": ["ear"]
+  "trigger": ";kao rabbit 04"
+  #
+- "replace": "／(^ × ^)＼"
+  "search_terms": ["ear", "'x"]
+  "trigger": ";kao rabbit 05"
+  #
+- "replace": "／(＞×＜)＼"
+  "search_terms": ["ear", "'><", "'x"]
+  "trigger": ";kao rabbit 06"
+  #
+- "replace": "／(˃ᆺ˂)＼"
+  "search_terms": ["ear", "'^"]
+  "trigger": ";kao rabbit 07"
+  #
+- "replace": "૮ ˶ᵔ ᵕ ᵔ˶ ა"
+  "search_terms": ["ear", "blush"]
+  "trigger": ";kao rabbit 08"
+  #
+- "replace": "૮₍ ˶• ༝ •˶ ₎ა"
+  "search_terms": ["ear", "blush", "'x"]
+  "trigger": ";kao rabbit 09"
+
+  # -------------------------------------------------------------------------- #
+  # pig
+  #
+- "replace": "( ´(00)ˋ )"
+  "search_terms": []
+  "trigger": ";kao pig 00"
+  #
+- "replace": "(￣(ω)￣)"
+  "search_terms": ["'-", "'w"]
+  "trigger": ";kao pig 01"
+  #
+- "replace": "ヽ( ˋ(00)´ )ノ"
+  "search_terms": []
+  "trigger": ";kao pig 02"
+  #
+- "replace": "( ´(oo)ˋ )"
+  "search_terms": []
+  "trigger": ";kao pig 03"
+  #
+- "replace": "＼(￣(oo)￣)／"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao pig 04"
+  #
+- "replace": "｡ﾟ(ﾟ´(00)`ﾟ)ﾟ｡"
+  "search_terms": ["tear"]
+  "trigger": ";kao pig 05"
+  #
+- "replace": "(￣(00)￣)"
+  "search_terms": ["'-"]
+  "trigger": ";kao pig 06"
+  #
+- "replace": "(ˆ(oo)ˆ)"
+  "search_terms": ["'^"]
+  "trigger": ";kao pig 07"
+
+  # -------------------------------------------------------------------------- #
+  # bird
+  #
+- "replace": "(￣Θ￣)"
+  "search_terms": ["'-"]
+  "trigger": ";kao bird 00"
+  #
+- "replace": "(`･Θ･´)"
+  "search_terms": []
+  "trigger": ";kao bird 01"
+  #
+- "replace": "( ˋ Θ ´ )"
+  "search_terms": []
+  "trigger": ";kao bird 02"
+  #
+- "replace": "(◉Θ◉)"
+  "search_terms": []
+  "trigger": ";kao bird 03"
+  #
+- "replace": "＼( ˋ Θ ´ )／"
+  "search_terms": ["hand"]
+  "trigger": ";kao bird 04"
+  #
+- "replace": "(･θ･)"
+  "search_terms": []
+  "trigger": ";kao bird 05"
+  #
+- "replace": "(・Θ・)"
+  "search_terms": []
+  "trigger": ";kao bird 06"
+  #
+- "replace": "ヾ(￣◇￣)ノ〃"
+  "search_terms": ["hand", "'-", "diamond"]
+  "trigger": ";kao bird 07"
+  #
+- "replace": "(･Θ･)"
+  "search_terms": []
+  "trigger": ";kao bird 08"
+
+  # -------------------------------------------------------------------------- #
+  # fish
+  #
+- "replace": "(°)#))<<"
+  "search_terms": []
+  "trigger": ";kao fish 00"
+  #
+- "replace": "<・ )))><<"
+  "search_terms": []
+  "trigger": ";kao fish 01"
+  #
+- "replace": "ζ°)))彡"
+  "search_terms": []
+  "trigger": ";kao fish 02"
+  #
+- "replace": ">°))))彡"
+  "search_terms": []
+  "trigger": ";kao fish 03"
+  #
+- "replace": "(°))<<"
+  "search_terms": []
+  "trigger": ";kao fish 04"
+  #
+- "replace": ">^)))<～～"
+  "search_terms": []
+  "trigger": ";kao fish 05"
+  #
+- "replace": "≧( ° ° )≦"
+  "search_terms": ["crab", "'>", "'<"]
+  "trigger": ";kao fish 06"
+
+  # -------------------------------------------------------------------------- #
+  # spider
+  #
+- "replace": "/╲/\\╭(ఠఠ益ఠఠ)╮/\\╱\\"
+  "search_terms": []
+  "trigger": ";kao spider 00"
+  #
+- "replace": "/╲/\\╭(ರರ⌓ರರ)╮/\\╱\\"
+  "search_terms": []
+  "trigger": ";kao spider 01"
+  #
+- "replace": "/╲/\\╭༼ ººل͟ºº ༽╮/\\╱\\"
+  "search_terms": ["nose"]
+  "trigger": ";kao spider 02"
+  #
+- "replace": "/╲/\\╭( ͡°͡° ͜ʖ ͡°͡°)╮/\\╱\\"
+  "search_terms": ["nose"]
+  "trigger": ";kao spider 03"
+  #
+- "replace": "/╲/\\╭[ ᴼᴼ ౪ ᴼᴼ]╮/\\╱\\"
+  "search_terms": ["nose"]
+  "trigger": ";kao spider 04"
+  #
+- "replace": "/╲/\\( •̀ ω •́ )/\\╱\\"
+  "search_terms": ["'w"]
+  "trigger": ";kao spider 05"
+  #
+- "replace": "/╲/\\╭[☉﹏☉]╮/\\╱\\"
+  "search_terms": ["'~"]
+  "trigger": ";kao spider 06"
+
+  # -------------------------------------------------------------------------- #
+  # friends
+  #
+- "replace": "ヾ(・ω・)メ(・ω・)ノ"
+  "search_terms": ["'w", "hand", "multiple"]
+  "trigger": ";kao friends 00"
+  #
+- "replace": "ヽ(∀° )人( °∀)ノ"
+  "search_terms": ["hand", "'A", "multiple", "'^"]
+  "trigger": ";kao friends 01"
+  #
+- "replace": "ヽ( ⌒o⌒)人(⌒-⌒ )ﾉ"
+  "search_terms": ["hand", "'^", "multiple"]
+  "trigger": ";kao friends 02"
+  #
+- "replace": "(*^ω^)八(⌒▽⌒)八(-‿‿- )ヽ"
+  "search_terms": ["'*", "'w", "hand", "triangle", "'^", "blush"]
+  "trigger": ";kao friends 03"
+  #
+- "replace": "＼(＾∀＾)メ(＾∀＾)ノ"
+  "search_terms": ["hand", "'^", "'A", "multiple"]
+  "trigger": ";kao friends 04"
+  #
+- "replace": "ヾ(￣ー￣(≧ω≦*)ゝ"
+  "search_terms": ["hand", "'-", "'><", "blush", "'*", "'w"]
+  "trigger": ";kao friends 05"
+  #
+- "replace": "ヽ( ⌒ω⌒)人(=^‥^= )ﾉ"
+  "search_terms": ["hand", "'w", "'^", "multiple", "blush"]
+  "trigger": ";kao friends 06"
+  #
+- "replace": "ヽ(≧◡≦)八(o^ ^o)ノ"
+  "search_terms": ["hand", "'><", "'^", "blush"]
+  "trigger": ";kao friends 07"
+  #
+- "replace": "(*・∀・)爻(・∀・*)"
+  "search_terms": ["'*", "'A", "hand", "multiple"]
+  "trigger": ";kao friends 08"
+  #
+- "replace": "｡*:☆(・ω・人・ω・)｡:゜☆｡"
+  "search_terms": ["'*", "'w", "'^", "multiple", "hand"]
+  "trigger": ";kao friends 09"
+  #
+- "replace": "o(^^o)(o^^o)(o^^o)(o^^)o"
+  "search_terms": ["multiple", "hand"]
+  "trigger": ";kao friends 10"
+  #
+- "replace": "(((￣(￣(￣▽￣)￣)￣)))"
+  "search_terms": ["'-", "triangle", "multiple"]
+  "trigger": ";kao friends 11"
+  #
+- "replace": "(°(°ω(°ω°(☆ω☆)°ω°)ω°)°)"
+  "search_terms": ["'w", "'*", "multiple"]
+  "trigger": ";kao friends 12"
+  #
+- "replace": "ヾ(・ω・`)ノヾ(´・ω・)ノ゛"
+  "search_terms": ["hand", "'w", "multiple"]
+  "trigger": ";kao friends 13"
+  #
+- "replace": "Ψ( `∀)(∀´ )Ψ"
+  "search_terms": ["'hand", "'A", "multiple"]
+  "trigger": ";kao friends 14"
+  #
+- "replace": "(っ˘▽˘)(˘▽˘)˘▽˘ς)"
+  "search_terms": ["hand", "triangle", "multiple"]
+  "trigger": ";kao friends 15"
+  #
+- "replace": "(((*°▽°*)八(*°▽°*)))"
+  "search_terms": ["'*", "triangle", "hand", "multiple"]
+  "trigger": ";kao friends 16"
+  #
+- "replace": "☆ヾ(*´・∀・)ﾉヾ(・∀・`*)ﾉ☆"
+  "search_terms": ["'*", "'A", "hand", "multiple"]
+  "trigger": ";kao friends 17"
+  #
+- "replace": "(*＾ω＾)人(＾ω＾*)"
+  "search_terms": ["'*", "'^", "'w", "hand", "multiple"]
+  "trigger": ";kao friends 18"
+  #
+- "replace": "٩(๑･ิᴗ･ิ)۶٩(･ิᴗ･ิ๑)۶"
+  "search_terms": ["hand", "blush", "multiple"]
+  "trigger": ";kao friends 19"
+  #
+- "replace": "(☞°ヮ°)☞ ☜(°ヮ°☜)"
+  "search_terms": ["hand", "point", "multiple"]
+  "trigger": ";kao friends 20"
+  #
+- "replace": "＼(▽￣ \\ (￣▽￣) / ￣▽)／"
+  "search_terms": ["hand", "triangle", "'-", "multiple"]
+  "trigger": ";kao friends 21"
+  #
+- "replace": "\\( ˙▿˙ )/\\( ˙▿˙ )/"
+  "search_terms": ["hand", "triangle", "multiple"]
+  "trigger": ";kao friends 22"
+
+  # -------------------------------------------------------------------------- #
+  # enemies
+  #
+- "replace": "ヽ( ･∀･)ﾉ_θ彡☆Σ(ノ `Д´)ノ"
+  "search_terms": ["hand", "'A", "'*", "'3", "'D", "multiple"]
+  "trigger": ";kao enemies 00"
+  #
+- "replace": "(*´∇`)┌θ☆(ﾉ>_<)ﾉ"
+  "search_terms": ["'*", "triangle", "gun", "'><", "hand", "multiple"]
+  "trigger": ";kao enemies 01"
+  #
+- "replace": "( ￣ω￣)ノﾞ⌒☆ﾐ(o _ _)o"
+  "search_terms": ["'-", "'w", "hand", "'*", "multiple"]
+  "trigger": ";kao enemies 02"
+  #
+- "replace": "(*`0´)θ☆(メ°皿°)ﾉ"
+  "search_terms": ["'*", "hand", "punch", "multiple"]
+  "trigger": ";kao enemies 03"
+  #
+- "replace": "(o¬‿¬o )...☆ﾐ(*x_x)"
+  "search_terms": ["side-eye", "'...", "'*", "multiple"]
+  "trigger": ";kao enemies 04"
+  #
+- "replace": "(╬￣皿￣)=○＃(￣#)３￣)"
+  "search_terms": ["'#", "'-", "punch", "'3", "multiple"]
+  "trigger": ";kao enemies 05"
+  #
+- "replace": "(; -_-)――――――C<―_-)"
+  "search_terms": ["claw", "sweat", "pinch", "multiple"]
+  "trigger": ";kao enemies 06"
+  #
+- "replace": "＜( ￣︿￣)︵θ︵θ︵☆(＞口＜－)"
+  "search_terms": ["'-", "'^", "'*", "'><", "square", "multiple"]
+  "trigger": ";kao enemies 07"
+  #
+- "replace": "(￣ε(#￣)☆╰╮o(￣▽￣///)"
+  "search_terms": ["'-", "'3", "'#", "'*", "hand", "multiple"]
+  "trigger": ";kao enemies 08"
+  #
+- "replace": "ヽ(>_<ヽ) ―⊂|=0ヘ(^‿^ )"
+  "search_terms": ["hand", "'><", "needle", "'^", "multiple"]
+  "trigger": ";kao enemies 09"
+  #
+- "replace": "ヘ(>_<ヘ) ￢o(￣‿￣ﾒ)"
+  "search_terms": ["'^", "weapon", "'x", "multiple"]
+  "trigger": ";kao enemies 10"
+  #
+- "replace": ",,((( ￣□)_／ ＼_(○￣ ))),,"
+  "search_terms": ["'-", "square", "hand", "multiple"]
+  "trigger": ";kao enemies 11"
+  #
+- "replace": "(҂` ﾛ ´)︻デ═一 ＼(º □ º l|l)/"
+  "search_terms": ["'#", "square", "gun", "weapon", "hand", "multiple"]
+  "trigger": ";kao enemies 12"
+  #
+- "replace": "(╯°Д°)╯︵ /(.□ . ＼)"
+  "search_terms": ["hand", "'D", "flip", "square", "multiple"]
+  "trigger": ";kao enemies 13"
+  #
+- "replace": "(¬_¬'')ԅ(￣ε￣ԅ)"
+  "search_terms": ["side-eye", "sweat", "grab", "creep", "'-", "'3", "multiple"]
+  "trigger": ";kao enemies 14"
+  #
+- "replace": "/( .□.)＼ ︵╰(°益°)╯︵ /(.□. /)"
+  "search_terms": ["hand", "square", "flip", "multiple"]
+  "trigger": ";kao enemies 15"
+  #
+- "replace": "(ﾉ-.-)ﾉ….((((((((((((●~* ( >_<)"
+  "search_terms": ["hand", "throw", "bomb", "'><"]
+  "trigger": ";kao enemies 16"
+  #
+- "replace": "!!(ﾒ￣ ￣)_θ☆°0°)/"
+  "search_terms": ["'#", "'-", "punch", "'*", "hand", "multiple"]
+  "trigger": ";kao enemies 17"
+  #
+- "replace": "(`⌒*)O-(`⌒´Q)"
+  "search_terms": ["'*", "hand", "punch", "multiple"]
+  "trigger": ";kao enemies 18"
+  #
+- "replace": "(((ง’ω’)و三 ง’ω’)ڡ≡　☆⌒ﾐ((x_x)"
+  "search_terms": ["hand", "'w", "'*", "punch", "multiple"]
+  "trigger": ";kao enemies 19"
+  #
+- "replace": "(งಠ_ಠ)ง　σ( •̀ ω •́ σ)"
+  "search_terms": ["hand", "'w", "multiple"]
+  "trigger": ";kao enemies 20"
+  #
+- "replace": "(っ•﹏•)っ ✴==≡눈٩(`皿´҂)ง"
+  "search_terms": ["hand", "'~", "'#", "weapon", "multiple"]
+  "trigger": ";kao enemies 21"
+  #
+- "replace": "(｢• ω •)｢ (⌒ω⌒`)"
+  "search_terms": ["'w", "hand", "sweat", "multiple"]
+  "trigger": ";kao enemies 22"
+  #
+- "replace": "( °ᴗ°)~ð (/❛o❛\\)"
+  "search_terms": ["bomb", "multiple"]
+  "trigger": ";kao enemies 23"
+
+  # -------------------------------------------------------------------------- #
+  # weapon
+  #
+- "replace": "( ・∀・)・・・--------☆"
+  "search_terms": ["'A", "'...", "'star"]
+  "trigger": ";kao weapon laser"
+  #
+- "replace": "(/-_・)/D・・・・・------ →"
+  "search_terms": ["hand"]
+  "trigger": ";kao weapon bow and arrow"
+  #
+- "replace": "(^ω^)ノﾞ(((((((((●～*"
+  "search_terms": ["hand", "'w", "'~"]
+  "trigger": ";kao weapon bomb"
+  #
+- "replace": "( -ω-)／占~~~~~"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao weapon pepper spray"
+  #
+- "replace": "(/・・)ノ　　 (( く ((へ"
+  "search_terms": ["hand"]
+  "trigger": ";kao weapon boomerang"
+  #
+- "replace": "―⊂|=0ヘ(^^ )"
+  "search_terms": ["needle", "'^", "hand"]
+  "trigger": ";kao weapon syringe"
+  #
+- "replace": "○∞∞∞∞ヽ(^ー^ )"
+  "search_terms": ["hand"]
+  "trigger": ";kao weapon chain"
+  #
+- "replace": "(; ・_・)――――C"
+  "search_terms": []
+  "trigger": ";kao weapon grabber"
+  #
+- "replace": "(ಠ o ಠ)¤=[]:::::>"
+  "search_terms": []
+  "trigger": ";kao weapon sword 01"
+  #
+- "replace": "(*＾＾)/~~~~~~~~~~◎"
+  "search_terms": ["'^"]
+  "trigger": ";kao weapon yo-yo"
+  #
+- "replace": "￢o(￣-￣ﾒ)"
+  "search_terms": ["wand", "'#", "'-"]
+  "trigger": ";kao weapon gun"
+  #
+- "replace": "―(T_T)→"
+  "search_terms": ["arrow"]
+  "trigger": ";kao weapon spear"
+  #
+- "replace": "((( ￣□)_／"
+  "search_terms": ["square"]
+  "trigger": ";kao weapon sword 02"
+  #
+- "replace": "(ﾒ` ﾛ ´)︻デ═一"
+  "search_terms": ["'#", "square", "gun"]
+  "trigger": ";kao weapon rifle"
+  #
+- "replace": "( ´-ω･)︻┻┳══━一"
+  "search_terms": ["'w", "gun"]
+  "trigger": ";kao weapon sniper rifle"
+  #
+- "replace": "(ﾒ￣▽￣)︻┳═一"
+  "search_terms": ["'#", "'-", "triangle", "gun"]
+  "trigger": ";kao weapon shotgun"
+  #
+- "replace": "✴==≡눈٩(`皿´҂)ง"
+  "search_terms": ["'*", "hand", "'#"]
+  "trigger": ";kao weapon minigun"
+  #
+- "replace": "Q(`⌒´Q)"
+  "search_terms": ["hand"]
+  "trigger": ";kao weapon boxing gloves"
+
+  # -------------------------------------------------------------------------- #
+  # magic
+  #
+- "replace": "(ノ ˘_˘)ノ　ζ|||ζ　ζ|||ζ　ζ|||ζ"
+  "search_terms": ["hand"]
+  "trigger": ";kao magic wave"
+  #
+- "replace": "(ﾉ≧∀≦)ﾉ ‥…━━━★"
+  "search_terms": ["'><", "'A", "blush", "'*", "'...", "hand"]
+  "trigger": ";kao magic star beam 01"
+  #
+- "replace": "(ﾉ>ω<)ﾉ :｡･:*:･ﾟ’★,｡･:*:･ﾟ’☆"
+  "search_terms": ["'w", "'><", "hand"]
+  "trigger": ";kao magic star beam 02"
+  #
+- "replace": "(ノ°∀°)ノ⌒･*:.｡. .｡.:*･゜ﾟ･*☆"
+  "search_terms": ["hand", "'A", "'*"]
+  "trigger": ";kao magic star beam 03"
+  #
+- "replace": "╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ"
+  "search_terms": ["hand", "nose", "'*"]
+  "trigger": ";kao magic star wand 01"
+  #
+- "replace": "(＃￣□￣)o━∈・・━━━━☆"
+  "search_terms": ["'-", "square", "hand", "'*", "'#"]
+  "trigger": ";kao magic star wand 02"
+  #
+- "replace": "(⊃｡•́‿•̀｡)⊃━✿✿✿✿✿✿"
+  "search_terms": ["blush", "hand"]
+  "trigger": ";kao magic flower beam"
+  #
+- "replace": "(∩ᄑ_ᄑ)⊃━☆ﾟ*･｡*･:≡( ε:)"
+  "search_terms": ["hand", "'*", "'3"]
+  "trigger": ";kao magic 07"
+  #
+- "replace": "(/￣ー￣)/~~☆’.･.･:★’.･.･:☆"
+  "search_terms": ["hand", "'*"]
+  "trigger": ";kao magic star beam 04"
+  #
+- "replace": "(∩` ﾛ ´)⊃━炎炎炎炎炎"
+  "search_terms": ["square", "hand"]
+  "trigger": ";kao magic fire wand"
+
+  # -------------------------------------------------------------------------- #
+  # food
+  #
+- "replace": "(っ˘ڡ˘ς)"
+  "search_terms": ["hand"]
+  "trigger": ";kao food 00"
+  #
+- "replace": "( o˘◡˘o) ┌iii┐"
+  "search_terms": ["blush", "steam"]
+  "trigger": ";kao food 01"
+  #
+- "replace": "(　’ω’)旦~~"
+  "search_terms": ["'w", "steam"]
+  "trigger": ";kao food 02"
+  #
+- "replace": "( ˘▽˘)っ♨"
+  "search_terms": ["hand", "triangle", "steam"]
+  "trigger": ";kao food 03"
+  #
+- "replace": "♨o(>_<)o♨"
+  "search_terms": ["'><", "hand", "steam"]
+  "trigger": ";kao food 04"
+  #
+- "replace": "( ・ω・)o-{{[〃]}}"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao food 05"
+  #
+- "replace": "(　・ω・)⊃-[二二]"
+  "search_terms": ["'w", "hand"]
+  "trigger": ";kao food 06"
+  #
+- "replace": "( ・・)つ―{}@{}@{}-"
+  "search_terms": ["hand", "kebab"]
+  "trigger": ";kao food 07"
+  #
+- "replace": "( ・・)つ-●●●"
+  "search_terms": ["hand", "dango", "kebab"]
+  "trigger": ";kao food 08"
+  #
+- "replace": "(*´ー`)旦 旦(￣ω￣*)"
+  "search_terms": ["'*", "'-", "'w", "multiple"]
+  "trigger": ";kao food 09"
+  #
+- "replace": "(*´з`)口ﾟ｡ﾟ口(・∀・ )"
+  "search_terms": ["'*", "'3", "square", "'A", "multiple"]
+  "trigger": ";kao food 10"
+  #
+- "replace": "( o^ ^o)且 且(´ω`*)"
+  "search_terms": ["blush", "'w", "multple"]
+  "trigger": ";kao food 11"
+  #
+- "replace": "( ￣▽￣)[] [](≧▽≦ )"
+  "search_terms": ["'-", "triangle", "square", "'><", "blush", "multple"]
+  "trigger": ";kao food 12"
+  #
+- "replace": "( *^^)o∀*∀o(^^* )"
+  "search_terms": ["'*", "'A", "martini", "multple"]
+  "trigger": ";kao food 13"
+  #
+- "replace": "( ^^)_旦~~　 ~~U_(^^ )"
+  "search_terms": ["multple", "steam"]
+  "trigger": ";kao food 14"
+  #
+- "replace": "(*￣▽￣)旦 且(´∀`*)"
+  "search_terms": ["'*", "'-", "triangle", "multple"]
+  "trigger": ";kao food 15"
+  #
+- "replace": "-●●●-ｃ(・・ )"
+  "search_terms": ["dango", "kebab", "hand"]
+  "trigger": ";kao food 16"
+  #
+- "replace": "( ・・)つ―●○◎-"
+  "search_terms": ["hand", "dango", "kebab"]
+  "trigger": ";kao food 17"
+
+  # -------------------------------------------------------------------------- #
+  # music
+  #
+- "replace": "ヾ(´〇`)ﾉ♪♪♪"
+  "search_terms": ["hand", "note"]
+  "trigger": ";kao music 00"
+  #
+- "replace": "ヘ(￣ω￣ヘ)"
+  "search_terms": ["hand", "'^", "'-", "'w"]
+  "trigger": ";kao music 01"
+  #
+- "replace": "(〜￣▽￣)〜"
+  "search_terms": ["'-", "triangle", "'~"]
+  "trigger": ";kao music 02"
+  #
+- "replace": "〜(￣▽￣〜)"
+  "search_terms": ["'~", "'-", "triangle"]
+  "trigger": ";kao music 03"
+  #
+- "replace": "ヽ(o´∀`)ﾉ♪♬"
+  "search_terms": ["blush", "hand", "'A", "note"]
+  "trigger": ";kao music 04"
+  #
+- "replace": "(ﾉ≧∀≦)ﾉ"
+  "search_terms": ["hand", "'><", "'A", "blush"]
+  "trigger": ";kao music 05"
+  #
+- "replace": "♪ヽ(^^ヽ)♪"
+  "search_terms": ["hand", "note"]
+  "trigger": ";kao music 06"
+  #
+- "replace": "♪(/_ _ )/♪"
+  "search_terms": ["hand", "note"]
+  "trigger": ";kao music 07"
+  #
+- "replace": "♪♬((d⌒ω⌒b))♬♪"
+  "search_terms": ["hand", "'w", "note"]
+  "trigger": ";kao music 08"
+  #
+- "replace": "└(￣-￣└))"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao music 09"
+  #
+- "replace": "((┘￣ω￣)┘"
+  "search_terms": ["hand", "'-", "'w"]
+  "trigger": ";kao music 10"
+  #
+- "replace": "√(￣‥￣√)"
+  "search_terms": ["hand", "'-"]
+  "trigger": ";kao music 11"
+  #
+- "replace": "└(＾＾)┐"
+  "search_terms": ["hand", "'^"]
+  "trigger": ";kao music 12"
+  #
+- "replace": "┌(＾＾)┘"
+  "search_terms": ["hand", "'^"]
+  "trigger": ";kao music 13"
+  #
+- "replace": "＼(￣▽￣)＼"
+  "search_terms": ["hand", "'-", "triangle"]
+  "trigger": ";kao music 14"
+  #
+- "replace": "／(￣▽￣)／"
+  "search_terms": ["hand", "'-", "triangle"]
+  "trigger": ";kao music 15"
+  #
+- "replace": "(￣▽￣)/♫•*¨*•.¸¸♪"
+  "search_terms": ["'-", "triangle", "note", "hand"]
+  "trigger": ";kao music 16"
+  #
+- "replace": "(^_^♪)"
+  "search_terms": ["note"]
+  "trigger": ";kao music 17"
+  #
+- "replace": "(~˘▽˘)~"
+  "search_terms": ["triangle"]
+  "trigger": ";kao music 18"
+  #
+- "replace": "~(˘▽˘~)"
+  "search_terms": ["triangle"]
+  "trigger": ";kao music 19"
+  #
+- "replace": "ヾ(⌐■_■)ノ♪"
+  "search_terms": ["glasses", "hand", "note"]
+  "trigger": ";kao music 20"
+  #
+- "replace": "(〜￣△￣)〜"
+  "search_terms": ["'~", "'-", "triangle", "hand"]
+  "trigger": ";kao music 21"
+  #
+- "replace": "(~‾▽‾)~"
+  "search_terms": ["'~", "'-", "triangle", "hand"]
+  "trigger": ";kao music 22"
+  #
+- "replace": "~(˘▽˘)~"
+  "search_terms": ["triangle", "hand"]
+  "trigger": ";kao music 23"
+  #
+- "replace": "乁( • ω •乁)"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao music 24"
+  #
+- "replace": "(｢• ω •)｢"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao music 25"
+  #
+- "replace": "⁽⁽◝( • ω • )◜⁾⁾"
+  "search_terms": ["hand", "'w"]
+  "trigger": ";kao music 26"
+  #
+- "replace": "✺◟( • ω • )◞✺"
+  "search_terms": ["'w", "cheer", "hand", "pom"]
+  "trigger": ";kao music 27"
+  #
+- "replace": "♬♫♪◖(● o ●)◗♪♫♬"
+  "search_terms": ["note"]
+  "trigger": ";kao music 28"
+  #
+- "replace": "( ˘ ɜ˘) ♬♪♫"
+  "search_terms": ["'3", "note"]
+  "trigger": ";kao music 29"
+  #
+- "replace": "♪♪♪ ヽ(ˇ∀ˇ )ゞ"
+  "search_terms": ["note", "hand", "'A"]
+  "trigger": ";kao music 30"
+  #
+- "replace": "(ˇ▽ˇ)ノ♪♬♫"
+  "search_terms": ["'v", "triangle", "hand", "note"]
+  "trigger": ";kao music 31"
+
+  # -------------------------------------------------------------------------- #
+  # games
+  #
+- "replace": "( ^^)p_____|_o____q(^^ )"
+  "search_terms": ["tennis", "badminton", "multple"]
+  "trigger": ";kao games 00"
+  #
+- "replace": "(／o^)/ °⊥ ＼(^o＼)"
+  "search_terms": ["volleyball", "multple", "hand"]
+  "trigger": ";kao games 01"
+  #
+- "replace": "!(;ﾟoﾟ)o/￣￣￣￣￣￣￣~ >ﾟ))))彡"
+  "search_terms": ["fishing", "surprise", "hand", "rod"]
+  "trigger": ";kao games 02"
+  #
+- "replace": "ヽ(^o^)ρ┳┻┳°σ(^o^)ノ"
+  "search_terms": ["table tennis", "hand", "multple"]
+  "trigger": ";kao games 03"
+  #
+- "replace": "(／_^)／　　●　＼(^_＼)"
+  "search_terms": ["hand", "ball", "multple"]
+  "trigger": ";kao games 04"
+  #
+- "replace": "( (≡|≡))_／ ＼_((≡|≡) )"
+  "search_terms": ["fencing", "multple", "sword"]
+  "trigger": ";kao games 05"
+  #
+- "replace": "( ノ-_-)ノﾞ_□ VS □_ヾ(^-^ヽ)"
+  "search_terms": ["multple"]
+  "trigger": ";kao games 06"
+  #
+- "replace": "ヽ(；^ ^)ノﾞ ．．．...___〇"
+  "search_terms": ["bowling", "hand"]
+  "trigger": ";kao games 07"
+  #
+- "replace": "(=O*_*)=O Q(*_*Q)"
+  "search_terms": ["boxing", "multple"]
+  "trigger": ";kao games 08"
+  #
+- "replace": "Ю　○三　＼(￣^￣＼)"
+  "search_terms": ["ball", "'-", "hand", "throw", "cornhole", "skee-ball"]
+  "trigger": ";kao games 09"
+  # FIXME: utf
+- "replace": "(˙ω˙)\U0001F3AE(˙∀˙)\U0001F3AE"
+  "search_terms": []
+  "trigger": ";kao games 10"
+
+  # -------------------------------------------------------------------------- #
+  # face
+  #
+- "replace": "( ͡° ͜ʖ ͡°)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 00"
+  #
+- "replace": "( ͡° ʖ̯ ͡°)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 01"
+  #
+- "replace": "( ͠° ͟ʖ ͡°)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 02"
+  #
+- "replace": "( ͡ᵔ ͜ʖ ͡ᵔ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 03"
+  #
+- "replace": "( . •́ _ʖ •̀ .)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 04"
+  #
+- "replace": "( ఠ ͟ʖ ఠ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 05"
+  #
+- "replace": "( ͡ಠ ʖ̯ ͡ಠ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 06"
+  #
+- "replace": "( ಠ ʖ̯ ಠ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 07"
+  #
+- "replace": "( ಠ ͜ʖ ಠ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 08"
+  #
+- "replace": "( ಥ ʖ̯ ಥ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 09"
+  #
+- "replace": "( ͡• ͜ʖ ͡• )"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 10"
+  #
+- "replace": "( ･ิ ͜ʖ ･ิ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 11"
+  #
+- "replace": "( ͡ ͜ʖ ͡ )"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 12"
+  #
+- "replace": "(≖ ͜ʖ≖)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 13"
+  #
+- "replace": "(ʘ ʖ̯ ʘ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 14"
+  #
+- "replace": "(ʘ ͟ʖ ʘ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 15"
+  #
+- "replace": "(ʘ ͜ʖ ʘ)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 16"
+  #
+- "replace": "(;´༎ຶٹ༎ຶ`)"
+  "search_terms": ["nose"]
+  "trigger": ";kao face 17"
+
+  # -------------------------------------------------------------------------- #
+  # misc
+  #
+- "replace": "٩(ˊ〇ˋ*)و"
+  "search_terms": ["yawn", "hand"]
+  "trigger": ";kao waking up"
+  #
+- "replace": "(￣^￣)ゞ"
+  "search_terms": ["salute", "'-", "hand"]
+  "trigger": ";kao military salutation"
+  #
+- "replace": "(－‸ლ)"
+  "search_terms": ["'-", "'^"]
+  "trigger": ";kao facepalm"
+  #
+- "replace": "(╯°益°)╯彡┻━┻"
+  "search_terms": ["flip", "hand"]
+  "trigger": ";kao throwing table in anger"
+  #
+- "replace": "(╮°-°)╮┳━━┳ ( ╯°□°)╯ ┻━━┻"
+  "search_terms": ["square", "multiple"]
+  "trigger": ";kao taking table and going mad"
+  #
+- "replace": "┬─┬ノ( º _ ºノ)"
+  "search_terms": ["hand"]
+  "trigger": ";kao putting table back"
+  #
+- "replace": "(oT-T)尸"
+  "search_terms": ["gun", "hand"]
+  "trigger": ";kao surrender"
+  #
+- "replace": "( ͡° ͜ʖ ͡°)"
+  "search_terms": ["nose", "lenny"]
+  "trigger": ";kao meme / Lenny face"
+  #
+- "replace": "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]"
+  "search_terms": ["nose"]
+  "trigger": ";kao money"
+  #
+- "replace": "(ಠ_ಠ)"
+  "search_terms": ["reddit", "face"]
+  "trigger": ";kao meme / look of disapproval"
+  #
+- "replace": "౦０o ｡ (‾́。‾́ )y~~"
+  "search_terms": ["cigarette", "cigar", "weed", "vape"]
+  "trigger": ";kao smoking"
+  #
+- "replace": "(￣﹃￣)"
+  "search_terms": ["drool"]
+  "trigger": ";kao hungry"
+  #
+- "replace": "(๑ᵔ⤙ᵔ๑)"
+  "search_terms": ["cheek"]
+  "trigger": ";kao eating with a full mouth"
+  #
+- "replace": "(x(x_(x_x(O_o)x_x)_x)x)"
+  "search_terms": []
+  "trigger": ";kao alive among zombies"
+  #
+- "replace": "(　･ω･)☞"
+  "search_terms": ["'w"]
+  "trigger": ";kao pointing"
+  #
+- "replace": "(⌐■_■)"
+  "search_terms": []
+  "trigger": ";kao with glasses"
+  #
+- "replace": "(◕‿◕✿)"
+  "search_terms": ["flower"]
+  "trigger": ";kao cute face"
+  #
+- "replace": "(　￣.)o-　　【　TV　】"
+  "search_terms": ["remote", "'-", "hand"]
+  "trigger": ";kao watching TV"
+  #
+- "replace": "｀、ヽ｀ヽ｀、ヽ(ノ＞＜)ノ ｀、ヽ｀☂ヽ｀、ヽ"
+  "search_terms": ["'><"]
+  "trigger": ";kao catching umbrella in the rain"
+  #
+- "replace": "‿︵‿︵‿︵‿ヽ(°□° )ノ︵‿︵‿︵‿︵"
+  "search_terms": ["water", "square", "hand"]
+  "trigger": ";kao drowning"
+  #
+- "replace": "( • )( • )ԅ(≖‿≖ԅ)"
+  "search_terms": ["boob", "tit", "nipple", "grab", "creep"]
+  "trigger": ";kao emm... try to figure out what he's doing"
+  #
+- "replace": "( ＾▽＾)っ✂╰⋃╯"
+  "search_terms": ["'^", "triangle", "hand", "scissors", "penis", "dick"]
+  "trigger": ";kao punishment for cheating"
+  #
+- "replace": "〜〜(／￣▽)／　〜ф"
+  "search_terms": ["'~", "hand", "'-", "triangle"]
+  "trigger": ";kao chasing a butterfly"
+  #
+- "replace": "ଘ(੭ˊᵕˋ)੭* ੈ✩‧₊˚"
+  "search_terms": ["wing", "hand", "'*"]
+  "trigger": ";kao angel"
+  #
+- "replace": "ଘ(੭ˊ꒳​ˋ)੭✧"
+  "search_terms": ["wing", "hand", "diamond"]
+  "trigger": ";kao one more angel"
+  #
+- "replace": "_(:3 」∠)_"
+  "search_terms": ["'3", "hand", "leg", "lay", "lie"]
+  "trigger": ";kao popular lying emoticon"
+  #
+- "replace": "∠( ᐛ 」∠)_"
+  "search_terms": ["triangle", "hand", "leg", "lay", "lie"]
+  "trigger": ";kao another lying emoticon"
