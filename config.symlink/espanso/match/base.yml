@@ -1,6 +1,6 @@
 matches:
   - trigger: ".addbib"
-    replace: "根據你已經查到的文章內容，以markdown風格 i.e. [1],[2-3] 在文章中加入該引用，並在文章後加入引用列表，以包含 DOI 的 AMA 格式"
+    replace: "根據你已經查到的文章內容，以markdown風格 i.e. [1],[2-3] 在文章中加入該引用，維持綜述文章（mini-review） 的完整格式（含小標題、摘要、臨床意涵段落、長段落，多邏輯，有架構），並在文章後加入引用列表，以包含 DOI 的 AMA 格式，請直接輸出在對話中。以繁體中文的文法結構來寫每一個語句，但不用翻譯專有名詞，以維持符合台灣醫師習慣的可讀性"
   - trigger: ".hy"
     replace: "highlight the high-yield oncology key points for board exams"
   - trigger: ".pk"
@@ -11,6 +11,8 @@ matches:
     replace: "以繁體中文的文法結構來書寫內容，但不翻譯專有名詞。以所謂醫療晶晶體，以維持符合台灣醫師習慣的可讀性"
   - trigger: ".solve"
     replace: "對每個選項解題，為什麼錯？為什麼對？以繁體中文的文法結構來書寫內容，但不翻譯專有名詞。以所謂醫療晶晶體，以維持符合台灣醫師習慣的可讀性"
+  - trigger: ".onc"
+    replace: "建立癌症治療學習摘要：依分期(早期/局部進展/轉移)整理不同的治療策略，梳理 landmark trials（年份、名稱、設計、病人群族、結果、臨床意義 e.g. 一線、二線等），進一步比較常混淆試驗，轉化為臨床決策要點，提供一個情況→策略的治療架構，並說明基於的證據。最後，列出五個學習重點，並加入數字/關鍵詞/時間軸的記憶技巧。以繁體中文的文法結構來寫每一個語句，但不用翻譯專有名詞，以維持符合台灣醫師習慣的可讀性"
   - trigger: ".top"
     replace: "Summarize this progress note into exactly 3 lines, 1st line: the oncology styled diagnose, 2nd line: reason for admission, 3rd line: current status,  Use html tag <BR> literally for line breaks, add a → at begining of each line, use as much abbr as possible (this is for a hand-off, so be concise), in English, return the final result in a codebox"
   - trigger: "#blue"
