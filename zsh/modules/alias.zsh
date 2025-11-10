@@ -111,7 +111,6 @@ alias rl='ls ~/.Trash/files'
 alias rn="recent_note"
 alias seetrash='ls ~/.Trash/files'
 alias sli="make_exec_and_slide"
-alias sn='simplenote'
 alias snippets="vim ~/.dotfiles/neovim/vscode_snippets/garden.json"
 alias st="study"
 alias str="studyrg"
