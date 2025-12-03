@@ -313,3 +313,6 @@ if [[ -f "$HOME/.atuin/bin/env" ]]; then
 fi
 eval "$(zoxide init zsh)"
 export PATH=~/.npm-global/bin:$PATH
+
+# Added by Antigravity
+export PATH="/Users/htlin/.antigravity/antigravity/bin:$PATH"
