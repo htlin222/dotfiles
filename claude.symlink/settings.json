@@ -1,138 +1,141 @@
 {
-	"hooks": {
-		"PreToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "afplay /System/Library/Sounds/Funk.aiff"
-					}
-				]
-			},
-			{
-				"matcher": "Read|Grep",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "node ~/.claude/hooks/read_hook.js"
-					}
-				]
-			},
-			{
-				"matcher": "Read",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "afplay /System/Library/Sounds/Funk.aiff"
-					}
-				]
-			}
-		],
-		"PostToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
-					}
-				]
-			},
-			{
-				"matcher": "Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "say '終端指令已完成'"
-					}
-				]
-			}
-		],
-		"Notification": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/notification.py"
-					}
-				]
-			}
-		],
-		"Stop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "say -r 220 ' 對話已經完成' && ntfy publish lizard 'Claude Code 對話結束'"
-					}
-				]
-			}
-		]
-	},
-	"permissions": {
-		"allow": [
-			"Bash(ls:*)",
-			"Bash(cd:*)",
-			"Bash(cat:*)",
-			"Bash(bat:*)",
-			"Bash(python:*)",
-			"Bash(Rscript:*)",
-			"Bash(brew:*)",
-			"Bash(pwd)",
-			"Bash(mkdir:*)",
-			"Bash(cp:*)",
-			"Bash(mv:*)",
-			"Bash(touch:*)",
-			"Bash(cat:*)",
-			"Bash(head:*)",
-			"Bash(tail:*)",
-			"Bash(less:*)",
-			"Bash(more:*)",
-			"Bash(grep:*)",
-			"Bash(rg:*)",
-			"Bash(awk:*)",
-			"Bash(sed:*)",
-			"Bash(find:*)",
-			"Bash(du:*)",
-			"Bash(df:*)",
-			"Bash(wc:*)",
-			"Bash(cut:*)",
-			"Bash(sort:*)",
-			"Bash(uniq:*)",
-			"Bash(xargs:*)",
-			"Bash(tr:*)",
-			"Bash(split:*)",
-			"Bash(diff:*)",
-			"Bash(cmp:*)",
-			"Bash(tree:*)",
-			"Bash(date)",
-			"Bash(cal)",
-			"Bash(whoami)",
-			"Bash(id)",
-			"Bash(env)",
-			"Bash(export:*)",
-			"Bash(unset:*)",
-			"Bash(alias:*)",
-			"Bash(unalias:*)",
-			"Bash(echo:*)",
-			"Bash(seq:*)",
-			"Bash(printf:*)",
-			"Bash(history)",
-			"Bash(clear)",
-			"Bash(file:*)",
-			"Bash(stat:*)",
-			"Bash(basename:*)",
-			"Bash(dirname:*)",
-			"Bash(pnpm:*)",
-			"Bash(uv venv:*)",
-			"Bash(source:*)",
-			"Bash(uv pip install:*)",
-			"Bash(chmod:*)"
-		],
-		"defaultMode": "acceptEdits"
-	},
-	"enableAllProjectMcpServers": true
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Bash(bat:*)",
+      "Bash(python:*)",
+      "Bash(Rscript:*)",
+      "Bash(brew:*)",
+      "Bash(pwd)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(less:*)",
+      "Bash(more:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(wc:*)",
+      "Bash(cut:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(xargs:*)",
+      "Bash(tr:*)",
+      "Bash(split:*)",
+      "Bash(diff:*)",
+      "Bash(cmp:*)",
+      "Bash(tree:*)",
+      "Bash(date)",
+      "Bash(cal)",
+      "Bash(whoami)",
+      "Bash(id)",
+      "Bash(env)",
+      "Bash(export:*)",
+      "Bash(unset:*)",
+      "Bash(alias:*)",
+      "Bash(unalias:*)",
+      "Bash(echo:*)",
+      "Bash(seq:*)",
+      "Bash(printf:*)",
+      "Bash(history)",
+      "Bash(clear)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(pnpm:*)",
+      "Bash(uv venv:*)",
+      "Bash(source:*)",
+      "Bash(uv pip install:*)",
+      "Bash(chmod:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Funk.aiff"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/read_hook.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Funk.aiff"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "say '終端指令已完成'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/notification.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "say -r 220 ' 對話已經完成' && ntfy publish lizard 'Claude Code 對話結束'"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  }
 }
