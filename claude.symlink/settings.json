@@ -1,4 +1,7 @@
 {
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(ls:*)",
@@ -135,7 +138,5 @@
       }
     ]
   },
-  "env": {
-    "DISABLE_AUTOUPDATER": "1"
-  }
+  "alwaysThinkingEnabled": true
 }
