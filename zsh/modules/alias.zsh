@@ -128,3 +128,9 @@ alias vsauto='nvim -S .vim_auto_session.vim'
 alias wpy="pyenv which python"
 alias yt-mp4='yt-dlp --merge-output-format mp4'
 alias zshconfig="vim ~/.zshrc"
+# 查看最近一次失敗 run 的失敗步驟 log
+alias gha-last-fail='gh run view --log-failed'
+# 追蹤最近一次 run 的執行狀況（像看 live log）
+alias gha-watch='gh run watch --compact --exit-status'
+# 查看最近幾個失敗 run 的列表
+alias gha-failed-list='gh run list --status failure'

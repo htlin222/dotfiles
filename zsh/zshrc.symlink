@@ -316,3 +316,6 @@ export PATH=~/.npm-global/bin:$PATH
 
 # Added by Antigravity
 export PATH="/Users/htlin/.antigravity/antigravity/bin:$PATH"
+
+# Added by Antigravity
+export PATH="/Users/htlin/.antigravity/antigravity/bin:$PATH"
