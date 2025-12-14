@@ -543,7 +543,9 @@ function snippets() {
   nvim $HOME/.dotfiles/neovim/snippets/init.lua
 }
 function yt-mp3() {
-  yt-dlp --extract-audio --audio-format mp3 $1
+  yt-dlp --extract-audio --audio-format mp3 \
+    -o "%(playlist|.)s/%(playlist_index|)s%(playlist_index&_|)s%(title)s.%(ext)s" \
+    "$1"
 }
 function yt-mp3-list() {
   folder_name=$(basename "$(pwd)")
