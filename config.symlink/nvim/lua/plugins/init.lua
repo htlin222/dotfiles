@@ -11,7 +11,10 @@ return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      require("nvchad.configs.lspconfig").defaults()
+      -- Load NvChad LSP base setup (diagnostics, base46 theme, LspAttach keymaps)
+      dofile(vim.g.base46_cache .. "lsp")
+      require("nvchad.lsp").diagnostic_config()
+      -- Load custom LSP configurations using vim.lsp.config API
       require "configs.lspconfig"
     end,
   },

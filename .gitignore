@@ -57,4 +57,5 @@ claude.symlink/logs
 claude.symlink/*.jsonl
 claude.symlink/file-history/
 claude.symlink/shell-snapshots/
+claude.symlink/ide/
 **/logs/
