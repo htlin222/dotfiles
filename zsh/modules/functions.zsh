@@ -1044,3 +1044,18 @@ findfeed() {
   fi
   curl -s "$1" | grep -Eoi '<link[^>]+(rss|atom|xml)[^>]*>' | sed 's/.*href=["'\'']\([^"'\'' ]*\).*/\1/'
 }
+
+# Create ./YYYY-MM-DD directory (and optionally cd into it)
+mkymd() {
+  emulate -L zsh
+  setopt localoptions no_unset
+
+  local d dir
+  d="$(date +%F)"            # YYYY-MM-DD
+  dir="./${d}"
+
+  mkdir -p -- "$dir" || return $?
+
+  # If you want it to auto-cd, keep this; otherwise delete the next line.
+  cd -- "$dir"
+}
