@@ -138,5 +138,8 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true
+  }
 }

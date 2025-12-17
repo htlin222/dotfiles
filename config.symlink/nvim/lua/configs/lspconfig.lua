@@ -86,7 +86,7 @@ vim.lsp.config("groovyls", {
 -- Air LSP 配置 (R 語言格式化)
 vim.lsp.config("air", {
   cmd = { vim.fn.expand("~/.local/share/nvim/mason/bin/air"), "language-server" },
-  filetypes = { "r", "rmd", "quarto" },
+  filetypes = { "r", "rmd" }, -- quarto excluded: uses injected formatter
   root_markers = { ".git", "DESCRIPTION", ".Rproj" },
   on_attach = function(client, bufnr)
     -- 調用默認的 on_attach
@@ -143,7 +143,7 @@ local all_servers = {
   "lua_ls",
   "groovyls",
   "air",
-  "r_language_server",
+  -- "r_language_server", -- disabled: use air instead
 }
 
 vim.lsp.enable(all_servers)

@@ -1,8 +1,6 @@
 return {
   "jmbuhr/otter.nvim",
-  -- Optional dependencies
-  -- event = "VeryLazy",
-  -- ft = { "markdown", "norg" },
+  ft = { "markdown", "quarto", "norg", "rmd" },
   config = function()
     local otter = require "otter"
     otter.setup {
@@ -17,10 +15,6 @@ return {
         diagnostic_update_events = { "BufWritePost" },
       },
       buffers = {
-        -- if set to true, the filetype of the otterbuffers will be set.
-        -- otherwise only the autocommand of lspconfig that attaches
-        -- the language server will be executed without setting the filetype
-        set_filetype = false,
         -- write <path>.otter.<embedded language extension> files
         -- to disk on save of main buffer.
         -- usefule for some linters that require actual files
@@ -32,19 +26,16 @@ return {
       -- When true, otter handles these cases fully. This is a (minor) performance hit
       handle_leading_whitespace = false,
     }
-    -- table of embedded languages to look for.
-    -- default = nil, which will activate
-    -- any embedded languages found
-    local languages = { "python", "quarto" }
 
-    -- enable completion/diagnostics
-    -- defaults are true
-    local completion = true
-    local diagnostics = false
-    -- treesitter query to look for embedded languages
-    -- uses injections if nil or not set
-    local tsquery = nil
-
-    otter.activate(languages, completion, diagnostics, tsquery)
+    -- Activate on filetype enter
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "markdown", "quarto", "norg", "rmd" },
+      callback = function()
+        local languages = { "python", "r", "lua", "bash" }
+        local completion = true
+        local diagnostics = false
+        otter.activate(languages, completion, diagnostics)
+      end,
+    })
   end,
 }

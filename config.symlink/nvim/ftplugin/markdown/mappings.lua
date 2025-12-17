@@ -46,13 +46,6 @@ map("n", "<leader>a2", function()
   vim.api.nvim_set_current_line(new_line)
 end, { desc = "add level 2", silent = false, nowait = true })
 -- this will be deprecated since no need to use for divider
-map("n", "<leader><CR>", function()
-  local lines = { "", "", "---", "", "" }
-  local current_line = vim.fn.line "."
-  vim.api.nvim_buf_set_lines(0, current_line, current_line, false, lines)
-  vim.api.nvim_win_set_cursor(0, { current_line + #lines, 0 })
-  vim.cmd "echomsg '新增一頁投影片'"
-end, { desc = "Follow Link", silent = false, nowait = true })
 map("n", "<leader>mz", function()
   vim.cmd "write"
   local file_name = vim.fn.expand "%:p"
