@@ -20,6 +20,34 @@ title: "自動化與腳本"
 
 ### Git 工作流
 
+**背景（問題發現）**
+
+每天管理 dotfiles 和多個專案時，我們會重複執行相同的 Git 操作：
+
+- 切換到 dotfiles 目錄
+- 加入所有更改
+- 寫 commit message（最花時間）
+- 推送到遠端
+- 回到原目錄
+
+這個流程每天可能重複 5-10 次，每次耗時 1-2 分鐘。特別是撰寫有意義的 commit message 需要思考和打字。
+
+**方法**
+
+建立兩個自動化函數來簡化 Git 工作流：
+
+1. `dp()` - 專門用於 dotfiles 的快速提交
+   - 自動切換到 dotfiles 目錄
+   - 使用 AI 工具自動生成 commit message
+   - 推送後返回原目錄
+
+2. `zgit()` - 當前專案的快速提交
+   - 在當前目錄執行
+   - 使用 conventional commits 格式
+   - 適合遵循團隊規範的專案
+
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
 # 一鍵提交 dotfiles
@@ -36,10 +64,52 @@ function zgit() {
     git add -A
     aicommits --type conventional
     git push
+    cd -
 }
 ```
 
+**討論/延伸**
+
+注意事項：
+- 需要先安裝 `aicommits` 工具（`npm install -g aicommits`）
+- 確保 `$DOTFILES` 環境變數已設定
+- `cd -` 會返回到前一個工作目錄
+
+變體與改進：
+- 可加入 `git status` 檢查是否有未提交的更改
+- 加入錯誤處理：如果 push 失敗要顯示訊息
+- 可以加入確認步驟，避免誤推送
+
+進一步學習：
+- 了解 [Conventional Commits](https://www.conventionalcommits.org/) 規範
+- 探索其他 AI commit 工具如 `git-cliff`、`commitizen`
+- 學習 Git hooks 來自動執行檢查
+
 ### 專案初始化
+
+**背景（問題發現）**
+
+每次開始新專案時，我們都需要：
+
+1. 從 GitHub clone 模板專案
+2. 重新命名目錄
+3. 安裝所有依賴套件
+4. 清除舊的 Git 歷史
+5. 重新初始化 Git repository
+6. 建立第一個 commit
+
+這個流程涉及至少 8-10 個指令，容易遺漏步驟或打錯指令。特別是使用同一個模板重複建立專案時（例如使用 Claude Artifact Runner 建立多個實驗專案），每次都要重複相同的操作。
+
+**方法**
+
+建立一個互動式函數 `cloneclaude()`，自動化整個專案初始化流程：
+
+- 使用 GitHub CLI (`gh`) clone 模板 repository
+- 透過 `read` 指令互動式詢問新專案名稱
+- 自動執行重新命名、安裝依賴、Git 初始化等步驟
+- 提供完成訊息確認所有步驟成功
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
@@ -69,7 +139,77 @@ function cloneclaude() {
 }
 ```
 
+**討論/延伸**
+
+注意事項：
+- 需要安裝並認證 GitHub CLI (`gh auth login`)
+- 確保網路連線穩定，避免 clone 或 npm install 中斷
+- `rm -rf .git` 會永久刪除原始 Git 歷史，請確認是否需要保留
+
+變體與改進：
+- 加入錯誤處理：檢查 clone 是否成功
+- 驗證新專案名稱是否已存在，避免覆蓋
+- 支援更多模板選擇（傳入參數選擇不同模板）
+- 自動開啟 VSCode：`code .`
+- 詢問是否建立 GitHub repository：`gh repo create`
+
+範例擴充版本：
+```bash
+function cloneclaude() {
+    local template="${1:-htlin222/claude-artifact-runner}"
+
+    gh repo clone "$template" || return 1
+
+    echo -n "Enter new folder name: "
+    read -r new_folder_name
+
+    [[ -d "$new_folder_name" ]] && {
+        echo "Error: Folder already exists!"
+        return 1
+    }
+
+    mv "${template##*/}" "$new_folder_name"
+    cd "$new_folder_name" || return 1
+
+    npm install && rm -rf .git && git init && git add . && \
+    git commit -m 'init' && code .
+}
+```
+
+進一步學習：
+- 探索 `cookiecutter` 或 `degit` 等專案模板工具
+- 研究如何建立自己的專案模板
+- 了解 GitHub Template Repository 功能
+
 ### 檔案整理
+
+**背景（問題發現）**
+
+下載資料夾或專案目錄經常累積大量零散檔案：
+
+- 螢幕截圖、PDF、圖片、文件等混在一起
+- 檔名沒有統一格式，難以搜尋
+- 找特定日期的檔案需要手動檢查每個檔案的修改時間
+- 手動建立資料夾並移動檔案耗時且容易出錯
+
+例如一個下載資料夾可能有 50+ 個檔案，手動整理需要 10-15 分鐘。
+
+**方法**
+
+建立 `chore()` 函數自動按照檔案修改日期整理檔案：
+
+- 掃描當前目錄的所有檔案（不含符號連結）
+- 讀取每個檔案的修改時間
+- 使用「日期_檔名」格式建立資料夾
+- 將檔案移動到對應的資料夾中
+- 跳過已經有日期前綴的檔案，避免重複處理
+
+核心技術：
+- `date -r "$file"` 讀取檔案修改時間
+- 正則表達式 `^[0-9]{4}-[0-9]{2}-[0-9]{2}_` 判斷是否已有日期前綴
+- `${file%.*}` 移除副檔名
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
@@ -93,7 +233,80 @@ function chore() {
 }
 ```
 
+**討論/延伸**
+
+注意事項：
+- 此函數會修改目錄結構，建議先在測試目錄執行
+- 只處理檔案，不處理子目錄
+- 符號連結會被跳過（`! -L "$file"`）
+- 已有日期前綴的檔案不會被重新處理
+
+變體與改進：
+- 按月份分類：改為 `+"%Y-%m"` 格式
+- 按檔案類型分類：加入副檔名判斷
+- 乾執行模式：加入 `--dry-run` 參數預覽結果
+- 支援遞迴處理子目錄
+
+範例擴充版本（按類型和日期分類）：
+```bash
+function chore-type() {
+    for file in *; do
+        if [[ -f "$file" && ! -L "$file" ]]; then
+            ext="${file##*.}"
+            mod_date=$(date -r "$file" +"%Y-%m")
+
+            case "$ext" in
+                jpg|png|gif|jpeg) type="images" ;;
+                pdf) type="documents" ;;
+                mp4|mov|avi) type="videos" ;;
+                *) type="others" ;;
+            esac
+
+            new_folder="${type}/${mod_date}"
+            mkdir -p "$new_folder"
+            mv "$file" "$new_folder/"
+            echo "Moved $file to $new_folder/"
+        fi
+    done
+}
+```
+
+進一步學習：
+- 研究 `find` 指令的進階用法（按時間、大小、類型搜尋）
+- 了解 `rsync` 用於批次檔案操作
+- 探索 Hazel（macOS）等自動化檔案整理工具
+
 ### 媒體處理
+
+**背景（問題發現）**
+
+處理多媒體檔案時經常遇到兩個場景：
+
+1. **下載音樂**：想從 YouTube 下載音訊檔案（例如演講、音樂、Podcast），但只需要音訊不需要影片
+   - 手動使用線上工具：廣告多、品質不穩定、隱私疑慮
+   - 下載完整影片再轉檔：浪費時間和頻寬
+
+2. **合併影片**：需要將多個影片片段合併成一個檔案（例如課程錄影、會議記錄）
+   - 使用影片編輯軟體：開啟慢、操作複雜、檔案可能重新編碼導致品質損失
+   - 手動處理 10 個片段可能需要 30 分鐘以上
+
+**方法**
+
+建立兩個命令列工具函數：
+
+1. `yt-mp3()` - YouTube 音訊下載器
+   - 使用 `yt-dlp` 工具（比 `youtube-dl` 更快更穩定）
+   - `--extract-audio` 只提取音訊軌道
+   - `--audio-format mp3` 轉換為通用的 MP3 格式
+   - `-o "%(title)s.%(ext)s"` 使用影片標題作為檔名
+
+2. `joinmp4()` - 影片合併工具
+   - 使用 `ffmpeg` 的 concat demuxer（不重新編碼，速度快）
+   - 掃描當前目錄所有 `.mp4` 檔案
+   - 建立 `filelist.txt` 作為合併清單
+   - `-c copy` 直接複製串流，不重新編碼（保持原始品質）
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
@@ -113,9 +326,112 @@ function joinmp4() {
 }
 ```
 
+**討論/延伸**
+
+注意事項：
+- 需要安裝 `yt-dlp`（`brew install yt-dlp` 或 `pip install yt-dlp`）
+- 需要安裝 `ffmpeg`（`brew install ffmpeg`）
+- YouTube 下載需遵守版權法規和 YouTube 使用條款
+- `joinmp4()` 會合併所有 `.mp4` 檔案，確認目錄中只有需要的檔案
+- 檔案會按檔名排序，可能需要先重新命名（例如 `01.mp4`, `02.mp4`）
+
+變體與改進：
+
+**yt-mp3 進階版本**：
+```bash
+# 支援播放清單和品質選擇
+function yt-mp3() {
+    local quality="${2:-5}"  # 預設品質 5 (128kbps)
+    yt-dlp --extract-audio --audio-format mp3 \
+        --audio-quality "$quality" \
+        -o "%(title)s.%(ext)s" "$1"
+}
+
+# 使用：yt-mp3 "https://youtube.com/watch?v=..." 0  # 最高品質
+```
+
+**joinmp4 進階版本**：
+```bash
+# 支援自訂輸出檔名和檔案順序確認
+function joinmp4() {
+    local output="${1:-combined.mp4}"
+
+    # 顯示將要合併的檔案順序
+    echo "Files to be merged (in order):"
+    for file in *.mp4; do
+        echo "  - $file"
+        echo "file '$file'" >> filelist.txt
+    done
+
+    read -p "Continue? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        ffmpeg -f concat -safe 0 -i filelist.txt -c copy "$output"
+        echo "✅ Merged to $output"
+    fi
+    rm filelist.txt
+}
+```
+
+其他有用的媒體處理函數：
+```bash
+# 影片轉 GIF
+function vid2gif() {
+    ffmpeg -i "$1" -vf "fps=10,scale=640:-1:flags=lanczos" \
+        -c:v gif "${1%.*}.gif"
+}
+
+# 壓縮影片（減小檔案大小）
+function compress-vid() {
+    ffmpeg -i "$1" -vcodec libx264 -crf 28 "${1%.*}_compressed.mp4"
+}
+
+# 提取影片片段
+function clip-vid() {
+    local input="$1"
+    local start="$2"  # 格式：00:01:30
+    local duration="$3"  # 格式：00:00:45
+    ffmpeg -i "$input" -ss "$start" -t "$duration" -c copy \
+        "${input%.*}_clip.mp4"
+}
+```
+
+進一步學習：
+- 深入學習 [ffmpeg 官方文件](https://ffmpeg.org/documentation.html)
+- 探索 `yt-dlp` 的進階功能（字幕下載、播放清單、格式選擇）
+- 了解影片編碼參數（CRF、bitrate、codec）對品質和檔案大小的影響
+
 ## 定時任務
 
 ### macOS launchd
+
+**背景（問題發現）**
+
+許多重要任務需要定期執行：
+
+- 每日備份重要資料（dotfiles、專案、文件）
+- 定期清理暫存檔案和下載資料夾
+- 自動更新依賴套件和系統工具
+- 定期檢查系統健康狀況
+
+使用 `cron` 在 macOS 上有限制（系統睡眠時不執行、電源管理問題），而手動執行容易忘記。macOS 的官方解決方案是 `launchd`，它能在系統喚醒後執行錯過的任務，並且有更好的系統整合。
+
+**方法**
+
+使用 macOS 的 `launchd` 系統建立定時任務：
+
+- 在 `~/Library/LaunchAgents/` 建立 `.plist` 設定檔
+- 定義任務標籤（Label）作為唯一識別
+- 指定要執行的程式和參數
+- 設定執行時間（時、分）
+- 使用 `launchctl` 載入和管理任務
+
+關鍵欄位說明：
+- `Label`: 唯一識別名稱（反向網域命名）
+- `ProgramArguments`: 要執行的指令（陣列格式）
+- `StartCalendarInterval`: 定時執行的時間點
+
+**結果（程式碼）**
 
 建立 `~/Library/LaunchAgents/com.user.backup.plist`：
 
@@ -144,14 +460,145 @@ function joinmp4() {
 </plist>
 ```
 
-載入：
+載入任務：
 
 ```{bash}
 #| eval: false
 launchctl load ~/Library/LaunchAgents/com.user.backup.plist
 ```
 
+**討論/延伸**
+
+注意事項：
+- 路徑必須使用絕對路徑（包含腳本路徑和指令路徑）
+- 檔案權限要正確：`chmod 644 com.user.backup.plist`
+- 使用 `launchctl list | grep backup` 檢查任務是否載入成功
+- 錯誤訊息會記錄在 `~/Library/Logs/` 或系統 Console.app
+
+常用 launchctl 指令：
+```bash
+# 載入任務
+launchctl load ~/Library/LaunchAgents/com.user.backup.plist
+
+# 卸載任務
+launchctl unload ~/Library/LaunchAgents/com.user.backup.plist
+
+# 立即執行（測試用）
+launchctl start com.user.backup
+
+# 檢視所有任務
+launchctl list | grep user
+
+# 查看任務狀態
+launchctl list com.user.backup
+```
+
+進階設定範例：
+
+**每小時執行**：
+```xml
+<key>StartInterval</key>
+<integer>3600</integer>  <!-- 秒數 -->
+```
+
+**每週一上午 9 點**：
+```xml
+<key>StartCalendarInterval</key>
+<dict>
+    <key>Weekday</key>
+    <integer>1</integer>  <!-- 0=週日, 1=週一 -->
+    <key>Hour</key>
+    <integer>9</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+</dict>
+```
+
+**監控檔案變化自動執行**：
+```xml
+<key>WatchPaths</key>
+<array>
+    <string>/Users/username/Documents</string>
+</array>
+```
+
+**標準輸出/錯誤記錄**：
+```xml
+<key>StandardOutPath</key>
+<string>/tmp/backup.log</string>
+<key>StandardErrorPath</key>
+<string>/tmp/backup.error.log</string>
+```
+
+實用範例：定期清理下載資料夾
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.cleanup-downloads</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/find</string>
+        <string>/Users/username/Downloads</string>
+        <string>-type</string>
+        <string>f</string>
+        <string>-mtime</string>
+        <string>+30</string>
+        <string>-delete</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+</dict>
+</plist>
+```
+
+進一步學習：
+- 閱讀 `man launchd.plist` 了解所有可用選項
+- 探索 [LaunchControl](https://www.soma-zone.com/LaunchControl/) GUI 工具
+- 研究系統級任務（`/Library/LaunchDaemons/`）與用戶級任務的差異
+
 ### Linux cron
+
+**背景（問題發現）**
+
+在 Linux 系統上，定時任務通常使用 `cron` 來管理。與 macOS 的 `launchd` 類似，我們需要：
+
+- 定期備份資料
+- 自動清理日誌檔案
+- 定時更新系統套件
+- 執行健康檢查腳本
+
+直接記住 cron 語法並不容易（五個欄位的時間格式），而且錯誤的設定可能導致任務無法執行或執行時間錯誤。
+
+**方法**
+
+使用 `cron` daemon 的 `crontab` 工具管理定時任務：
+
+- 使用 `crontab -e` 編輯當前使用者的 crontab 檔案
+- 使用五欄位時間格式：`分 時 日 月 週`
+- 每行一個任務，包含時間和要執行的指令
+- 系統會在指定時間自動執行腳本
+
+Cron 時間格式說明：
+```
+*    *    *    *    *
+│    │    │    │    │
+│    │    │    │    └─── 週幾 (0-7，0 和 7 都是週日)
+│    │    │    └──────── 月份 (1-12)
+│    │    └───────────── 日期 (1-31)
+│    └────────────────── 小時 (0-23)
+└─────────────────────── 分鐘 (0-59)
+```
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
@@ -162,7 +609,135 @@ crontab -e
 0 2 * * * /path/to/backup.sh
 ```
 
+**討論/延伸**
+
+注意事項：
+- 使用絕對路徑（cron 的 PATH 環境變數可能不完整）
+- Cron 執行時的環境變數與登入 shell 不同，可能需要在腳本中設定環境
+- 預設不會發送輸出，使用 `>` 重導向或設定 `MAILTO` 接收通知
+- 使用 `crontab -l` 列出現有任務，避免覆蓋
+
+常用 crontab 指令：
+```bash
+# 編輯 crontab
+crontab -e
+
+# 列出現有任務
+crontab -l
+
+# 刪除所有任務
+crontab -r
+
+# 編輯其他使用者的 crontab (需要 root)
+sudo crontab -u username -e
+```
+
+常見時間設定範例：
+
+```bash
+# 每分鐘執行
+* * * * * /path/to/script.sh
+
+# 每小時的第 0 分執行
+0 * * * * /path/to/script.sh
+
+# 每天早上 8:30 執行
+30 8 * * * /path/to/script.sh
+
+# 每週一早上 9:00 執行
+0 9 * * 1 /path/to/script.sh
+
+# 每月 1 號凌晨 2:15 執行
+15 2 1 * * /path/to/script.sh
+
+# 每 5 分鐘執行一次
+*/5 * * * * /path/to/script.sh
+
+# 每天 8-17 點的每小時執行
+0 8-17 * * * /path/to/script.sh
+
+# 週一到週五早上 9 點執行
+0 9 * * 1-5 /path/to/script.sh
+```
+
+實用範例：完整的 crontab 設定
+```bash
+# 設定環境變數
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=your-email@example.com
+
+# 每天凌晨 2 點備份
+0 2 * * * /home/user/scripts/backup.sh >> /var/log/backup.log 2>&1
+
+# 每週日凌晨 3 點清理舊日誌（保留 30 天）
+0 3 * * 0 find /var/log -name "*.log" -mtime +30 -delete
+
+# 每小時檢查磁碟空間
+0 * * * * df -h | grep -E '^/dev/' | awk '$5 > 90 {print "WARNING: " $6 " is " $5 " full"}' | mail -s "Disk Space Alert" admin@example.com
+
+# 每 15 分鐘檢查服務狀態
+*/15 * * * * systemctl is-active --quiet nginx || systemctl restart nginx
+```
+
+使用特殊字串（更易讀）：
+```bash
+@reboot       /path/to/script.sh      # 系統啟動時執行
+@yearly       /path/to/script.sh      # 等同於 0 0 1 1 *
+@annually     /path/to/script.sh      # 同 @yearly
+@monthly      /path/to/script.sh      # 等同於 0 0 1 * *
+@weekly       /path/to/script.sh      # 等同於 0 0 * * 0
+@daily        /path/to/script.sh      # 等同於 0 0 * * *
+@midnight     /path/to/script.sh      # 同 @daily
+@hourly       /path/to/script.sh      # 等同於 0 * * * *
+```
+
+除錯技巧：
+```bash
+# 測試 cron 腳本（模擬 cron 環境）
+env -i /bin/sh -c "export PATH=/usr/bin:/bin; /path/to/script.sh"
+
+# 查看 cron 日誌
+sudo tail -f /var/log/syslog | grep CRON    # Ubuntu/Debian
+sudo tail -f /var/log/cron                  # CentOS/RHEL
+
+# 加入詳細日誌
+0 2 * * * /path/to/backup.sh >> /var/log/backup.log 2>&1
+```
+
+進一步學習：
+- 使用 [crontab.guru](https://crontab.guru/) 線上工具驗證 cron 語法
+- 探索 `anacron`（適合非 24 小時運行的系統）
+- 研究 `systemd timers`（現代 Linux 的替代方案）
+
 ## 通知整合
+
+**背景（問題發現）**
+
+執行長時間任務時（例如編譯、測試、部署），我們經常遇到這些問題：
+
+- 切換到其他視窗工作，忘記檢查任務是否完成
+- 需要定期回來查看終端機輸出
+- 任務失敗時沒有立即發現，浪費時間
+- 想在任務完成時收到提醒，但不想一直盯著螢幕
+
+例如 `npm run build` 可能需要 5-10 分鐘，這段時間可以做其他事，但需要知道何時完成。
+
+**方法**
+
+建立 `notify()` 函數整合 macOS 通知中心：
+
+- 使用 `osascript` 執行 AppleScript 指令
+- `display notification` 顯示系統通知
+- 接受兩個參數：標題和訊息內容
+- 與 shell 的 `&&` 運算子結合，在指令成功後發送通知
+
+核心技術：
+- `local` 宣告區域變數
+- `osascript -e` 執行單行 AppleScript
+- `&&` 確保前一個指令成功才執行通知
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
@@ -175,6 +750,136 @@ function notify() {
 # 長時間任務完成後通知
 npm run build && notify "Build" "Complete!"
 ```
+
+**討論/延伸**
+
+注意事項：
+- 僅適用於 macOS（需要 `osascript`）
+- 需要允許終端機發送通知（系統偏好設定 → 通知）
+- 使用 `&&` 只在任務成功時通知，失敗則不會觸發
+- 通知會出現在通知中心，可點擊查看
+
+變體與改進：
+
+**支援成功/失敗通知**：
+```bash
+function notify() {
+    local title="$1"
+    local message="$2"
+    osascript -e "display notification \"$message\" with title \"$title\""
+}
+
+# 同時處理成功和失敗
+npm run build && notify "Build" "✅ Success!" || notify "Build" "❌ Failed!"
+```
+
+**加入聲音提示**：
+```bash
+function notify() {
+    local title="$1"
+    local message="$2"
+    osascript -e "display notification \"$message\" with title \"$title\" sound name \"Glass\""
+}
+
+# 可用的聲音：Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
+```
+
+**跨平台通知函數**：
+```bash
+function notify() {
+    local title="$1"
+    local message="$2"
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        osascript -e "display notification \"$message\" with title \"$title\""
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux (需要 libnotify)
+        notify-send "$title" "$message"
+    else
+        # Windows (WSL)
+        powershell.exe -Command "New-BurntToastNotification -Text '$title', '$message'"
+    fi
+}
+```
+
+**整合計時功能**：
+```bash
+function notify-time() {
+    local start_time=$(date +%s)
+    "$@"  # 執行傳入的指令
+    local exit_code=$?
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+
+    if [ $exit_code -eq 0 ]; then
+        notify "Task Complete" "✅ Finished in ${duration}s"
+    else
+        notify "Task Failed" "❌ Failed after ${duration}s (exit code: $exit_code)"
+    fi
+
+    return $exit_code
+}
+
+# 使用方式
+notify-time npm run build
+notify-time pytest tests/
+```
+
+**進階：帶進度的長時間任務**：
+```bash
+function long-task-with-progress() {
+    local total_steps=5
+
+    for i in $(seq 1 $total_steps); do
+        echo "Step $i of $total_steps..."
+        sleep 2  # 模擬工作
+        osascript -e "display notification \"Step $i/$total_steps completed\" with title \"Progress\""
+    done
+
+    notify "Task" "All $total_steps steps completed!"
+}
+```
+
+**整合 Slack/Discord 通知**：
+```bash
+function notify-slack() {
+    local message="$1"
+    local webhook_url="YOUR_SLACK_WEBHOOK_URL"
+
+    curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"$message\"}" \
+        "$webhook_url"
+}
+
+# 使用
+npm run build && notify-slack "✅ Build completed successfully!"
+```
+
+**實用組合範例**：
+```bash
+# 在背景執行並通知
+function bg-notify() {
+    "$@" &
+    local pid=$!
+    wait $pid
+    local exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
+        notify "Background Task" "✅ '$*' completed"
+    else
+        notify "Background Task" "❌ '$*' failed (exit: $exit_code)"
+    fi
+}
+
+# 使用
+bg-notify npm run build
+```
+
+進一步學習：
+- 探索 [terminal-notifier](https://github.com/julienXX/terminal-notifier) 功能更強大的通知工具
+- 研究 macOS 的 AppleScript 自動化功能
+- 了解如何整合第三方通知服務（Pushover, Pushbullet）
 
 ## Makefile 自動化
 

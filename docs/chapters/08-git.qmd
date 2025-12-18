@@ -8,6 +8,16 @@ Git 是開發者的必備工具。掌握 CLI 操作比 GUI 更高效、更精確
 
 ## 基本設定
 
+### 背景（問題發現）
+
+初次使用 Git 時，系統預設設定往往不符合個人工作習慣。例如預設編輯器可能是 vi，預設分支名稱仍是 `master`，每次 commit 都需要輸入完整的使用者資訊。這些設定問題會降低工作效率，也可能導致團隊協作時的資訊不一致。
+
+### 方法
+
+透過 `.gitconfig` 檔案集中管理 Git 的全域設定。這個檔案位於使用者家目錄下（`~/.gitconfig`），可以設定使用者資訊、編輯器偏好、預設行為、以及常用指令的別名。一次設定完成後，所有 Git repository 都會套用這些設定。
+
+### 結果（程式碼）
+
 ```{bash}
 #| eval: false
 # ~/.gitconfig
@@ -33,9 +43,32 @@ Git 是開發者的必備工具。掌握 CLI 操作比 GUI 更高效、更精確
     lg = log --oneline --graph --all
 ```
 
+### 討論/延伸
+
+- **autocrlf = input**：確保在 macOS/Linux 環境下，檢入時將 CRLF 轉為 LF，避免跨平台協作的換行符號問題
+- **pull.rebase = true**：預設使用 rebase 而非 merge，保持更乾淨的 commit history
+- **別名設定**：`lg` 是特別實用的別名，可視覺化顯示分支結構
+- 進一步學習：可探索 `git config --global` 指令動態修改設定，或研究條件式設定（針對不同專案使用不同設定）
+
 ## 日常工作流
 
 ### 基本操作
+
+#### 背景（問題發現）
+
+在日常開發中，我們需要追蹤檔案變更、選擇性提交部分修改、撰寫清晰的 commit 訊息，並同步到遠端 repository。若不熟悉這些基本操作，容易造成 commit 歷史混亂、誤提交不該進版本控制的檔案，或者無法有效地與團隊協作。
+
+#### 方法
+
+Git 的基本工作流程分為四個階段：
+1. **查看狀態**（`git status`）：確認哪些檔案被修改、新增或刪除
+2. **暫存變更**（`git add`）：選擇要提交的變更加入暫存區
+3. **提交變更**（`git commit`）：將暫存區的變更建立成一個 commit
+4. **推送變更**（`git push`）：將本地 commits 同步到遠端
+
+使用 `git add -p` 可以互動式地選擇要暫存的程式碼片段，實現更精細的版本控制。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -53,7 +86,33 @@ git commit -m "feat: add new feature"
 git push
 ```
 
+#### 討論/延伸
+
+- **git add -p** (patch mode)：適合當你在同一個檔案中做了多個不相關的修改，想要分別提交時使用
+- **Conventional Commits**：`feat:`、`fix:`、`docs:` 等前綴是業界標準，有助於自動產生 CHANGELOG
+- **git add .** vs **git add -A**：前者只加入當前目錄下的變更，後者加入整個 repository 的變更
+- 進一步學習：`git commit --amend` 修改最近一次 commit、`git reset` 取消暫存、`git stash` 暫存未提交的變更
+
 ### 分支管理
+
+#### 背景（問題發現）
+
+在開發新功能或修復 bug 時，直接在主分支上工作會造成以下問題：
+- 未完成的功能會影響主分支的穩定性
+- 多人協作時容易產生衝突
+- 難以同時進行多個獨立的開發任務
+- 無法輕易捨棄實驗性的修改
+
+#### 方法
+
+Git 的分支機制提供了輕量級的解決方案：
+1. **建立並切換分支**（`git checkout -b`）：建立一個獨立的開發線
+2. **合併分支**（`git merge`）：將完成的功能整合回主分支
+3. **刪除分支**（`git branch -d`）：清理已合併的分支
+
+這種工作流程確保主分支始終保持可部署狀態，同時允許並行開發多個功能。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -68,9 +127,37 @@ git merge feature/new-feature
 git branch -d feature/new-feature
 ```
 
+#### 討論/延伸
+
+- **分支命名慣例**：`feature/`、`bugfix/`、`hotfix/` 等前綴有助於組織分支
+- **git switch**：Git 2.23+ 推薦使用 `git switch -c feature/new-feature` 取代 `git checkout -b`
+- **git branch -D**：強制刪除未合併的分支（謹慎使用）
+- **衝突處理**：merge 時若有衝突，需手動編輯衝突檔案後再 commit
+- 進一步學習：`git rebase` 用於整理 commit history、`git cherry-pick` 挑選特定 commit
+
 ## AI 輔助提交訊息
 
-使用 aicommits 自動生成符合規範的提交訊息：
+### aicommits 工具
+
+#### 背景（問題發現）
+
+撰寫清晰且符合規範的 commit message 是一項耗時的工作。開發者常面臨以下困擾：
+- 不知道如何用簡潔的語言描述複雜的變更
+- 忘記使用 Conventional Commits 格式（feat:, fix: 等）
+- 多個檔案的變更難以用一句話總結
+- 中英文描述能力參差不齊
+
+#### 方法
+
+`aicommits` 是基於 AI 的工具，能自動分析 staged changes 並生成符合 Conventional Commits 規範的訊息。它會讀取 `git diff --staged` 的內容，理解程式碼變更的語意，然後產生適當的 commit message。
+
+工作流程：
+1. 暫存變更（`git add`）
+2. 執行 `aicommits`
+3. AI 分析變更並建議 commit message
+4. 確認或修改後提交
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -82,7 +169,30 @@ git add .
 aicommits
 ```
 
-一鍵提交函數：
+#### 討論/延伸
+
+- **API Key 設定**：首次使用需設定 OpenAI API key：`aicommits config set OPENAI_KEY=<your-key>`
+- **客製化**：可設定 `--type conventional` 強制使用 Conventional Commits 格式
+- **多語言支援**：可設定 `--locale zh-TW` 產生繁體中文訊息
+- **成本考量**：使用 OpenAI API 會產生費用，但每次呼叫成本極低（< $0.01）
+- 替代方案：GitHub Copilot、其他本地 AI 模型
+
+### 一鍵提交函數
+
+#### 背景（問題發現）
+
+即使使用 aicommits，完整的提交流程仍需執行三個指令（add、commit、push）。對於頻繁的小型提交，這種重複操作降低了工作效率。
+
+#### 方法
+
+將整個提交流程封裝成一個 shell 函數 `zgit()`，自動化執行以下步驟：
+1. 暫存所有變更（`git add -A`）
+2. 使用 AI 生成並提交（`aicommits --type conventional`）
+3. 推送到遠端（`git push`）
+
+這個函數特別適合用於個人專案或快速原型開發。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -93,25 +203,91 @@ function zgit() {
 }
 ```
 
+#### 討論/延伸
+
+- **使用時機**：適合個人專案、快速迭代；團隊專案建議保留 code review 流程
+- **安全考量**：`git add -A` 會暫存所有變更，使用前應確認沒有敏感資訊（如 API keys）
+- **進階版本**：可加入分支檢查，避免在主分支上直接 push
+- **變體實作**：可加入 `git status` 確認、或整合 pre-commit hooks
+- 進一步學習：研究 Git hooks（pre-commit、commit-msg）實現更嚴謹的流程控制
+
 ## lazygit：TUI Git 客戶端
 
-lazygit 是功能完整的終端 Git 介面：
+### 背景（問題發現）
+
+純指令列操作 Git 雖然精確，但在處理複雜情境時會遇到以下挑戰：
+- 難以視覺化分支結構和 commit 關係
+- 互動式 rebase 需要記憶大量指令
+- 解決 merge conflicts 時需要在編輯器和終端機間切換
+- 檢視 diff、log、stash 等資訊時缺乏直覺的導覽方式
+
+傳統的 GUI Git 客戶端（如 GitKraken、SourceTree）雖然解決了視覺化問題，但需要離開終端環境，打斷工作流程。
+
+### 方法
+
+`lazygit` 是一個 Terminal User Interface (TUI) Git 客戶端，在終端機內提供類似 GUI 的互動體驗。它將 Git 的各種功能整合到單一介面中，透過鍵盤快捷鍵和視覺化面板提供高效的操作體驗。
+
+核心特色：
+- **視覺化分支圖**：圖形化顯示 commit history 和分支關係
+- **互動式 rebase**：透過簡單的鍵盤操作重新排序、編輯、壓縮 commits
+- **衝突解決**：內建三方合併視圖，快速處理 merge conflicts
+- **滑鼠支援**：可用滑鼠點擊操作（但鍵盤更高效）
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
 brew install lazygit
 ```
 
-優點：
+### 討論/延伸
 
-- 視覺化分支圖
-- 互動式 rebase
-- 快速解決衝突
-- 支援滑鼠操作
+**常用快捷鍵**：
+- `space`：stage/unstage 檔案
+- `c`：commit
+- `P`：push
+- `p`：pull
+- `r`：rebase
+- `m`：merge
+- `e`：edit commit message
+- `s`：squash commit
+
+**使用場景**：
+- **Rebase 工作流**：視覺化地整理 commit history，比 `git rebase -i` 直覺
+- **Cherry-pick**：輕鬆選擇特定 commits 應用到當前分支
+- **Stash 管理**：視覺化管理多個 stash entries
+- **Branch 切換**：快速瀏覽和切換分支
+
+**注意事項**：
+- 初次使用建議閱讀內建的 keybindings 說明（按 `?`）
+- 複雜操作仍可能需要回到指令列
+- 可透過 `~/.config/lazygit/config.yml` 客製化設定
+
+**進一步學習**：探索 `tig`（另一個 TUI Git 工具，專注於瀏覽 history）、`gitui`（Rust 實作的 lazygit 替代品）
 
 ## forgit：fzf 整合
 
-forgit 用 fzf 增強 Git 命令：
+### 背景（問題發現）
+
+Git 的原生指令雖然功能強大，但在以下場景缺乏互動性：
+- `git log` 輸出冗長，難以快速定位特定 commit
+- `git diff` 無法快速預覽多個檔案的變更
+- `git add` 選擇檔案時需要精確輸入路徑
+- `git checkout` 切換分支或 commit 時需要記住名稱或 hash
+
+這些操作通常需要多次嘗試或搭配其他指令（如 `grep`）才能達成目標，降低了工作效率。
+
+### 方法
+
+`forgit` 是基於 `fzf` 的 Git 指令增強工具，為常用的 Git 操作加入模糊搜尋和即時預覽功能。它將 Git 指令的輸出導向 fzf，提供互動式的選擇介面。
+
+核心概念：
+- **模糊搜尋**：輸入關鍵字快速過濾 commits、檔案、分支
+- **即時預覽**：選擇項目時即時顯示詳細內容（diff、log、檔案內容）
+- **多選支援**：可同時選擇多個項目（如 staging 多個檔案）
+- **別名整合**：提供簡短的別名（`ga`、`glo`、`gd`）取代原生指令
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -125,7 +301,63 @@ glo
 gd
 ```
 
+### 討論/延伸
+
+**完整功能列表**：
+- `ga`：互動式 `git add`，可預覽檔案變更
+- `glo`：互動式 `git log`，可搜尋 commit 訊息
+- `gd`：互動式 `git diff`，可預覽每個檔案的差異
+- `gcf`：互動式 `git checkout <file>`，還原檔案
+- `gss`：互動式 `git stash show`
+- `gclean`：互動式 `git clean`，安全刪除未追蹤檔案
+
+**安裝方式**：
+```bash
+# 透過 Oh My Zsh
+git clone https://github.com/wfxr/forgit.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/forgit
+
+# 或直接 source
+# 在 .zshrc 加入：
+source /path/to/forgit/forgit.plugin.zsh
+```
+
+**使用技巧**：
+- 在 fzf 介面中按 `Ctrl-R` 可切換預覽視窗
+- 使用 `Tab` 或 `Shift-Tab` 多選項目
+- 輸入 `/` 進入搜尋模式
+
+**注意事項**：
+- 需先安裝 `fzf`（`brew install fzf`）
+- 別名可能與現有的 Git aliases 衝突，可透過環境變數客製化
+- 大型 repository 可能需要調整 fzf 的效能設定
+
+**進一步學習**：研究 `git-fuzzy`（另一個 fzf + Git 整合工具）、客製化 fzf 預覽指令
+
 ## GitHub CLI
+
+### 背景（問題發現）
+
+使用 GitHub 網頁介面管理 Pull Requests 和 CI/CD workflows 時，會遇到以下痛點：
+- 需要離開終端機切換到瀏覽器
+- 建立 PR 需要填寫多個表單欄位
+- 查看 CI 失敗原因需要點擊多個頁面
+- 無法快速批次操作多個 PRs 或 issues
+- 工作流程被打斷，降低專注度
+
+這些操作雖然可行，但頻繁的上下文切換會顯著降低生產力。
+
+### 方法
+
+GitHub CLI (`gh`) 是 GitHub 官方提供的命令列工具，將 GitHub 的主要功能帶到終端機中。它透過 GitHub API 提供與網頁介面幾乎相同的功能，但以指令列介面呈現。
+
+核心功能：
+- **認證管理**（`gh auth`）：一次登入，全域使用
+- **PR 管理**（`gh pr`）：建立、查看、合併、審查 Pull Requests
+- **Issue 管理**（`gh issue`）：建立、查看、關閉 issues
+- **Actions 整合**（`gh run`）：查看 CI/CD workflow 執行結果
+- **Repository 操作**（`gh repo`）：clone、fork、create repositories
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -146,7 +378,66 @@ gh pr view 123
 gh run view --log-failed
 ```
 
+### 討論/延伸
+
+**常用指令詳解**：
+
+**PR 工作流**：
+```bash
+gh pr create --title "feat: new feature" --body "Description"
+gh pr create --web  # 在瀏覽器中開啟
+gh pr checkout 123  # 切換到 PR 的分支
+gh pr merge 123 --squash  # 合併並壓縮 commits
+gh pr review 123 --approve  # 審查並批准
+```
+
+**CI/CD 監控**：
+```bash
+gh run list --limit 10  # 列出最近 10 次執行
+gh run watch  # 即時監控當前 workflow
+gh run rerun 123  # 重新執行失敗的 workflow
+```
+
+**進階應用**：
+```bash
+gh pr list --state all --json number,title,author  # JSON 輸出，可串接 jq
+gh api repos/:owner/:repo/pulls  # 直接呼叫 GitHub API
+gh extension install github/gh-copilot  # 安裝擴充功能
+```
+
+**優勢**：
+- **整合式工作流**：commit → push → create PR 一氣呵成
+- **腳本友善**：輸出可解析，適合自動化
+- **離線工作**：快取資料，減少 API 呼叫
+
+**注意事項**：
+- 首次使用需執行 `gh auth login` 授權
+- API rate limit：每小時 5000 次（已認證），60 次（未認證）
+- 某些功能仍需使用網頁介面（如複雜的 PR review）
+
+**進一步學習**：研究 `gh extensions`（擴充 gh 功能）、整合 `gh` 與 shell 函數實現自動化工作流
+
 ## 實用別名
+
+### 背景（問題發現）
+
+使用 `gh` 指令管理 GitHub Actions 時，經常需要執行以下重複性操作：
+- 查看最近失敗的 CI run 並檢視錯誤訊息
+- 監控正在執行的 workflow 狀態
+- 列出所有失敗的 runs 以便批次處理
+
+這些指令往往很長（如 `gh run view --log-failed`），且需要記憶多個參數。頻繁輸入這些指令不僅耗時，也容易出錯。
+
+### 方法
+
+透過 shell aliases 將常用的長指令封裝成簡短、易記的別名。這種做法利用了 shell 的別名機制，讓使用者可以用簡短的關鍵字觸發完整的指令序列。
+
+設計原則：
+- **語意化命名**：`gha-last-fail` 清楚表達「GitHub Actions 最近失敗」的概念
+- **一致性前綴**：所有 GitHub Actions 相關別名都用 `gha-` 開頭，方便記憶和自動補全
+- **參數優化**：預設加入最常用的參數（如 `--compact`、`--exit-status`）
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -159,6 +450,46 @@ alias gha-watch='gh run watch --compact --exit-status'
 # 查看失敗列表
 alias gha-failed-list='gh run list --status failure'
 ```
+
+### 討論/延伸
+
+**使用場景說明**：
+
+**gha-last-fail**：
+- 在 push 後發現 CI 失敗時，快速查看錯誤訊息
+- 不需要先用 `gh run list` 找出 run ID
+- 自動顯示失敗的 job 和錯誤日誌
+
+**gha-watch**：
+- 在 push 後即時監控 CI 執行進度
+- `--compact`：精簡輸出，減少終端機捲動
+- `--exit-status`：workflow 完成後自動退出，並返回正確的 exit code
+
+**gha-failed-list**：
+- 一次檢視所有失敗的 runs
+- 可搭配 `jq` 進一步處理：`gha-failed-list --json number,conclusion | jq`
+
+**擴充建議**：
+```bash
+# 快速重試最近失敗的 run
+alias gha-retry='gh run rerun $(gh run list --status failure --limit 1 --json databaseId -q ".[0].databaseId")'
+
+# 查看特定 workflow 的狀態
+alias gha-status='gh run list --workflow'
+
+# 取消正在執行的 runs
+alias gha-cancel-all='gh run list --status in_progress --json databaseId -q ".[].databaseId" | xargs -I {} gh run cancel {}'
+```
+
+**設定方式**：
+將這些別名加入 `~/.zshrc` 或 `~/.bashrc`，然後執行 `source ~/.zshrc` 載入。
+
+**注意事項**：
+- 別名只在當前 shell session 有效，需寫入設定檔永久保存
+- 複雜的邏輯建議改用 shell 函數而非 alias
+- 避免與系統內建指令重名
+
+**進一步學習**：研究 shell 函數、`gh` 的 JSON 輸出搭配 `jq` 實現更複雜的自動化
 
 ## 實作練習
 

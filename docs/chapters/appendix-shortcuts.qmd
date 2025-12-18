@@ -8,6 +8,15 @@ title: "快捷鍵速查表"
 
 ### 移動
 
+**背景（問題發現）**：在 Shell 中編輯長命令時，使用方向鍵逐字移動效率低下。特別是需要修改命令開頭或快速跳到特定位置時，傳統方式浪費時間。
+
+**方法**：使用 Emacs 風格的快捷鍵進行游標移動。這些快捷鍵源自 Readline 函式庫，被大多數 Shell（bash, zsh）採用，提供快速且精確的游標控制。
+
+**核心概念**：
+- `Ctrl` 系列：字元級移動
+- `Alt` 系列：單詞級移動
+- 組合使用可達到任意位置
+
 | 快捷鍵 | 功能 |
 |--------|------|
 | `Ctrl+A` | 移到行首 |
@@ -17,7 +26,36 @@ title: "快捷鍵速查表"
 | `Alt+B` | 向左移動一個單詞 |
 | `Alt+F` | 向右移動一個單詞 |
 
+**實際範例**：
+```bash
+# 假設你輸入了這個命令，游標在行尾
+$ docker run -it --rm -v $(pwd):/app node:18 npm install
+
+# 發現需要修改 node:18 為 node:20
+# 1. Ctrl+A 跳到行首
+# 2. Alt+F 重複 7 次跳到 "node:18"
+# 3. 修改版本號
+# 4. Ctrl+E 跳回行尾繼續
+
+# 或使用組合技巧
+# Ctrl+A → Alt+F Alt+F Alt+F Alt+F Alt+F Alt+F Alt+F
+```
+
+**討論/延伸**：
+- 這些快捷鍵在許多地方通用：bash, zsh, fish, Python REPL, MySQL CLI
+- Mac 用戶注意：部分終端機 `Alt` 需設定為 `Meta` 鍵才能使用
+- Vim 用戶可考慮啟用 `set -o vi` 模式使用 Vim 風格移動
+
 ### 編輯
+
+**背景（問題發現）**：輸入錯誤的長命令時，按住 Backspace 逐字刪除非常低效。需要快速刪除大段文字並重新輸入的場景很常見。
+
+**方法**：使用 Kill 和 Yank 機制。Shell 提供 "kill ring" 概念，刪除的內容會暫存，可以重複貼上。這類似簡化版的剪貼簿系統。
+
+**核心概念**：
+- Kill：刪除並暫存到 kill ring
+- Yank：從 kill ring 取出並貼上
+- 方向性刪除：往前（U）、往後（K）、單詞（W）
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -27,7 +65,47 @@ title: "快捷鍵速查表"
 | `Ctrl+Y` | 貼上刪除的內容 |
 | `Ctrl+L` | 清除螢幕 |
 
+**實際範例**：
+```bash
+# 場景 1：快速刪除密碼輸入錯誤
+$ mysql -u root -p wrong_password_here
+# Ctrl+U 快速清除整行重新輸入
+
+# 場景 2：移動參數位置
+$ rsync -avz /source/path /wrong/destination
+#                           ↑ 游標在這
+# Ctrl+W 刪除 "/wrong/destination"
+# 輸入正確路徑
+# Ctrl+Y 貼回剛刪除的路徑（用於其他地方）
+
+# 場景 3：清理終端畫面
+$ cat large_file.log
+# ...一堆輸出...
+# Ctrl+L 清除螢幕（比 clear 命令更快）
+
+# 場景 4：Kill ring 的重複利用
+$ echo "這是一段需要重複使用的路徑"
+# Ctrl+U 刪除整行
+$ export PATH=$PATH:/opt/bin
+# Ctrl+Y 貼上剛才的內容
+```
+
+**討論/延伸**：
+- `Ctrl+U` vs `Ctrl+W`：前者刪整行，後者刪單詞，依情況選擇
+- Kill ring 是單層的，新刪除會覆蓋舊內容
+- `Ctrl+L` 優於 `clear`：不會新增歷史記錄，單鍵操作更快
+- tmux 用戶可用 prefix + Ctrl+L 清除 pane 歷史
+
 ### 歷史
+
+**背景（問題發現）**：重複輸入相同或相似的長命令效率極低。Shell 歷史記錄了所有命令，但手動翻找或記憶命令序號很困難。
+
+**方法**：使用歷史搜尋和擴展機制。Shell 提供增量搜尋（Ctrl+R）和歷史擴展語法（`!`），可以快速定位和重用之前的命令。
+
+**核心概念**：
+- 增量搜尋：邊輸入邊過濾歷史
+- 歷史擴展：使用 `!` 符號引用歷史命令或參數
+- 命令重用：避免重複輸入
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -37,11 +115,60 @@ title: "快捷鍵速查表"
 | `!!` | 執行上一個命令 |
 | `!$` | 上一個命令的最後一個參數 |
 
+**實際範例**：
+```bash
+# 場景 1：Ctrl+R 增量搜尋
+# 按 Ctrl+R，輸入 "docker"
+(reverse-i-search)`docker': docker ps -a
+# 繼續輸入 "run"
+(reverse-i-search)`docker run': docker run -it ubuntu bash
+# 按 Enter 執行，或按方向鍵編輯
+
+# 場景 2：使用 !! 快速重試
+$ apt update
+Permission denied
+$ sudo !!  # 等同於 sudo apt update
+
+# 場景 3：使用 !$ 重用參數
+$ mkdir -p /very/long/path/to/project
+$ cd !$  # 等同於 cd /very/long/path/to/project
+
+# 場景 4：組合使用歷史擴展
+$ cat /etc/nginx/sites-available/default
+$ vim !$  # 編輯剛才查看的檔案
+$ sudo systemctl restart nginx
+$ sudo !!  # 重複上一個 sudo 命令（如果需要）
+
+# 場景 5：多次使用 !$
+$ touch important-file.txt
+$ git add !$
+$ git commit -m "Add !$"  # 這裡 !$ 會擴展為 important-file.txt
+```
+
+**討論/延伸**：
+- `Ctrl+R` 可重複按以循環搜尋結果
+- 結合 fzf 可獲得更強大的歷史搜尋（視覺化介面）
+- 其他有用的歷史擴展：
+  - `!n`：執行歷史中第 n 個命令
+  - `!-n`：執行倒數第 n 個命令
+  - `!string`：執行最近以 string 開頭的命令
+- zsh 用戶可啟用 `setopt HIST_VERIFY` 讓歷史擴展顯示後再執行
+
 ## Tmux 快捷鍵
 
 > 假設 prefix 設為 `Ctrl+A`
 
 ### Session
+
+**背景（問題發現）**：SSH 連線中斷會導致所有執行中的程式終止。長時間運行的任務（編譯、訓練模型、下載）需要持續的終端連線，這限制了工作靈活性。
+
+**方法**：使用 tmux session 管理。Session 可以 detach（脫離）後在背景運行，之後重新 attach（附加）。這實現了終端環境的持久化。
+
+**核心概念**：
+- Session：獨立的 tmux 工作環境
+- Detach：脫離 session 但保持運行
+- Attach：重新連接到 session
+- 多 session：不同專案使用不同 session
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -49,7 +176,60 @@ title: "快捷鍵速查表"
 | `prefix s` | 列出 sessions |
 | `prefix $` | 重新命名 session |
 
+**實際範例**：
+```bash
+# 場景 1：建立專案 session
+$ tmux new -s backend-dev
+# 在 session 中工作...
+# prefix d 離開（程式繼續運行）
+
+# 稍後回來
+$ tmux attach -t backend-dev
+
+# 場景 2：管理多個專案
+$ tmux new -s project-a
+# prefix d
+$ tmux new -s project-b
+# prefix d
+$ tmux ls  # 列出所有 sessions
+project-a: 1 windows (created Sat Dec 19 10:30:00 2025)
+project-b: 1 windows (created Sat Dec 19 10:35:00 2025)
+
+# 使用 prefix s 視覺化選擇 session
+
+# 場景 3：重新命名 session
+# 在 session 中按 prefix $
+# 輸入新名稱，例如 "frontend-react"
+
+# 或從外部重命名
+$ tmux rename-session -t old-name new-name
+
+# 場景 4：遠端工作流程
+$ ssh user@server
+$ tmux new -s remote-work
+$ npm run build  # 長時間編譯
+# 關閉 SSH 視窗（編譯繼續）
+# 稍後重新 SSH 連線
+$ tmux attach -t remote-work  # 查看編譯結果
+```
+
+**討論/延伸**：
+- Session 名稱建議使用專案或任務相關的有意義名稱
+- 可使用 `tmux kill-session -t name` 終止 session
+- tmux-resurrect 插件可保存 session 狀態，重開機後恢復
+- 結合 SSH 使用時，建議在 `~/.ssh/config` 設定 KeepAlive
+
 ### Window
+
+**背景（問題發現）**：在單一終端視窗中切換不同任務（編輯器、測試、日誌監控）效率低下。使用多個終端視窗會導致桌面混亂，難以管理。
+
+**方法**：使用 tmux window（類似瀏覽器分頁）。每個 window 是獨立的工作空間，可快速切換，保持桌面整潔。
+
+**核心概念**：
+- Window：類似瀏覽器的分頁
+- 數字索引：window 編號從 0 開始
+- 快速切換：使用數字鍵或序列鍵
+- 命名管理：給 window 有意義的名稱
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -59,7 +239,64 @@ title: "快捷鍵速查表"
 | `prefix ,` | 重新命名 window |
 | `prefix [0-9]` | 切換到指定 window |
 
+**實際範例**：
+```bash
+# 場景 1：標準開發工作流程
+# Window 0: Editor
+$ tmux new -s dev -n editor
+$ nvim .
+
+# Window 1: Tests (prefix c 建立新 window)
+# prefix c
+$ npm test -- --watch
+
+# Window 2: Server (prefix c)
+$ npm run dev
+
+# Window 3: Logs (prefix c)
+$ tail -f /var/log/app.log
+
+# 快速切換
+# prefix 1 → 查看測試
+# prefix 2 → 檢查伺服器
+# prefix 0 → 回到編輯器
+
+# 場景 2：重新命名 window 提高可讀性
+# prefix , 然後輸入 "editor"
+# prefix , 然後輸入 "tests"
+# prefix , 然後輸入 "server"
+
+# Window 列表顯示：
+# 0:editor* 1:tests 2:server 3:logs
+
+# 場景 3：快速導航技巧
+# prefix n (next) 循環下一個
+# prefix p (previous) 循環上一個
+# prefix 2 直接跳到 window 2
+
+# 場景 4：關閉 window
+# 在 window 中執行 exit 或 Ctrl+D
+# 或使用 prefix & 確認後關閉
+```
+
+**討論/延伸**：
+- 建議為每個 window 設定有意義的名稱，便於識別
+- 可在 `.tmux.conf` 設定 window 從 1 開始編號（更符合鍵盤佈局）
+- 使用 `prefix w` 可視覺化列出所有 window 和 pane
+- tmux-powerline 等插件可美化 window 狀態列顯示
+
 ### Pane
+
+**背景（問題發現）**：同時查看多個相關任務（程式碼+輸出、編輯器+文件、多個日誌）需要頻繁切換視窗。螢幕空間沒有被充分利用。
+
+**方法**：使用 tmux pane 分割視窗。Pane 允許在同一個 window 中顯示多個終端，類似 IDE 的分割視窗功能。
+
+**核心概念**：
+- 水平分割（horizontal）：上下分割
+- 垂直分割（vertical）：左右分割
+- Vim 風格導航：h/j/k/l 切換
+- 動態調整：可調整 pane 大小
+- 暫時最大化：z 快速放大/縮小
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -70,7 +307,72 @@ title: "快捷鍵速查表"
 | `prefix z` | 最大化/還原 pane |
 | `prefix x` | 關閉 pane |
 
+**實際範例**：
+```bash
+# 場景 1：經典左右佈局（編輯器+輸出）
+$ tmux
+$ nvim app.py
+# prefix v (垂直分割)
+$ python app.py  # 右側執行程式
+
+# 場景 2：三欄佈局（編輯+測試+日誌）
+$ nvim
+# prefix v (第一次垂直分割)
+$ npm test
+# prefix h (切換到右側 pane)
+# prefix b (水平分割右側)
+$ tail -f app.log
+
+# 最終佈局：
+# ┌──────────┬──────────┐
+# │          │  tests   │
+# │  editor  ├──────────┤
+# │          │  logs    │
+# └──────────┴──────────┘
+
+# 場景 3：Vim 風格導航
+# prefix h - 移到左側 pane
+# prefix j - 移到下方 pane
+# prefix k - 移到上方 pane
+# prefix l - 移到右側 pane
+
+# 場景 4：調整 pane 大小
+# prefix H - 向左擴大
+# prefix J - 向下擴大
+# prefix K - 向上擴大
+# prefix L - 向右擴大
+# （按住不放連續調整）
+
+# 場景 5：暫時最大化
+# 在小 pane 中查看詳細輸出
+# prefix z (最大化當前 pane)
+# 查看完畢
+# prefix z (還原)
+
+# 場景 6：快速重組佈局
+# prefix Space 循環切換預設佈局
+# prefix Alt+1 垂直均分
+# prefix Alt+2 水平均分
+```
+
+**討論/延伸**：
+- 分割方向記憶技巧：`b` (below) 下方分割，`v` (vertical) 垂直（左右）分割
+- 建議設定滑鼠支援：`set -g mouse on` 可用滑鼠調整大小
+- 使用 `prefix q` 顯示 pane 編號，然後按數字快速切換
+- 進階佈局可使用 tmux-pain-control 插件獲得更多快捷鍵
+- 搭配 vim-tmux-navigator 插件可在 Vim 和 tmux pane 之間無縫切換
+
 ### 複製模式
+
+**背景（問題發現）**：需要從終端輸出中複製文字時，使用滑鼠選取在 tmux 中會選到行號和格式字元。無法像 Vim 一樣精確控制選取範圍。
+
+**方法**：使用 tmux 複製模式（copy mode）。這是一個類 Vim 的瀏覽和選取模式，可以使用鍵盤精確選取和複製文字。
+
+**核心概念**：
+- 複製模式：類似 Vim 的 normal mode
+- Vim 風格操作：使用 hjkl、搜尋等
+- 選取和複製：v 開始選取，y 複製
+- 系統剪貼簿整合：可與系統剪貼簿互通
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -79,11 +381,83 @@ title: "快捷鍵速查表"
 | `y` | 複製選取 |
 | `prefix ]` | 貼上 |
 
+**實際範例**：
+```bash
+# 場景 1：複製命令輸出
+$ curl https://api.example.com/data
+{
+  "result": "success",
+  "token": "abc123def456"
+}
+
+# 需要複製 token 值
+# prefix [ (進入複製模式)
+# /token (搜尋 "token")
+# w (移到 "abc123def456")
+# v (開始選取)
+# e (選到單詞結尾)
+# y (複製)
+# prefix ] (貼上到當前 pane)
+
+# 場景 2：複製多行日誌
+# prefix [ (進入複製模式)
+# gg (跳到開頭)
+# /ERROR (搜尋錯誤)
+# V (行選取模式)
+# 5j (選取 5 行)
+# y (複製)
+
+# 場景 3：向上捲動查看歷史輸出
+$ npm run build
+# ...大量輸出...
+# prefix [ (進入複製模式)
+# Ctrl+u (向上翻半頁)
+# Ctrl+d (向下翻半頁)
+# gg (跳到最開頭)
+# G (跳到最末尾)
+# q (退出複製模式)
+
+# 場景 4：搜尋並複製
+# prefix [
+# ?pattern (向上搜尋)
+# n (下一個結果)
+# N (上一個結果)
+# v (選取)
+# y (複製)
+
+# 場景 5：整合系統剪貼簿（需配置）
+# 在 .tmux.conf 中設定：
+# bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'pbcopy'  # macOS
+# bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'xclip -in -selection clipboard'  # Linux
+
+# 複製後可直接 Cmd+V 到其他應用程式
+```
+
+**討論/延伸**：
+- 預設使用 Emacs 風格按鍵，可改為 Vim 風格：`setw -g mode-keys vi`
+- 滑鼠支援（`set -g mouse on`）後可用滑鼠選取自動進入複製模式
+- 進階選取：
+  - `V` (大寫)：行選取模式
+  - `Ctrl+v`：區塊選取模式（需 vim 風格）
+- 搜尋支援正規表示式，非常強大
+- 可用 `prefix =` 查看複製歷史（需啟用 buffer）
+
 ## Neovim 快捷鍵
 
 > 假設 leader 設為 `Space`
 
 ### 基本移動
+
+**背景（問題發現）**：使用方向鍵或滑鼠移動游標需要手離開主鍵盤區，降低編輯效率。大型檔案中跳轉到特定位置很慢。
+
+**方法**：使用 Vim 的移動系統。核心是 hjkl 主鍵區移動，配合單詞、行、頁面級別的快速跳轉，形成高效的導航體系。
+
+**核心概念**：
+- hjkl：基礎方向移動（右手主鍵區）
+- 單詞級：w/b 快速跳過單詞
+- 行級：0/$ 快速到行頭尾
+- 檔案級：gg/G 快速到檔案頭尾
+- 畫面級：Ctrl+d/u 翻頁導航
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -93,7 +467,66 @@ title: "快捷鍵速查表"
 | `gg/G` | 檔案開頭/結尾 |
 | `Ctrl+d/u` | 向下/上半頁 |
 
+**實際範例**：
+```vim
+" 場景 1：快速移動到函式定義
+" 從檔案開頭找到第 50 行的函式
+gg          " 跳到檔案開頭
+50G         " 跳到第 50 行
+w           " 跳到函式名
+w           " 跳到參數
+
+" 場景 2：編輯長行
+" 游標在行中間，需要修改行尾
+$           " 跳到行尾
+b           " 回退一個單詞
+ciw         " 修改當前單詞
+
+" 場景 3：瀏覽大型檔案
+Ctrl+d      " 向下翻半頁
+Ctrl+d      " 繼續向下
+Ctrl+u      " 向上翻半頁回去
+
+" 場景 4：組合移動（數字+移動）
+5j          " 向下移動 5 行
+3w          " 向前移動 3 個單詞
+2Ctrl+d     " 向下翻 1 頁（2 個半頁）
+
+" 場景 5：精確定位
+:123        " 跳到第 123 行
+/function   " 搜尋 "function"
+n           " 下一個搜尋結果
+``          " 跳回之前的位置
+
+" 場景 6：行內移動
+f(          " 跳到下一個 ( 字元
+;           " 重複上次 f 動作
+,           " 反向重複
+t)          " 跳到 ) 之前
+```
+
+**討論/延伸**：
+- hjkl 源自 Vi 時代的 ADM-3A 終端機鍵盤設計
+- 進階移動：
+  - `^`：跳到行首第一個非空白字元
+  - `%`：跳到配對的括號
+  - `{/}`：上/下一個段落
+  - `H/M/L`：螢幕最上/中/下
+- 相對行號（`:set relativenumber`）配合數字移動超強
+- 插件推薦：vim-easymotion 可視覺化快速跳轉
+
 ### 編輯
+
+**背景（問題發現）**：傳統編輯器需要用滑鼠選取文字才能操作，頻繁切換插入/選取模式效率低。快速重複編輯動作（刪除、複製、貼上）很困難。
+
+**方法**：使用 Vim 的模式編輯系統。Normal mode 用於導航和操作，Insert mode 用於輸入。配合動詞+名詞的編輯語法，形成強大的編輯語言。
+
+**核心概念**：
+- 進入插入模式：i/a/o/O 不同位置插入
+- 文字操作：d(刪除)/y(複製)/p(貼上)
+- 整行操作：雙按動詞鍵（dd/yy）
+- 復原系統：u(undo)/Ctrl+r(redo)
+- 可重複性：. 重複上次操作
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -104,6 +537,68 @@ title: "快捷鍵速查表"
 | `p/P` | 在後/前貼上 |
 | `u` | 復原 |
 | `Ctrl+r` | 重做 |
+
+**實際範例**：
+```vim
+" 場景 1：快速進入插入模式的不同方式
+i           " 在游標前插入
+a           " 在游標後插入（append）
+I           " 在行首插入
+A           " 在行尾插入
+o           " 在下方新增空行並插入
+O           " 在上方新增空行並插入
+
+" 場景 2：組合編輯命令（動詞+名詞）
+diw         " delete inner word - 刪除游標所在單詞
+ci"         " change inner " - 修改雙引號內容
+yap         " yank a paragraph - 複製整個段落
+dgg         " delete to top - 刪除到檔案開頭
+y$          " yank to end - 複製到行尾
+
+" 場景 3：整行操作
+dd          " 刪除當前行
+3dd         " 刪除 3 行
+yy          " 複製當前行
+5yy         " 複製 5 行
+p           " 在下方貼上
+P           " 在上方貼上
+
+" 場景 4：重複操作的威力
+cw new<Esc> " 修改單詞為 "new"
+.           " 在下一個位置重複修改
+.           " 再次重複
+
+" 場景 5：復原和重做
+u           " 復原上一個操作
+u u u       " 連續復原 3 次
+Ctrl+r      " 重做（反復原）
+U           " 復原整行的所有修改
+
+" 場景 6：實戰範例 - 重構變數名
+" 將所有 oldName 改為 newName
+/oldName    " 搜尋第一個
+cw newName<Esc>  " 修改
+n .         " 下一個並重複
+n .         " 繼續
+
+" 場景 7：視覺模式選取
+v           " 字元選取模式
+V           " 行選取模式
+Ctrl+v      " 區塊選取模式
+# 選取後可以 d(刪除) y(複製) c(修改)
+```
+
+**討論/延伸**：
+- Vim 的編輯語言：動詞（d/c/y）+ 數量 + 名詞（w/$/iw/ap）
+- 進階操作符：
+  - `>>`/`<<`：縮排/反縮排
+  - `gU`/`gu`：轉大寫/小寫
+  - `=`：自動縮排
+- 暫存器系統：
+  - `"ayy`：複製到暫存器 a
+  - `"ap`：從暫存器 a 貼上
+  - `"+y`：複製到系統剪貼簿
+- 宏錄製：`qa` 開始錄製到 a，`q` 停止，`@a` 執行
 
 ### 搜尋
 

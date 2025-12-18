@@ -8,6 +8,18 @@ Docker 讓你在隔離的環境中開發，確保「在我的電腦上可以跑�
 
 ## 安裝
 
+### 背景（問題發現）
+
+在開發過程中，我們經常遇到「在我的電腦上可以跑」的問題。不同的作業系統、不同的套件版本、不同的環境設定都可能導致程式在其他環境無法正常運作。Docker 透過容器化技術解決了這個問題。
+
+### 方法
+
+Docker 提供兩種主要安裝方式：
+- **Docker Desktop**：官方完整版，包含圖形介面和完整功能
+- **OrbStack**：輕量級替代方案，啟動速度快且資源佔用少，特別適合 macOS 用戶
+
+### 結果（程式碼）
+
 ```{bash}
 #| eval: false
 # macOS
@@ -17,9 +29,35 @@ brew install --cask docker
 brew install --cask orbstack
 ```
 
+### 討論/延伸
+
+**注意事項：**
+- Docker Desktop 在 macOS 上可能佔用 2-4GB 記憶體
+- OrbStack 啟動時間約為 2-3 秒，而 Docker Desktop 需要 20-30 秒
+- 兩者 CLI 指令完全相容，可以無痛切換
+
+**進一步學習：**
+- 安裝後執行 `docker --version` 確認安裝成功
+- 執行 `docker run hello-world` 測試 Docker 是否正常運作
+
 ## 基本命令
 
 ### 映像檔管理
+
+#### 背景（問題發現）
+
+Docker 映像檔（Image）就像是應用程式的「模板」或「快照」。我們需要從 Docker Hub 下載映像檔，才能建立容器來執行應用程式。隨著專案增加，映像檔會佔用大量磁碟空間，需要定期管理。
+
+#### 方法
+
+映像檔管理的核心概念：
+- **拉取**：從 Docker Hub 下載映像檔到本機
+- **列出**：查看已下載的映像檔清單
+- **刪除**：移除不再需要的映像檔以節省空間
+
+標籤（tag）系統用於指定版本，例如 `python:3.12` 表示 Python 3.12 版本。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -33,7 +71,43 @@ docker images
 docker rmi python:3.12
 ```
 
+#### 討論/延伸
+
+**實用變體：**
+```bash
+# 拉取最新版本
+docker pull python:latest
+
+# 查看映像檔詳細資訊
+docker inspect python:3.12
+
+# 批次刪除無用映像檔
+docker image prune -a
+```
+
+**注意事項：**
+- 映像檔可能很大（Python 映像檔約 1GB），首次下載需要時間
+- 使用 `-slim` 版本可以減少大小，例如 `python:3.12-slim`
+- 刪除映像檔前要確保沒有容器正在使用它
+
 ### 容器操作
+
+#### 背景（問題發現）
+
+容器（Container）是從映像檔建立的執行實例，就像是從模板建立的實際應用程式。我們需要啟動、監控、停止和清理容器來管理應用程式的生命週期。
+
+#### 方法
+
+容器操作的核心流程：
+- **docker run**：從映像檔建立並啟動新容器
+  - `-it` 參數：互動模式（interactive）+ 配置終端機（TTY）
+  - `bash` 參數：在容器內執行的命令
+- **docker ps**：查看容器狀態
+  - 預設只顯示執行中的容器
+  - `-a` 參數顯示所有容器（包含已停止的）
+- **docker stop/rm**：停止和刪除容器
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -53,7 +127,43 @@ docker stop <container_id>
 docker rm <container_id>
 ```
 
+#### 討論/延伸
+
+**實用變體：**
+```bash
+# 背景執行容器
+docker run -d python:3.12 python -m http.server
+
+# 自動刪除停止的容器
+docker run --rm -it python:3.12 bash
+
+# 停止並刪除容器（一次完成）
+docker rm -f <container_id>
+
+# 批次刪除所有已停止的容器
+docker container prune
+```
+
+**注意事項：**
+- 容器 ID 可以只輸入前幾個字元（例如 `abc123` 只需輸入 `abc`）
+- 停止的容器仍會佔用磁碟空間，記得定期清理
+- 使用 `--name` 參數可以為容器命名，方便管理
+
 ### 掛載目錄
+
+#### 背景（問題發現）
+
+在開發時，我們希望在本機編輯程式碼，但在容器內執行。如果每次修改都要重建映像檔，開發效率會很低。Volume（掛載卷）讓我們可以在本機和容器之間共享檔案。
+
+#### 方法
+
+使用 `-v` 參數掛載目錄：
+- **語法**：`-v 本機路徑:容器路徑`
+- **$(pwd)**：取得當前目錄的絕對路徑
+- **-w /app**：設定容器內的工作目錄（working directory）
+- 本機修改檔案會立即反映到容器內
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -61,7 +171,47 @@ docker rm <container_id>
 docker run -v $(pwd):/app -w /app python:3.12 python script.py
 ```
 
+#### 討論/延伸
+
+**實用變體：**
+```bash
+# 只讀掛載（防止容器修改本機檔案）
+docker run -v $(pwd):/app:ro -w /app python:3.12 python script.py
+
+# 掛載特定檔案
+docker run -v $(pwd)/config.yml:/app/config.yml python:3.12 python main.py
+
+# 使用命名卷（Named Volume）持久化資料
+docker run -v mydata:/data python:3.12 python script.py
+```
+
+**注意事項：**
+- Windows 用戶使用 `${PWD}` 替代 `$(pwd)`
+- 路徑必須是絕對路徑，不能使用相對路徑（例如 `./app`）
+- 掛載大型目錄可能影響容器效能
+
+**進一步學習：**
+- 了解 Volume、Bind Mount、tmpfs 三種掛載方式的差異
+- 學習使用 `.dockerignore` 檔案排除不需要的檔案
+
 ## Dockerfile 基礎
+
+### 背景（問題發現）
+
+雖然可以直接使用現成的映像檔，但實際專案需要安裝相依套件、設定環境變數、複製程式碼等客製化設定。Dockerfile 讓我們可以定義自己的映像檔建置流程，確保環境可重現。
+
+### 方法
+
+Dockerfile 是一個文字檔，包含一系列指令來建置映像檔：
+- **FROM**：指定基底映像檔（例如 Python 3.12）
+- **WORKDIR**：設定工作目錄，後續指令都在此目錄執行
+- **COPY**：複製檔案到映像檔內
+- **RUN**：在建置時執行命令（例如安裝套件）
+- **CMD**：容器啟動時預設執行的命令
+
+這個範例使用「分層快取」優化：先複製 `requirements.txt` 並安裝套件，再複製整個專案。這樣當程式碼修改時，不會重新安裝套件。
+
+### 結果（程式碼）
 
 ```{dockerfile}
 #| eval: false
@@ -89,9 +239,61 @@ docker build -t myapp .
 docker run myapp
 ```
 
+### 討論/延伸
+
+**指令詳解：**
+- `python:3.12-slim`：使用精簡版 Python，比完整版小 600MB
+- `--no-cache-dir`：不保存 pip 快取，減少映像檔大小
+- `-t myapp`：為映像檔命名為 "myapp"
+- `.`：Dockerfile 所在目錄（build context）
+
+**最佳實踐：**
+```dockerfile
+# 多階段建置（Multi-stage Build）
+FROM python:3.12 as builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+FROM python:3.12-slim
+WORKDIR /app
+COPY --from=builder /root/.local /root/.local
+COPY . .
+ENV PATH=/root/.local/bin:$PATH
+CMD ["python", "main.py"]
+```
+
+**注意事項：**
+- 每個 RUN、COPY、ADD 指令都會建立新的層（layer）
+- 將不常改變的指令放在前面，充分利用快取
+- 使用 `.dockerignore` 排除不需要的檔案（例如 `.git`、`__pycache__`）
+
+**進一步學習：**
+- 研究多階段建置（Multi-stage Build）減少最終映像檔大小
+- 了解 ENTRYPOINT vs CMD 的差異
+- 學習使用 ARG 和 ENV 管理環境變數
+
 ## Docker Compose
 
-多容器應用使用 `docker-compose.yml`：
+### 背景（問題發現）
+
+實際應用通常需要多個容器協作（例如網頁伺服器 + 資料庫 + Redis）。使用 `docker run` 指令逐一啟動容器很麻煩，而且難以管理容器間的網路連接和依賴關係。Docker Compose 讓我們用一個設定檔管理多容器應用。
+
+### 方法
+
+`docker-compose.yml` 是一個 YAML 格式的設定檔，定義所有服務：
+- **services**：定義各個容器
+  - **build**：從 Dockerfile 建置映像檔
+  - **image**：使用現成的映像檔
+  - **ports**：埠號對應（本機埠號:容器埠號）
+  - **volumes**：掛載目錄或命名卷
+  - **depends_on**：定義啟動順序
+  - **environment**：環境變數設定
+- **volumes**：定義命名卷，用於持久化資料
+
+這個範例設定了一個 Web 應用和 PostgreSQL 資料庫，資料庫的資料會持久化到 `pgdata` 卷中。
+
+### 結果（程式碼）
 
 ```{yaml}
 #| eval: false
@@ -134,9 +336,79 @@ docker compose down
 docker compose up --build
 ```
 
+### 討論/延伸
+
+**指令詳解：**
+- `-d`：背景執行（detached mode）
+- `-f`：持續顯示 log（follow mode）
+- `--build`：強制重建映像檔
+
+**實用變體：**
+```bash
+# 只啟動特定服務
+docker compose up -d web
+
+# 查看特定服務的 log
+docker compose logs -f web
+
+# 重啟服務
+docker compose restart web
+
+# 停止並刪除所有資源（包含卷）
+docker compose down -v
+
+# 查看服務狀態
+docker compose ps
+```
+
+**最佳實踐：**
+```yaml
+# 使用環境變數檔案
+services:
+  web:
+    env_file:
+      - .env
+  db:
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+# 健康檢查
+  web:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+```
+
+**注意事項：**
+- `depends_on` 只確保啟動順序，不保證服務已就緒
+- 資料庫密碼應使用環境變數或 Docker Secrets，不要寫死在設定檔
+- 使用 `docker compose down -v` 會刪除卷內的資料，需謹慎使用
+
+**進一步學習：**
+- 研究 Docker Compose 的網路模式（bridge、host、overlay）
+- 學習使用 Docker Secrets 管理敏感資訊
+- 了解 healthcheck 和 restart 策略的最佳實踐
+
 ## 開發工作流
 
 ### 開發環境容器
+
+#### 背景（問題發現）
+
+開發環境需要即時重載（hot reload）、除錯工具、原始碼掛載等功能，這些與生產環境的需求不同。我們需要分開開發和生產的 Docker Compose 設定，避免在生產環境包含開發工具。
+
+#### 方法
+
+使用獨立的 `docker-compose.dev.yml` 設定開發環境：
+- **Dockerfile.dev**：開發環境專用的 Dockerfile（包含開發工具）
+- **volumes**：掛載本機程式碼，實現即時重載
+  - `.:/app`：掛載專案目錄
+  - `/app/node_modules`：排除 node_modules（使用容器內的版本）
+- **command**：覆寫預設命令，執行開發伺服器
+
+#### 結果（程式碼）
 
 ```{yaml}
 #| eval: false
@@ -154,14 +426,124 @@ services:
     command: npm run dev
 ```
 
+#### 討論/延伸
+
+**使用方式：**
+```bash
+# 使用開發設定檔
+docker compose -f docker-compose.dev.yml up
+
+# 同時使用多個設定檔（合併設定）
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+**Dockerfile.dev 範例：**
+```dockerfile
+FROM node:20
+
+WORKDIR /app
+
+# 安裝開發工具
+RUN npm install -g nodemon
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "dev"]
+```
+
+**注意事項：**
+- 排除 `node_modules` 避免本機和容器版本衝突
+- 開發環境不需要優化映像檔大小，可以包含除錯工具
+- 使用 `nodemon` 或類似工具實現自動重載
+
+**最佳實踐：**
+- 建立 `.env.dev` 和 `.env.prod` 分別管理環境變數
+- 使用 `docker-compose.override.yml`（預設會自動載入）存放本機專屬設定
+- 在 `.gitignore` 中排除 `docker-compose.override.yml`
+
 ### 進入執行中的容器
+
+#### 背景（問題發現）
+
+在除錯或檢查容器狀態時，我們需要進入容器內部執行命令，例如查看檔案、檢查環境變數、執行資料庫查詢等。直接停止容器再重新執行會中斷服務。
+
+#### 方法
+
+使用 `docker exec` 在執行中的容器內執行命令：
+- **exec**：在容器內執行新的命令（不影響原有程序）
+- **-it**：互動模式 + TTY，讓我們可以像 SSH 一樣操作容器
+- **container_name**：容器名稱或 ID
+- **bash**：要執行的命令（通常是 shell）
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
 docker exec -it <container_name> bash
 ```
 
+#### 討論/延伸
+
+**實用變體：**
+```bash
+# 如果容器沒有 bash，使用 sh
+docker exec -it <container_name> sh
+
+# 執行單一命令（不進入互動模式）
+docker exec <container_name> ls -la /app
+
+# 以 root 身份執行
+docker exec -u root -it <container_name> bash
+
+# 進入最近建立的容器
+docker exec -it $(docker ps -lq) bash
+```
+
+**常見使用情境：**
+```bash
+# 檢查資料庫連線
+docker exec -it myapp_db psql -U postgres
+
+# 查看 log 檔案
+docker exec myapp_web cat /var/log/app.log
+
+# 執行資料庫遷移
+docker exec myapp_web python manage.py migrate
+
+# 檢查環境變數
+docker exec myapp_web env
+```
+
+**注意事項：**
+- `docker exec` 只能在執行中的容器使用
+- 容器內修改的檔案（非掛載目錄）在容器停止後會遺失
+- 某些精簡映像檔（如 Alpine）可能沒有 `bash`，只有 `sh`
+
+**進一步學習：**
+- 了解 `docker attach` vs `docker exec` 的差異
+- 學習使用 `docker cp` 在容器和本機之間複製檔案
+- 研究如何使用 `nsenter` 進入容器的命名空間
+
 ## 實用別名
+
+### 背景（問題發現）
+
+Docker 指令往往很長，需要記憶多個參數和選項。重複的操作（如清理資源、查看 log、進入容器）會消耗大量時間。Shell 別名可以將常用的複雜指令簡化為一個字。
+
+### 方法
+
+使用 `alias` 定義快捷指令：
+- **docker system prune -af**：清理所有無用資源
+  - `-a`：刪除所有未使用的映像檔（不只是懸掛的）
+  - `-f`：強制執行，不詢問確認
+- **$(docker ps -lq)**：取得最近建立的容器 ID
+  - `-l`：最近的容器（last）
+  - `-q`：只輸出 ID（quiet）
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -174,6 +556,52 @@ alias docker-last='docker exec -it $(docker ps -lq) bash'
 # 查看容器 log
 alias docker-logs='docker logs -f $(docker ps -lq)'
 ```
+
+### 討論/延伸
+
+**更多實用別名：**
+```bash
+# 停止所有容器
+alias docker-stop-all='docker stop $(docker ps -q)'
+
+# 刪除所有容器
+alias docker-rm-all='docker rm $(docker ps -aq)'
+
+# 查看容器資源使用量
+alias docker-stats='docker stats --no-stream'
+
+# Docker Compose 快捷指令
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcl='docker compose logs -f'
+alias dcr='docker compose restart'
+
+# 進入 web 服務容器
+alias docker-web='docker compose exec web bash'
+
+# 查看映像檔大小
+alias docker-size='docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"'
+```
+
+**安裝方式：**
+將這些別名加入 shell 設定檔（`.bashrc` 或 `.zshrc`）：
+```bash
+# 編輯設定檔
+echo 'alias docker-clean="docker system prune -af"' >> ~/.zshrc
+
+# 重新載入設定
+source ~/.zshrc
+```
+
+**注意事項：**
+- `docker-clean` 會刪除所有未使用的資源，包含停止的容器、未使用的網路、懸掛的映像檔
+- 執行清理前請確認沒有重要的停止容器需要保留
+- 別名只在當前 shell 有效，需加入設定檔才能永久保存
+
+**進一步學習：**
+- 研究 shell 函數（function）實現更複雜的功能
+- 了解如何使用 `fzf` 套件建立互動式容器選擇器
+- 學習 `docker system df` 查看磁碟使用量
 
 ## 實作練習
 

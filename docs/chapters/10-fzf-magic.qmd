@@ -8,6 +8,12 @@ fzf 是模糊搜尋工具，可以整合到幾乎任何工作流中。
 
 ## 安裝與設定
 
+**背景（問題發現）**：在日常工作中，我們需要快速找到檔案、歷史命令或目錄，傳統的 `ls`、`find` 或 `history | grep` 效率低落，需要更直覺的互動式搜尋工具。
+
+**方法**：使用 Homebrew 安裝 fzf，並執行安裝腳本來設定 shell 整合，包括快捷鍵綁定（Ctrl+T、Ctrl+R、Alt+C）和 tab 補全功能。
+
+**結果（程式碼）**：
+
 ```{bash}
 #| eval: false
 brew install fzf
@@ -16,7 +22,19 @@ brew install fzf
 $(brew --prefix)/opt/fzf/install
 ```
 
+**討論/延伸**：
+- 安裝腳本會修改 `~/.zshrc` 或 `~/.bashrc`，加入必要的啟動設定
+- 如果使用其他 shell（如 fish），需要手動設定對應的設定檔
+- 安裝後需要重新啟動 shell 或執行 `source ~/.zshrc` 使設定生效
+- 可以透過 `fzf --version` 確認安裝成功
+
 ## 基本設定
+
+**背景（問題發現）**：fzf 預設使用 `find` 命令搜尋檔案，但 `find` 速度較慢且會包含不需要的檔案（如 `.git`、`node_modules`）。預設外觀也較為陽春，不符合個人化需求。
+
+**方法**：透過環境變數設定 fzf 行為。使用 `fd` 作為檔案搜尋引擎（速度更快、預設忽略 `.gitignore`），並透過 `FZF_DEFAULT_OPTS` 自訂色彩配置、高度、佈局等介面選項。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -35,6 +53,14 @@ export FZF_DEFAULT_OPTS='
 '
 ```
 
+**討論/延伸**：
+- `fd` 比 `find` 快 3-5 倍，且語法更簡潔（需先安裝：`brew install fd`）
+- `-m` 啟用多選模式（可用 Tab 選取多個項目）
+- `--height 80%` 讓 fzf 不佔滿整個畫面，保留命令提示符可見
+- `--layout=reverse` 將輸入框移到上方，更符合直覺
+- 色彩配置可以使用 fzf 官方主題產生器：https://vitormv.github.io/fzf-themes/
+- 也可設定 `FZF_CTRL_T_COMMAND`、`FZF_ALT_C_COMMAND` 分別自訂 Ctrl+T 和 Alt+C 的搜尋命令
+
 ## 預設快捷鍵
 
 | 快捷鍵 | 功能 |
@@ -47,6 +73,12 @@ export FZF_DEFAULT_OPTS='
 
 ### 搜尋並用 Neovim 開啟
 
+**背景（問題發現）**：在專案中開啟檔案時，需要記住完整路徑或在多層目錄中導航。使用 `nvim` 配合 tab 補全雖然可行，但在檔案眾多時效率不佳，也無法預覽檔案內容。
+
+**方法**：建立 `vf` 函數（vim + fzf），結合 fzf 的模糊搜尋和 `bat` 的語法高亮預覽功能。使用者可以在選擇前預覽檔案內容，確認後直接用 Neovim 開啟。
+
+**結果（程式碼）**：
+
 ```{bash}
 #| eval: false
 function vf() {
@@ -58,7 +90,21 @@ function vf() {
 }
 ```
 
+**討論/延伸**：
+- `bat` 是增強版的 `cat`，提供語法高亮和行號（需安裝：`brew install bat`）
+- `{}` 是 fzf 的佔位符，代表當前選中的檔案路徑
+- `[ -n "$file" ]` 確保使用者有選擇檔案（按 Esc 取消時不執行 nvim）
+- 可加入 `--preview-window 'right:60%'` 調整預覽視窗大小和位置
+- 進階版可加入 `--bind 'ctrl-/:toggle-preview'` 讓使用者切換預覽視窗顯示
+- 如果專案使用 Git，可限制搜尋範圍：`git ls-files | fzf ...`
+
 ### 搜尋並進入目錄
+
+**背景（問題發現）**：在複雜專案中切換目錄時，需要輸入完整路徑或逐層 `cd`，效率低且容易輸入錯誤。雖然 fzf 提供 Alt+C 快捷鍵，但只能搜尋子目錄，無法搜尋整個專案。
+
+**方法**：建立 `fcd` 函數（fzf + cd），使用 `fd` 搜尋所有目錄，透過 fzf 模糊搜尋選擇，成功選擇後自動切換到該目錄。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -68,7 +114,21 @@ function fcd() {
 }
 ```
 
+**討論/延伸**：
+- `fd --type d` 只搜尋目錄，排除檔案
+- `&&` 確保只在成功選擇目錄時執行 `cd`（按 Esc 取消時不會執行）
+- 可加入目錄預覽：`fzf --preview 'tree -C {} | head -200'`（需安裝 tree）
+- 如果想搜尋隱藏目錄，加上 `--hidden` 選項：`fd --type d --hidden`
+- 可設定搜尋深度限制避免太慢：`fd --type d --max-depth 5`
+- 進階版可整合 `zoxide` 或 `autojump`，結合常用目錄的智慧跳轉
+
 ### ripgrep 整合
+
+**背景（問題發現）**：在大型專案中搜尋特定文字內容時，`grep` 速度慢且輸出不易閱讀。使用 `rg` 雖然快速，但每次修改搜尋關鍵字都要重新執行命令，無法即時互動式搜尋。
+
+**方法**：建立 `rgnv` 函數（ripgrep + neovim），整合 `rg` 的高速全文搜尋與 fzf 的即時互動式過濾。使用 fzf 的 `reload` 綁定，讓搜尋關鍵字改變時自動重新執行 `rg`，形成即時搜尋的效果。選擇結果後，解析檔案路徑和行號，直接用 Neovim 開啟對應位置。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -88,9 +148,27 @@ function rgnv() {
 }
 ```
 
+**討論/延伸**：
+- `rg -i` 啟用忽略大小寫搜尋
+- `--column` 顯示欄位位置，`--line-number` 顯示行號
+- `--no-heading` 避免分組標題，讓每行結果獨立（方便解析）
+- `--bind "start:reload(...)"` 在啟動時執行初始搜尋（空字串搜尋全部）
+- `--bind "change:reload(...)"` 每次輸入改變時重新執行 `rg`
+- `{q}` 是 fzf 佔位符，代表當前查詢字串
+- `|| true` 防止 `rg` 無結果時導致錯誤
+- `--disabled` 禁用 fzf 自身的過濾，完全依賴 `rg` 搜尋
+- `--ansi` 保留 `rg` 的色彩輸出
+- `nvim +$line` 在指定行號開啟檔案
+- 可加入預覽：`--preview 'bat --color=always {1} --highlight-line {2}'` 顯示檔案內容並高亮匹配行
+- 進階版可整合 `delta` 顯示 git diff，或加入 `--type` 過濾特定檔案類型
+
 ## fzf-tab：補全增強
 
-fzf-tab 用 fzf 取代 zsh 預設補全：
+**背景（問題發現）**：zsh 原生的 tab 補全雖然功能強大，但在選項眾多時（如 `git checkout` 列出大量分支），需要不斷按 tab 循環選擇，效率低且難以快速定位到目標選項。
+
+**方法**：使用 `fzf-tab` 外掛，將 zsh 的 tab 補全介面替換為 fzf 的模糊搜尋介面。按下 tab 後會開啟 fzf 視窗，可以輸入關鍵字即時過濾，大幅提升補全效率。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -102,7 +180,22 @@ git clone https://github.com/Aloxaf/fzf-tab \
 plugins=(... fzf-tab)
 ```
 
+**討論/延伸**：
+- 需要先安裝 Oh My Zsh 框架（或手動設定 zsh 外掛路徑）
+- `fzf-tab` 會繼承 `FZF_DEFAULT_OPTS` 的設定（色彩、高度等）
+- 按 tab 觸發補全後，可以繼續輸入文字進行模糊搜尋
+- 支援多選模式（某些補全情境下可用 tab 選擇多個項目）
+- 可自訂不同命令的補全行為，例如為 `cd` 加入目錄預覽
+- 在 `.zshrc` 中的載入順序很重要：`fzf-tab` 應該在其他補全外掛之後載入
+- 進階設定可參考：https://github.com/Aloxaf/fzf-tab#configure
+
 ## 預覽功能
+
+**背景（問題發現）**：使用 fzf 選擇檔案或目錄時，僅憑檔名判斷內容容易選錯，需要預覽功能確認。但不同類型的項目（檔案、目錄）需要不同的預覽方式，且預覽視窗的大小和位置也需要調整。
+
+**方法**：建立通用的 `fzf-pre` 函數，智慧判斷選中項目的類型（檔案、目錄或其他），使用對應的預覽工具（`bat` 顯示檔案、`tree` 顯示目錄結構）。加入預覽視窗的位置、大小和切換快捷鍵設定。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -118,9 +211,31 @@ function fzf-pre() {
 }
 ```
 
+**討論/延伸**：
+- `-m` 啟用多選模式
+- `[[ -f {} ]]` 判斷是否為檔案，`[[ -d {} ]]` 判斷是否為目錄
+- `bat --style=numbers` 顯示行號，`--color=always` 保持語法高亮
+- `|| cat {}` 是備用方案，當 `bat` 不可用時使用 `cat`
+- `tree -C {}` 顯示目錄結構，`-C` 啟用色彩
+- `| less` 讓目錄預覽可以捲動（處理大型目錄）
+- `echo {} | head -200` 是最終備用方案，適用於特殊檔案類型
+- `--preview-window 'right,50%'` 設定預覽視窗在右側，佔 50% 寬度
+- `+{2}+3/3` 設定預覽視窗的捲動位置（對應搜尋結果的行號）
+- `~3` 在匹配行上下各保留 3 行上下文
+- `noborder` 移除邊框讓介面更簡潔
+- `--bind '?:toggle-preview'` 按 `?` 鍵切換預覽視窗顯示/隱藏
+- 可以根據需求調整預覽視窗參數，例如 `'down:40%'` 將預覽放在下方
+- 進階版可整合 `chafa` 或 `timg` 預覽圖片檔案
+
 ## 實際工作流
 
 ### 搜尋 Markdown 筆記
+
+**背景（問題發現）**：醫學筆記通常分散在多個子目錄中（依科別、主題分類），需要快速找到特定筆記並從關鍵內容處開始閱讀。傳統方式需要記住檔案路徑，或在多層目錄中手動導航。
+
+**方法**：建立 `study` 函數，進入筆記根目錄後，使用 `find` 搜尋所有 Markdown 檔案，透過 `fzf-pre` 提供預覽功能。選擇後用 Neovim 開啟，並跳到第 10 行（通常是筆記正文開始的位置，跳過標題和 metadata）。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -134,7 +249,23 @@ function study() {
 }
 ```
 
+**討論/延伸**：
+- `find . -type f -name "*.md"` 遞迴搜尋所有 Markdown 檔案
+- `fzf-pre` 提供即時預覽，可以在選擇前確認筆記內容
+- `nvim +10` 開啟檔案並跳到第 10 行，適合跳過 YAML front matter
+- 可以改用 `fd -e md` 取代 `find`，速度更快且語法更簡潔
+- 如果筆記有標籤系統，可結合 `rg` 搜尋特定標籤：`rg -l '#oncology' | fzf-pre`
+- 可以加入 `--preview-window '+{1}/2'` 讓預覽自動捲動到檔案中段
+- 進階版可整合 `fzf --preview 'glow {}'` 使用 Markdown 渲染器預覽
+- 如果使用 Obsidian 或其他筆記軟體，可修改為用對應的應用程式開啟
+
 ### 搜尋並開啟 PDF
+
+**背景（問題發現）**：醫學文獻、教科書 PDF 檔案眾多，檔名通常是論文標題或作者名，不易記憶。在 Finder 中瀏覽效率低，且無法預覽內容（macOS 的 Quick Look 需要手動觸發）。
+
+**方法**：建立 `pdf` 函數，使用 `fd` 快速搜尋所有 PDF 檔案，透過 fzf 的模糊搜尋和預覽功能，找到目標檔案後用系統預設應用程式（通常是 Preview.app 或 Adobe Acrobat）開啟。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -148,7 +279,29 @@ function pdf() {
 }
 ```
 
+**討論/延伸**：
+- `fd -e pdf` 只搜尋副檔名為 `.pdf` 的檔案
+- `fzf-pre` 提供預覽功能（如果有安裝 `pdftotext` 或 `mutool`，可以預覽 PDF 內容）
+- `open` 是 macOS 的命令，在 Linux 上可改用 `xdg-open`
+- 如果 PDF 預覽不顯示內容，可以自訂預覽命令：
+  ```bash
+  fzf --preview 'pdftotext {} - | head -200'
+  ```
+- 或使用 `pdftoppm` 轉換為圖片預覽（需要 `poppler` 套件）
+- 可以加入檔案大小和修改時間資訊：`fd -e pdf --exec ls -lh`
+- 進階版可整合 Zotero 或 Mendeley 的資料庫，搜尋論文 metadata
+- 如果需要搜尋 PDF 內文，可結合 `pdfgrep`：
+  ```bash
+  pdfgrep -Hn "search_term" *.pdf | fzf
+  ```
+
 ## Git 整合
+
+**背景（問題發現）**：在多分支的 Git 專案中，使用 `git checkout` 切換分支需要記住分支名稱或使用 tab 補全。查看特定 commit 的內容時，需要先用 `git log` 找到 commit hash，再用 `git show`，流程繁瑣。
+
+**方法**：建立 Git 相關的 alias，整合 fzf 的互動式搜尋。`gco` 列出所有分支並用 fzf 選擇，`gshow` 顯示簡化的 commit 歷史，選擇後自動顯示該 commit 的完整內容。
+
+**結果（程式碼）**：
 
 ```{bash}
 #| eval: false
@@ -158,6 +311,22 @@ alias gco='git checkout $(git branch | fzf)'
 # 選擇 commit
 alias gshow='git show $(git log --oneline | fzf | cut -d" " -f1)'
 ```
+
+**討論/延伸**：
+- `git branch` 列出所有本地分支，fzf 讓使用者模糊搜尋選擇
+- `git log --oneline` 以簡化格式顯示 commit 歷史（一行一個 commit）
+- `cut -d" " -f1` 提取 commit hash（第一個欄位，以空格分隔）
+- 可以加入預覽功能，在選擇前查看分支或 commit 的詳細資訊：
+  ```bash
+  alias gco='git checkout $(git branch | fzf --preview "git log --color --oneline {}")'
+  alias gshow='git show $(git log --oneline | fzf --preview "git show --color {1}")'
+  ```
+- 其他實用的 Git + fzf 整合：
+  - 選擇檔案加入暫存：`git add $(git status -s | fzf -m | awk '{print $2}')`
+  - 選擇檔案查看 diff：`git diff $(git status -s | fzf | awk '{print $2}')`
+  - 互動式 rebase：`git rebase -i $(git log --oneline | fzf | cut -d" " -f1)^`
+- 可以使用 `delta` 或 `diff-so-fancy` 美化 Git diff 輸出
+- 進階版可整合 `tig` 或 `lazygit` 等 Git TUI 工具
 
 ## 實作練習
 

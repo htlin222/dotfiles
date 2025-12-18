@@ -10,6 +10,16 @@ title: "遠端開發"
 
 ### 設定 SSH config
 
+**背景（問題發現）**
+
+每次連線遠端伺服器都要輸入完整的 `ssh user@hostname -p port -i keyfile`，既冗長又容易出錯。當你有多台伺服器需要管理時，記住每台的 IP、使用者名稱、port 和金鑰路徑會變得非常困難。此外，某些進階設定（如 agent forwarding）需要每次手動指定，降低工作效率。
+
+**方法**
+
+SSH 提供了 `~/.ssh/config` 設定檔，讓你為每台伺服器定義別名（Host）並預設所有連線參數。這個設定檔採用簡單的鍵值對格式，支援萬用字元匹配和多層級設定繼承。核心概念是「設定一次，到處使用」，將複雜的連線參數封裝成簡單的別名。
+
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
 # ~/.ssh/config
@@ -29,118 +39,456 @@ Host work
 
 ```{bash}
 #| eval: false
-ssh myserver  # 等同於 ssh htlin@192.168.1.100
+ssh myserver  # 等同於 ssh htlin@192.168.1.100 -p 22 -i ~/.ssh/id_ed25519
+ssh work      # 自動使用 developer 帳號，並啟用 agent forwarding
 ```
+
+**討論/延伸**
+
+- **權限設定**：`~/.ssh/config` 建議權限為 `600`（`chmod 600 ~/.ssh/config`），避免其他使用者讀取
+- **萬用字元**：可使用 `Host *` 設定全域預設值，或 `Host *.example.com` 批次設定
+- **進階選項**：
+  - `ServerAliveInterval 60`：每 60 秒發送 keepalive，防止連線逾時
+  - `ControlMaster auto` + `ControlPath`：啟用連線復用，加速後續連線
+  - `ProxyJump`：透過跳板機連線到內網伺服器
+- **安全性**：避免在 config 中儲存密碼，優先使用金鑰認證
+- **學習方向**：研究 `man ssh_config` 了解所有可用選項，或參考 [SSH Config File Examples](https://www.ssh.com/academy/ssh/config)
 
 ### 金鑰認證
 
+**背景（問題發現）**
+
+使用密碼認證有幾個問題：(1) 每次連線都要輸入密碼，效率低；(2) 密碼可能被暴力破解；(3) 在自動化腳本中無法安全地儲存密碼；(4) 管理多台伺服器時，密碼管理變得複雜。金鑰認證能同時解決安全性和便利性問題。
+
+**方法**
+
+SSH 金鑰認證使用非對稱加密：產生一對金鑰（私鑰和公鑰），私鑰保留在本機，公鑰複製到遠端伺服器。連線時，伺服器用公鑰驗證你是否持有對應的私鑰，無需傳輸密碼。`ed25519` 是目前推薦的演算法，比傳統的 RSA 更安全且金鑰更短。
+
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
-# 產生金鑰
+# 產生金鑰（會在 ~/.ssh/ 產生 id_ed25519 和 id_ed25519.pub）
 ssh-keygen -t ed25519 -C "your@email.com"
 
-# 複製公鑰到伺服器
+# 複製公鑰到伺服器（會自動加入 ~/.ssh/authorized_keys）
 ssh-copy-id myserver
 ```
 
+**討論/延伸**
+
+- **金鑰類型選擇**：
+  - `ed25519`（推薦）：安全、快速、金鑰短
+  - `rsa -b 4096`：相容性高，適合舊系統
+  - `ecdsa`：不推薦，有潛在安全疑慮
+- **密碼保護**：產生金鑰時可設定 passphrase，增加一層保護（即使私鑰被竊取也無法使用）
+- **多金鑰管理**：可為不同用途產生不同金鑰（如工作、個人、GitHub），在 SSH config 中用 `IdentityFile` 指定
+- **手動設定**：若無法使用 `ssh-copy-id`，可手動將 `id_ed25519.pub` 內容加入遠端的 `~/.ssh/authorized_keys`
+- **權限檢查**：
+  - 私鑰：`chmod 600 ~/.ssh/id_ed25519`
+  - 公鑰：`chmod 644 ~/.ssh/id_ed25519.pub`
+  - authorized_keys：`chmod 600 ~/.ssh/authorized_keys`
+- **安全建議**：定期輪替金鑰、使用 passphrase、不要分享私鑰、備份私鑰到安全位置
+
 ### SSH Agent
+
+**背景（問題發現）**
+
+當私鑰設定了 passphrase 保護時，每次使用金鑰都要輸入密碼，失去了金鑰認證的便利性。此外，在遠端伺服器上需要再連線到其他伺服器（如從跳板機連到內網機器），但又不想把私鑰複製到遠端（安全風險），這時就需要一個能安全管理和轉發金鑰的機制。
+
+**方法**
+
+SSH Agent 是一個背景程式，會將解鎖後的私鑰暫存在記憶體中。你只需要在啟動 agent 時輸入一次 passphrase，之後的所有 SSH 連線都會自動使用已解鎖的金鑰。Agent Forwarding 則允許你在遠端伺服器上使用本機的金鑰，而不需要將私鑰複製到遠端。
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
-# 啟動 agent
+# 啟動 agent（通常會輸出類似 "Agent pid 12345"）
 eval "$(ssh-agent -s)"
 
-# 加入金鑰
+# 加入金鑰到 agent（只需輸入一次 passphrase）
 ssh-add ~/.ssh/id_ed25519
 
-# 轉發 agent（讓遠端可以用本機金鑰）
+# 查看已加入的金鑰
+ssh-add -l
+
+# 轉發 agent（讓遠端可以用本機金鑰，注意安全風險）
 ssh -A myserver
+# 或在 ~/.ssh/config 中設定 ForwardAgent yes
 ```
+
+**討論/延伸**
+
+- **macOS 整合**：macOS 可在 `~/.ssh/config` 加入以下設定，讓 Keychain 自動管理 passphrase：
+  ```
+  Host *
+      AddKeysToAgent yes
+      UseKeychain yes
+  ```
+- **安全考量**：
+  - Agent Forwarding (`-A`) 有安全風險：遠端 root 使用者可能劫持你的 agent socket
+  - 只在信任的伺服器上使用 `-A`
+  - 更安全的替代方案：使用 ProxyJump 或複製公鑰到遠端
+- **自動啟動**：在 `~/.zshrc` 或 `~/.bashrc` 中加入：
+  ```bash
+  if [ -z "$SSH_AUTH_SOCK" ]; then
+      eval "$(ssh-agent -s)"
+      ssh-add ~/.ssh/id_ed25519 2>/dev/null
+  fi
+  ```
+- **金鑰管理指令**：
+  - `ssh-add -D`：清除所有金鑰
+  - `ssh-add -d ~/.ssh/id_ed25519`：移除特定金鑰
+  - `ssh-add -t 3600`：金鑰 1 小時後自動過期
+- **除錯**：使用 `ssh -v` 查看 agent 是否正常運作
 
 ## Mosh：更好的 SSH
 
-Mosh 能處理不穩定的網路連線：
+**背景（問題發現）**
+
+使用 SSH 在不穩定的網路環境（如咖啡廳 WiFi、行動網路、切換網路）工作時，經常會遇到以下問題：(1) 網路短暫斷線導致 SSH session 中斷，正在執行的指令遺失；(2) 高延遲環境下打字會有明顯延遲，影響體驗；(3) 切換網路（如從 WiFi 切到行動網路）會導致連線中斷；(4) 需要手動重新連線並恢復工作環境。
+
+**方法**
+
+Mosh (Mobile Shell) 是 SSH 的替代品，採用完全不同的架構：使用 UDP 而非 TCP、實作預測性本地回顯、透過同步狀態而非維持持續連線。核心概念是「無狀態同步」：client 和 server 各自維護終端狀態，定期同步差異，即使網路中斷也能繼續工作。本地回顯讓你在高延遲環境下也能流暢打字。
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
-# 安裝
+# 在本機安裝
 brew install mosh
 
-# 使用（伺服器也需要安裝 mosh）
+# 在伺服器安裝（以 Ubuntu 為例）
+sudo apt-get install mosh
+
+# 使用（語法與 SSH 相同）
 mosh myserver
+
+# 指定 SSH port（Mosh 會自動協商 UDP port）
+mosh --ssh="ssh -p 2222" myserver
+
+# 指定 UDP port 範圍
+mosh --server="mosh-server new -p 60000:60010" myserver
 ```
 
-優點：
+**討論/延伸**
 
-- 斷線後自動重連
-- 本地回顯，即使延遲也順暢
-- 支援漫遊（IP 變化）
+- **工作原理**：
+  - 初始連線：透過 SSH 建立連線並啟動 mosh-server
+  - 後續通訊：改用 UDP port 60000-61000 傳輸
+  - 本地回顯：預測使用者輸入，立即顯示（錯誤時會更正）
+  - 同步機制：定期同步終端狀態，處理差異
+- **優點總結**：
+  - 自動重連：網路斷線後自動恢復，無需手動操作
+  - 本地回顯：即使延遲 500ms 也能流暢打字
+  - IP 漫遊：支援 IP 位址變化（如 WiFi ↔ 行動網路）
+  - 低頻寬：只傳輸差異，節省流量
+- **限制與注意事項**：
+  - 需要在伺服器和本機都安裝 mosh
+  - 防火牆需要開放 UDP 60000-61000 port
+  - 不支援 port forwarding 和 X11 forwarding
+  - 不適合需要持續輸出的場景（如 `tail -f`）
+- **最佳實踐**：
+  - 結合 tmux 使用：Mosh 處理網路問題，tmux 處理 session 持久化
+  - 公司網路：確認防火牆允許 UDP outbound
+  - 多機跳轉：先 mosh 到跳板機，再 SSH 到內網機器
+- **除錯**：
+  - `mosh -v`：顯示詳細訊息
+  - `MOSH_ESCAPE_KEY=~`：設定脫離鍵（預設 Ctrl-^）
 
 ## tmux 持久化
 
-tmux 是遠端工作的關鍵：
+**背景（問題發現）**
+
+遠端工作時，即使你已經解決了 SSH 連線穩定性問題，還是會遇到：(1) 關閉終端機視窗，所有正在執行的程式都會終止；(2) 網路斷線瞬間，長時間執行的指令（如編譯、測試）會中斷；(3) 每次重新連線都要重新開啟編輯器、設定環境變數、切換目錄；(4) 無法在多個終端機之間共享同一個工作環境。
+
+**方法**
+
+tmux (terminal multiplexer) 在遠端伺服器上建立一個持久化的終端環境，即使 SSH 連線中斷，tmux session 仍會在背景繼續執行。核心概念是「分離與重新附加」(detach/attach)：你可以隨時離開 session，稍後再重新連接，所有程式、視窗配置、工作狀態都完整保留。這對遠端工作至關重要，因為你的工作環境不再依附於特定的 SSH 連線。
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
-# 在遠端建立 session
+# 在遠端建立新的 tmux session（名稱為 work）
 ssh myserver
 tmux new -s work
 
-# 離開但保持 session
-# 按 Ctrl+A d（或直接斷線）
+# 離開 session 但保持執行（按鍵盤組合鍵）
+# 按 Ctrl+A d（detach，根據你的 tmux prefix 設定）
+# 或直接關閉終端機視窗、斷線都不影響 session
 
-# 之後重新連接
+# 之後重新連接到同一個 session
 ssh myserver
 tmux attach -t work
+# 或簡寫：tmux a -t work
+
+# 列出所有執行中的 sessions
+tmux ls
+
+# 建立新 session 時自動附加到現有 session（若存在）
+tmux new -As work
 ```
+
+**討論/延伸**
+
+- **典型工作流程**：
+  1. 早上：SSH 到伺服器，`tmux new -As daily` 建立或附加到日常工作 session
+  2. 工作中：開啟多個 window/pane，執行編輯器、測試、監控等
+  3. 午休/下班：直接關閉終端機（或 Ctrl+A d），所有程式繼續執行
+  4. 恢復工作：重新 SSH 並 `tmux a -t daily`，一切如初
+- **多 session 管理**：
+  - 按專案分 session：`tmux new -s project1`、`tmux new -s project2`
+  - 按功能分 session：`work`、`monitoring`、`testing`
+  - 切換 session：在 tmux 內按 `Ctrl+A s` 選擇
+- **結合 Mosh**：
+  - Mosh 處理網路不穩定：自動重連、IP 漫遊
+  - tmux 處理程式持久化：斷線後程式繼續執行
+  - 完美組合：`mosh myserver` → `tmux a`
+- **進階技巧**：
+  - tmux-resurrect：儲存並還原整個 tmux 環境（包含程式、視窗配置）
+  - tmux-continuum：定期自動儲存，伺服器重啟後也能恢復
+  - tmuxinator：用 YAML 定義專案的 tmux 配置，一鍵啟動完整環境
+- **注意事項**：
+  - 定期清理不用的 session：`tmux kill-session -t old_session`
+  - 檢查遺留的 session：`tmux ls`
+  - session 名稱要有意義，方便日後識別
+- **除錯**：
+  - session 消失：可能是伺服器重啟，考慮使用 tmux-resurrect
+  - 無法附加：檢查 `tmux ls` 確認 session 名稱是否正確
 
 ## 遠端 Neovim
 
+**背景（問題發現）**
+
+開發時需要編輯遠端伺服器上的檔案，但面臨幾個選擇困境：(1) 在本機編輯再上傳，編輯-測試循環很慢；(2) 在遠端用 vim/nano 編輯，但缺少本機 Neovim 的插件和配置；(3) 用 SFTP 編輯器（如 VSCode Remote），但網路延遲影響體驗；(4) 檔案同步工具（rsync）需要手動執行，容易忘記。
+
+**方法**
+
+遠端編輯有三種主要策略，各有適用場景：(1) 直接在遠端執行 Neovim，結合 tmux 和 dotfiles 同步獲得完整開發環境；(2) 使用 Neovim 的 scp 協議直接編輯遠端檔案，適合小修改；(3) 用 rsync 同步整個專案目錄，適合需要本機工具鏈（如編譯器、測試）的場景。核心概念是「環境一致性」：讓遠端和本機擁有相同的編輯器配置和工作流程。
+
 ### 方法一：直接在遠端編輯
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
+# SSH 到遠端，在 tmux session 中執行 Neovim
 ssh myserver
+tmux new -As dev
 nvim /path/to/file
+
+# 在本機設定好 dotfiles 後，遠端 Neovim 會有相同的配置
 ```
+
+**討論/延伸**
+
+- **優點**：
+  - 編輯器配置與本機一致（透過 dotfiles 同步）
+  - 零網路延遲，即時回饋
+  - 可直接執行測試、編譯等指令
+  - 結合 tmux 實現持久化工作環境
+- **設定要求**：
+  - 在遠端安裝 Neovim：`sudo apt install neovim` 或從原始碼編譯
+  - 同步 dotfiles 到遠端（見後續章節）
+  - 安裝必要插件：在遠端執行 `:Lazy sync`（若使用 lazy.nvim）
+- **最佳實踐**：
+  - 使用 Mosh + tmux 組合：`mosh myserver` → `tmux a` → `nvim`
+  - 為遠端設定專屬的 Neovim 配置分支（如移除 LSP 以節省資源）
+  - 使用 telescope + rg 快速搜尋專案檔案
+- **限制**：需要在遠端安裝完整的 Neovim 環境
 
 ### 方法二：從本機編輯遠端檔案
 
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
+# 透過 scp 協議直接編輯遠端檔案
 nvim scp://myserver//path/to/file
+
+# 使用 SSH config 中的別名
+nvim scp://myserver/~/project/main.py
+
+# 編輯後儲存會自動上傳到遠端
 ```
+
+**討論/延伸**
+
+- **優點**：
+  - 使用本機的 Neovim 配置和插件
+  - 無需在遠端安裝 Neovim
+  - 適合快速修改單一檔案
+- **限制**：
+  - 每次儲存都需要網路傳輸，延遲明顯
+  - 無法使用需要專案上下文的插件（如 LSP、telescope）
+  - 不適合頻繁編輯或大檔案
+- **語法注意**：
+  - 雙斜線 `//` 代表絕對路徑：`scp://host//etc/config`
+  - 單斜線代表相對於家目錄：`scp://host/project/file`
+- **除錯**：若無法連線，檢查 SSH 金鑰認證是否正常（`ssh myserver` 能否免密碼登入）
 
 ### 方法三：rsync 同步
 
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
-# 同步到遠端
+# 同步本機專案到遠端（推送）
 rsync -avz --progress ./project/ myserver:~/project/
 
-# 從遠端同步回來
+# 從遠端同步回本機（拉取）
 rsync -avz --progress myserver:~/project/ ./project/
+
+# 進階用法：排除特定檔案
+rsync -avz --progress --exclude 'node_modules' --exclude '.git' \
+  ./project/ myserver:~/project/
+
+# 雙向同步（使用 -u 只更新較新的檔案）
+rsync -avzu --progress ./project/ myserver:~/project/
 ```
+
+**討論/延伸**
+
+- **適用場景**：
+  - 需要在本機編譯、測試後再同步到遠端部署
+  - 專案檔案很大，頻繁的 scp 傳輸不切實際
+  - 需要在本機和遠端之間定期同步工作進度
+- **rsync 選項解釋**：
+  - `-a`：archive 模式，保留權限、時間戳等
+  - `-v`：verbose，顯示詳細過程
+  - `-z`：壓縮傳輸，節省頻寬
+  - `--progress`：顯示進度條
+  - `-u`：update，只傳輸更新的檔案
+  - `--delete`：刪除目標端多餘的檔案（危險！）
+- **注意結尾斜線**：
+  - `./project/` → 同步目錄內容
+  - `./project` → 同步目錄本身（會建立 `~/project/project/`）
+- **自動化同步**：
+  - 使用 fswatch/entr 監控檔案變更自動同步
+  - 或設定 Git hooks 在 commit 後自動 rsync
+- **安全提醒**：
+  - 同步前先備份重要資料
+  - 測試時先用 `--dry-run` 預覽會同步哪些檔案
+  - 避免使用 `--delete` 除非完全了解其行為
 
 ## 實用函數
 
 ### 快速同步
 
+**背景（問題發現）**
+
+rsync 的完整選項太長難記，每次都要查文件或翻歷史指令。標準的 `rsync -avz` 可能不夠完整，無法保留所有檔案屬性（如 ACL、擴充屬性、硬連結）。需要一個記得住的別名，包含所有重要選項。
+
+**方法**
+
+建立一個功能完整的 rsync 別名，包含所有常用選項並提供進度顯示。這個別名會保留所有檔案屬性、顯示詳細資訊、提供進度條，適用於大部分同步場景。將別名加入 shell 設定檔（`~/.zshrc` 或 `~/.bashrc`），讓它永久可用。
+
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
+# 在 ~/.zshrc 或 ~/.bashrc 中加入
 alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
+
+# 使用方式
+rsync_progress ./project/ myserver:~/project/
+
+# 或加入更多實用變體
+alias rsync_dry='rsync --archive --acls --xattrs --hard-links --verbose --progress --dry-run'
+alias rsync_delete='rsync --archive --acls --xattrs --hard-links --verbose --progress --delete'
 ```
+
+**討論/延伸**
+
+- **選項詳解**：
+  - `--archive` (`-a`)：相當於 `-rlptgoD`，保留符號連結、權限、時間戳、群組、擁有者等
+  - `--acls` (`-A`)：保留 ACL 權限
+  - `--xattrs` (`-X`)：保留擴充屬性（extended attributes）
+  - `--hard-links` (`-H`)：保留硬連結
+  - `--verbose` (`-v`)：顯示詳細資訊
+  - `--progress`：顯示每個檔案的傳輸進度
+- **進階別名**：
+  ```bash
+  # 雙向同步（只更新較新的檔案）
+  alias rsync_sync='rsync -avzuAXH --progress'
+
+  # 備份模式（保留被刪除的檔案到 backup 目錄）
+  alias rsync_backup='rsync -avzAXH --progress --backup --backup-dir=backup-$(date +%Y%m%d)'
+
+  # 排除常見不需要同步的目錄
+  alias rsync_dev='rsync -avzAXH --progress --exclude node_modules --exclude .git --exclude __pycache__'
+  ```
+- **函數版本**（更靈活）：
+  ```bash
+  rsync_to() {
+    rsync -avzAXH --progress "$1/" "$2:$3/"
+  }
+  # 使用：rsync_to ./project myserver ~/remote/project
+  ```
 
 ### 遠端 port forwarding
 
+**背景（問題發現）**
+
+開發時遇到幾種常見情境：(1) 遠端伺服器執行 web 服務（如 port 8000），但伺服器沒有公開 IP，無法從瀏覽器直接存取；(2) 需要讓遠端伺服器存取本機的服務（如本機資料庫、開發中的 API）；(3) 遠端服務只監聽 localhost，基於安全考量不對外開放。這些情況下需要透過 SSH 建立安全的 port 通道。
+
+**方法**
+
+SSH Port Forwarding 有兩種模式：(1) Local forwarding (`-L`)：將遠端 port 轉發到本機，讓你能在本機存取遠端服務；(2) Remote forwarding (`-R`)：將本機 port 轉發到遠端，讓遠端能存取本機服務。核心概念是「SSH 隧道」：所有流量都透過加密的 SSH 連線傳輸，既安全又能穿越防火牆。
+
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
-# 將遠端 8000 port 轉發到本機
+# Local forwarding：將遠端 8000 port 轉發到本機 8000 port
+# 之後可在本機瀏覽器開啟 http://localhost:8000
 ssh -L 8000:localhost:8000 myserver
 
-# 將本機 3000 port 轉發到遠端
+# 綁定到特定介面（允許其他機器存取）
+ssh -L 0.0.0.0:8000:localhost:8000 myserver
+
+# Remote forwarding：將本機 3000 port 轉發到遠端 3000 port
+# 遠端可透過 localhost:3000 存取本機服務
 ssh -R 3000:localhost:3000 myserver
+
+# 轉發到不同的 port（本機 8080 → 遠端 80）
+ssh -L 8080:localhost:80 myserver
+
+# 連接到第三方主機（透過跳板機）
+ssh -L 8000:internal-server:8000 jumphost
 ```
+
+**討論/延伸**
+
+- **語法說明**：
+  - `-L [bind_address:]local_port:remote_host:remote_port`
+  - `-R [bind_address:]remote_port:local_host:local_port`
+  - `bind_address` 預設是 localhost（127.0.0.1），只允許本機連線
+- **常見應用場景**：
+  - 存取遠端資料庫：`ssh -L 5432:localhost:5432 db-server`（PostgreSQL）
+  - 存取遠端 Jupyter：`ssh -L 8888:localhost:8888 ml-server`
+  - 遠端存取本機 API：`ssh -R 3000:localhost:3000 test-server`
+  - 透過跳板機存取內網服務：`ssh -L 8080:internal:80 bastion`
+- **在 SSH config 中設定**：
+  ```
+  Host myserver
+      LocalForward 8000 localhost:8000
+      RemoteForward 3000 localhost:3000
+  ```
+- **持久化 forwarding**：
+  - 結合 tmux：在 tmux session 中執行 SSH forwarding
+  - 或使用 autossh：`autossh -M 0 -L 8000:localhost:8000 myserver`
+- **安全考量**：
+  - 預設只監聽 localhost，避免暴露服務給外部
+  - Remote forwarding 需要伺服器設定 `GatewayPorts yes`（有安全風險）
+  - 使用完畢後記得關閉 SSH 連線，避免長期開放 port
+- **除錯**：
+  - 檢查 port 是否被佔用：`lsof -i :8000`
+  - 使用 `-v` 查看詳細連線資訊：`ssh -v -L 8000:localhost:8000 myserver`
+  - 測試連線：`curl http://localhost:8000`
 
 ## dotfiles 同步
 

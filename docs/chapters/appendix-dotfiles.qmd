@@ -60,6 +60,11 @@ title: "推薦 dotfiles 範例"
 
 ### 第一步：初始化
 
+**背景（問題發現）**：當你的設定檔散落在不同位置（`~/.zshrc`、`~/.tmux.conf` 等），難以追蹤變更歷史、在多台電腦間同步，或是在系統重灌後恢復設定。建立集中式的 dotfiles 儲存庫可以解決這些問題。
+
+**方法**：使用 Git 版本控制系統來管理所有設定檔。選擇 `~/.dotfiles` 作為中央儲存目錄，這是慣例的命名方式，也方便日後辨識。`mkdir -p` 確保目錄不存在時才建立，避免覆蓋現有檔案。
+
+**結果（程式碼）**：
 ```{bash}
 #| eval: false
 mkdir -p ~/.dotfiles
@@ -67,8 +72,19 @@ cd ~/.dotfiles
 git init
 ```
 
+**討論/延伸**：
+- 為什麼用 `~/.dotfiles` 而非 `~/dotfiles`？前置點號表示這是隱藏目錄，符合 Unix 慣例
+- `git init` 建立的是本地儲存庫，下一步需要連結到遠端（如 GitHub）
+- 也可以考慮使用 `--bare` 方式管理 dotfiles（進階技巧）
+- 建議先閱讀 `git --help` 了解基本概念
+
 ### 第二步：移動設定檔
 
+**背景（問題發現）**：系統預期設定檔位於特定位置（如 `~/.zshrc`），但我們希望將檔案統一存放在 `~/.dotfiles` 目錄中進行版本控制。直接移動檔案會導致系統找不到設定檔。
+
+**方法**：使用符號連結（symbolic link）作為橋樑。原始檔案移至 dotfiles 目錄，並在原位置建立指向新位置的連結。`.symlink` 後綴是命名慣例，表示這個檔案將被符號連結至主目錄。系統透過符號連結讀取檔案，如同檔案仍在原位置。
+
+**結果（程式碼）**：
 ```{bash}
 #| eval: false
 # 移動 zshrc
@@ -76,8 +92,20 @@ mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
 ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 ```
 
+**討論/延伸**：
+- `ln -s` 建立符號連結（soft link），而非硬連結（hard link）
+- 符號連結優點：可以跨檔案系統、可以連結目錄、連結失效時容易辨識
+- 先執行 `mv` 再執行 `ln -s` 的順序很重要，避免覆蓋原檔案
+- 使用 `ls -la ~` 可以看到箭頭符號表示符號連結：`.zshrc -> /Users/username/.dotfiles/zsh/zshrc.symlink`
+- 若連結已存在，使用 `ln -sf` 強制覆蓋（小心使用）
+
 ### 第三步：建立安裝腳本
 
+**背景（問題發現）**：手動為每個設定檔建立符號連結容易出錯且繁瑣。在新機器上部署時，需要重複執行相同的 `ln -s` 命令。當設定檔數量增加時，這個問題更為明顯。
+
+**方法**：將所有符號連結操作封裝成可執行的 shell 腳本。使用變數 `$DOTFILES` 儲存基礎路徑，讓腳本更易維護。`ln -sf` 的 `-f` 選項會強制覆蓋已存在的連結，確保腳本可以重複執行（冪等性，idempotent）。
+
+**結果（程式碼）**：
 ```{bash}
 #| eval: false
 # install.sh
@@ -93,8 +121,21 @@ ln -sf "$DOTFILES/git/gitconfig.symlink" ~/.gitconfig
 echo "Dotfiles installed!"
 ```
 
+**討論/延伸**：
+- `#!/bin/bash` 是 shebang，指定使用 bash 執行此腳本
+- 執行前需要給予執行權限：`chmod +x install.sh`
+- `$HOME` 比 `~` 更可靠，在某些情況下波浪符號不會展開
+- `-f` 選項確保腳本可重複執行，不會因為連結已存在而失敗
+- 進階版本可以加入錯誤檢查、備份舊檔案、偵測作業系統等功能
+- 可以參考 Holman 的 [bootstrap script](https://github.com/holman/dotfiles/blob/master/script/bootstrap) 學習更完整的實作
+
 ### 第四步：版本控制
 
+**背景（問題發現）**：已經建立了本地的 Git 儲存庫，但檔案還未被追蹤，也沒有遠端備份。若電腦損壞或遺失，所有設定將無法恢復。此外，無法在其他機器上輕鬆取得這些設定。
+
+**方法**：使用 Git 的基本工作流程將檔案加入版本控制，並推送到遠端儲存庫（如 GitHub）。`git add .` 暫存所有變更，`git commit` 建立版本快照，`git remote add` 連結遠端儲存庫，`git push -u` 推送並設定上游分支。
+
+**結果（程式碼）**：
 ```{bash}
 #| eval: false
 git add .
@@ -102,6 +143,15 @@ git commit -m "Initial dotfiles setup"
 git remote add origin git@github.com:username/dotfiles.git
 git push -u origin main
 ```
+
+**討論/延伸**：
+- 執行前需先在 GitHub 建立空的儲存庫，不要勾選初始化 README
+- `git@github.com:username/dotfiles.git` 使用 SSH 協定，需先設定 SSH 金鑰
+- HTTPS 方式：`https://github.com/username/dotfiles.git`，但每次都需輸入帳密
+- `-u` 選項（`--set-upstream`）設定上游分支，之後只需執行 `git push`
+- 建議在提交前建立 `.gitignore`，排除敏感資訊（如 API 金鑰、私密憑證）
+- 使用 `git log` 查看提交歷史，`git status` 檢查當前狀態
+- 參考 [GitHub SSH 設定指南](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
 
 ## 維護建議
 

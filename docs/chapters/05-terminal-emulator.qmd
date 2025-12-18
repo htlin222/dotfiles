@@ -26,12 +26,45 @@ WezTerm 是現代化的終端模擬器，使用 Lua 設定，支援：
 
 ### 安裝
 
+**背景（問題發現）**
+
+在 macOS 上安裝應用程式通常需要手動下載、解壓縮、拖曳到應用程式資料夾。這個過程繁瑣且不易管理版本更新。
+
+**方法**
+
+使用 Homebrew 的 `--cask` 選項可以讓我們像管理命令列工具一樣管理 GUI 應用程式。Cask 是 Homebrew 專門用來安裝 macOS 應用程式的擴充功能，它能自動處理下載、安裝、權限設定等步驟。
+
+**結果（程式碼）**
+
 ```{bash}
 #| eval: false
 brew install --cask wezterm
 ```
 
+**討論/延伸**
+
+- 使用 Homebrew Cask 安裝的應用程式可以統一用 `brew upgrade --cask` 更新
+- 若要查看所有已安裝的 cask 應用程式：`brew list --cask`
+- 移除應用程式：`brew uninstall --cask wezterm`
+- Cask 會自動處理應用程式簽名和 macOS 的安全性檢查
+
 ### 基本設定
+
+**背景（問題發現）**
+
+終端模擬器的預設設定通常不符合開發者需求：字型太小不易閱讀、色彩主題對比度不佳、視窗裝飾佔用寶貴的螢幕空間，且每次開啟終端都要手動啟動 tmux 很麻煩。
+
+**方法**
+
+WezTerm 使用 Lua 作為設定語言，提供程式化的設定方式。核心概念包括：
+1. 載入 WezTerm API 模組取得設定能力
+2. 建立設定表格（table）來存放所有選項
+3. 使用語意化的鍵值對設定外觀與行為
+4. 回傳設定表格讓 WezTerm 套用
+
+Lua 的優勢在於可讀性高、支援條件邏輯，且設定檔本身就是可執行的程式。
+
+**結果（程式碼）**
 
 ```{lua}
 #| eval: false
@@ -53,9 +86,34 @@ config.default_prog = { '/opt/homebrew/bin/tmux' }
 return config
 ```
 
+**討論/延伸**
+
+- `require 'wezterm'`：載入 WezTerm 的 Lua API，類似 Python 的 import
+- `config.color_scheme`：可以用 `wezterm ls-color-schemes` 查看所有可用主題
+- `config.font`：字型名稱必須是系統已安裝的，可用 `wezterm ls-fonts` 檢查
+- `window_decorations = "RESIZE"`：保留視窗邊框以供調整大小，但移除標題列和按鈕
+- `default_prog`：使用陣列語法指定完整路徑，確保 tmux 能正確啟動
+- 進階技巧：可以用 `if` 條件根據作業系統或時間動態調整設定
+- 設定檔路徑：macOS 預設在 `~/.config/wezterm/wezterm.lua`，Windows 在 `%USERPROFILE%\.config\wezterm\wezterm.lua`
+
 ## 自動啟動 tmux
 
-在 shell 設定中加入：
+**背景（問題發現）**
+
+雖然可以在 WezTerm 設定檔中使用 `default_prog` 啟動 tmux，但這種方式有個問題：當你在其他終端（如 macOS 內建的 Terminal.app）或 SSH 連線時，這個設定不會生效。我們需要一個更靈活的方案，能夠：
+1. 只在 WezTerm 中自動啟動
+2. 避免在已經執行 tmux 時重複啟動（造成巢狀 tmux）
+3. 確保 tmux 已安裝才執行
+
+**方法**
+
+在 shell 設定檔（如 `.zshrc` 或 `.bashrc`）中加入條件判斷。核心邏輯：
+- `$TERM_PROGRAM`：環境變數，WezTerm 會設定為 "WezTerm"
+- `-z "$TMUX"`：檢查是否已在 tmux 內（`$TMUX` 變數為空）
+- `-x "$(command -v tmux)"`：檢查 tmux 是否存在且可執行
+- `exec`：使用當前 shell 程序來執行 tmux，避免多一層 shell
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
@@ -65,15 +123,54 @@ if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; 
 fi
 ```
 
+**討論/延伸**
+
+- `[[  ]]`：zsh/bash 的進階條件判斷，支援 `&&` 邏輯運算
+- `-z`：檢查字串是否為空（zero length）
+- `-x`：檢查檔案是否存在且可執行
+- `command -v tmux`：找出 tmux 的完整路徑，比 `which` 更可靠
+- `exec`：替換當前 shell 而非創建子程序，關閉 tmux 時終端會直接關閉
+- 進階用法：可以加入 `tmux attach || tmux new` 來自動附加到現有 session
+- 除錯技巧：如果不想使用 `exec`，可以改用 `tmux new-session -A -s main` 來附加或建立名為 main 的 session
+- 其他終端判斷：iTerm2 的 `$TERM_PROGRAM` 是 "iTerm.app"，Alacritty 是 "Alacritty"
+
 ## 字型選擇
 
-推薦使用 Nerd Fonts，它們包含了大量程式設計用圖標：
+推薦使用 Nerd Fonts，它們包含了大量程式設計用圖標。
+
+**背景（問題發現）**
+
+現代終端工具（如 tmux、neovim、命令提示字元）會使用許多特殊圖標來提升視覺體驗：
+- Git 狀態圖標（分支、修改、新增）
+- 檔案類型圖標（資料夾、檔案、程式語言）
+- 系統狀態指示器（電池、網路、時間）
+
+但一般字型不包含這些圖標，顯示時會出現空白方框或問號，嚴重影響使用體驗。
+
+**方法**
+
+Nerd Fonts 是一個字型補丁專案，它將常見的程式設計字型（如 JetBrains Mono、Fira Code）與數千個圖標字形合併。核心概念：
+1. 使用 `brew tap` 加入字型倉庫到 Homebrew
+2. 透過 cask 安裝已打包好的 Nerd Font 字型
+3. 字型名稱會加上 "Nerd Font" 後綴以區分原版
+
+**結果（程式碼）**
 
 ```{bash}
 #| eval: false
 brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font
 ```
+
+**討論/延伸**
+
+- `brew tap`：加入第三方倉庫，fonts 倉庫包含 1000+ 字型
+- 字型命名規則：安裝 `font-jetbrains-mono-nerd-font` 後，在應用程式中顯示為 "JetBrainsMono Nerd Font"
+- 查看已安裝字型：macOS 使用「字體簿」應用程式，或執行 `ls ~/Library/Fonts`
+- 其他 Nerd Fonts 選項：`font-fira-code-nerd-font`、`font-hack-nerd-font`、`font-meslo-lg-nerd-font`
+- 圖標來源：包含 FontAwesome、Material Design Icons、Devicons 等 8 種圖標集
+- 測試字型：可以用 `echo -e "\ue0b0 \uf1d0 \uf113"` 測試圖標是否正確顯示
+- 效能考量：Nerd Fonts 檔案較大（約 50-100 MB），但對終端渲染效能影響微乎其微
 
 常見選擇：
 
@@ -91,6 +188,25 @@ Catppuccin 是現代流行的色彩主題，支援多數終端和編輯器：
 
 ## 快捷鍵設定
 
+**背景（問題發現）**
+
+雖然我們主要使用 tmux 來管理終端視窗，但有時需要在 WezTerm 層級進行視窗分割，例如：
+- 在沒有 tmux 的環境中臨時使用
+- 需要快速開啟多個獨立的 tmux session
+- 除錯或測試時需要隔離環境
+
+預設的快捷鍵可能與系統或其他應用程式衝突，或者不符合直覺。
+
+**方法**
+
+在 WezTerm 設定檔中自訂鍵盤快捷鍵。核心概念：
+- `config.keys`：陣列，每個元素定義一個快捷鍵
+- `key`：要按的鍵（字母、數字、功能鍵等）
+- `mods`：修飾鍵（CMD、SHIFT、CTRL、ALT），用 `|` 組合
+- `action`：要執行的動作，使用 WezTerm API 提供的 action 物件
+
+**結果（程式碼）**
+
 ```{lua}
 #| eval: false
 -- WezTerm 快捷鍵
@@ -101,6 +217,23 @@ config.keys = {
   { key = 'd', mods = 'CMD|SHIFT', action = wezterm.action.SplitVertical },
 }
 ```
+
+**討論/延伸**
+
+- `SplitHorizontal` vs `SplitVertical`：注意命名邏輯，Horizontal 是「水平切割」產生「上下排列」
+- 修飾鍵名稱：macOS 使用 `CMD`，Linux/Windows 通常用 `CTRL` 或 `ALT`
+- 常用動作：`CloseCurrentPane`（關閉面板）、`ActivatePaneDirection`（切換面板）、`AdjustPaneSize`（調整大小）
+- 跨平台設定：可以用 Lua 條件判斷作業系統來設定不同快捷鍵
+```lua
+local act = wezterm.action
+if wezterm.target_triple == 'x86_64-apple-darwin' then
+  config.keys = { ... } -- macOS 快捷鍵
+else
+  config.keys = { ... } -- Linux/Windows 快捷鍵
+end
+```
+- 查看所有可用動作：參考 [WezTerm 官方文件](https://wezfurlong.org/wezterm/config/lua/keyassignment/index.html)
+- 除錯技巧：開啟 Debug Overlay（`Ctrl+Shift+L`）可以看到按鍵事件
 
 ## 實作練習
 

@@ -30,31 +30,68 @@ Shell 是你與系統溝通的介面。選擇合適的 shell 並調教它，是�
 
 ## Zsh 基礎設定
 
+### 背景（問題發現）
+
+預設的 Zsh 配置缺乏許多提升效率的功能：命令歷史記錄會重複、目錄切換需要完整輸入 `cd`、系統提示音干擾工作流程。這些小問題累積起來會大幅降低工作效率。
+
+### 方法
+
+透過 Zsh 的 `setopt` 命令啟用內建選項，可以優化三個核心領域：
+
+1. **歷史記錄管理**：使用 `share_history` 讓所有終端機共享歷史、`hist_ignore_all_dups` 避免重複項目
+2. **目錄導航**：啟用 `auto_cd` 省略 `cd` 命令、`auto_pushd` 自動建立目錄堆疊以便快速返回
+3. **使用體驗**：關閉惱人的提示音、允許在互動模式下使用註解
+
+### 結果（程式碼）
+
 ```{bash}
 #| eval: false
 # ~/.zshrc 基礎設定
 
 # 歷史記錄設定
-setopt append_history
-setopt inc_append_history
-setopt extended_history
-setopt hist_expire_dups_first
-setopt hist_ignore_all_dups
-setopt share_history
+setopt append_history           # 將歷史追加到檔案而非覆蓋
+setopt inc_append_history       # 每次命令後立即寫入歷史
+setopt extended_history         # 記錄時間戳記和執行時間
+setopt hist_expire_dups_first   # 歷史滿時優先刪除重複項目
+setopt hist_ignore_all_dups     # 忽略所有重複的歷史項目
+setopt share_history            # 多個終端機共享歷史記錄
 
 # 目錄導航
-setopt auto_cd
-setopt auto_pushd
-setopt pushd_ignore_dups
+setopt auto_cd                  # 直接輸入目錄名稱即可切換
+setopt auto_pushd               # cd 時自動將舊目錄推入堆疊
+setopt pushd_ignore_dups        # 目錄堆疊中不重複儲存
 
 # 其他便利設定
-setopt no_beep
-setopt interactive_comments
+setopt no_beep                  # 關閉所有提示音
+setopt interactive_comments     # 允許在互動模式使用 # 註解
 ```
+
+### 討論/延伸
+
+**注意事項**：
+- `share_history` 在多個終端機同時工作時非常有用，但可能讓歷史順序變得不直觀
+- `auto_cd` 會影響與目錄同名的命令或腳本，需注意命名衝突
+
+**進階技巧**：
+- 使用 `pushd` 和 `popd` 命令搭配 `auto_pushd` 在多個目錄間快速跳轉
+- 執行 `dirs -v` 查看目錄堆疊，然後用 `cd -2` 跳到第二個目錄
+- 設定 `HISTSIZE=10000` 和 `SAVEHIST=10000` 增加歷史記錄容量
 
 ## Oh-My-Zsh
 
-Oh-My-Zsh 提供了大量預設插件和主題：
+### 背景（問題發現）
+
+手動配置 Zsh 的所有功能（補全、主題、插件）需要大量時間研究和調試。Oh-My-Zsh 框架提供了一個成熟的生態系統，包含 300+ 插件和 150+ 主題，可以快速建立功能完整的開發環境。
+
+### 方法
+
+使用官方安裝腳本透過 `curl` 下載並執行安裝程序。這個腳本會：
+1. 備份現有的 `.zshrc` 檔案
+2. 將 Oh-My-Zsh 框架安裝到 `~/.oh-my-zsh` 目錄
+3. 建立新的 `.zshrc` 配置檔案
+4. 將 Zsh 設為預設 shell（如果尚未設定）
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
@@ -62,75 +99,336 @@ Oh-My-Zsh 提供了大量預設插件和主題：
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
+### 討論/延伸
+
+**注意事項**：
+- 安裝過程會覆蓋現有的 `.zshrc`，請先備份重要設定
+- 確保系統已安裝 `git` 和 `curl`
+- 某些企業網路可能阻擋 GitHub raw 內容，需調整防火牆設定
+
+**替代安裝方式**：
+```bash
+# 使用 wget 替代 curl
+sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# 手動 clone 後安裝（適合離線環境）
+git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+```
+
+**進一步學習**：
+- 探索 [Oh-My-Zsh 插件目錄](https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins)
+- 查看 [主題展示](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes)了解視覺化選項
+
 ### 插件載入策略
 
-不要一次載入太多插件，這會拖慢啟動速度。推薦的分層載入策略：
+#### 背景（問題發現）
+
+載入過多 Oh-My-Zsh 插件是啟動速度變慢的主因。每個插件都會增加 10-50 ms 的啟動時間，10 個插件就可能讓啟動時間超過 500 ms，嚴重影響使用體驗。傳統的「全部一起載入」策略沒有考慮插件的實際使用時機。
+
+#### 方法
+
+採用**分層延遲載入（Tiered Lazy Loading）**策略，根據插件的使用時機分成四個優先級：
+
+1. **立即載入（EAGER）**：核心必要插件，如 `git` 和語法高亮
+2. **Prompt 時載入（PROMPT）**：首次顯示提示符時才需要的功能
+3. **按鍵時載入（KEYPRESS）**：首次鍵盤輸入時觸發的互動功能
+4. **延遲載入（DEFERRED）**：不常用的輔助功能，背景非同步載入
+
+這種策略可以將可感知的啟動時間降低 60-80%。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
-# 立即載入：必要的核心插件
+# 立即載入：必要的核心插件（啟動階段）
 EAGER_PLUGINS=(
-  git
-  zsh-lazyload
-  fast-syntax-highlighting
+  git                        # Git 命令別名和補全
+  zsh-lazyload              # 延遲載入框架本身
+  fast-syntax-highlighting  # 語法高亮（需立即可見）
 )
 
-# 第一次顯示 prompt 時載入
+# 第一次顯示 prompt 時載入（約 100ms 後）
 PROMPT_PLUGINS=(
-  zsh-autosuggestions
+  zsh-autosuggestions       # 命令自動建議
 )
 
-# 第一次按鍵時載入
+# 第一次按鍵時載入（使用者開始輸入時）
 KEYPRESS_PLUGINS=(
-  zsh-vi-mode
-  fzf-tab
-  zsh-autopair
+  zsh-vi-mode               # Vi 編輯模式
+  fzf-tab                   # 模糊搜尋補全
+  zsh-autopair              # 自動配對括號
 )
 
-# 背景延遲載入
+# 背景延遲載入（非同步，不影響啟動）
 DEFERRED_PLUGINS=(
-  colored-man-pages
-  copyfile
-  web-search
+  colored-man-pages         # 彩色 man page
+  copyfile                  # 複製檔案內容到剪貼簿
+  web-search                # 快速網路搜尋
 )
 ```
 
+#### 討論/延伸
+
+**實作方式**：
+
+需要搭配延遲載入框架（如 `zsh-defer` 或 `zsh-lazyload`）才能實現：
+
+```bash
+# 在 .zshrc 中實作分層載入
+source ~/.oh-my-zsh/custom/plugins/zsh-defer/zsh-defer.plugin.zsh
+
+# EAGER: 直接載入
+plugins=(git fast-syntax-highlighting)
+
+# PROMPT: 在 precmd hook 載入
+zsh-defer -a -t 0.1 source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# KEYPRESS: 在 zle-line-init hook 載入
+zsh-defer -a -t 0.2 source $ZSH_CUSTOM/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+# DEFERRED: 背景延遲載入
+zsh-defer -a -t 1 plugins+=(colored-man-pages copyfile web-search)
+```
+
+**效能影響測試**：
+```bash
+# 測試前後啟動時間差異
+# 全部立即載入：~600ms
+# 分層載入：~120ms（可感知時間）
+```
+
+**注意事項**：
+- 某些插件有相依性，需按順序載入（例如 `fzf-tab` 需在 `compinit` 之後）
+- 過度延遲可能導致功能在需要時尚未就緒
+- 測試各插件的實際載入時間來調整分層策略
+
+**進階優化**：
+- 使用 `zinit` 或 `antigen` 等更強大的插件管理器
+- 實作條件式載入（只在需要時載入特定語言插件）
+- 使用編譯的 `.zwc` 檔案加速腳本執行
+
 ## Powerlevel10k 主題
 
-安裝最快的 Zsh 主題：
+### 安裝 Powerlevel10k
+
+#### 背景（問題發現）
+
+傳統 Zsh 主題（如 agnoster、robbyrussell）在每次顯示提示符時都需要執行 Git 狀態檢查和環境變數查詢，在大型 Git repository 中可能造成 200-500 ms 的延遲，讓終端機感覺卡頓。
+
+#### 方法
+
+Powerlevel10k 是目前最快的 Zsh 主題，採用以下技術：
+1. **C 語言實作**的 Git 狀態檢查（比 shell 腳本快 10-100 倍）
+2. **快取機制**避免重複計算
+3. **非同步更新**不阻塞主執行緒
+4. **Instant Prompt** 技術在載入設定前就顯示提示符
+
+使用 `--depth=1` 淺層 clone 可以加快安裝速度並節省磁碟空間。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
+# 淺層 clone Powerlevel10k 到 Oh-My-Zsh 主題目錄
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
   ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
 
-設定即時 prompt 以加速啟動：
+#### 討論/延伸
+
+**設定主題**：
+安裝後需在 `.zshrc` 中設定：
+```bash
+ZSH_THEME="powerlevel10k/powerlevel10k"
+```
+
+**首次設定精靈**：
+重啟終端機後會自動執行 `p10k configure` 設定精靈，提供互動式選項：
+- 字型選擇（推薦安裝 Meslo Nerd Font）
+- 提示符樣式（Rainbow、Pure、Lean 等）
+- 顯示元素（時間、目錄、Git、指令執行時間等）
+
+**手動重新設定**：
+```bash
+p10k configure
+```
+
+**離線安裝**：
+```bash
+# 適合企業環境或網路受限情況
+git clone https://github.com/romkatv/powerlevel10k.git /path/to/local
+ln -s /path/to/local ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+```
+
+### 啟用即時提示符（Instant Prompt）
+
+#### 背景（問題發現）
+
+即使使用 Powerlevel10k，如果 `.zshrc` 中有耗時的初始化操作（載入插件、執行外部命令等），使用者還是需要等待 300-1000 ms 才能看到提示符並開始輸入命令。這種延遲會打斷思緒和工作流程。
+
+#### 方法
+
+**Instant Prompt** 是 Powerlevel10k 的創新功能，原理是：
+1. 在首次設定後，將提示符的快照存到快取檔案
+2. 下次啟動時，**先載入快取顯示提示符**（<1 ms）
+3. 背景繼續執行 `.zshrc` 的其他設定
+4. 如果環境變化（如切換目錄、Git 狀態改變），再更新提示符
+
+這讓使用者感覺終端機「瞬間」就緒，即使實際載入還在進行中。
+
+#### 結果（程式碼）
 
 ```{bash}
 #| eval: false
-# 在 .zshrc 最前面加入
+# 在 .zshrc 的最前面（所有其他設定之前）加入
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 ```
 
+#### 討論/延伸
+
+**重要注意事項**：
+- 這段程式碼**必須**放在 `.zshrc` 的最開頭
+- Instant Prompt 啟用後，`.zshrc` 中不應有會輸出內容的命令
+- 如果有警告訊息出現，表示某些設定與 Instant Prompt 不相容
+
+**相容性問題排除**：
+```bash
+# 將會輸出內容的命令延遲到 Instant Prompt 之後
+# 錯誤方式（會破壞 Instant Prompt）：
+neofetch
+
+# 正確方式：
+if [[ -o interactive ]]; then
+  zle -N zle-line-init neofetch
+fi
+```
+
+**效能比較**：
+- 不使用 Instant Prompt：300-800 ms 才能看到提示符
+- 使用 Instant Prompt：<10 ms 就能看到提示符並開始輸入
+- 實際完整載入時間不變，但使用者體驗大幅提升
+
+**快取管理**：
+```bash
+# 如果環境變化導致快取失效，刪除快取重新產生
+rm -f ~/.cache/p10k-instant-prompt-*.zsh
+```
+
+**進階設定**：
+可在 `~/.p10k.zsh` 中自訂 Instant Prompt 行為：
+```bash
+# 控制是否在載入完成後更新提示符
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose  # 顯示載入訊息
+# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet  # 安靜模式
+# typeset -g POWERLEVEL9K_INSTANT_PROMPT=off    # 停用
+```
+
 ## 自訂補全
+
+### 背景（問題發現）
+
+Zsh 的預設補全功能雖然強大，但有幾個使用體驗問題：
+1. 安裝新命令後需重啟 shell 才能補全
+2. 補全選項只能用 Tab 循環切換，無法視覺化選擇
+3. 大小寫必須完全匹配才能補全，降低輸入效率
+
+這些限制讓補全功能無法發揮最大效益。
+
+### 方法
+
+使用 Zsh 的 `zstyle` 命令配置補全系統的行為：
+
+1. **`rehash true`**：自動更新可執行檔案的雜湊表，新安裝的命令立即可補全
+2. **`menu select`**：啟用互動式選單，可用方向鍵選擇補全項目
+3. **`matcher-list`**：設定大小寫不敏感的匹配規則
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
-# 補全設定
-zstyle ':completion:*' rehash true
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# 補全系統進階設定
+zstyle ':completion:*' rehash true                      # 自動偵測新安裝的命令
+zstyle ':completion:*' menu select                      # 啟用互動式選單
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # 大小寫不敏感匹配
 ```
+
+### 討論/延伸
+
+**補全選單操作**：
+啟用 `menu select` 後，按 Tab 會顯示互動式選單：
+- 方向鍵：上下左右移動選擇
+- Enter：確認選擇
+- Ctrl+G 或 Esc：取消補全
+
+**進階補全設定**：
+
+```bash
+# 更完整的補全配置
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*' use-cache on                     # 啟用補全快取
+zstyle ':completion:*' cache-path ~/.zsh/cache          # 快取路徑
+zstyle ':completion:*:match:*' original only            # 精確匹配優先
+zstyle ':completion:*:approximate:*' max-errors 1 numeric  # 容許 1 個拼寫錯誤
+
+# 補全選單美化
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  # 使用 ls 顏色
+zstyle ':completion:*' group-name ''                    # 補全項目分組
+zstyle ':completion:*:descriptions' format '%B%d%b'     # 分組標題格式
+
+# 特定命令的補全優化
+zstyle ':completion:*:cd:*' ignore-parents parent pwd   # cd 時忽略當前目錄
+zstyle ':completion:*:*:kill:*' menu yes select         # kill 命令使用選單
+zstyle ':completion:*:kill:*' force-list always         # 總是顯示程序列表
+```
+
+**效能優化**：
+```bash
+# 初始化補全系統（放在 .zshrc 中）
+autoload -Uz compinit
+
+# 只在每天第一次啟動時檢查補全快取
+# 其他時間跳過檢查以加速啟動
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+```
+
+**模糊匹配增強**：
+```bash
+# 更強大的模糊匹配
+zstyle ':completion:*' matcher-list \
+  'm:{a-zA-Z}={A-Za-z}' \           # 大小寫不敏感
+  'r:|[._-]=* r:|=*' \              # 部分匹配（f.b 可匹配 foo.bar）
+  'l:|=* r:|=*'                     # 左右部分匹配
+```
+
+**注意事項**：
+- 補全快取可能導致舊版本命令被補全，定期清理：`rm -f ~/.zsh/cache/*`
+- 過於寬鬆的模糊匹配可能產生太多不相關的建議
+- 某些外部工具（如 `fzf-tab`）可能覆蓋這些設定
 
 ## 效能優化
 
-測量你的 shell 啟動時間：
+### 背景（問題發現）
+
+隨著安裝的插件和配置增加，Shell 啟動速度可能從最初的 100 ms 逐漸劣化到 1-2 秒。這種延遲在頻繁開啟新終端機視窗或分頁時會累積成顯著的時間浪費，而且很難憑感覺判斷哪些配置造成效能問題。
+
+### 方法
+
+建立**效能基準測試函數**，透過多次測量取平均值來消除系統抖動的影響。使用 `/usr/bin/time` 命令測量實際的執行時間，而非 Shell 內建的 `time`，確保測量的準確性。
+
+測試方式是啟動一個互動式 Shell（`-i` 參數），然後立即退出（`exit` 命令），這會執行完整的 `.zshrc` 載入流程，精確反映實際使用時的啟動時間。
+
+### 結果（程式碼）
 
 ```{bash}
 #| eval: false
+# Shell 啟動時間測量函數
 function timezsh() {
   for i in $(seq 1 4); do
     /usr/bin/time $SHELL -i -c exit
@@ -138,7 +436,120 @@ function timezsh() {
 }
 ```
 
-目標：啟動時間控制在 200ms 以內。
+### 討論/延伸
+
+**使用方式**：
+
+```bash
+# 在現有 Shell 中執行
+timezsh
+
+# 輸出範例：
+#         0.18 real         0.09 user         0.08 sys
+#         0.19 real         0.10 user         0.09 sys
+#         0.17 real         0.09 user         0.08 sys
+#         0.18 real         0.09 user         0.08 sys
+```
+
+**效能目標與評級**：
+
+- **優秀**：< 200 ms（感覺瞬間啟動）
+- **良好**：200-400 ms（可接受）
+- **需改善**：400-800 ms（明顯延遲）
+- **有問題**：> 800 ms（嚴重影響體驗）
+
+**詳細效能分析**：
+
+使用 `zprof` 模組找出效能瓶頸：
+
+```bash
+# 在 .zshrc 開頭加入
+zmodload zsh/zprof
+
+# 在 .zshrc 結尾加入
+zprof
+```
+
+重新開啟終端機會顯示詳細的效能報告：
+```
+num  calls                time                       self            name
+-----------------------------------------------------------------------------------
+ 1)    1         180.00   180.00   45.00%    180.00   180.00   45.00%  compinit
+ 2)    3          80.00    26.67   20.00%     80.00    26.67   20.00%  oh-my-zsh
+ 3)   10          60.00     6.00   15.00%     60.00     6.00   15.00%  autoload
+```
+
+**常見效能問題與解決方案**：
+
+1. **`compinit` 太慢**：
+   ```bash
+   # 使用快取跳過每日檢查
+   autoload -Uz compinit
+   if [[ -n ${ZDOTDIR:-~}/.zcompdump(#qN.mh+24) ]]; then
+     compinit
+   else
+     compinit -C
+   fi
+   ```
+
+2. **插件過多**：
+   - 移除不常用的插件
+   - 使用延遲載入策略（參見「插件載入策略」章節）
+
+3. **NVM/RVM 等版本管理器**：
+   ```bash
+   # 延遲載入 nvm（只在需要時）
+   export NVM_DIR="$HOME/.nvm"
+   alias nvm='unalias nvm && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm'
+   ```
+
+4. **PATH 過長**：
+   ```bash
+   # 移除重複的 PATH 項目
+   typeset -U path
+   ```
+
+**進階測量技巧**：
+
+```bash
+# 更精確的測量，包含標準差
+function timezsh_advanced() {
+  local times=()
+  for i in {1..10}; do
+    times+=($(/usr/bin/time -p $SHELL -i -c exit 2>&1 | awk '/real/ {print $2}'))
+  done
+
+  # 計算平均值
+  local sum=0
+  for t in $times; do
+    sum=$(echo "$sum + $t" | bc)
+  done
+  local avg=$(echo "scale=3; $sum / ${#times[@]}" | bc)
+
+  echo "平均啟動時間: ${avg}s"
+  echo "所有測量值: ${times[@]}"
+}
+```
+
+**持續監控**：
+
+建立啟動時間趨勢追蹤：
+```bash
+# 每次啟動記錄時間（放在 .zshrc 結尾）
+if [[ -n $ZSH_BENCH ]]; then
+  echo "$(date +%s),$SECONDS" >> ~/.zsh_startup_log
+fi
+
+# 查看趨勢
+alias zsh-trend='awk -F, "{print \$2}" ~/.zsh_startup_log |
+  awk "{sum+=\$1; count++} END {print sum/count}"'
+```
+
+**注意事項**：
+- 首次執行可能較慢（快取尚未建立）
+- 系統負載會影響測量結果
+- macOS 的 Spotlight 索引可能干擾測量
+- 虛擬機環境的測量值參考性較低
 
 ## 實作練習
 
