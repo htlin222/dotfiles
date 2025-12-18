@@ -1,0 +1,8 @@
+[build]
+  command = """
+    curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb && \
+    dpkg -x quarto-linux-amd64.deb . && \
+    export PATH=$PWD/opt/quarto/bin:$PATH && \
+    quarto render
+  """
+  publish = "_book"
