@@ -1,0 +1,115 @@
+---
+title: "終端模擬器"
+---
+
+# 終端模擬器
+
+終端模擬器是你與 shell 互動的視窗。選擇合適的終端模擬器，可以讓你的工作更加順暢。
+
+## 主流終端模擬器比較
+
+| 終端 | 優點 | 缺點 |
+|------|------|------|
+| **iTerm2** | 功能最豐富、分割視窗 | 只支援 macOS、較重 |
+| **Alacritty** | GPU 加速、極快 | 功能較少、無分頁 |
+| **Kitty** | GPU 加速、可擴展 | 設定較複雜 |
+| **WezTerm** | Lua 設定、跨平台 | 相對較新 |
+
+## WezTerm：推薦選擇
+
+WezTerm 是現代化的終端模擬器，使用 Lua 設定，支援：
+
+- GPU 加速渲染
+- 跨平台（macOS、Linux、Windows）
+- 內建多工（但我們用 tmux）
+- 豐富的自訂選項
+
+### 安裝
+
+```{bash}
+#| eval: false
+brew install --cask wezterm
+```
+
+### 基本設定
+
+```{lua}
+#| eval: false
+-- ~/.config/wezterm/wezterm.lua
+local wezterm = require 'wezterm'
+local config = {}
+
+-- 外觀
+config.color_scheme = 'Catppuccin Mocha'
+config.font = wezterm.font 'JetBrains Mono'
+config.font_size = 14.0
+
+-- 隱藏標題列
+config.window_decorations = "RESIZE"
+
+-- 啟動時執行 tmux
+config.default_prog = { '/opt/homebrew/bin/tmux' }
+
+return config
+```
+
+## 自動啟動 tmux
+
+在 shell 設定中加入：
+
+```{bash}
+#| eval: false
+# 在 WezTerm 中自動啟動 tmux
+if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
+  exec tmux
+fi
+```
+
+## 字型選擇
+
+推薦使用 Nerd Fonts，它們包含了大量程式設計用圖標：
+
+```{bash}
+#| eval: false
+brew tap homebrew/cask-fonts
+brew install --cask font-jetbrains-mono-nerd-font
+```
+
+常見選擇：
+
+- JetBrains Mono Nerd Font
+- Fira Code Nerd Font
+- Hack Nerd Font
+
+## 色彩主題
+
+Catppuccin 是現代流行的色彩主題，支援多數終端和編輯器：
+
+- **Mocha**：深色主題
+- **Latte**：淺色主題
+- **Macchiato**：介於中間
+
+## 快捷鍵設定
+
+```{lua}
+#| eval: false
+-- WezTerm 快捷鍵
+config.keys = {
+  -- 使用 Cmd+D 水平分割
+  { key = 'd', mods = 'CMD', action = wezterm.action.SplitHorizontal },
+  -- 使用 Cmd+Shift+D 垂直分割
+  { key = 'd', mods = 'CMD|SHIFT', action = wezterm.action.SplitVertical },
+}
+```
+
+## 實作練習
+
+1. 安裝 WezTerm
+2. 設定 Nerd Font
+3. 套用 Catppuccin 主題
+4. 設定自動啟動 tmux
+
+::: {.callout-note}
+## 提示
+如果你已經習慣 iTerm2，可以繼續使用。終端模擬器的選擇不如 tmux 和 neovim 的設定重要。
+:::

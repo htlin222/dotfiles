@@ -59,3 +59,14 @@ claude.symlink/file-history/
 claude.symlink/shell-snapshots/
 claude.symlink/ide/
 **/logs/
+
+# Quarto
+docs/_book/
+docs/.quarto/
+docs/_freeze/
+docs/site_libs/
+docs/*.html
+docs/*.tex
+docs/*.pdf
+docs/**/*_files/
+.quarto/

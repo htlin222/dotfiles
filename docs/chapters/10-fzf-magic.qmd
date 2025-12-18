@@ -1,0 +1,172 @@
+---
+title: "模糊搜尋的魔法"
+---
+
+# 模糊搜尋的魔法
+
+fzf 是模糊搜尋工具，可以整合到幾乎任何工作流中。
+
+## 安裝與設定
+
+```{bash}
+#| eval: false
+brew install fzf
+
+# 安裝快捷鍵綁定和補全
+$(brew --prefix)/opt/fzf/install
+```
+
+## 基本設定
+
+```{bash}
+#| eval: false
+# ~/.zshrc 或 fzf.zsh
+
+# 使用 fd 作為預設命令
+export FZF_DEFAULT_COMMAND="fd --type f"
+
+# 自訂外觀
+export FZF_DEFAULT_OPTS='
+  --color=bg+:#293739,bg:#1B1D1E,border:#808080
+  --color=spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2
+  --color=header:#7E8E91,info:#A6E22E,pointer:#A6E22E
+  --color=marker:#F92672,fg+:#F8F8F2,prompt:#F92672
+  -m --height 80% --layout=reverse --inline-info
+'
+```
+
+## 預設快捷鍵
+
+| 快捷鍵 | 功能 |
+|--------|------|
+| `Ctrl+T` | 搜尋檔案並插入路徑 |
+| `Ctrl+R` | 搜尋歷史命令 |
+| `Alt+C` | 搜尋目錄並 cd |
+
+## 自訂函數
+
+### 搜尋並用 Neovim 開啟
+
+```{bash}
+#| eval: false
+function vf() {
+  local file
+  file=$(fzf --preview 'bat --style=numbers --color=always {}')
+  if [ -n "$file" ]; then
+    nvim "$file"
+  fi
+}
+```
+
+### 搜尋並進入目錄
+
+```{bash}
+#| eval: false
+function fcd() {
+  local dir
+  dir=$(fd --type d | fzf) && cd "$dir"
+}
+```
+
+### ripgrep 整合
+
+```{bash}
+#| eval: false
+function rgnv() {
+  local rg_prefix='rg -i --column --line-number --no-heading --color=always'
+  local result
+  result=$(fzf --bind "start:reload($rg_prefix '')" \
+               --bind "change:reload($rg_prefix {q} || true)" \
+               --ansi --disabled \
+               --height 80% --layout=reverse)
+
+  if [ -n "$result" ]; then
+    local filename=$(echo $result | cut -d':' -f1)
+    local line=$(echo $result | cut -d':' -f2)
+    nvim +$line "$filename"
+  fi
+}
+```
+
+## fzf-tab：補全增強
+
+fzf-tab 用 fzf 取代 zsh 預設補全：
+
+```{bash}
+#| eval: false
+# 安裝
+git clone https://github.com/Aloxaf/fzf-tab \
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fzf-tab
+
+# 在 .zshrc 中啟用
+plugins=(... fzf-tab)
+```
+
+## 預覽功能
+
+```{bash}
+#| eval: false
+function fzf-pre() {
+  fzf -m --height 50% \
+    --layout=reverse \
+    --inline-info \
+    --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) ||
+               ([[ -d {} ]] && (tree -C {} | less)) ||
+               echo {} 2> /dev/null | head -200' \
+    --preview-window 'right,50%,+{2}+3/3,~3,noborder' \
+    --bind '?:toggle-preview'
+}
+```
+
+## 實際工作流
+
+### 搜尋 Markdown 筆記
+
+```{bash}
+#| eval: false
+function study() {
+  cd ~/Dropbox/Medical/
+  local file
+  file=$(find . -type f -name "*.md" | fzf-pre)
+  if [ -n "$file" ]; then
+    nvim +10 "$file"
+  fi
+}
+```
+
+### 搜尋並開啟 PDF
+
+```{bash}
+#| eval: false
+function pdf() {
+  cd ~/Documents/PDF/
+  local file
+  file=$(fd -e pdf | fzf-pre)
+  if [ -n "$file" ]; then
+    open "$file"
+  fi
+}
+```
+
+## Git 整合
+
+```{bash}
+#| eval: false
+# 切換分支
+alias gco='git checkout $(git branch | fzf)'
+
+# 選擇 commit
+alias gshow='git show $(git log --oneline | fzf | cut -d" " -f1)'
+```
+
+## 實作練習
+
+1. 設定 fzf 預設選項
+2. 建立 `vf` 函數並使用
+3. 整合 fzf-tab
+4. 為常用工作流建立自訂函數
+
+::: {.callout-tip}
+## 效率提示
+結合 `--preview` 可以在選擇前預覽內容，大幅提高搜尋效率。
+:::

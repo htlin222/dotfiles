@@ -1,0 +1,158 @@
+---
+title: "現代 CLI 工具集"
+---
+
+# 現代 CLI 工具集
+
+傳統 Unix 工具的現代替代品，更快、更好用、更漂亮。
+
+## 安裝所有工具
+
+```{bash}
+#| eval: false
+brew install fd ripgrep bat eza zoxide fzf yazi lsd
+```
+
+## fd：更好的 find
+
+```{bash}
+#| eval: false
+# 搜尋所有 .md 檔案
+fd -e md
+
+# 搜尋名稱包含 config 的檔案
+fd config
+
+# 限制深度
+fd -d 2 -e js
+
+# 排除目錄
+fd -E node_modules -e ts
+```
+
+## ripgrep：更快的 grep
+
+```{bash}
+#| eval: false
+# 搜尋文字
+rg "pattern"
+
+# 只顯示檔名
+rg -l "pattern"
+
+# 指定檔案類型
+rg -t py "import"
+
+# 計數
+rg -c "pattern"
+
+# 搜尋並取代（預覽）
+rg "old" -r "new"
+```
+
+## bat：帶語法高亮的 cat
+
+```{bash}
+#| eval: false
+# 顯示檔案
+bat file.py
+
+# 顯示行號範圍
+bat -r 10:20 file.py
+
+# 與其他命令組合
+rg "pattern" -l | xargs bat
+```
+
+## eza/lsd：現代化的 ls
+
+```{bash}
+#| eval: false
+# 基本列表
+eza
+
+# 長格式
+eza -l
+
+# 包含隱藏檔案
+eza -la
+
+# 樹狀顯示
+eza --tree
+
+# 或使用 lsd
+alias tree='lsd --tree'
+```
+
+## zoxide：智能 cd
+
+```{bash}
+#| eval: false
+# 初始化
+eval "$(zoxide init zsh)"
+
+# 使用
+z projects      # 跳到最常用的 projects 目錄
+zi              # 互動式選擇
+
+# 它會學習你的習慣
+cd ~/projects/myapp
+cd ~/documents
+z myapp         # 直接跳回 ~/projects/myapp
+```
+
+## yazi：現代檔案管理器
+
+```{bash}
+#| eval: false
+# 安裝
+brew install yazi
+
+# 使用（帶目錄切換）
+function ya() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+```
+
+功能：
+
+- 圖片預覽
+- 檔案操作
+- 快速導航
+- 支援 Vim 快捷鍵
+
+## 工具對照表
+
+| 傳統工具 | 現代替代 | 主要優勢 |
+|----------|----------|----------|
+| `find` | `fd` | 更快、語法簡潔 |
+| `grep` | `ripgrep` | 極快、自動忽略 |
+| `cat` | `bat` | 語法高亮 |
+| `ls` | `eza`/`lsd` | 圖標、顏色 |
+| `cd` | `zoxide` | 智能跳轉 |
+| `ranger` | `yazi` | 更快、Rust 寫的 |
+
+## 實作練習
+
+1. 安裝所有現代工具
+2. 設定 shell 別名：
+
+```{bash}
+#| eval: false
+alias cat='bat'
+alias ls='eza'
+alias tree='lsd --tree'
+```
+
+3. 初始化 zoxide 並使用一週
+4. 嘗試用 yazi 管理檔案
+
+::: {.callout-tip}
+## 效能提示
+這些工具大多用 Rust 寫成，效能比傳統工具好很多。在大型專案中差異尤其明顯。
+:::

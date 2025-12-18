@@ -1,0 +1,152 @@
+---
+title: "Shell 的選擇與調教"
+---
+
+# Shell 的選擇與調教
+
+Shell 是你與系統溝通的介面。選擇合適的 shell 並調教它，是提升效率的第一步。
+
+## Shell 比較
+
+### Bash
+
+- 最通用，幾乎所有系統都有
+- 腳本相容性最好
+- 功能相對基礎
+
+### Zsh
+
+- macOS 預設 shell
+- 強大的自動補全
+- 豐富的插件生態（Oh-My-Zsh）
+
+### Fish
+
+- 開箱即用的智能補全
+- 語法不完全相容 POSIX
+- 較少的自訂空間
+
+**推薦選擇**：Zsh，兼顧功能與相容性。
+
+## Zsh 基礎設定
+
+```{bash}
+#| eval: false
+# ~/.zshrc 基礎設定
+
+# 歷史記錄設定
+setopt append_history
+setopt inc_append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_all_dups
+setopt share_history
+
+# 目錄導航
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+
+# 其他便利設定
+setopt no_beep
+setopt interactive_comments
+```
+
+## Oh-My-Zsh
+
+Oh-My-Zsh 提供了大量預設插件和主題：
+
+```{bash}
+#| eval: false
+# 安裝 Oh-My-Zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+### 插件載入策略
+
+不要一次載入太多插件，這會拖慢啟動速度。推薦的分層載入策略：
+
+```{bash}
+#| eval: false
+# 立即載入：必要的核心插件
+EAGER_PLUGINS=(
+  git
+  zsh-lazyload
+  fast-syntax-highlighting
+)
+
+# 第一次顯示 prompt 時載入
+PROMPT_PLUGINS=(
+  zsh-autosuggestions
+)
+
+# 第一次按鍵時載入
+KEYPRESS_PLUGINS=(
+  zsh-vi-mode
+  fzf-tab
+  zsh-autopair
+)
+
+# 背景延遲載入
+DEFERRED_PLUGINS=(
+  colored-man-pages
+  copyfile
+  web-search
+)
+```
+
+## Powerlevel10k 主題
+
+安裝最快的 Zsh 主題：
+
+```{bash}
+#| eval: false
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
+  ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+```
+
+設定即時 prompt 以加速啟動：
+
+```{bash}
+#| eval: false
+# 在 .zshrc 最前面加入
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+```
+
+## 自訂補全
+
+```{bash}
+#| eval: false
+# 補全設定
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+```
+
+## 效能優化
+
+測量你的 shell 啟動時間：
+
+```{bash}
+#| eval: false
+function timezsh() {
+  for i in $(seq 1 4); do
+    /usr/bin/time $SHELL -i -c exit
+  done
+}
+```
+
+目標：啟動時間控制在 200ms 以內。
+
+## 實作練習
+
+1. 安裝 Zsh 和 Oh-My-Zsh
+2. 設定 Powerlevel10k 主題
+3. 測量啟動時間並優化
+
+::: {.callout-tip}
+## 效能提示
+使用 `zprof` 可以分析哪些部分拖慢了啟動速度：在 `.zshrc` 開頭加入 `zmodload zsh/zprof`，結尾加入 `zprof`。
+:::

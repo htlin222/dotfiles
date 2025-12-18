@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "@wekanteam/markdown-it-mermaid": "^0.6.4"
+    "@wekanteam/markdown-it-mermaid": "^0.6.4",
+    "playwright": "^1.57.0",
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.34.5"
   }
 }

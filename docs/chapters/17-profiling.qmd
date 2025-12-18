@@ -1,0 +1,190 @@
+---
+title: "除錯與效能分析"
+---
+
+# 除錯與效能分析
+
+當事情不如預期時，你需要知道如何找出問題。
+
+## Shell 啟動時間分析
+
+### zsh 效能分析
+
+```{bash}
+#| eval: false
+# 在 .zshrc 開頭加入
+zmodload zsh/zprof
+
+# 在 .zshrc 結尾加入
+zprof
+```
+
+或使用環境變數控制：
+
+```{bash}
+#| eval: false
+if [ -n "${ZSH_DEBUGRC+1}" ]; then
+    zprof
+fi
+```
+
+啟用除錯：
+
+```{bash}
+#| eval: false
+ZSH_DEBUGRC=1 zsh -i -c exit
+```
+
+### 測量啟動時間
+
+```{bash}
+#| eval: false
+function timezsh() {
+    for i in $(seq 1 4); do
+        /usr/bin/time $SHELL -i -c exit
+    done
+}
+```
+
+目標：控制在 200 毫秒以內。
+
+## Neovim 效能分析
+
+### 啟動時間
+
+```{bash}
+#| eval: false
+nvim --startuptime startup.log -c exit
+tail -20 startup.log
+```
+
+或用別名：
+
+```{bash}
+#| eval: false
+alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
+```
+
+### 插件分析
+
+```vim
+:Lazy profile
+```
+
+## 程式效能分析
+
+### Python
+
+```{bash}
+#| eval: false
+# 使用 cProfile
+python -m cProfile -s cumtime script.py
+
+# 使用 line_profiler（需要安裝）
+kernprof -l -v script.py
+```
+
+### Node.js
+
+```{bash}
+#| eval: false
+# 使用內建 profiler
+node --prof app.js
+node --prof-process isolate-*.log > processed.txt
+```
+
+## 系統監控
+
+### 即時監控
+
+```{bash}
+#| eval: false
+# 基本
+top
+htop
+
+# 更現代的替代
+brew install zenith  # Rust 寫的
+alias ztop='zenith'
+```
+
+### 磁碟空間
+
+```{bash}
+#| eval: false
+# 基本
+df -h
+du -sh *
+
+# 互動式
+brew install diskonaut
+diskonaut
+```
+
+### 網路監控
+
+```{bash}
+#| eval: false
+# 查看連線
+netstat -an | grep LISTEN
+
+# 監控流量
+brew install bandwhich
+sudo bandwhich
+```
+
+## 除錯技巧
+
+### Shell script 除錯
+
+```{bash}
+#| eval: false
+# 啟用除錯模式
+set -x  # 顯示每個命令
+set -e  # 錯誤時停止
+set -u  # 未定義變數時報錯
+
+# 或在 shebang 中
+#!/bin/bash -xeu
+```
+
+### 逐步執行
+
+```{bash}
+#| eval: false
+# 使用 trap 在每個命令後暫停
+trap 'read -p "Press enter to continue"' DEBUG
+```
+
+### Log 分析
+
+```{bash}
+#| eval: false
+# 即時追蹤
+tail -f /var/log/system.log
+
+# 搜尋錯誤
+rg -i "error|fail" /var/log/*.log
+
+# 統計錯誤類型
+grep "ERROR" app.log | cut -d: -f2 | sort | uniq -c | sort -rn
+```
+
+## 效能優化檢查清單
+
+- [ ] Shell 啟動時間 < 200 毫秒
+- [ ] Neovim 啟動時間 < 100 毫秒
+- [ ] 插件延遲載入設定正確
+- [ ] 無不必要的同步操作
+- [ ] 補全系統快取正確
+
+## 實作練習
+
+1. 測量你的 shell 啟動時間
+2. 分析 Neovim 的啟動瓶頸
+3. 設定系統監控工具
+
+::: {.callout-tip}
+## 效能原則
+先測量，再優化。不要憑感覺優化，要用數據說話。
+:::

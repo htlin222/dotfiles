@@ -1,0 +1,187 @@
+---
+title: "容器化開發"
+---
+
+# 容器化開發
+
+Docker 讓你在隔離的環境中開發，確保「在我的電腦上可以跑」變成「在任何地方都可以跑」。
+
+## 安裝
+
+```{bash}
+#| eval: false
+# macOS
+brew install --cask docker
+
+# 或使用 OrbStack（更輕量）
+brew install --cask orbstack
+```
+
+## 基本命令
+
+### 映像檔管理
+
+```{bash}
+#| eval: false
+# 拉取映像檔
+docker pull python:3.12
+
+# 列出映像檔
+docker images
+
+# 刪除映像檔
+docker rmi python:3.12
+```
+
+### 容器操作
+
+```{bash}
+#| eval: false
+# 執行容器
+docker run -it python:3.12 bash
+
+# 列出執行中的容器
+docker ps
+
+# 列出所有容器
+docker ps -a
+
+# 停止容器
+docker stop <container_id>
+
+# 刪除容器
+docker rm <container_id>
+```
+
+### 掛載目錄
+
+```{bash}
+#| eval: false
+# 掛載當前目錄
+docker run -v $(pwd):/app -w /app python:3.12 python script.py
+```
+
+## Dockerfile 基礎
+
+```{dockerfile}
+#| eval: false
+# Python 應用範例
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python", "main.py"]
+```
+
+建置和執行：
+
+```{bash}
+#| eval: false
+# 建置映像檔
+docker build -t myapp .
+
+# 執行
+docker run myapp
+```
+
+## Docker Compose
+
+多容器應用使用 `docker-compose.yml`：
+
+```{yaml}
+#| eval: false
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+```
+
+操作命令：
+
+```{bash}
+#| eval: false
+# 啟動所有服務
+docker compose up -d
+
+# 查看 log
+docker compose logs -f
+
+# 停止所有服務
+docker compose down
+
+# 重建
+docker compose up --build
+```
+
+## 開發工作流
+
+### 開發環境容器
+
+```{yaml}
+#| eval: false
+# docker-compose.dev.yml
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/node_modules  # 排除 node_modules
+    ports:
+      - "3000:3000"
+    command: npm run dev
+```
+
+### 進入執行中的容器
+
+```{bash}
+#| eval: false
+docker exec -it <container_name> bash
+```
+
+## 實用別名
+
+```{bash}
+#| eval: false
+# 清理無用的容器和映像檔
+alias docker-clean='docker system prune -af'
+
+# 進入最近的容器
+alias docker-last='docker exec -it $(docker ps -lq) bash'
+
+# 查看容器 log
+alias docker-logs='docker logs -f $(docker ps -lq)'
+```
+
+## 實作練習
+
+1. 拉取一個 Python 映像檔並執行 bash
+2. 建立一個簡單的 Dockerfile
+3. 用 Docker Compose 設定開發環境
+
+::: {.callout-warning}
+## 注意
+Docker Desktop 在 macOS 上可能佔用大量資源。考慮使用 OrbStack 作為替代，它更輕量且啟動更快。
+:::

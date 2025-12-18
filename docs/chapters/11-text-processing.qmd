@@ -1,0 +1,187 @@
+---
+title: "文字處理三劍客"
+---
+
+# 文字處理三劍客
+
+awk、sed、grep 是 Unix 文字處理的經典工具。雖然有現代替代品，但理解它們仍然重要。
+
+## grep：搜尋文字
+
+### 基本用法
+
+```{bash}
+#| eval: false
+# 搜尋包含 pattern 的行
+grep "pattern" file.txt
+
+# 忽略大小寫
+grep -i "pattern" file.txt
+
+# 顯示行號
+grep -n "pattern" file.txt
+
+# 反向搜尋（不包含 pattern 的行）
+grep -v "pattern" file.txt
+
+# 遞迴搜尋
+grep -r "pattern" ./
+```
+
+### 正規表示式
+
+```{bash}
+#| eval: false
+# 使用延伸正規表示式
+grep -E "pattern1|pattern2" file.txt
+
+# 只匹配完整單詞
+grep -w "word" file.txt
+
+# 顯示前後文
+grep -C 2 "pattern" file.txt  # 前後各 2 行
+grep -A 2 "pattern" file.txt  # 後 2 行
+grep -B 2 "pattern" file.txt  # 前 2 行
+```
+
+## sed：串流編輯器
+
+### 取代文字
+
+```{bash}
+#| eval: false
+# 取代第一個匹配
+sed 's/old/new/' file.txt
+
+# 取代所有匹配
+sed 's/old/new/g' file.txt
+
+# 直接修改檔案
+sed -i '' 's/old/new/g' file.txt  # macOS
+sed -i 's/old/new/g' file.txt     # Linux
+```
+
+### 刪除行
+
+```{bash}
+#| eval: false
+# 刪除第 3 行
+sed '3d' file.txt
+
+# 刪除空白行
+sed '/^$/d' file.txt
+
+# 刪除包含 pattern 的行
+sed '/pattern/d' file.txt
+```
+
+### 插入和追加
+
+```{bash}
+#| eval: false
+# 在第 2 行後插入
+sed '2a\新的一行' file.txt
+
+# 在第 2 行前插入
+sed '2i\新的一行' file.txt
+```
+
+## awk：資料處理
+
+### 基本結構
+
+```{bash}
+#| eval: false
+awk 'pattern { action }' file.txt
+```
+
+### 欄位處理
+
+```{bash}
+#| eval: false
+# 印出第一欄
+awk '{print $1}' file.txt
+
+# 印出第一和第三欄
+awk '{print $1, $3}' file.txt
+
+# 使用自訂分隔符
+awk -F: '{print $1}' /etc/passwd
+```
+
+### 計算
+
+```{bash}
+#| eval: false
+# 計算總和
+awk '{sum += $1} END {print sum}' file.txt
+
+# 計算平均
+awk '{sum += $1; count++} END {print sum/count}' file.txt
+```
+
+### 條件過濾
+
+```{bash}
+#| eval: false
+# 第二欄大於 100 的行
+awk '$2 > 100 {print}' file.txt
+
+# 使用正規表示式
+awk '/pattern/ {print $1}' file.txt
+```
+
+## 實際範例
+
+### 分析 log 檔
+
+```{bash}
+#| eval: false
+# 統計 HTTP 狀態碼
+cat access.log | awk '{print $9}' | sort | uniq -c | sort -rn
+
+# 找出最多請求的 IP
+cat access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head -10
+```
+
+### 處理 CSV
+
+```{bash}
+#| eval: false
+# 取得 CSV 第二欄
+awk -F, '{print $2}' data.csv
+
+# 計算某欄總和
+awk -F, '{sum += $3} END {print sum}' data.csv
+```
+
+### 歷史命令分析
+
+```{bash}
+#| eval: false
+# 最常用的 10 個命令
+history | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
+```
+
+## 現代替代品
+
+在日常使用中，可以考慮：
+
+| 傳統工具 | 現代替代 |
+|----------|----------|
+| `grep` | `ripgrep` |
+| `sed` | `sd` |
+| `awk` | `miller` (mlr) |
+
+但理解傳統工具仍然重要，因為它們在任何 Unix 系統上都可用。
+
+## 實作練習
+
+1. 用 grep 搜尋你的設定檔中所有 export 行
+2. 用 sed 批次取代檔案中的字串
+3. 用 awk 分析你的 shell 歷史記錄
+
+::: {.callout-note}
+## 建議
+日常使用 ripgrep，但保持對 grep/sed/awk 的基本理解，在沒有現代工具的伺服器上會很有用。
+:::

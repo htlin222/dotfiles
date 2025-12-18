@@ -1,0 +1,167 @@
+---
+title: "遠端開發"
+---
+
+# 遠端開發
+
+透過 SSH 和 tmux，你可以在任何地方工作，而且工作環境完全一致。
+
+## SSH 基礎
+
+### 設定 SSH config
+
+```{bash}
+#| eval: false
+# ~/.ssh/config
+Host myserver
+    HostName 192.168.1.100
+    User htlin
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+
+Host work
+    HostName work.example.com
+    User developer
+    ForwardAgent yes
+```
+
+使用方式：
+
+```{bash}
+#| eval: false
+ssh myserver  # 等同於 ssh htlin@192.168.1.100
+```
+
+### 金鑰認證
+
+```{bash}
+#| eval: false
+# 產生金鑰
+ssh-keygen -t ed25519 -C "your@email.com"
+
+# 複製公鑰到伺服器
+ssh-copy-id myserver
+```
+
+### SSH Agent
+
+```{bash}
+#| eval: false
+# 啟動 agent
+eval "$(ssh-agent -s)"
+
+# 加入金鑰
+ssh-add ~/.ssh/id_ed25519
+
+# 轉發 agent（讓遠端可以用本機金鑰）
+ssh -A myserver
+```
+
+## Mosh：更好的 SSH
+
+Mosh 能處理不穩定的網路連線：
+
+```{bash}
+#| eval: false
+# 安裝
+brew install mosh
+
+# 使用（伺服器也需要安裝 mosh）
+mosh myserver
+```
+
+優點：
+
+- 斷線後自動重連
+- 本地回顯，即使延遲也順暢
+- 支援漫遊（IP 變化）
+
+## tmux 持久化
+
+tmux 是遠端工作的關鍵：
+
+```{bash}
+#| eval: false
+# 在遠端建立 session
+ssh myserver
+tmux new -s work
+
+# 離開但保持 session
+# 按 Ctrl+A d（或直接斷線）
+
+# 之後重新連接
+ssh myserver
+tmux attach -t work
+```
+
+## 遠端 Neovim
+
+### 方法一：直接在遠端編輯
+
+```{bash}
+#| eval: false
+ssh myserver
+nvim /path/to/file
+```
+
+### 方法二：從本機編輯遠端檔案
+
+```{bash}
+#| eval: false
+nvim scp://myserver//path/to/file
+```
+
+### 方法三：rsync 同步
+
+```{bash}
+#| eval: false
+# 同步到遠端
+rsync -avz --progress ./project/ myserver:~/project/
+
+# 從遠端同步回來
+rsync -avz --progress myserver:~/project/ ./project/
+```
+
+## 實用函數
+
+### 快速同步
+
+```{bash}
+#| eval: false
+alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
+```
+
+### 遠端 port forwarding
+
+```{bash}
+#| eval: false
+# 將遠端 8000 port 轉發到本機
+ssh -L 8000:localhost:8000 myserver
+
+# 將本機 3000 port 轉發到遠端
+ssh -R 3000:localhost:3000 myserver
+```
+
+## dotfiles 同步
+
+在新伺服器上快速設定環境：
+
+```{bash}
+#| eval: false
+# 在遠端
+git clone https://github.com/username/dotfiles ~/.dotfiles
+cd ~/.dotfiles
+./install.sh
+```
+
+## 實作練習
+
+1. 設定 `~/.ssh/config`
+2. 設定金鑰認證
+3. 安裝 mosh
+4. 在遠端建立持久化 tmux session
+
+::: {.callout-tip}
+## 效率提示
+結合 tmux-resurrect 插件，即使伺服器重啟，你的工作環境也可以恢復。
+:::

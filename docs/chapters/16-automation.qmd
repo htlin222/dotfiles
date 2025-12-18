@@ -1,0 +1,215 @@
+---
+title: "自動化與腳本"
+---
+
+# 自動化與腳本
+
+讓重複的事消失。任何做過兩次以上的事，都值得自動化。
+
+## 自動化思維
+
+問自己：
+
+1. 這件事我會再做嗎？
+2. 做這件事需要多少步驟？
+3. 自動化需要花多少時間？
+
+如果 `重複次數 × 每次時間 > 自動化時間`，就自動化它。
+
+## 常見自動化場景
+
+### Git 工作流
+
+```{bash}
+#| eval: false
+# 一鍵提交 dotfiles
+function dp() {
+    cd $DOTFILES
+    git add .
+    aicommits  # AI 生成 commit message
+    git push
+    cd -
+}
+
+# 一鍵提交當前專案
+function zgit() {
+    git add -A
+    aicommits --type conventional
+    git push
+}
+```
+
+### 專案初始化
+
+```{bash}
+#| eval: false
+function cloneclaude() {
+    cd $HOME
+
+    # Clone 模板專案
+    gh repo clone htlin222/claude-artifact-runner
+
+    # 詢問新名稱
+    echo -n "Enter new folder name: "
+    read -r new_folder_name
+
+    mv claude-artifact-runner "$new_folder_name"
+    cd "$new_folder_name"
+
+    # 安裝依賴
+    npm install
+
+    # 重新初始化 Git
+    rm -rf .git
+    git init
+    git add .
+    git commit -m 'init'
+
+    echo "Project setup complete!"
+}
+```
+
+### 檔案整理
+
+```{bash}
+#| eval: false
+# 按日期整理檔案
+function chore() {
+    for file in *; do
+        if [[ -f "$file" && ! -L "$file" ]]; then
+            mod_date=$(date -r "$file" +"%Y-%m-%d")
+
+            if [[ ! "$file" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}_ ]]; then
+                filename_no_ext="${file%.*}"
+                new_folder="${mod_date}_${filename_no_ext}"
+
+                mkdir -p "$new_folder"
+                mv "$file" "$new_folder/"
+
+                echo "Moved $file to $new_folder/"
+            fi
+        fi
+    done
+}
+```
+
+### 媒體處理
+
+```{bash}
+#| eval: false
+# 下載 YouTube 音樂
+function yt-mp3() {
+    yt-dlp --extract-audio --audio-format mp3 \
+        -o "%(title)s.%(ext)s" "$1"
+}
+
+# 合併 MP4 檔案
+function joinmp4() {
+    for file in *.mp4; do
+        echo "file '$file'" >> filelist.txt
+    done
+    ffmpeg -f concat -safe 0 -i filelist.txt -c copy combined.mp4
+    rm filelist.txt
+}
+```
+
+## 定時任務
+
+### macOS launchd
+
+建立 `~/Library/LaunchAgents/com.user.backup.plist`：
+
+```{xml}
+#| eval: false
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.backup</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/path/to/backup.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>2</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+</dict>
+</plist>
+```
+
+載入：
+
+```{bash}
+#| eval: false
+launchctl load ~/Library/LaunchAgents/com.user.backup.plist
+```
+
+### Linux cron
+
+```{bash}
+#| eval: false
+# 編輯 crontab
+crontab -e
+
+# 每天凌晨 2 點執行備份
+0 2 * * * /path/to/backup.sh
+```
+
+## 通知整合
+
+```{bash}
+#| eval: false
+function notify() {
+    local title="$1"
+    local message="$2"
+    osascript -e "display notification \"$message\" with title \"$title\""
+}
+
+# 長時間任務完成後通知
+npm run build && notify "Build" "Complete!"
+```
+
+## Makefile 自動化
+
+```{makefile}
+#| eval: false
+.PHONY: dev build test deploy
+
+dev:
+	npm run dev
+
+build:
+	npm run build
+
+test:
+	npm run test
+
+deploy: build
+	netlify deploy --prod --dir=dist
+```
+
+使用：
+
+```{bash}
+#| eval: false
+make dev
+make deploy
+```
+
+## 實作練習
+
+1. 為你最常做的工作建立自動化函數
+2. 設定定時備份腳本
+3. 建立專案的 Makefile
+
+::: {.callout-note}
+## 原則
+自動化不是一次性的事。持續觀察你的工作流，找出可以自動化的機會。
+:::

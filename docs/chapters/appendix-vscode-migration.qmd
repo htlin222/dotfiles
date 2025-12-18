@@ -1,0 +1,128 @@
+---
+title: "從 VS Code 遷移指南"
+---
+
+# 從 VS Code 遷移指南 {.unnumbered}
+
+如果你習慣 VS Code，這份指南幫助你逐步遷移到終端工作流。
+
+## 為什麼遷移？
+
+| VS Code | 終端工作流 |
+|---------|------------|
+| 啟動較慢 | 瞬間啟動 |
+| 消耗資源多 | 輕量 |
+| 依賴滑鼠 | 純鍵盤操作 |
+| 本地限定 | 遠端友善 |
+
+## 功能對照
+
+### 檔案操作
+
+| VS Code | Neovim |
+|---------|--------|
+| `Cmd+P` 開檔案 | `<leader>ff` (Telescope) |
+| `Cmd+Shift+F` 全域搜尋 | `<leader>fg` 或 `rg` |
+| 側邊欄檔案樹 | `<leader>e` (nvim-tree) 或 yazi |
+| 多個 tab | `:bnext`, `:bprev` 或 Telescope |
+
+### 編輯
+
+| VS Code | Neovim |
+|---------|--------|
+| `Cmd+D` 選取下一個相同 | `*` 搜尋 + `cgn` |
+| `Cmd+/` 註解 | `gc` (Comment.nvim) |
+| `Cmd+Shift+K` 刪除行 | `dd` |
+| `Alt+Up/Down` 移動行 | `ddp` / `ddkP` |
+| 多游標 | 使用巨集或 visual block |
+
+### 導航
+
+| VS Code | Neovim |
+|---------|--------|
+| `F12` 跳到定義 | `gd` |
+| `Shift+F12` 查看參考 | `gr` |
+| `Ctrl+G` 跳到行號 | `:123` 或 `123G` |
+| 麵包屑導航 | barbecue.nvim |
+
+### Git
+
+| VS Code | 終端 |
+|---------|------|
+| Source Control 面板 | `lazygit` 或 `:Neogit` |
+| Git blame | `gitsigns.nvim` |
+| 差異檢視 | `:Gitsigns diffthis` 或 `lazygit` |
+
+## 遷移步驟
+
+### 第一週：熟悉 Vim 基礎
+
+1. 完成 `vimtutor`（在終端輸入 `vimtutor`）
+2. 每天用 Neovim 編輯一個小檔案
+3. 只學基本移動和編輯
+
+### 第二週：建立工作流
+
+1. 設定 Telescope 搜尋
+2. 學習使用 buffer 和 window
+3. 安裝並使用 nvim-tree
+
+### 第三週：加入 tmux
+
+1. 學習基本 tmux 操作
+2. 設定 vim-tmux-navigator
+3. 練習在 pane 間切換
+
+### 第四週：完善工具鏈
+
+1. 設定 LSP
+2. 安裝 lazygit
+3. 自訂快捷鍵
+
+## VS Code 延伸功能對應
+
+| VS Code 延伸功能 | Neovim 替代 |
+|------------------|-------------|
+| Prettier | conform.nvim |
+| ESLint | nvim-lint |
+| GitLens | gitsigns.nvim |
+| Copilot | copilot.vim 或 codeium.nvim |
+| Live Server | 終端執行 server |
+| Markdown Preview | markdown-preview.nvim |
+
+## 保持 VS Code 作為備用
+
+不需要完全放棄 VS Code。可以：
+
+- 大型重構時使用 VS Code
+- 需要特定延伸功能時使用
+- 團隊協作需要時使用
+
+## 常見問題
+
+### Q: 沒有滑鼠很不習慣
+
+A: 給自己一週時間。強制自己不用滑鼠，很快就會習慣。
+
+### Q: 學習曲線太陡峭
+
+A: 不要一次學全部。先掌握基本操作，其他慢慢加。
+
+### Q: 設定太複雜
+
+A: 使用預設框架如 NvChad 或 LazyVim，不要從零開始。
+
+### Q: 某些功能找不到
+
+A: 幾乎任何功能都有 Neovim 插件。搜尋 "neovim alternative to X"。
+
+## 實用資源
+
+- [Vim Adventures](https://vim-adventures.com/) - 遊戲化學習
+- [Practical Vim](https://pragprog.com/titles/dnvim2/) - 經典書籍
+- [ThePrimeagen](https://www.youtube.com/@ThePrimeagen) - YouTube 教學
+
+::: {.callout-tip}
+## 心態建議
+遷移是一個過程，不是一個事件。給自己時間，享受學習的過程。
+:::

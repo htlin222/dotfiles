@@ -1,0 +1,173 @@
+---
+title: "版本控制的日常"
+---
+
+# 版本控制的日常
+
+Git 是開發者的必備工具。掌握 CLI 操作比 GUI 更高效、更精確。
+
+## 基本設定
+
+```{bash}
+#| eval: false
+# ~/.gitconfig
+[user]
+    name = Your Name
+    email = your@email.com
+
+[core]
+    editor = nvim
+    autocrlf = input
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --graph --all
+```
+
+## 日常工作流
+
+### 基本操作
+
+```{bash}
+#| eval: false
+# 查看狀態
+git status
+
+# 加入暫存區
+git add .
+git add -p  # 互動式選擇
+
+# 提交
+git commit -m "feat: add new feature"
+
+# 推送
+git push
+```
+
+### 分支管理
+
+```{bash}
+#| eval: false
+# 建立並切換分支
+git checkout -b feature/new-feature
+
+# 合併分支
+git checkout main
+git merge feature/new-feature
+
+# 刪除分支
+git branch -d feature/new-feature
+```
+
+## AI 輔助提交訊息
+
+使用 aicommits 自動生成符合規範的提交訊息：
+
+```{bash}
+#| eval: false
+# 安裝
+npm install -g aicommits
+
+# 使用
+git add .
+aicommits
+```
+
+一鍵提交函數：
+
+```{bash}
+#| eval: false
+function zgit() {
+  git add -A
+  aicommits --type conventional
+  git push
+}
+```
+
+## lazygit：TUI Git 客戶端
+
+lazygit 是功能完整的終端 Git 介面：
+
+```{bash}
+#| eval: false
+brew install lazygit
+```
+
+優點：
+
+- 視覺化分支圖
+- 互動式 rebase
+- 快速解決衝突
+- 支援滑鼠操作
+
+## forgit：fzf 整合
+
+forgit 用 fzf 增強 Git 命令：
+
+```{bash}
+#| eval: false
+# 互動式 git add
+ga
+
+# 互動式 git log
+glo
+
+# 互動式 git diff
+gd
+```
+
+## GitHub CLI
+
+```{bash}
+#| eval: false
+# 安裝
+brew install gh
+
+# 登入
+gh auth login
+
+# 建立 PR
+gh pr create
+
+# 查看 PR
+gh pr list
+gh pr view 123
+
+# 查看失敗的 CI
+gh run view --log-failed
+```
+
+## 實用別名
+
+```{bash}
+#| eval: false
+# 查看最近失敗的 run
+alias gha-last-fail='gh run view --log-failed'
+
+# 追蹤執行狀況
+alias gha-watch='gh run watch --compact --exit-status'
+
+# 查看失敗列表
+alias gha-failed-list='gh run list --status failure'
+```
+
+## 實作練習
+
+1. 設定你的 `.gitconfig`
+2. 安裝並試用 lazygit
+3. 設定 aicommits
+4. 練習用 `gh` 建立 PR
+
+::: {.callout-warning}
+## 注意
+永遠不要在主分支上 force push。使用 `--force-with-lease` 代替 `--force`。
+:::

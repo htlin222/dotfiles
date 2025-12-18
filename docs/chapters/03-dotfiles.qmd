@@ -1,0 +1,141 @@
+---
+title: "打造你的 dotfiles"
+---
+
+# 打造你的 dotfiles
+
+Dotfiles 是以點 (`.`) 開頭的配置檔案。管理好它們，你就能：
+
+- 版本控制你的環境
+- 跨機器同步設定
+- 快速在新電腦上恢復工作環境
+
+## 什麼是 dotfiles？
+
+常見的 dotfiles 包括：
+
+| 檔案 | 用途 |
+|------|------|
+| `.zshrc` | Zsh 設定 |
+| `.tmux.conf` | tmux 設定 |
+| `.gitconfig` | Git 設定 |
+| `.config/nvim/` | Neovim 設定 |
+
+## Symlink 策略
+
+最常見的管理方式是使用 symlink（符號連結）：
+
+```{bash}
+#| eval: false
+# 建立結構
+~/.dotfiles/
+├── zsh/
+│   └── zshrc.symlink
+├── tmux/
+│   └── tmux.conf.symlink
+├── git/
+│   └── gitconfig.symlink
+└── install.sh
+```
+
+安裝腳本會建立連結：
+
+```{bash}
+#| eval: false
+# install.sh
+ln -sf ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
+ln -sf ~/.dotfiles/tmux/tmux.conf.symlink ~/.tmux.conf
+ln -sf ~/.dotfiles/git/gitconfig.symlink ~/.gitconfig
+```
+
+## 環境變數設定
+
+在 `zprofile` 中設定環境變數：
+
+```{bash}
+#| eval: false
+# ~/.dotfiles/zsh/zprofile.symlink
+export DOTFILES=$HOME/.dotfiles
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# 自訂 PATH
+export PATH="$HOME/bin:$PATH"
+export PATH="$DOTFILES/shellscripts:$PATH"
+```
+
+## 模組化設計
+
+將設定分成多個模組：
+
+```{bash}
+#| eval: false
+# zshrc.symlink
+source "$DOTFILES/zsh/modules/alias.zsh"
+source "$DOTFILES/zsh/modules/functions.zsh"
+source "$DOTFILES/zsh/modules/fzf.zsh"
+```
+
+這樣做的好處：
+
+1. 容易維護
+2. 可以選擇性載入
+3. 問題容易定位
+
+## Git 管理
+
+```{bash}
+#| eval: false
+cd ~/.dotfiles
+git init
+git add .
+git commit -m "Initial dotfiles setup"
+git remote add origin git@github.com:username/dotfiles.git
+git push -u origin main
+```
+
+## 快速同步函數
+
+```{bash}
+#| eval: false
+# 一鍵提交 dotfiles
+function dp() {
+  cd $DOTFILES
+  git add .
+  aicommits  # 使用 AI 生成 commit message
+  git push
+  cd -
+}
+```
+
+## 實作練習
+
+1. 建立你的 dotfiles 目錄：
+
+```{bash}
+#| eval: false
+mkdir -p ~/.dotfiles
+cd ~/.dotfiles
+git init
+```
+
+2. 移動你的第一個設定檔：
+
+```{bash}
+#| eval: false
+mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
+ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
+```
+
+3. 提交你的第一個 commit：
+
+```{bash}
+#| eval: false
+git add .
+git commit -m "Add zsh configuration"
+```
+
+::: {.callout-warning}
+## 注意
+不要把包含密碼或 API key 的檔案加入版本控制！使用 `.gitignore` 排除敏感資料。
+:::

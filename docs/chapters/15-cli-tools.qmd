@@ -1,0 +1,199 @@
+---
+title: "打造個人 CLI 工具"
+---
+
+# 打造個人 CLI 工具
+
+當沒有現成工具滿足你的需求時，自己寫一個。
+
+## Shell Script 基礎
+
+### 基本結構
+
+```{bash}
+#| eval: false
+#!/bin/bash
+# 這是註解
+
+# 變數
+name="World"
+echo "Hello, $name!"
+
+# 命令替換
+today=$(date +%Y-%m-%d)
+echo "Today is $today"
+```
+
+### 條件判斷
+
+```{bash}
+#| eval: false
+if [ -f "$file" ]; then
+    echo "File exists"
+elif [ -d "$file" ]; then
+    echo "It's a directory"
+else
+    echo "Not found"
+fi
+```
+
+### 迴圈
+
+```{bash}
+#| eval: false
+# for 迴圈
+for file in *.md; do
+    echo "Processing $file"
+done
+
+# while 迴圈
+while read -r line; do
+    echo "$line"
+done < input.txt
+```
+
+### 函數
+
+```{bash}
+#| eval: false
+function greet() {
+    local name="$1"
+    echo "Hello, $name!"
+}
+
+greet "World"
+```
+
+## 實用工具範例
+
+### 建立並進入目錄
+
+```{bash}
+#| eval: false
+function mkcd() {
+    mkdir -p "$@" && cd "$_"
+}
+```
+
+### 建立日期目錄
+
+```{bash}
+#| eval: false
+function mkymd() {
+    local d="$(date +%F)"
+    mkdir -p "./$d"
+    cd "./$d"
+}
+```
+
+### 快速建立新專案
+
+```{bash}
+#| eval: false
+function newpj() {
+    echo -n "Enter project name: "
+    read -r project_name
+
+    echo -n "Enter due date (YYYY-MM-DD): "
+    read -r due_date
+
+    local folder_path=~/projects/"$due_date-$project_name"
+    mkdir -p "$folder_path"
+    echo "# $project_name" > "$folder_path/README.md"
+
+    cd "$folder_path"
+    git init
+    nvim README.md
+}
+```
+
+### 轉換影片為 GIF
+
+```{bash}
+#| eval: false
+function mp4_to_gif() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: mp4_to_gif <input.mp4>"
+        return 1
+    fi
+
+    local input="$1"
+    local output="${input%.mp4}.gif"
+
+    ffmpeg -y -i "$input" \
+        -r 15 \
+        -vf "scale=720:-1" \
+        -ss 00:00:00 \
+        -to 00:00:10 \
+        "$output"
+
+    echo "Created: $output"
+}
+```
+
+### 提醒功能
+
+```{bash}
+#| eval: false
+function remind() {
+    local text="$1"
+    local date="$2"
+    local list="${3:-Inbox}"
+
+    reminders add "$list" "$text" --due-date "$date"
+}
+```
+
+## 腳本組織
+
+把常用函數放在模組化檔案中：
+
+```
+~/.dotfiles/
+├── zsh/
+│   └── modules/
+│       ├── functions.zsh   # 通用函數
+│       ├── note_related.zsh # 筆記相關
+│       └── snippets.zsh    # 文字片段
+└── shellscripts/
+    ├── backup.sh
+    └── deploy.sh
+```
+
+在 `.zshrc` 中載入：
+
+```{bash}
+#| eval: false
+source "$DOTFILES/zsh/modules/functions.zsh"
+source "$DOTFILES/zsh/modules/note_related.zsh"
+```
+
+## 進階：Python CLI
+
+對於複雜工具，考慮用 Python：
+
+```{python}
+#| eval: false
+#!/usr/bin/env python3
+import click
+
+@click.command()
+@click.option('--name', default='World', help='Name to greet')
+def hello(name):
+    """Simple program that greets NAME."""
+    click.echo(f'Hello, {name}!')
+
+if __name__ == '__main__':
+    hello()
+```
+
+## 實作練習
+
+1. 寫一個建立日期目錄的函數
+2. 寫一個批次重新命名檔案的腳本
+3. 為常用工作流建立自訂函數
+
+::: {.callout-tip}
+## 建議
+從簡單的 shell function 開始，當複雜度增加時再考慮用 Python 重寫。
+:::

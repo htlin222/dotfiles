@@ -1,0 +1,75 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "The Terminal Way"
+  subtitle: "終端人生：純 CLI 開發者的完全指南"
+  author: "林協霆"
+  date: today
+  date-format: "YYYY-MM-DD"
+  repo-url: https://github.com/htlin222/dotfiles
+  repo-actions: [edit, issue]
+  sharing: [twitter, facebook, linkedin]
+  sidebar:
+    style: docked
+    search: true
+  page-navigation: true
+  back-to-top-navigation: true
+
+  chapters:
+    - index.qmd
+    - part: "第一部：哲學與基礎"
+      chapters:
+        - chapters/01-why-terminal.qmd
+        - chapters/02-unix-philosophy.qmd
+        - chapters/03-dotfiles.qmd
+    - part: "第二部：核心工具"
+      chapters:
+        - chapters/04-shell.qmd
+        - chapters/05-terminal-emulator.qmd
+        - chapters/06-tmux.qmd
+        - chapters/07-neovim.qmd
+        - chapters/08-git.qmd
+    - part: "第三部：效率工具鏈"
+      chapters:
+        - chapters/09-modern-cli.qmd
+        - chapters/10-fzf-magic.qmd
+        - chapters/11-text-processing.qmd
+    - part: "第四部：語言與專案"
+      chapters:
+        - chapters/12-version-management.qmd
+        - chapters/13-docker.qmd
+        - chapters/14-remote-dev.qmd
+    - part: "第五部：進階整合"
+      chapters:
+        - chapters/15-cli-tools.qmd
+        - chapters/16-automation.qmd
+        - chapters/17-profiling.qmd
+    - part: "附錄"
+      chapters:
+        - chapters/appendix-dotfiles.qmd
+        - chapters/appendix-shortcuts.qmd
+        - chapters/appendix-vscode-migration.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    code-copy: true
+    code-overflow: wrap
+    code-line-numbers: true
+    highlight-style: github
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    link-external-newwindow: true
+
+execute:
+  freeze: auto
+  echo: true
+  warning: false

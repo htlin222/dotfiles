@@ -1,0 +1,116 @@
+---
+title: "推薦 dotfiles 範例"
+---
+
+# 推薦 dotfiles 範例 {.unnumbered}
+
+## 本書使用的 dotfiles
+
+本書所有範例都來自作者實際使用的 dotfiles：
+
+- **Repository**: [github.com/htlin222/dotfiles](https://github.com/htlin222/dotfiles)
+
+### 結構概覽
+
+```
+~/.dotfiles/
+├── zsh/
+│   ├── zshrc.symlink        # Zsh 主設定
+│   ├── zprofile.symlink     # 環境變數
+│   └── modules/
+│       ├── alias.zsh        # 別名
+│       ├── functions.zsh    # 函數
+│       └── fzf.zsh          # fzf 設定
+├── tmux/
+│   └── tmux.conf.symlink    # tmux 設定
+├── config.symlink/
+│   └── nvim/                # Neovim 設定
+├── git/
+│   ├── gitconfig.symlink    # Git 設定
+│   └── gitignore.symlink    # 全域 gitignore
+└── shellscripts/            # 自訂腳本
+```
+
+## 推薦參考的 dotfiles
+
+### 經典範例
+
+| Repository | 特色 |
+|------------|------|
+| [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles) | macOS 設定大全 |
+| [holman/dotfiles](https://github.com/holman/dotfiles) | 模組化設計先驅 |
+| [thoughtbot/dotfiles](https://github.com/thoughtbot/dotfiles) | 團隊協作設計 |
+
+### Neovim 設定
+
+| Repository | 特色 |
+|------------|------|
+| [NvChad/NvChad](https://github.com/NvChad/NvChad) | 美觀的預設設定 |
+| [LazyVim/LazyVim](https://github.com/LazyVim/LazyVim) | 功能完整的發行版 |
+| [AstroNvim/AstroNvim](https://github.com/AstroNvim/AstroNvim) | 平衡的設定框架 |
+
+### Tmux 設定
+
+| Repository | 特色 |
+|------------|------|
+| [gpakosz/.tmux](https://github.com/gpakosz/.tmux) | 最受歡迎的 tmux 設定 |
+| [tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) | 插件管理器 |
+
+## 開始你自己的 dotfiles
+
+### 第一步：初始化
+
+```{bash}
+#| eval: false
+mkdir -p ~/.dotfiles
+cd ~/.dotfiles
+git init
+```
+
+### 第二步：移動設定檔
+
+```{bash}
+#| eval: false
+# 移動 zshrc
+mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
+ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
+```
+
+### 第三步：建立安裝腳本
+
+```{bash}
+#| eval: false
+# install.sh
+#!/bin/bash
+
+DOTFILES="$HOME/.dotfiles"
+
+# 建立 symlinks
+ln -sf "$DOTFILES/zsh/zshrc.symlink" ~/.zshrc
+ln -sf "$DOTFILES/tmux/tmux.conf.symlink" ~/.tmux.conf
+ln -sf "$DOTFILES/git/gitconfig.symlink" ~/.gitconfig
+
+echo "Dotfiles installed!"
+```
+
+### 第四步：版本控制
+
+```{bash}
+#| eval: false
+git add .
+git commit -m "Initial dotfiles setup"
+git remote add origin git@github.com:username/dotfiles.git
+git push -u origin main
+```
+
+## 維護建議
+
+1. **定期提交**：有改動就提交
+2. **寫好註解**：未來的你會感謝現在的你
+3. **模組化**：方便調整和除錯
+4. **測試**：在新機器上測試安裝腳本
+
+::: {.callout-tip}
+## 建議
+不要一開始就複製別人的整套設定。從基礎開始，逐步加入你真正需要的功能。
+:::

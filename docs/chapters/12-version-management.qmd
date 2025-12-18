@@ -1,0 +1,165 @@
+---
+title: "多語言版本管理"
+---
+
+# 多語言版本管理
+
+不同專案可能需要不同版本的程式語言。版本管理工具讓你在它們之間無縫切換。
+
+## 工具選擇
+
+| 工具 | 特點 |
+|------|------|
+| **asdf** | 通用，支援多語言 |
+| **mise** | asdf 的 Rust 重寫，更快 |
+| **fnm** | 只管理 Node.js，極快 |
+| **pyenv** | 只管理 Python |
+
+## mise：推薦選擇
+
+mise（前身 rtx）是 asdf 的現代替代品：
+
+```{bash}
+#| eval: false
+# 安裝
+brew install mise
+
+# 初始化
+echo 'eval "$(mise activate zsh)"' >> ~/.zshrc
+```
+
+### 基本使用
+
+```{bash}
+#| eval: false
+# 安裝 Node.js
+mise install node@20
+mise use node@20
+
+# 安裝 Python
+mise install python@3.12
+mise use python@3.12
+
+# 查看已安裝版本
+mise list
+```
+
+### 專案設定
+
+在專案目錄建立 `.mise.toml`：
+
+```{toml}
+#| eval: false
+[tools]
+node = "20"
+python = "3.12"
+```
+
+或使用 `.tool-versions`（與 asdf 相容）：
+
+```
+node 20.10.0
+python 3.12.0
+```
+
+## fnm：Node.js 版本管理
+
+如果只需要管理 Node.js，fnm 是最快的選擇：
+
+```{bash}
+#| eval: false
+# 安裝
+brew install fnm
+
+# 初始化
+eval "$(fnm env)"
+
+# 安裝 Node.js
+fnm install 20
+fnm use 20
+fnm default 20
+```
+
+## Python 環境管理
+
+### uv：現代 Python 工具
+
+uv 是 Rust 寫的超快 Python 套件管理器：
+
+```{bash}
+#| eval: false
+# 安裝
+brew install uv
+
+# 建立虛擬環境
+uv venv
+
+# 啟用虛擬環境
+source .venv/bin/activate
+
+# 安裝套件
+uv pip install pandas numpy
+```
+
+### 自動啟用虛擬環境
+
+```{bash}
+#| eval: false
+# 在 .zshrc 中
+if [ -f ".venv/bin/activate" ]; then
+  source .venv/bin/activate
+fi
+```
+
+### pipx：全域工具
+
+用 pipx 安裝全域 Python 工具：
+
+```{bash}
+#| eval: false
+# 使用 uv 作為 pipx 替代
+alias pipx='uv tool'
+
+# 安裝全域工具
+uv tool install ruff
+uv tool install black
+```
+
+## 實用設定
+
+### 自動初始化 Python 專案
+
+```{bash}
+#| eval: false
+alias uvinit="uv venv && source .venv/bin/activate"
+```
+
+### 進入目錄時自動處理
+
+```{bash}
+#| eval: false
+function chpwd() {
+  # 自動啟用 Python 虛擬環境
+  if [ -f ".venv/bin/activate" ]; then
+    source .venv/bin/activate
+  fi
+
+  # 忽略 Dropbox 同步
+  for dir in .venv node_modules; do
+    if [[ -d $dir ]]; then
+      xattr -w 'com.apple.fileprovider.ignore#P' 1 "$dir"
+    fi
+  done
+}
+```
+
+## 實作練習
+
+1. 安裝 mise 並設定不同版本的 Node.js
+2. 用 uv 建立 Python 虛擬環境
+3. 在專案中建立 `.mise.toml`
+
+::: {.callout-tip}
+## 效能提示
+uv 比 pip 快 10 到 100 倍。在大型專案中差異非常明顯。
+:::

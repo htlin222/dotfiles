@@ -1,0 +1,150 @@
+---
+title: "編輯器之道：Neovim"
+---
+
+# 編輯器之道：Neovim
+
+Neovim 是 Vim 的現代化分支，提供更好的擴展性和更活躍的開發社群。
+
+## 為什麼選擇 Neovim？
+
+- **Lua 設定**：比 VimL 更直覺
+- **內建 LSP**：原生語言伺服器支援
+- **非同步插件**：不會卡住編輯器
+- **活躍社群**：豐富的現代插件
+
+## 安裝
+
+```{bash}
+#| eval: false
+brew install neovim
+```
+
+## 基礎框架：NvChad
+
+NvChad 提供了漂亮的預設設定和合理的結構：
+
+```{bash}
+#| eval: false
+git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+nvim
+```
+
+## 目錄結構
+
+```
+~/.config/nvim/
+├── init.lua           # 入口點
+├── lua/
+│   ├── options.lua    # 編輯器選項
+│   ├── mappings.lua   # 快捷鍵設定
+│   ├── plugins/       # 插件設定
+│   └── configs/       # 插件配置
+└── lazy-lock.json     # 插件版本鎖定
+```
+
+## 基本選項
+
+```{lua}
+#| eval: false
+-- lua/options.lua
+local opt = vim.opt
+
+opt.relativenumber = true  -- 相對行號
+opt.wrap = true            -- 自動換行
+opt.linebreak = true       -- 在單詞邊界換行
+opt.expandtab = true       -- Tab 轉空格
+opt.shiftwidth = 2         -- 縮排寬度
+opt.tabstop = 2            -- Tab 寬度
+opt.scrolloff = 10         -- 保持游標上下可見行數
+opt.spell = true           -- 拼寫檢查
+opt.spelllang = { "en_us" }
+```
+
+## 插件管理：lazy.nvim
+
+lazy.nvim 是現代的插件管理器，支援延遲載入：
+
+```{lua}
+#| eval: false
+-- lua/plugins/example.lua
+return {
+  "username/plugin-name",
+  event = "BufReadPost",  -- 延遲載入
+  config = function()
+    require("plugin-name").setup({})
+  end,
+}
+```
+
+## 必備插件
+
+| 插件 | 功能 |
+|------|------|
+| `telescope.nvim` | 模糊搜尋 |
+| `nvim-treesitter` | 語法高亮 |
+| `nvim-lspconfig` | LSP 設定 |
+| `nvim-cmp` | 自動補全 |
+| `gitsigns.nvim` | Git 整合 |
+
+## LSP 設定
+
+```{lua}
+#| eval: false
+-- lua/configs/lspconfig.lua
+local lspconfig = require "lspconfig"
+
+-- Python
+lspconfig.pyright.setup {}
+
+-- TypeScript
+lspconfig.ts_ls.setup {}
+
+-- Lua
+lspconfig.lua_ls.setup {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" },
+      },
+    },
+  },
+}
+```
+
+## 常用快捷鍵
+
+| 快捷鍵 | 功能 |
+|--------|------|
+| `<Space>ff` | 搜尋檔案 |
+| `<Space>fg` | 搜尋文字 |
+| `gd` | 跳到定義 |
+| `K` | 顯示文件 |
+| `<Space>ca` | Code action |
+| `<Space>rn` | 重新命名 |
+
+## 與 tmux 整合
+
+使用 vim-tmux-navigator：
+
+```{lua}
+#| eval: false
+return {
+  "christoomey/vim-tmux-navigator",
+  lazy = false,
+}
+```
+
+這讓 `Ctrl+h/j/k/l` 可以在 vim split 和 tmux pane 間無縫切換。
+
+## 實作練習
+
+1. 安裝 Neovim 和 NvChad
+2. 用 `:Lazy` 查看插件狀態
+3. 用 `<Space>ff` 搜尋檔案
+4. 嘗試在 tmux pane 間切換
+
+::: {.callout-tip}
+## 學習曲線
+Vim 的學習曲線陡峭，但值得投資。建議從 `vimtutor` 開始，每天練習 15 分鐘。
+:::

@@ -1,0 +1,157 @@
+---
+title: "多工管理：tmux 深入指南"
+---
+
+# 多工管理：tmux 深入指南
+
+tmux 是終端多工器，讓你在單一終端視窗中管理多個 session、window 和 pane。
+
+## 為什麼需要 tmux？
+
+- **持久化 session**：SSH 斷線後 session 還在
+- **多視窗管理**：一個終端開多個工作區
+- **分割畫面**：同時看程式碼和執行結果
+- **腳本化**：工作環境可以腳本化
+
+## 核心概念
+
+```
+tmux
+├── Session 1 (project-a)
+│   ├── Window 1 (editor)
+│   │   ├── Pane 1 (nvim)
+│   │   └── Pane 2 (terminal)
+│   └── Window 2 (server)
+└── Session 2 (project-b)
+```
+
+## 基本設定
+
+```{bash}
+#| eval: false
+# ~/.tmux.conf
+
+# 改用 Ctrl+A 作為 prefix
+unbind C-b
+set-option -g prefix C-a
+bind C-a send-prefix
+
+# 使用 vi 模式
+setw -g mode-keys vi
+
+# 啟用滑鼠
+set -g mouse on
+
+# 256 色支援
+set -g default-terminal "screen-256color"
+
+# 減少 escape 延遲
+set -sg escape-time 0
+
+# 視窗和 pane 從 1 開始編號
+set -g base-index 1
+set -g pane-base-index 1
+```
+
+## 常用快捷鍵
+
+### Session 管理
+
+| 快捷鍵 | 功能 |
+|--------|------|
+| `prefix d` | 離開 session（detach） |
+| `prefix s` | 列出 sessions |
+| `prefix $` | 重新命名 session |
+
+### Window 管理
+
+| 快捷鍵 | 功能 |
+|--------|------|
+| `prefix c` | 新增 window |
+| `prefix ,` | 重新命名 window |
+| `prefix n/p` | 下/上一個 window |
+| `prefix [0-9]` | 切換到指定 window |
+
+### Pane 管理
+
+| 快捷鍵 | 功能 |
+|--------|------|
+| `prefix b` | 水平分割 |
+| `prefix v` | 垂直分割 |
+| `prefix h/j/k/l` | 切換 pane（vim 風格） |
+| `prefix H/J/K/L` | 調整 pane 大小 |
+
+## 自訂快捷鍵
+
+```{bash}
+#| eval: false
+# 分割視窗時保持當前目錄
+bind b split-window -h -c "#{pane_current_path}"
+bind v split-window -v -c "#{pane_current_path}"
+bind c new-window -c "#{pane_current_path}"
+
+# Vim 風格切換 pane
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# 調整 pane 大小
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+```
+
+## 與 Neovim 整合
+
+使用 vim-tmux-navigator 在 tmux pane 和 vim split 間無縫切換：
+
+```{bash}
+#| eval: false
+# 在 tmux.conf 中
+set -g @plugin 'christoomey/vim-tmux-navigator'
+```
+
+## 插件管理
+
+使用 TPM（Tmux Plugin Manager）：
+
+```{bash}
+#| eval: false
+# 安裝 TPM
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# 在 tmux.conf 中
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'catppuccin/tmux'
+
+# 初始化 TPM（放在 tmux.conf 最後）
+run '~/.tmux/plugins/tpm/tpm'
+```
+
+## 實用插件推薦
+
+| 插件 | 功能 |
+|------|------|
+| `tmux-resurrect` | 保存/恢復 session |
+| `tmux-fzf` | fzf 整合 |
+| `catppuccin/tmux` | 美觀的主題 |
+| `tmux-yank` | 系統剪貼簿整合 |
+
+## 實作練習
+
+1. 建立一個新 session：`tmux new -s myproject`
+2. 分割成三個 pane：編輯器、終端、log
+3. 練習用快捷鍵切換 pane
+4. 嘗試 detach 再 attach
+
+::: {.callout-tip}
+## 效率提示
+使用 `prefix r` 重新載入設定檔：
+```bash
+bind r source-file ~/.tmux.conf \; display 'Reloaded!'
+```
+:::
