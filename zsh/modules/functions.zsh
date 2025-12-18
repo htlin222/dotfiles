@@ -1059,3 +1059,19 @@ mkymd() {
   # If you want it to auto-cd, keep this; otherwise delete the next line.
   cd -- "$dir"
 }
+
+# Release dotfiles with book link
+dotrelease() {
+  local version="$1"
+  if [[ -z "$version" ]]; then
+    echo "Usage: dotrelease <version> (e.g., dotrelease v1.0.3)"
+    return 1
+  fi
+  cd "$DOTFILES" || return 1
+  git tag -a "$version" -m "$version"
+  git push origin "$version"
+  gh release create "$version" \
+    --title "$version" \
+    --notes $'[終端人生：純 CLI 開發者的完全指南](https://htlin222.github.io/dotfiles/)\n\n---\n\n'"$(git log --oneline -5 | sed 's/^/- /')"
+  cd -
+}
