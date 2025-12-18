@@ -70,6 +70,4 @@ format:
     link-external-newwindow: true
 
 execute:
-  freeze: auto
-  echo: true
-  warning: false
+  enabled: false
