@@ -78,7 +78,7 @@ ZSH_DEBUGRC=1 zsh -i -c exit
 
 #### 測量方法
 
-使用系統的 `time` 命令測量 shell 完整啟動到退出的時間。多次測量可以得到更準確的平均值，避免單次測量的偶然誤差。
+使用系統的 [`time`](https://man7.org/linux/man-pages/man1/time.1.html) 命令測量 shell 完整啟動到退出的時間。多次測量可以得到更準確的平均值，避免單次測量的偶然誤差。
 
 **核心概念：**
 
@@ -231,7 +231,7 @@ alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
 
 Python 提供兩個主要的效能分析工具：
 
-##### 1. cProfile：函數層級分析
+##### 1. [cProfile](https://docs.python.org/3/library/profile.html)：函數層級分析
 
 **核心概念：**
 
@@ -258,7 +258,7 @@ python -m cProfile -s cumtime script.py
 - `cumtime`：累積時間（含子函數）
 - `percall`：平均每次呼叫時間
 
-##### 2. line_profiler：程式碼行層級分析
+##### 2. [line_profiler](https://github.com/pyutils/line_profiler)：程式碼行層級分析
 
 **核心概念：**
 
@@ -292,9 +292,9 @@ def slow_function():
 
 **延伸工具：**
 
-- `memory_profiler`：記憶體使用分析
-- `py-spy`：不需修改程式碼的取樣分析器
-- `scalene`：CPU + 記憶體 + GPU 分析
+- [`memory_profiler`](https://github.com/pythonprofilers/memory_profiler)：記憶體使用分析
+- [`py-spy`](https://github.com/benfred/py-spy)：不需修改程式碼的取樣分析器
+- [`scalene`](https://github.com/plasma-umass/scalene)：CPU + 記憶體 + GPU 分析
 
 ### Node.js 效能分析
 
@@ -345,9 +345,9 @@ node --prof-process isolate-*.log > processed.txt
 
 **延伸工具：**
 
-- `clinic.js`：全面的 Node.js 診斷工具
-- `0x`：火焰圖視覺化工具
-- Chrome DevTools：用於瀏覽器和 Node.js 除錯
+- [`clinic.js`](https://github.com/clinicjs/node-clinic)：全面的 Node.js 診斷工具
+- [`0x`](https://github.com/davidmarkclements/0x)：火焰圖視覺化工具
+- [Chrome DevTools](https://developer.chrome.com/docs/devtools/)：用於瀏覽器和 Node.js 除錯
 
 **最佳實務：**
 
@@ -384,12 +384,12 @@ top
 htop
 ```
 
-- `top`：系統內建，但介面較陽春
-- `htop`：改良版，支援滑鼠操作、彩色顯示
+- [`top`](https://en.wikipedia.org/wiki/Top_(software))：系統內建，但介面較陽春
+- [`htop`](https://htop.dev/)：改良版，支援滑鼠操作、彩色顯示
 
 ##### 現代替代工具
 
-**推薦使用 zenith（Rust 開發）：**
+**推薦使用 [zenith](https://github.com/bvaisvil/zenith)（Rust 開發）：**
 
 ```{bash}
 #| eval: false
@@ -413,9 +413,9 @@ alias ztop='zenith'
 
 **其他選項：**
 
-- `btop`：功能豐富，高度可自訂
-- `bottom`：簡潔高效，類似 htop
-- `glances`：跨平台，支援 Web 介面
+- [`btop`](https://github.com/aristocratos/btop)：功能豐富，高度可自訂
+- [`bottom`](https://github.com/ClementtsaC/bottom)：簡潔高效，類似 htop
+- [`glances`](https://github.com/nicolargo/glances)：跨平台，支援 Web 介面
 
 ### 磁碟空間分析
 
@@ -453,7 +453,7 @@ du -sh * # 查看當前目錄下各項目大小
 
 ##### 互動式視覺化工具
 
-**推薦使用 diskonaut：**
+**推薦使用 [diskonaut](https://github.com/imsnif/diskonaut)：**
 
 ```{bash}
 #| eval: false
@@ -477,9 +477,9 @@ diskonaut
 
 **其他選項：**
 
-- `ncdu`：傳統的互動式磁碟分析工具
-- `dust`：Rust 開發，快速的 du 替代品
-- `duf`：現代化的 df 替代品
+- [`ncdu`](https://dev.yorhel.nl/ncdu)：傳統的互動式磁碟分析工具
+- [`dust`](https://github.com/bootandy/dust)：Rust 開發，快速的 du 替代品
+- [`duf`](https://github.com/muesli/duf)：現代化的 df 替代品
 
 ### 網路連線監控
 
@@ -514,12 +514,12 @@ netstat -an | grep LISTEN
 
 **macOS 替代指令：**
 
-- `lsof -i -P | grep LISTEN`：更詳細的資訊
+- [`lsof`](https://man7.org/linux/man-pages/man8/lsof.8.html) `-i -P | grep LISTEN`：更詳細的資訊
 - `lsof -i :8080`：查看特定埠號的使用情況
 
 ##### 即時流量監控
 
-**推薦使用 bandwhich：**
+**推薦使用 [bandwhich](https://github.com/imsnif/bandwhich)：**
 
 ```{bash}
 #| eval: false
@@ -543,9 +543,9 @@ sudo bandwhich
 
 **延伸工具：**
 
-- `iftop`：即時網路流量監控
-- `nettop`：macOS 內建網路監控
-- `Wireshark`：完整的封包分析工具
+- [`iftop`](http://www.ex-parrot.com/pdw/iftop/)：即時網路流量監控
+- [`nettop`](https://ss64.com/osx/nettop.html)：macOS 內建網路監控
+- [`Wireshark`](https://www.wireshark.org/)：完整的封包分析工具
 
 ## 除錯技巧
 
@@ -712,7 +712,7 @@ tail -f /var/log/system.log
 
 ##### 搜尋錯誤訊息
 
-**使用 ripgrep（推薦）：**
+**使用 [ripgrep](https://github.com/BurntSushi/ripgrep)（推薦）：**
 
 ```{bash}
 #| eval: false

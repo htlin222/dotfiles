@@ -31,6 +31,12 @@ title: "推薦 dotfiles 範例"
 └── shellscripts/            # 自訂腳本
 ```
 
+使用的工具包括：
+- [Zsh](https://www.zsh.org/) - 殼層設定
+- [Tmux](https://github.com/tmux/tmux/wiki) - 終端多工器
+- [Neovim](https://neovim.io/) - 文字編輯器
+- [Git](https://git-scm.com/) - 版本控制
+
 ## 推薦參考的 dotfiles
 
 ### 經典範例
@@ -62,7 +68,7 @@ title: "推薦 dotfiles 範例"
 
 **背景（問題發現）**：當你的設定檔散落在不同位置（`~/.zshrc`、`~/.tmux.conf` 等），難以追蹤變更歷史、在多台電腦間同步，或是在系統重灌後恢復設定。建立集中式的 dotfiles 儲存庫可以解決這些問題。
 
-**方法**：使用 Git 版本控制系統來管理所有設定檔。選擇 `~/.dotfiles` 作為中央儲存目錄，這是慣例的命名方式，也方便日後辨識。`mkdir -p` 確保目錄不存在時才建立，避免覆蓋現有檔案。
+**方法**：使用 [Git](https://git-scm.com/) 版本控制系統來管理所有設定檔。選擇 `~/.dotfiles` 作為中央儲存目錄，這是慣例的命名方式，也方便日後辨識。`mkdir -p` 確保目錄不存在時才建立，避免覆蓋現有檔案。
 
 **結果（程式碼）**：
 ```{bash}
@@ -133,7 +139,7 @@ echo "Dotfiles installed!"
 
 **背景（問題發現）**：已經建立了本地的 Git 儲存庫，但檔案還未被追蹤，也沒有遠端備份。若電腦損壞或遺失，所有設定將無法恢復。此外，無法在其他機器上輕鬆取得這些設定。
 
-**方法**：使用 Git 的基本工作流程將檔案加入版本控制，並推送到遠端儲存庫（如 GitHub）。`git add .` 暫存所有變更，`git commit` 建立版本快照，`git remote add` 連結遠端儲存庫，`git push -u` 推送並設定上游分支。
+**方法**：使用 [Git](https://git-scm.com/) 的基本工作流程將檔案加入版本控制，並推送到遠端儲存庫（如 [GitHub](https://github.com/)）。`git add .` 暫存所有變更，`git commit` 建立版本快照，`git remote add` 連結遠端儲存庫，`git push -u` 推送並設定上游分支。
 
 **結果（程式碼）**：
 ```{bash}

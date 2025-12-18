@@ -10,14 +10,15 @@ title: "多語言版本管理"
 
 | 工具 | 特點 |
 |------|------|
-| **asdf** | 通用，支援多語言 |
-| **mise** | asdf 的 Rust 重寫，更快 |
-| **fnm** | 只管理 Node.js，極快 |
-| **pyenv** | 只管理 Python |
+| **[asdf](https://asdf-vm.com/)** | 通用，支援多語言 |
+| **[mise](https://mise.jdx.dev/)** | asdf 的 Rust 重寫，更快 |
+| **[fnm](https://github.com/Schniz/fnm)** | 只管理 Node.js，極快 |
+| **[pyenv](https://github.com/pyenv/pyenv)** | 只管理 Python |
+| **[rbenv](https://github.com/rbenv/rbenv)** | 只管理 Ruby |
 
 ## mise：推薦選擇
 
-mise（前身 rtx）是 asdf 的現代替代品：
+[mise](https://mise.jdx.dev/)（前身 rtx）是 asdf 的現代替代品：
 
 ### 背景（問題發現）
 
@@ -121,7 +122,7 @@ python 3.12.0
 
 ## fnm：Node.js 版本管理
 
-如果只需要管理 Node.js，fnm 是最快的選擇：
+如果只需要管理 Node.js，[fnm](https://github.com/Schniz/fnm) 是最快的選擇：
 
 ### 背景（問題發現）
 
@@ -152,7 +153,7 @@ fnm default 20
 
 ### 討論/延伸
 
-- fnm 比 nvm 快 40 倍以上
+- fnm 比 [nvm](https://github.com/nvm-sh/nvm) 快 40 倍以上
 - 自動偵測多種設定檔格式：`.node-version`、`.nvmrc`、`package.json` 的 `engines` 欄位
 - 可用 `fnm install --lts` 安裝最新 LTS 版本
 - `fnm default` 設定全域預設版本
@@ -163,7 +164,7 @@ fnm default 20
 
 ### uv：現代 Python 工具
 
-uv 是 Rust 寫的超快 Python 套件管理器：
+[uv](https://github.com/astral-sh/uv) 是 Rust 寫的超快 Python 套件管理器：
 
 #### 背景（問題發現）
 
@@ -228,16 +229,16 @@ fi
 - 這段程式碼應放在 `chpwd()` 函數內（見下方「進入目錄時自動處理」範例）
 - 僅當目錄包含 `.venv/bin/activate` 時才啟用，不會影響其他目錄
 - 離開專案目錄時需要手動 `deactivate`，或使用更進階的自動管理方案
-- 可搭配 direnv 使用，實現更完整的環境變數管理
+- 可搭配 [direnv](https://direnv.net/) 使用，實現更完整的環境變數管理
 - 注意：同時開啟多個專案時，可能會互相干擾虛擬環境
 
 ### pipx：全域工具
 
-用 pipx 安裝全域 Python 工具：
+用 [pipx](https://pipx.pypa.io/) 安裝全域 Python 工具：
 
 #### 背景（問題發現）
 
-某些 Python 工具需要全域使用（如 ruff、black、pytest），但直接用 pip 安裝會污染系統 Python 環境，且不同工具的依賴可能衝突。
+某些 Python 工具需要全域使用（如 [ruff](https://github.com/astral-sh/ruff)、[black](https://github.com/psf/black)、[pytest](https://pytest.org/)），但直接用 pip 安裝會污染系統 Python 環境，且不同工具的依賴可能衝突。
 
 #### 方法
 
@@ -261,7 +262,7 @@ uv tool install black
 - 工具會安裝到 `~/.local/share/uv/tools/`
 - 執行檔連結到 `~/.local/bin/`，確保該目錄在 PATH 中
 - 可用 `uv tool list` 查看已安裝工具
-- 常見全域工具：ruff（linter）、black（formatter）、pytest、ipython
+- 常見全域工具：[ruff](https://github.com/astral-sh/ruff)（linter）、[black](https://github.com/psf/black)（formatter）、[pytest](https://pytest.org/)、[ipython](https://ipython.org/)
 - 與專案的虛擬環境完全隔離，不會衝突
 
 ## 實用設定

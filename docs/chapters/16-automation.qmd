@@ -71,7 +71,7 @@ function zgit() {
 **討論/延伸**
 
 注意事項：
-- 需要先安裝 `aicommits` 工具（`npm install -g aicommits`）
+- 需要先安裝 [aicommits](https://github.com/Nutlope/aicommits) 工具（`npm install -g aicommits`）
 - 確保 `$DOTFILES` 環境變數已設定
 - `cd -` 會返回到前一個工作目錄
 
@@ -82,7 +82,7 @@ function zgit() {
 
 進一步學習：
 - 了解 [Conventional Commits](https://www.conventionalcommits.org/) 規範
-- 探索其他 AI commit 工具如 `git-cliff`、`commitizen`
+- 探索其他 AI commit 工具如 [git-cliff](https://github.com/orhun/git-cliff)、[commitizen](https://commitizen-tools.github.io/commitizen/)
 - 學習 Git hooks 來自動執行檢查
 
 ### 專案初始化
@@ -142,7 +142,7 @@ function cloneclaude() {
 **討論/延伸**
 
 注意事項：
-- 需要安裝並認證 GitHub CLI (`gh auth login`)
+- 需要安裝並認證 [GitHub CLI](https://cli.github.com/) (`gh auth login`)
 - 確保網路連線穩定，避免 clone 或 npm install 中斷
 - `rm -rf .git` 會永久刪除原始 Git 歷史，請確認是否需要保留
 
@@ -177,7 +177,7 @@ function cloneclaude() {
 ```
 
 進一步學習：
-- 探索 `cookiecutter` 或 `degit` 等專案模板工具
+- 探索 [cookiecutter](https://cookiecutter.readthedocs.io/) 或 [degit](https://github.com/Rich-Harris/degit) 等專案模板工具
 - 研究如何建立自己的專案模板
 - 了解 GitHub Template Repository 功能
 
@@ -295,13 +295,13 @@ function chore-type() {
 建立兩個命令列工具函數：
 
 1. `yt-mp3()` - YouTube 音訊下載器
-   - 使用 `yt-dlp` 工具（比 `youtube-dl` 更快更穩定）
+   - 使用 [yt-dlp](https://github.com/yt-dlp/yt-dlp) 工具（比 `youtube-dl` 更快更穩定）
    - `--extract-audio` 只提取音訊軌道
    - `--audio-format mp3` 轉換為通用的 MP3 格式
    - `-o "%(title)s.%(ext)s"` 使用影片標題作為檔名
 
 2. `joinmp4()` - 影片合併工具
-   - 使用 `ffmpeg` 的 concat demuxer（不重新編碼，速度快）
+   - 使用 [ffmpeg](https://ffmpeg.org/) 的 concat demuxer（不重新編碼，速度快）
    - 掃描當前目錄所有 `.mp4` 檔案
    - 建立 `filelist.txt` 作為合併清單
    - `-c copy` 直接複製串流，不重新編碼（保持原始品質）
@@ -329,8 +329,8 @@ function joinmp4() {
 **討論/延伸**
 
 注意事項：
-- 需要安裝 `yt-dlp`（`brew install yt-dlp` 或 `pip install yt-dlp`）
-- 需要安裝 `ffmpeg`（`brew install ffmpeg`）
+- 需要安裝 [yt-dlp](https://github.com/yt-dlp/yt-dlp)（`brew install yt-dlp` 或 `pip install yt-dlp`）
+- 需要安裝 [ffmpeg](https://ffmpeg.org/)（`brew install ffmpeg`）
 - YouTube 下載需遵守版權法規和 YouTube 使用條款
 - `joinmp4()` 會合併所有 `.mp4` 檔案，確認目錄中只有需要的檔案
 - 檔案會按檔名排序，可能需要先重新命名（例如 `01.mp4`, `02.mp4`）
@@ -398,7 +398,7 @@ function clip-vid() {
 
 進一步學習：
 - 深入學習 [ffmpeg 官方文件](https://ffmpeg.org/documentation.html)
-- 探索 `yt-dlp` 的進階功能（字幕下載、播放清單、格式選擇）
+- 探索 [yt-dlp](https://github.com/yt-dlp/yt-dlp) 的進階功能（字幕下載、播放清單、格式選擇）
 - 了解影片編碼參數（CRF、bitrate、codec）對品質和檔案大小的影響
 
 ## 定時任務
@@ -562,7 +562,7 @@ launchctl list com.user.backup
 
 進一步學習：
 - 閱讀 `man launchd.plist` 了解所有可用選項
-- 探索 [LaunchControl](https://www.soma-zone.com/LaunchControl/) GUI 工具
+- 探索 [LaunchControl](https://www.soma-zone.com/LaunchControl/) GUI 工具來管理 launchd 任務
 - 研究系統級任務（`/Library/LaunchDaemons/`）與用戶級任務的差異
 
 ### Linux cron
@@ -707,8 +707,8 @@ sudo tail -f /var/log/cron                  # CentOS/RHEL
 
 進一步學習：
 - 使用 [crontab.guru](https://crontab.guru/) 線上工具驗證 cron 語法
-- 探索 `anacron`（適合非 24 小時運行的系統）
-- 研究 `systemd timers`（現代 Linux 的替代方案）
+- 探索 [anacron](https://gnunet.org/anacron/)（適合非 24 小時運行的系統）
+- 研究 [systemd timers](https://www.freedesktop.org/software/systemd/man/systemd.timer.html)（現代 Linux 的替代方案）
 
 ## 通知整合
 
@@ -879,9 +879,9 @@ bg-notify npm run build
 進一步學習：
 - 探索 [terminal-notifier](https://github.com/julienXX/terminal-notifier) 功能更強大的通知工具
 - 研究 macOS 的 AppleScript 自動化功能
-- 了解如何整合第三方通知服務（Pushover, Pushbullet）
+- 了解如何整合第三方通知服務（[Pushover](https://pushover.net/), [Pushbullet](https://www.pushbullet.com/)）
 
-## Makefile 自動化
+## [Makefile](https://www.gnu.org/software/make/) 自動化
 
 ```{makefile}
 #| eval: false

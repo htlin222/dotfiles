@@ -4,7 +4,7 @@ title: "遠端開發"
 
 # 遠端開發
 
-透過 SSH 和 tmux，你可以在任何地方工作，而且工作環境完全一致。
+透過 [SSH](https://www.openssh.com/) 和 [tmux](https://github.com/tmux/tmux/wiki)，你可以在任何地方工作，而且工作環境完全一致。
 
 ## SSH 基礎
 
@@ -143,7 +143,7 @@ ssh -A myserver
   - `ssh-add -t 3600`：金鑰 1 小時後自動過期
 - **除錯**：使用 `ssh -v` 查看 agent 是否正常運作
 
-## Mosh：更好的 SSH
+## [Mosh](https://mosh.org/)：更好的 SSH
 
 **背景（問題發現）**
 
@@ -198,7 +198,7 @@ mosh --server="mosh-server new -p 60000:60010" myserver
   - `mosh -v`：顯示詳細訊息
   - `MOSH_ESCAPE_KEY=~`：設定脫離鍵（預設 Ctrl-^）
 
-## tmux 持久化
+## [tmux](https://github.com/tmux/tmux/wiki) 持久化
 
 **背景（問題發現）**
 
@@ -248,18 +248,18 @@ tmux new -As work
   - tmux 處理程式持久化：斷線後程式繼續執行
   - 完美組合：`mosh myserver` → `tmux a`
 - **進階技巧**：
-  - tmux-resurrect：儲存並還原整個 tmux 環境（包含程式、視窗配置）
-  - tmux-continuum：定期自動儲存，伺服器重啟後也能恢復
-  - tmuxinator：用 YAML 定義專案的 tmux 配置，一鍵啟動完整環境
+  - [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect)：儲存並還原整個 tmux 環境（包含程式、視窗配置）
+  - [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum)：定期自動儲存，伺服器重啟後也能恢復
+  - [tmuxinator](https://github.com/tmuxinator/tmuxinator)：用 YAML 定義專案的 tmux 配置，一鍵啟動完整環境
 - **注意事項**：
   - 定期清理不用的 session：`tmux kill-session -t old_session`
   - 檢查遺留的 session：`tmux ls`
   - session 名稱要有意義，方便日後識別
 - **除錯**：
-  - session 消失：可能是伺服器重啟，考慮使用 tmux-resurrect
+  - session 消失：可能是伺服器重啟，考慮使用 [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect)
   - 無法附加：檢查 `tmux ls` 確認 session 名稱是否正確
 
-## 遠端 Neovim
+## 遠端 [Neovim](https://neovim.io/)
 
 **背景（問題發現）**
 
@@ -293,11 +293,11 @@ nvim /path/to/file
 - **設定要求**：
   - 在遠端安裝 Neovim：`sudo apt install neovim` 或從原始碼編譯
   - 同步 dotfiles 到遠端（見後續章節）
-  - 安裝必要插件：在遠端執行 `:Lazy sync`（若使用 lazy.nvim）
+  - 安裝必要插件：在遠端執行 `:Lazy sync`（若使用 [lazy.nvim](https://github.com/folke/lazy.nvim)）
 - **最佳實踐**：
   - 使用 Mosh + tmux 組合：`mosh myserver` → `tmux a` → `nvim`
   - 為遠端設定專屬的 Neovim 配置分支（如移除 LSP 以節省資源）
-  - 使用 telescope + rg 快速搜尋專案檔案
+  - 使用 [telescope](https://github.com/nvim-telescope/telescope.nvim) + [rg](https://github.com/BurntSushi/ripgrep) 快速搜尋專案檔案
 - **限制**：需要在遠端安裝完整的 Neovim 環境
 
 ### 方法二：從本機編輯遠端檔案
@@ -330,7 +330,7 @@ nvim scp://myserver/~/project/main.py
   - 單斜線代表相對於家目錄：`scp://host/project/file`
 - **除錯**：若無法連線，檢查 SSH 金鑰認證是否正常（`ssh myserver` 能否免密碼登入）
 
-### 方法三：rsync 同步
+### 方法三：[rsync](https://rsync.samba.org/) 同步
 
 **結果（程式碼）**
 
@@ -367,7 +367,7 @@ rsync -avzu --progress ./project/ myserver:~/project/
   - `./project/` → 同步目錄內容
   - `./project` → 同步目錄本身（會建立 `~/project/project/`）
 - **自動化同步**：
-  - 使用 fswatch/entr 監控檔案變更自動同步
+  - 使用 [fswatch](https://emcrisostomo.github.io/fswatch/) 或 [entr](http://eradman.com/entrproject/) 監控檔案變更自動同步
   - 或設定 Git hooks 在 commit 後自動 rsync
 - **安全提醒**：
   - 同步前先備份重要資料
@@ -480,7 +480,7 @@ ssh -L 8000:internal-server:8000 jumphost
   ```
 - **持久化 forwarding**：
   - 結合 tmux：在 tmux session 中執行 SSH forwarding
-  - 或使用 autossh：`autossh -M 0 -L 8000:localhost:8000 myserver`
+  - 或使用 [autossh](https://www.harding.motd.ca/autossh/)：`autossh -M 0 -L 8000:localhost:8000 myserver`
 - **安全考量**：
   - 預設只監聽 localhost，避免暴露服務給外部
   - Remote forwarding 需要伺服器設定 `GatewayPorts yes`（有安全風險）

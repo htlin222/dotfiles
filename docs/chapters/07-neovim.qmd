@@ -4,7 +4,7 @@ title: "編輯器之道：Neovim"
 
 # 編輯器之道：Neovim
 
-Neovim 是 Vim 的現代化分支，提供更好的擴展性和更活躍的開發社群。
+[Neovim](https://neovim.io/) 是 Vim 的現代化分支，提供更好的擴展性和更活躍的開發社群。
 
 ## 為什麼選擇 Neovim？
 
@@ -15,7 +15,7 @@ Neovim 是 Vim 的現代化分支，提供更好的擴展性和更活躍的開�
 
 ## 安裝
 
-**背景（問題發現）**：傳統的 Vim 雖然強大，但在擴展性和現代化功能上有所限制。Neovim 作為 Vim 的現代化分支，提供了更好的插件架構、內建 LSP 支援，以及用 Lua 設定的能力。
+**背景（問題發現）**：傳統的 Vim 雖然強大，但在擴展性和現代化功能上有所限制。[Neovim](https://neovim.io/) 作為 Vim 的現代化分支，提供了更好的插件架構、內建 LSP 支援，以及用 Lua 設定的能力。
 
 **方法**：使用 Homebrew 套件管理器來安裝 Neovim，這是 macOS 上最簡單且可靠的安裝方式。Homebrew 會自動處理依賴關係和版本更新。
 
@@ -32,14 +32,14 @@ brew install neovim
 - Windows 用戶可用 Scoop 或 Chocolatey 安裝
 - 首次啟動會比較慢，因為需要編譯語法檔案
 
-## 基礎框架：NvChad
+## 基礎框架：[NvChad](https://nvchad.com/)
 
 **背景（問題發現）**：從零開始設定 Neovim 需要花費大量時間選擇插件、配置 LSP、設計主題和快捷鍵。初學者容易在設定階段就放棄，而經驗豐富的用戶也希望有個良好的起點。
 
-**方法**：NvChad 是一個預配置的 Neovim 框架，提供了：
+**方法**：[NvChad](https://nvchad.com/) 是一個預配置的 Neovim 框架，提供了：
 - 精美的 UI 主題和狀態欄
 - 合理的預設快捷鍵映射
-- 插件管理器（lazy.nvim）預配置
+- 插件管理器（[lazy.nvim](https://github.com/folke/lazy.nvim)）預配置
 - LSP、自動補全、語法高亮等現代功能開箱即用
 - 清晰的目錄結構，方便擴展
 
@@ -55,7 +55,7 @@ nvim
 - `--depth 1` 只克隆最新版本，節省空間和時間
 - 首次啟動 `nvim` 會自動安裝所有插件（需要網路連線）
 - 安裝完成後會看到歡迎畫面，按 `<Space>th` 可切換主題
-- 其他類似框架：LazyVim、AstroNvim（各有特色，可依喜好選擇）
+- 其他類似框架：[LazyVim](https://www.lazyvim.org/)、[AstroNvim](https://www.astronvim.com/)（各有特色，可依喜好選擇）
 - 建議先使用預設設定一段時間，了解後再自訂
 
 ## 目錄結構
@@ -107,11 +107,11 @@ opt.spelllang = { "en_us" }
 - 可用 `opt.spelllang = { "en_us", "cjk" }` 加入中文支援避免誤報
 - 其他常用選項：`opt.clipboard = "unnamedplus"`（系統剪貼簿整合）、`opt.ignorecase = true`（搜尋時忽略大小寫）
 
-## 插件管理：lazy.nvim
+## 插件管理：[lazy.nvim](https://github.com/folke/lazy.nvim)
 
-**背景（問題發現）**：傳統的插件管理器（如 vim-plug、packer.nvim）在啟動時會載入所有插件，導致 Neovim 啟動速度變慢。當插件數量增加到 20-30 個時，啟動時間可能超過 1 秒，影響工作效率。而且插件的依賴關係和版本管理也較為複雜。
+**背景（問題發現）**：傳統的插件管理器（如 [vim-plug](https://github.com/junegunn/vim-plug)、[packer.nvim](https://github.com/wbthomason/packer.nvim)）在啟動時會載入所有插件，導致 Neovim 啟動速度變慢。當插件數量增加到 20-30 個時，啟動時間可能超過 1 秒，影響工作效率。而且插件的依賴關係和版本管理也較為複雜。
 
-**方法**：lazy.nvim 採用「延遲載入」（lazy loading）策略，只在真正需要時才載入插件。核心概念：
+**方法**：[lazy.nvim](https://github.com/folke/lazy.nvim) 採用「延遲載入」（lazy loading）策略，只在真正需要時才載入插件。核心概念：
 - **事件觸發載入**：`event = "BufReadPost"` 表示在讀取檔案後才載入
 - **命令觸發載入**：`cmd = "CommandName"` 表示在執行特定命令時才載入
 - **檔案類型載入**：`ft = "python"` 表示只在 Python 檔案中載入
@@ -137,17 +137,17 @@ return {
 - `dependencies = { "other-plugin" }` 可聲明插件依賴關係
 - 用 `:Lazy` 命令可查看所有插件狀態、更新、清理未使用的插件
 - 用 `:Lazy profile` 可分析啟動時間，找出瓶頸
-- lazy.nvim 會自動生成 `lazy-lock.json` 鎖定版本，確保團隊環境一致
+- [lazy.nvim](https://github.com/folke/lazy.nvim) 會自動生成 `lazy-lock.json` 鎖定版本，確保團隊環境一致
 
 ## 必備插件
 
 | 插件 | 功能 |
 |------|------|
-| `telescope.nvim` | 模糊搜尋 |
-| `nvim-treesitter` | 語法高亮 |
-| `nvim-lspconfig` | LSP 設定 |
-| `nvim-cmp` | 自動補全 |
-| `gitsigns.nvim` | Git 整合 |
+| [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim) | 模糊搜尋 |
+| [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter) | 語法高亮 |
+| [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) | LSP 設定 |
+| [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp) | 自動補全 |
+| [`gitsigns.nvim`](https://github.com/lewis6991/gitsigns.nvim) | Git 整合 |
 
 ## LSP 設定
 
@@ -160,8 +160,8 @@ return {
 
 每種程式語言都需要對應的 Language Server，而且需要正確設定才能發揮作用。
 
-**方法**：使用 `nvim-lspconfig` 插件來配置各語言的 LSP Server。核心概念：
-1. **安裝 Language Server**：用 Mason（`:MasonInstall pyright`）或系統套件管理器安裝
+**方法**：使用 [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) 插件來配置各語言的 LSP Server。核心概念：
+1. **安裝 Language Server**：用 [Mason](https://github.com/williamboman/mason.nvim)（`:MasonInstall pyright`）或系統套件管理器安裝
 2. **設定 lspconfig**：為每種語言呼叫對應的 `setup()` 函數
 3. **特定語言配置**：某些 Server 需要額外設定（如 Lua 需要識別 `vim` 全域變數）
 
@@ -191,11 +191,11 @@ lspconfig.lua_ls.setup {
 ```
 
 **討論/延伸**：
-- **Mason 整合**：建議用 `:Mason` UI 來安裝和管理 Language Servers，避免手動處理路徑
+- **[Mason](https://github.com/williamboman/mason.nvim) 整合**：建議用 `:Mason` UI 來安裝和管理 Language Servers，避免手動處理路徑
 - **常用 Language Servers**：
-  - Python: `pyright`（快速）或 `pylsp`（功能多）
-  - JavaScript/TypeScript: `ts_ls`（官方）
-  - Go: `gopls`、Rust: `rust_analyzer`
+  - Python: [`pyright`](https://github.com/microsoft/pyright)（快速）或 [`pylsp`](https://github.com/python-lsp/python-lsp-server)（功能多）
+  - JavaScript/TypeScript: [`ts_ls`](https://github.com/typescript-language-server/typescript-language-server)（官方）
+  - Go: [`gopls`](https://github.com/golang/tools/tree/master/gopls)、Rust: [`rust_analyzer`](https://github.com/rust-lang/rust-analyzer)
   - HTML/CSS: `html`, `cssls`
 - **Lua 特殊設定**：`globals = { "vim" }` 避免編輯 Neovim 配置時出現 `vim` 未定義警告
 - **自訂能力**：可在 `setup()` 中設定 `on_attach`（按鍵綁定）、`capabilities`（補全能力）等
@@ -223,7 +223,7 @@ lspconfig.lua_ls.setup {
 
 預設情況下，Vim split 用 `Ctrl+w h/j/k/l` 切換，而 tmux pane 用 `Ctrl+b` 加方向鍵，兩套不同的快捷鍵讓切換變得繁瑣且容易混淆。
 
-**方法**：使用 `vim-tmux-navigator` 插件統一 Vim 和 tmux 的視窗切換邏輯。核心概念：
+**方法**：使用 [`vim-tmux-navigator`](https://github.com/christoomey/vim-tmux-navigator) 插件統一 Vim 和 tmux 的視窗切換邏輯。核心概念：
 1. **統一快捷鍵**：用 `Ctrl+h/j/k/l` 在所有視窗間切換（Vim 內部 split 和 tmux pane）
 2. **智慧偵測**：插件會自動判斷是否在邊界，決定是切換 Vim split 還是 tmux pane
 3. **雙向整合**：需要同時在 Neovim 和 tmux 配置中設定
@@ -242,13 +242,13 @@ return {
 - **tmux 配置**：需要在 `~/.tmux.conf` 加入對應設定（參考插件文件）
 - **lazy = false**：此插件必須在啟動時載入，確保快捷鍵立即可用
 - **注意事項**：如果 tmux 設定了 `prefix`，需要確保不衝突
-- **替代方案**：`Navigator.nvim` 提供類似功能，但支援更多終端複用器
+- **替代方案**：[`Navigator.nvim`](https://github.com/numToStr/Navigator.nvim) 提供類似功能，但支援更多終端複用器
 - **除錯方法**：如果切換不順，檢查 tmux 和 Neovim 是否都正確載入設定
-- **延伸用途**：搭配 tmux sessionizer（如 `sesh`）可實現專案間快速切換
+- **延伸用途**：搭配 tmux sessionizer（如 [`sesh`](https://github.com/joshmedeski/sesh)）可實現專案間快速切換
 
 ## 實作練習
 
-1. 安裝 Neovim 和 NvChad
+1. 安裝 [Neovim](https://neovim.io/) 和 [NvChad](https://nvchad.com/)
 2. 用 `:Lazy` 查看插件狀態
 3. 用 `<Space>ff` 搜尋檔案
 4. 嘗試在 tmux pane 間切換

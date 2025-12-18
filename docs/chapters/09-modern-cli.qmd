@@ -36,21 +36,21 @@ brew install fd ripgrep bat eza zoxide fzf yazi lsd
 ### 討論/延伸
 
 **工具清單**：
-- `fd`：取代 find，檔案搜尋
-- `ripgrep`：取代 grep，文字搜尋
-- `bat`：取代 cat，檔案檢視
-- `eza`：取代 ls，目錄列表
-- `zoxide`：取代 cd，智能目錄跳轉
-- `fzf`：模糊搜尋工具
-- `yazi`：現代檔案管理器
-- `lsd`：另一個 ls 替代品（可與 eza 擇一使用）
+- [`fd`](https://github.com/sharkdp/fd)：取代 find，檔案搜尋
+- [`ripgrep`](https://github.com/BurntSushi/ripgrep)：取代 grep，文字搜尋
+- [`bat`](https://github.com/sharkdp/bat)：取代 cat，檔案檢視
+- [`eza`](https://github.com/eza-community/eza)：取代 ls，目錄列表
+- [`zoxide`](https://github.com/ajeetdsouza/zoxide)：取代 cd，智能目錄跳轉
+- [`fzf`](https://github.com/junegunn/fzf)：模糊搜尋工具
+- [`yazi`](https://github.com/sxyazi/yazi)：現代檔案管理器
+- [`lsd`](https://github.com/lsd-rs/lsd)：另一個 ls 替代品（可與 eza 擇一使用）
 
 **注意事項**：
 - 安裝後不會覆蓋原始工具，兩者可並存
 - 建議透過 shell 別名逐步過渡，避免影響現有腳本
 - 某些工具可能需要額外設定才能發揮完整功能
 
-## fd：更好的 find
+## [fd](https://github.com/sharkdp/fd)：更好的 find
 
 ### 背景（問題發現）
 
@@ -120,7 +120,7 @@ fd -e md -e txt --max-depth 3
 - 預設隱藏 hidden 檔案，使用 `-H` 顯示
 - 與 `find` 不同，預設使用正規表達式而非 glob 模式
 
-## ripgrep：更快的 grep
+## [ripgrep](https://github.com/BurntSushi/ripgrep)：更快的 grep
 
 ### 背景（問題發現）
 
@@ -212,7 +212,7 @@ rg -c "import" -t py --sort path
 - 可用 `--type-list` 查看所有支援的檔案類型
 - 搜尋並取代只是預覽，需搭配其他工具（如 sed）實際修改
 
-## bat：帶語法高亮的 cat
+## [bat](https://github.com/sharkdp/bat)：帶語法高亮的 cat
 
 ### 背景（問題發現）
 
@@ -315,7 +315,7 @@ alias less='bat'
 - 可用 `bat --list-languages` 查看所有支援的語言
 - 與其他指令組合時，建議使用 `-p` 避免分頁中斷流程
 
-## eza/lsd：現代化的 ls
+## [eza](https://github.com/eza-community/eza)/[lsd](https://github.com/lsd-rs/lsd)：現代化的 ls
 
 ### 背景（問題發現）
 
@@ -439,7 +439,7 @@ alias tree='lsd --tree'
 - 某些終端機可能需要設定字型才能正確顯示
 - 兩者功能相似，通常不需要同時使用
 
-## zoxide：智能 cd
+## [zoxide](https://github.com/ajeetdsouza/zoxide)：智能 cd
 
 ### 背景（問題發現）
 
@@ -463,7 +463,7 @@ alias tree='lsd --tree'
 
 **使用方式**：
 - `z <關鍵字>`：跳轉到匹配的目錄
-- `zi <關鍵字>`：互動式選擇（使用 fzf）
+- `zi <關鍵字>`：互動式選擇（使用 [fzf](https://github.com/junegunn/fzf)）
 - `z -`：返回上一個目錟
 - `zoxide query <關鍵字>`：查詢匹配結果但不跳轉
 
@@ -502,7 +502,7 @@ eval "$(zoxide init bash)"
 zoxide init fish | source
 
 # 3. 安裝 fzf（用於互動式選擇）
-brew install fzf
+brew install fzf  # https://github.com/junegunn/fzf
 ```
 
 **進階用法**：
@@ -574,7 +574,7 @@ function fcd() {
 - 資料庫儲存在 `~/.local/share/zoxide/db.zo`
 - 如果發現匹配結果不理想，可以手動編輯或刪除記錄
 
-## yazi：現代檔案管理器
+## [yazi](https://github.com/sxyazi/yazi)：現代檔案管理器
 
 ### 背景（問題發現）
 
@@ -674,7 +674,7 @@ brew install ffmpegthumbnailer
 brew install p7zip jq
 
 # 程式碼高亮（yazi 內建支援 bat）
-brew install bat
+brew install bat  # https://github.com/sharkdp/bat
 ```
 
 **設定檔客製化**：
@@ -705,19 +705,19 @@ EOF
 ```bash
 # 與 fzf 整合：快速跳轉並開啟 yazi
 function yf() {
-  local dir=$(fd -t d | fzf --preview 'eza -T {} | head -50')
+  local dir=$(fd -t d | fzf --preview 'eza -T {} | head -50')  # fd, fzf, eza 整合
   [ -n "$dir" ] && ya "$dir"
 }
 
 # 快速開啟最近目錄
 function yr() {
-  local dir=$(zoxide query -l | fzf)
+  local dir=$(zoxide query -l | fzf)  # zoxide, fzf 整合
   [ -n "$dir" ] && ya "$dir"
 }
 
 # 搭配 ripgrep 找檔案後用 yazi 開啟
 function yz() {
-  local file=$(rg --files | fzf)
+  local file=$(rg --files | fzf)  # ripgrep, fzf 整合
   [ -n "$file" ] && ya "$(dirname "$file")"
 }
 ```

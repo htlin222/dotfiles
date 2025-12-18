@@ -4,7 +4,7 @@ title: "從 VS Code 遷移指南"
 
 # 從 VS Code 遷移指南 {.unnumbered}
 
-如果你習慣 VS Code，這份指南幫助你逐步遷移到終端工作流。
+如果你習慣 [VS Code](https://code.visualstudio.com/)，這份指南幫助你逐步遷移到終端工作流。
 
 ## 為什麼遷移？
 
@@ -21,9 +21,9 @@ title: "從 VS Code 遷移指南"
 
 | VS Code | Neovim |
 |---------|--------|
-| `Cmd+P` 開檔案 | `<leader>ff` (Telescope) |
-| `Cmd+Shift+F` 全域搜尋 | `<leader>fg` 或 `rg` |
-| 側邊欄檔案樹 | `<leader>e` (nvim-tree) 或 yazi |
+| `Cmd+P` 開檔案 | `<leader>ff` ([Telescope](https://github.com/nvim-telescope/telescope.nvim)) |
+| `Cmd+Shift+F` 全域搜尋 | `<leader>fg` 或 [ripgrep](https://github.com/BurntSushi/ripgrep) |
+| 側邊欄檔案樹 | `<leader>e` ([nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)) 或 [yazi](https://yazi-rs.github.io/) |
 | 多個 tab | `:bnext`, `:bprev` 或 Telescope |
 
 ### 編輯
@@ -31,7 +31,7 @@ title: "從 VS Code 遷移指南"
 | VS Code | Neovim |
 |---------|--------|
 | `Cmd+D` 選取下一個相同 | `*` 搜尋 + `cgn` |
-| `Cmd+/` 註解 | `gc` (Comment.nvim) |
+| `Cmd+/` 註解 | `gc` ([Comment.nvim](https://github.com/numToStr/Comment.nvim)) |
 | `Cmd+Shift+K` 刪除行 | `dd` |
 | `Alt+Up/Down` 移動行 | `ddp` / `ddkP` |
 | 多游標 | 使用巨集或 visual block |
@@ -43,22 +43,22 @@ title: "從 VS Code 遷移指南"
 | `F12` 跳到定義 | `gd` |
 | `Shift+F12` 查看參考 | `gr` |
 | `Ctrl+G` 跳到行號 | `:123` 或 `123G` |
-| 麵包屑導航 | barbecue.nvim |
+| 麵包屑導航 | [barbecue.nvim](https://github.com/utilyre/barbecue.nvim) |
 
 ### Git
 
 | VS Code | 終端 |
 |---------|------|
-| Source Control 面板 | `lazygit` 或 `:Neogit` |
-| Git blame | `gitsigns.nvim` |
-| 差異檢視 | `:Gitsigns diffthis` 或 `lazygit` |
+| Source Control 面板 | [lazygit](https://github.com/jesseduffield/lazygit) 或 `:Neogit` |
+| Git blame | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) |
+| 差異檢視 | `:Gitsigns diffthis` 或 [lazygit](https://github.com/jesseduffield/lazygit) |
 
 ## 遷移步驟
 
 ### 第一週：熟悉 Vim 基礎
 
 1. 完成 `vimtutor`（在終端輸入 `vimtutor`）
-2. 每天用 Neovim 編輯一個小檔案
+2. 每天用 [Neovim](https://neovim.io/) 編輯一個小檔案
 3. 只學基本移動和編輯
 
 #### 背景（問題發現）
@@ -86,6 +86,7 @@ Line 4: Practice searching" > ~/vim-practice.txt
 
 # 開始練習
 nvim ~/vim-practice.txt
+# Neovim 官方網站：https://neovim.io/
 ```
 
 在 Neovim 中練習基本操作：
@@ -129,6 +130,7 @@ p      " 貼上
 - 使用 `w`（word）、`b`（back）、`e`（end）進行單字間移動
 - 學習組合指令：`d3w`（刪除 3 個字）、`y2j`（複製 2 行）
 - 嘗試 [Vim Adventures](https://vim-adventures.com/) 遊戲化學習
+- 參考 [Practical Vim](https://pragprog.com/titles/dnvim2/) 經典書籍
 
 ### 第二週：建立工作流
 
@@ -142,7 +144,7 @@ VS Code 的 `Cmd+P` 快速開檔和 `Cmd+Shift+F` 全域搜尋是最常用的功
 
 #### 方法
 
-使用 Telescope.nvim 作為模糊搜尋引擎，結合 ripgrep 進行全域搜尋。核心概念是：
+使用 [Telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) 作為模糊搜尋引擎，結合 [ripgrep](https://github.com/BurntSushi/ripgrep) 進行全域搜尋。核心概念是：
 - **Telescope**：統一的搜尋介面
 - **Buffer**：已開啟的檔案（類似 VS Code 的 tab）
 - **Window/Pane**：畫面分割
@@ -213,14 +215,14 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
 #### 討論/延伸
 
 **注意事項**：
-- Telescope 需要安裝 `ripgrep` 才能使用 `live_grep`：`brew install ripgrep`
+- [Telescope](https://github.com/nvim-telescope/telescope.nvim) 需要安裝 [ripgrep](https://github.com/BurntSushi/ripgrep) 才能使用 `live_grep`：`brew install ripgrep`
 - `<leader>` 通常設為空白鍵或逗號，在 `init.lua` 設定：`vim.g.mapleader = " "`
 - Buffer 不會自動關閉，需要手動 `:bdelete` 或設定自動清理
 
 **變體做法**：
-- 使用 `fzf.vim` 替代 Telescope（更輕量）
-- 使用 `harpoon` 管理常用檔案（類似書籤）
-- 使用 `bufferline.nvim` 顯示視覺化 buffer 列表
+- 使用 [fzf.vim](https://github.com/junegunn/fzf.vim) 替代 Telescope（更輕量）
+- 使用 [harpoon](https://github.com/ThePrimeagen/harpoon) 管理常用檔案（類似書籤）
+- 使用 [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) 顯示視覺化 buffer 列表
 
 **進階學習**：
 - 探索 Telescope 的其他功能：`:Telescope help_tags`（搜尋說明文件）
@@ -229,8 +231,8 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
 
 ### 第三週：加入 tmux
 
-1. 學習基本 tmux 操作
-2. 設定 vim-tmux-navigator
+1. 學習基本 [tmux](https://github.com/tmux/tmux) 操作
+2. 設定 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator)
 3. 練習在 pane 間切換
 
 #### 背景（問題發現）
@@ -239,7 +241,7 @@ VS Code 的整合式終端機（Integrated Terminal）讓你可以在編輯器�
 
 #### 方法
 
-使用 tmux 作為終端多工器，搭配 vim-tmux-navigator 實現無縫切換。核心概念是：
+使用 [tmux](https://github.com/tmux/tmux) 作為終端多工器，搭配 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) 實現無縫切換。核心概念是：
 - **Session**：一個完整的工作環境（類似 VS Code 的工作區）
 - **Window**：Session 中的分頁（類似瀏覽器 tab）
 - **Pane**：Window 中的分割（類似 VS Code 的 split editor）
@@ -277,7 +279,7 @@ setw -g pane-base-index 1
 set -g renumber-windows on
 ```
 
-安裝並設定 vim-tmux-navigator（在 Neovim 和 tmux 間無縫移動）：
+安裝並設定 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator)（在 Neovim 和 tmux 間無縫移動）：
 
 ```lua
 -- ~/.config/nvim/lua/plugins/tmux-navigator.lua
@@ -330,9 +332,9 @@ Ctrl+a d    # detach（離開但保持執行）
 ```
 
 **變體做法**：
-- 使用 `tmuxinator` 自動化 session 布局
-- 使用 `tmux-resurrect` 保存和恢復 session
-- 改用 `zellij` 作為更現代的替代方案
+- 使用 [tmuxinator](https://github.com/tmuxinator/tmuxinator) 自動化 session 布局
+- 使用 [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) 保存和恢復 session
+- 改用 [zellij](https://zellij.dev/) 作為更現代的替代方案
 
 **進階學習**：
 - 探索 tmux 的複製模式（類似 vim 的 visual mode）
@@ -342,7 +344,7 @@ Ctrl+a d    # detach（離開但保持執行）
 ### 第四週：完善工具鏈
 
 1. 設定 LSP
-2. 安裝 lazygit
+2. 安裝 [lazygit](https://github.com/jesseduffield/lazygit)
 3. 自訂快捷鍵
 
 #### 背景（問題發現）
@@ -351,7 +353,7 @@ VS Code 的智能提示（IntelliSense）、自動完成、錯誤提示等功能
 
 #### 方法
 
-使用 nvim-lspconfig 設定 LSP，搭配自動完成插件。使用 lazygit 作為 Git 的 TUI（Text User Interface）。核心概念是：
+使用 [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) 設定 LSP，搭配自動完成插件。使用 [lazygit](https://github.com/jesseduffield/lazygit) 作為 Git 的 TUI（Text User Interface）。核心概念是：
 - **LSP Server**：提供語言特定的智能功能
 - **nvim-cmp**：自動完成引擎
 - **lazygit**：視覺化的 Git 操作介面
@@ -366,11 +368,11 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      'williamboman/mason.nvim',
+      'williamboman/mason.nvim',  -- https://github.com/williamboman/mason.nvim
       'williamboman/mason-lspconfig.nvim',
-      'hrsh7th/nvim-cmp',
+      'hrsh7th/nvim-cmp',  -- https://github.com/hrsh7th/nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
-      'L3MON4D3/LuaSnip',
+      'L3MON4D3/LuaSnip',  -- https://github.com/L3MON4D3/LuaSnip
     },
     config = function()
       -- Mason 自動安裝 LSP servers
@@ -443,7 +445,7 @@ brew install lazygit
 alias lg='lazygit'
 ```
 
-在 Neovim 中整合 lazygit（`~/.config/nvim/lua/plugins/lazygit.lua`）：
+在 Neovim 中整合 [lazygit](https://github.com/jesseduffield/lazygit)（`~/.config/nvim/lua/plugins/lazygit.lua`）：
 
 ```lua
 return {
@@ -464,7 +466,7 @@ return {
 - 不同專案可能需要不同的 LSP servers，使用 `:Mason` 查看和安裝
 - Lazygit 的操作邏輯類似 Vim：`j/k` 移動，`Enter` 展開，`space` stage/unstage
 
-**Lazygit 常用快捷鍵**：
+**Lazygit 常用快捷鍵**（[lazygit](https://github.com/jesseduffield/lazygit) 官方文件）：
 ```
 在 lazygit 介面中：
 space  - stage/unstage 檔案
@@ -484,9 +486,9 @@ P      - pull
 - `<leader>ca` (code action) = VS Code 的 Cmd+.
 
 **變體做法**：
-- 使用 `nvim-dap` 設定除錯功能（類似 VS Code debugger）
-- 使用 `trouble.nvim` 顯示診斷訊息列表
-- 使用 `tig` 替代 lazygit（更輕量但功能較少）
+- 使用 [nvim-dap](https://github.com/mfussenegger/nvim-dap) 設定除錯功能（類似 VS Code debugger）
+- 使用 [trouble.nvim](https://github.com/folke/trouble.nvim) 顯示診斷訊息列表
+- 使用 [tig](https://github.com/jonas/tig) 替代 lazygit（更輕量但功能較少）
 
 **進階學習**：
 - 探索 LSP 的 code lens 和 inlay hints 功能
@@ -497,12 +499,12 @@ P      - pull
 
 | VS Code 延伸功能 | Neovim 替代 |
 |------------------|-------------|
-| Prettier | conform.nvim |
-| ESLint | nvim-lint |
-| GitLens | gitsigns.nvim |
-| Copilot | copilot.vim 或 codeium.nvim |
+| Prettier | [conform.nvim](https://github.com/stevearc/conform.nvim) |
+| ESLint | [nvim-lint](https://github.com/mfussenegger/nvim-lint) |
+| GitLens | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) |
+| Copilot | [copilot.vim](https://github.com/github/copilot.vim) 或 [codeium.nvim](https://github.com/Exafunction/codeium.vim) |
 | Live Server | 終端執行 server |
-| Markdown Preview | markdown-preview.nvim |
+| Markdown Preview | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) |
 
 ### 實作範例
 
@@ -513,10 +515,10 @@ VS Code 的延伸功能提供格式化、語法檢查、Git 整合等功能。�
 #### 方法
 
 使用社群維護的 Neovim 插件來實現相同功能。核心概念是：
-- **Formatter**：使用 conform.nvim 統一管理格式化工具
-- **Linter**：使用 nvim-lint 整合各種 linters
-- **Git 整合**：使用 gitsigns.nvim 顯示 Git 狀態
-- **AI 輔助**：使用 copilot.vim 或開源替代方案
+- **Formatter**：使用 [conform.nvim](https://github.com/stevearc/conform.nvim) 統一管理格式化工具
+- **Linter**：使用 [nvim-lint](https://github.com/mfussenegger/nvim-lint) 整合各種 linters
+- **Git 整合**：使用 [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) 顯示 Git 狀態
+- **AI 輔助**：使用 [copilot.vim](https://github.com/github/copilot.vim) 或開源替代方案
 
 #### 結果（設定程式碼）
 
@@ -524,7 +526,7 @@ Formatter 設定（`~/.config/nvim/lua/plugins/conform.lua`）：
 
 ```lua
 return {
-  'stevearc/conform.nvim',
+  'stevearc/conform.nvim',  -- https://github.com/stevearc/conform.nvim
   event = { 'BufWritePre' },
   cmd = { 'ConformInfo' },
   opts = {
@@ -559,7 +561,7 @@ Linter 設定（`~/.config/nvim/lua/plugins/lint.lua`）：
 
 ```lua
 return {
-  'mfussenegger/nvim-lint',
+  'mfussenegger/nvim-lint',  -- https://github.com/mfussenegger/nvim-lint
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
     local lint = require('lint')
@@ -587,7 +589,7 @@ Git Signs 設定（`~/.config/nvim/lua/plugins/gitsigns.lua`）：
 
 ```lua
 return {
-  'lewis6991/gitsigns.nvim',
+  'lewis6991/gitsigns.nvim',  -- https://github.com/lewis6991/gitsigns.nvim
   event = { 'BufReadPre', 'BufNewFile' },
   opts = {
     signs = {
@@ -618,7 +620,7 @@ GitHub Copilot 設定（`~/.config/nvim/lua/plugins/copilot.lua`）：
 
 ```lua
 return {
-  'github/copilot.vim',
+  'github/copilot.vim',  -- https://github.com/github/copilot.vim
   event = 'InsertEnter',
   config = function()
     -- 使用 Tab 接受建議（類似 VS Code）
@@ -662,6 +664,7 @@ npm install -g markdownlint-cli
 **Copilot 替代方案**：
 ```lua
 -- 使用開源的 Codeium（免費）
+-- https://github.com/Exafunction/codeium.vim
 return {
   'Exafunction/codeium.vim',
   event = 'InsertEnter',
@@ -674,9 +677,9 @@ return {
 ```
 
 **進階設定**：
-- 使用 `none-ls.nvim`（原 null-ls）統一管理 formatters 和 linters
+- 使用 [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim)（原 null-ls）統一管理 formatters 和 linters
 - 設定專案特定的格式化規則（`.prettierrc`、`.eslintrc`）
-- 使用 `diffview.nvim` 取得更好的 Git diff 體驗
+- 使用 [diffview.nvim](https://github.com/sindrets/diffview.nvim) 取得更好的 Git diff 體驗
 
 ## 保持 VS Code 作為備用
 
@@ -698,7 +701,7 @@ A: 不要一次學全部。先掌握基本操作，其他慢慢加。
 
 ### Q: 設定太複雜
 
-A: 使用預設框架如 NvChad 或 LazyVim，不要從零開始。
+A: 使用預設框架如 [NvChad](https://nvchad.com/) 或 [LazyVim](https://www.lazyvim.org/)，不要從零開始。
 
 ### Q: 某些功能找不到
 
@@ -713,8 +716,8 @@ A: 幾乎任何功能都有 Neovim 插件。搜尋 "neovim alternative to X"。
 ### 方法
 
 以一個典型的 Web 開發專案為例，展示如何使用終端工作流完成日常開發任務。核心概念是：
-- **tmux session**：管理專案環境
-- **Neovim**：編輯程式碼
+- **[tmux](https://github.com/tmux/tmux) session**：管理專案環境
+- **[Neovim](https://neovim.io/)**：編輯程式碼
 - **Git**：版本控制
 - **終端工具**：執行命令和測試
 
@@ -744,7 +747,7 @@ tmux attach -t myproject
 # 3. 在左側 pane 開啟 Neovim
 nvim .
 
-# 4. 在 Neovim 中使用 Telescope 開啟檔案
+# 4. 在 Neovim 中使用 Telescope (https://github.com/nvim-telescope/telescope.nvim) 開啟檔案
 # <leader>ff (Find Files)
 # 輸入檔案名稱進行模糊搜尋
 
@@ -762,7 +765,7 @@ npm run dev
 python manage.py runserver
 
 # 7. 切換到右下方的 Git pane（Ctrl+j）
-# 使用 lazygit 管理版本控制
+# 使用 lazygit (https://github.com/jesseduffield/lazygit) 管理版本控制
 lazygit
 
 # 8. 在 lazygit 中：
@@ -772,13 +775,13 @@ lazygit
 # - P: pull
 
 # 9. 回到 Neovim（Ctrl+h）繼續開發
-# 使用 gitsigns 查看更改
+# 使用 gitsigns (https://github.com/lewis6991/gitsigns.nvim) 查看更改
 # ]c - 下一個更改
 # [c - 上一個更改
 # <leader>hp - 預覽更改
 # <leader>hb - 查看 blame
 
-# 10. 使用 Telescope 搜尋內容
+# 10. 使用 Telescope (https://github.com/nvim-telescope/telescope.nvim) 搜尋內容
 # <leader>fg (Find Grep)
 # 輸入要搜尋的文字
 
@@ -863,7 +866,7 @@ gwork() {
 
 **進階自動化**：
 
-使用 tmuxinator 定義專案布局（`~/.config/tmuxinator/myproject.yml`）：
+使用 [tmuxinator](https://github.com/tmuxinator/tmuxinator) 定義專案布局（`~/.config/tmuxinator/myproject.yml`）：
 
 ```yaml
 name: myproject
@@ -889,7 +892,7 @@ tmuxinator start myproject
 ```
 
 **除錯流程**：
-- 使用 `:Telescope diagnostics` 查看所有錯誤
+- 使用 `:Telescope diagnostics` 查看所有錯誤（[Telescope](https://github.com/nvim-telescope/telescope.nvim)）
 - 使用 `]d` 和 `[d` 在錯誤間跳轉
 - 使用 `:terminal` 在 Neovim 中開啟終端執行命令
 - 使用 `<leader>ca` 快速修復常見問題
@@ -901,6 +904,8 @@ tmuxinator start myproject
 - [ThePrimeagen](https://www.youtube.com/@ThePrimeagen) - YouTube 教學
 - [TJ DeVries](https://www.youtube.com/@teej_dv) - Neovim 核心開發者
 - [Kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) - 最小化設定範例
+- [Neovim 官方文件](https://neovim.io/doc/user/) - 完整參考手冊
+- [Awesome Neovim](https://github.com/rockerBOO/awesome-neovim) - Neovim 插件彙總
 
 ::: {.callout-tip}
 ## 心態建議

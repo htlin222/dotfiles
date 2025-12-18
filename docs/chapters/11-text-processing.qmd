@@ -4,7 +4,7 @@ title: "文字處理三劍客"
 
 # 文字處理三劍客
 
-awk、sed、grep 是 Unix 文字處理的經典工具。雖然有現代替代品，但理解它們仍然重要。
+[awk](https://www.gnu.org/software/gawk/)、[sed](https://www.gnu.org/software/sed/)、[grep](https://www.gnu.org/software/grep/) 是 Unix 文字處理的經典工具。雖然有現代替代品，但理解它們仍然重要。
 
 ## grep：搜尋文字
 
@@ -16,7 +16,7 @@ awk、sed、grep 是 Unix 文字處理的經典工具。雖然有現代替代品
 
 **方法**
 
-`grep` (Global Regular Expression Print) 透過逐行掃描檔案，將符合指定 pattern（模式）的行印出。核心概念是：
+[`grep`](https://www.gnu.org/software/grep/) (Global Regular Expression Print) 透過逐行掃描檔案，將符合指定 pattern（模式）的行印出。核心概念是：
 - 預設進行**逐行匹配**，找到包含 pattern 的整行就輸出
 - 支援**多種選項**調整搜尋行為（忽略大小寫、顯示行號等）
 - 可對**單一檔案**或**整個目錄樹**進行搜尋
@@ -44,7 +44,7 @@ grep -r "pattern" ./
 **討論/延伸**
 
 - **注意事項**：`grep` 預設區分大小寫，記得在需要時使用 `-i` 選項
-- **效能考量**：遞迴搜尋大型目錄時可能很慢，考慮使用現代替代品 `ripgrep`
+- **效能考量**：遞迴搜尋大型目錄時可能很慢，考慮使用現代替代品 [`ripgrep`](https://github.com/BurntSushi/ripgrep)
 - **常見組合**：`grep -rn` 結合遞迴與行號，是最常用的組合
 - **進階學習**：可搭配正規表示式進行更複雜的模式匹配（見下一節）
 
@@ -95,7 +95,7 @@ grep -B 2 "pattern" file.txt  # 前 2 行
 
 **方法**
 
-`sed` (Stream Editor) 是一個串流編輯器，核心概念是「讀取 → 處理 → 輸出」的管線模式：
+[`sed`](https://www.gnu.org/software/sed/) (Stream Editor) 是一個串流編輯器，核心概念是「讀取 → 處理 → 輸出」的管線模式：
 - **基本語法**：`s/pattern/replacement/` 中的 `s` 代表 substitute（替換）
 - **全域替換**：加上 `g` (global) 旗標會替換每行中的所有匹配，而非只有第一個
 - **原地修改**：`-i` 選項直接修改原檔案，否則只輸出到標準輸出
@@ -122,7 +122,7 @@ sed -i 's/old/new/g' file.txt     # Linux
 - **備份機制**：`sed -i.bak` 會在修改前建立 `.bak` 備份檔
 - **正規表示式**：pattern 部分支援正規表示式，如 `sed 's/[0-9]*/X/g'` 替換所有數字
 - **分隔符彈性**：可使用其他字元作為分隔符，如 `sed 's|/old/path|/new/path|'` 處理路徑更清晰
-- **現代替代**：考慮使用 `sd` 工具，語法更直觀且預設就是全域替換
+- **現代替代**：考慮使用 [`sd`](https://github.com/chmln/sd) 工具，語法更直觀且預設就是全域替換
 - **批次處理**：搭配 `find` 對多個檔案批次替換：`find . -name "*.txt" -exec sed -i 's/old/new/g' {} \;`
 
 ### 刪除行
@@ -207,7 +207,7 @@ sed '2i\新的一行' file.txt
 
 **方法**
 
-`awk` 是一個專為文字處理設計的程式語言，核心概念是「逐行讀取，按欄位處理」：
+[`awk`](https://www.gnu.org/software/gawk/) 是一個專為文字處理設計的程式語言，核心概念是「逐行讀取，按欄位處理」：
 - **基本語法**：`pattern { action }` 表示「當符合 pattern 時，執行 action」
 - **自動分欄**：awk 會自動將每行分割成欄位，`$1` 代表第一欄、`$2` 第二欄，以此類推
 - **預設行為**：若省略 pattern，則處理所有行；若省略 action，則印出符合的行
@@ -401,9 +401,9 @@ history | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
 
 | 傳統工具 | 現代替代 |
 |----------|----------|
-| `grep` | `ripgrep` |
-| `sed` | `sd` |
-| `awk` | `miller` (mlr) |
+| `grep` | [`ripgrep`](https://github.com/BurntSushi/ripgrep) |
+| `sed` | [`sd`](https://github.com/chmln/sd) |
+| `awk` | [`miller`](https://github.com/johnkerl/miller) (mlr) |
 
 但理解傳統工具仍然重要，因為它們在任何 Unix 系統上都可用。
 
@@ -415,5 +415,5 @@ history | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
 
 ::: {.callout-note}
 ## 建議
-日常使用 ripgrep，但保持對 grep/sed/awk 的基本理解，在沒有現代工具的伺服器上會很有用。
+日常使用 [`ripgrep`](https://github.com/BurntSushi/ripgrep)，但保持對 grep/sed/awk 的基本理解，在沒有現代工具的伺服器上會很有用。
 :::

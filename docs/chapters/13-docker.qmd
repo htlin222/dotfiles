@@ -4,7 +4,7 @@ title: "容器化開發"
 
 # 容器化開發
 
-Docker 讓你在隔離的環境中開發，確保「在我的電腦上可以跑」變成「在任何地方都可以跑」。
+[Docker](https://www.docker.com/) 讓你在隔離的環境中開發，確保「在我的電腦上可以跑」變成「在任何地方都可以跑」。
 
 ## 安裝
 
@@ -14,9 +14,9 @@ Docker 讓你在隔離的環境中開發，確保「在我的電腦上可以跑�
 
 ### 方法
 
-Docker 提供兩種主要安裝方式：
-- **Docker Desktop**：官方完整版，包含圖形介面和完整功能
-- **OrbStack**：輕量級替代方案，啟動速度快且資源佔用少，特別適合 macOS 用戶
+[Docker](https://www.docker.com/) 提供兩種主要安裝方式：
+- **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**：官方完整版，包含圖形介面和完整功能
+- **[OrbStack](https://orbstack.dev/)**：輕量級替代方案，啟動速度快且資源佔用少，特別適合 macOS 用戶
 
 ### 結果（程式碼）
 
@@ -277,7 +277,7 @@ CMD ["python", "main.py"]
 
 ### 背景（問題發現）
 
-實際應用通常需要多個容器協作（例如網頁伺服器 + 資料庫 + Redis）。使用 `docker run` 指令逐一啟動容器很麻煩，而且難以管理容器間的網路連接和依賴關係。Docker Compose 讓我們用一個設定檔管理多容器應用。
+實際應用通常需要多個容器協作（例如網頁伺服器 + 資料庫 + Redis）。使用 `docker run` 指令逐一啟動容器很麻煩，而且難以管理容器間的網路連接和依賴關係。[Docker Compose](https://docs.docker.com/compose/) 讓我們用一個設定檔管理多容器應用。
 
 ### 方法
 
@@ -444,7 +444,7 @@ FROM node:20
 WORKDIR /app
 
 # 安裝開發工具
-RUN npm install -g nodemon
+RUN npm install -g nodemon  # https://nodemon.io/
 
 COPY package*.json ./
 RUN npm install
@@ -457,7 +457,7 @@ CMD ["npm", "run", "dev"]
 **注意事項：**
 - 排除 `node_modules` 避免本機和容器版本衝突
 - 開發環境不需要優化映像檔大小，可以包含除錯工具
-- 使用 `nodemon` 或類似工具實現自動重載
+- 使用 [`nodemon`](https://nodemon.io/) 或類似工具實現自動重載
 
 **最佳實踐：**
 - 建立 `.env.dev` 和 `.env.prod` 分別管理環境變數
@@ -525,7 +525,7 @@ docker exec myapp_web env
 **進一步學習：**
 - 了解 `docker attach` vs `docker exec` 的差異
 - 學習使用 `docker cp` 在容器和本機之間複製檔案
-- 研究如何使用 `nsenter` 進入容器的命名空間
+- 研究如何使用 [`nsenter`](https://man7.org/linux/man-pages/man1/nsenter.1.html) 進入容器的命名空間
 
 ## 實用別名
 
@@ -600,7 +600,7 @@ source ~/.zshrc
 
 **進一步學習：**
 - 研究 shell 函數（function）實現更複雜的功能
-- 了解如何使用 `fzf` 套件建立互動式容器選擇器
+- 了解如何使用 [`fzf`](https://github.com/junegunn/fzf) 套件建立互動式容器選擇器
 - 學習 `docker system df` 查看磁碟使用量
 
 ## 實作練習

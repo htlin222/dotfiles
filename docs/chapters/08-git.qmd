@@ -4,7 +4,7 @@ title: "版本控制的日常"
 
 # 版本控制的日常
 
-Git 是開發者的必備工具。掌握 CLI 操作比 GUI 更高效、更精確。
+[Git](https://git-scm.com/) 是開發者的必備工具。掌握 CLI 操作比 GUI 更高效、更精確。
 
 ## 基本設定
 
@@ -149,7 +149,7 @@ git branch -d feature/new-feature
 
 #### 方法
 
-`aicommits` 是基於 AI 的工具，能自動分析 staged changes 並生成符合 Conventional Commits 規範的訊息。它會讀取 `git diff --staged` 的內容，理解程式碼變更的語意，然後產生適當的 commit message。
+[`aicommits`](https://github.com/Nutlope/aicommits) 是基於 AI 的工具，能自動分析 staged changes 並生成符合 Conventional Commits 規範的訊息。它會讀取 `git diff --staged` 的內容，理解程式碼變更的語意，然後產生適當的 commit message。
 
 工作流程：
 1. 暫存變更（`git add`）
@@ -171,11 +171,11 @@ aicommits
 
 #### 討論/延伸
 
-- **API Key 設定**：首次使用需設定 OpenAI API key：`aicommits config set OPENAI_KEY=<your-key>`
+- **API Key 設定**：首次使用需設定 [OpenAI API](https://platform.openai.com/) key：`aicommits config set OPENAI_KEY=<your-key>`
 - **客製化**：可設定 `--type conventional` 強制使用 Conventional Commits 格式
 - **多語言支援**：可設定 `--locale zh-TW` 產生繁體中文訊息
 - **成本考量**：使用 OpenAI API 會產生費用，但每次呼叫成本極低（< $0.01）
-- 替代方案：GitHub Copilot、其他本地 AI 模型
+- 替代方案：[GitHub Copilot](https://github.com/features/copilot)、其他本地 AI 模型
 
 ### 一鍵提交函數
 
@@ -211,7 +211,7 @@ function zgit() {
 - **變體實作**：可加入 `git status` 確認、或整合 pre-commit hooks
 - 進一步學習：研究 Git hooks（pre-commit、commit-msg）實現更嚴謹的流程控制
 
-## lazygit：TUI Git 客戶端
+## [lazygit](https://github.com/jesseduffield/lazygit)：TUI Git 客戶端
 
 ### 背景（問題發現）
 
@@ -221,7 +221,7 @@ function zgit() {
 - 解決 merge conflicts 時需要在編輯器和終端機間切換
 - 檢視 diff、log、stash 等資訊時缺乏直覺的導覽方式
 
-傳統的 GUI Git 客戶端（如 GitKraken、SourceTree）雖然解決了視覺化問題，但需要離開終端環境，打斷工作流程。
+傳統的 GUI Git 客戶端（如 [GitKraken](https://www.gitkraken.com/)、[SourceTree](https://www.sourcetreeapp.com/)）雖然解決了視覺化問題，但需要離開終端環境，打斷工作流程。
 
 ### 方法
 
@@ -263,9 +263,9 @@ brew install lazygit
 - 複雜操作仍可能需要回到指令列
 - 可透過 `~/.config/lazygit/config.yml` 客製化設定
 
-**進一步學習**：探索 `tig`（另一個 TUI Git 工具，專注於瀏覽 history）、`gitui`（Rust 實作的 lazygit 替代品）
+**進一步學習**：探索 [`tig`](https://github.com/jonas/tig)（另一個 TUI Git 工具，專注於瀏覽 history）、[`gitui`](https://github.com/extrawurst/gitui)（Rust 實作的 lazygit 替代品）
 
-## forgit：fzf 整合
+## [forgit](https://github.com/wfxr/forgit)：[fzf](https://github.com/junegunn/fzf) 整合
 
 ### 背景（問題發現）
 
@@ -321,6 +321,8 @@ git clone https://github.com/wfxr/forgit.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/
 source /path/to/forgit/forgit.plugin.zsh
 ```
 
+（[Oh My Zsh](https://ohmyz.sh/) 是熱門的 Zsh 框架）
+
 **使用技巧**：
 - 在 fzf 介面中按 `Ctrl-R` 可切換預覽視窗
 - 使用 `Tab` 或 `Shift-Tab` 多選項目
@@ -331,9 +333,9 @@ source /path/to/forgit/forgit.plugin.zsh
 - 別名可能與現有的 Git aliases 衝突，可透過環境變數客製化
 - 大型 repository 可能需要調整 fzf 的效能設定
 
-**進一步學習**：研究 `git-fuzzy`（另一個 fzf + Git 整合工具）、客製化 fzf 預覽指令
+**進一步學習**：研究 [`git-fuzzy`](https://github.com/biglechuck/git-fuzzy)（另一個 fzf + Git 整合工具）、客製化 fzf 預覽指令
 
-## GitHub CLI
+## [GitHub CLI](https://cli.github.com/)
 
 ### 背景（問題發現）
 
@@ -348,7 +350,7 @@ source /path/to/forgit/forgit.plugin.zsh
 
 ### 方法
 
-GitHub CLI (`gh`) 是 GitHub 官方提供的命令列工具，將 GitHub 的主要功能帶到終端機中。它透過 GitHub API 提供與網頁介面幾乎相同的功能，但以指令列介面呈現。
+[GitHub CLI](https://cli.github.com/) (`gh`) 是 GitHub 官方提供的命令列工具，將 GitHub 的主要功能帶到終端機中。它透過 GitHub API 提供與網頁介面幾乎相同的功能，但以指令列介面呈現。
 
 核心功能：
 - **認證管理**（`gh auth`）：一次登入，全域使用
@@ -405,6 +407,8 @@ gh api repos/:owner/:repo/pulls  # 直接呼叫 GitHub API
 gh extension install github/gh-copilot  # 安裝擴充功能
 ```
 
+（[jq](https://stedolan.github.io/jq/) 是 JSON 處理工具）
+
 **優勢**：
 - **整合式工作流**：commit → push → create PR 一氣呵成
 - **腳本友善**：輸出可解析，適合自動化
@@ -415,7 +419,7 @@ gh extension install github/gh-copilot  # 安裝擴充功能
 - API rate limit：每小時 5000 次（已認證），60 次（未認證）
 - 某些功能仍需使用網頁介面（如複雜的 PR review）
 
-**進一步學習**：研究 `gh extensions`（擴充 gh 功能）、整合 `gh` 與 shell 函數實現自動化工作流
+**進一步學習**：研究 `gh extensions`（擴充 gh 功能）、整合 `gh` 與 shell 函數實現自動化工作流、探索 [jq](https://stedolan.github.io/jq/) 進階用法
 
 ## 實用別名
 

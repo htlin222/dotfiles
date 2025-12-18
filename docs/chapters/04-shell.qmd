@@ -14,13 +14,13 @@ Shell 是你與系統溝通的介面。選擇合適的 shell 並調教它，是�
 - 腳本相容性最好
 - 功能相對基礎
 
-### Zsh
+### [Zsh](https://www.zsh.org/)
 
 - macOS 預設 shell
 - 強大的自動補全
 - 豐富的插件生態（Oh-My-Zsh）
 
-### Fish
+### [Fish](https://fishshell.com/)
 
 - 開箱即用的智能補全
 - 語法不完全相容 POSIX
@@ -77,11 +77,11 @@ setopt interactive_comments     # 允許在互動模式使用 # 註解
 - 執行 `dirs -v` 查看目錄堆疊，然後用 `cd -2` 跳到第二個目錄
 - 設定 `HISTSIZE=10000` 和 `SAVEHIST=10000` 增加歷史記錄容量
 
-## Oh-My-Zsh
+## [Oh-My-Zsh](https://ohmyz.sh/)
 
 ### 背景（問題發現）
 
-手動配置 Zsh 的所有功能（補全、主題、插件）需要大量時間研究和調試。Oh-My-Zsh 框架提供了一個成熟的生態系統，包含 300+ 插件和 150+ 主題，可以快速建立功能完整的開發環境。
+手動配置 Zsh 的所有功能（補全、主題、插件）需要大量時間研究和調試。[Oh-My-Zsh](https://ohmyz.sh/) 框架提供了一個成熟的生態系統，包含 300+ 插件和 150+ 主題，可以快速建立功能完整的開發環境。
 
 ### 方法
 
@@ -145,26 +145,26 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 EAGER_PLUGINS=(
   git                        # Git 命令別名和補全
   zsh-lazyload              # 延遲載入框架本身
-  fast-syntax-highlighting  # 語法高亮（需立即可見）
+  fast-syntax-highlighting  # 語法高亮（需立即可見）— https://github.com/zdharma-continuum/fast-syntax-highlighting
 )
 
 # 第一次顯示 prompt 時載入（約 100ms 後）
 PROMPT_PLUGINS=(
-  zsh-autosuggestions       # 命令自動建議
+  zsh-autosuggestions       # 命令自動建議 — https://github.com/zsh-users/zsh-autosuggestions
 )
 
 # 第一次按鍵時載入（使用者開始輸入時）
 KEYPRESS_PLUGINS=(
-  zsh-vi-mode               # Vi 編輯模式
-  fzf-tab                   # 模糊搜尋補全
-  zsh-autopair              # 自動配對括號
+  zsh-vi-mode               # Vi 編輯模式 — https://github.com/jeffreytse/zsh-vi-mode
+  fzf-tab                   # 模糊搜尋補全 — https://github.com/Aloxaf/fzf-tab
+  zsh-autopair              # 自動配對括號 — https://github.com/hlissner/zsh-autopair
 )
 
 # 背景延遲載入（非同步，不影響啟動）
 DEFERRED_PLUGINS=(
   colored-man-pages         # 彩色 man page
   copyfile                  # 複製檔案內容到剪貼簿
-  web-search                # 快速網路搜尋
+  web-search                # 快速網路搜尋 — https://github.com/sinetoami/web-search
 )
 ```
 
@@ -172,7 +172,7 @@ DEFERRED_PLUGINS=(
 
 **實作方式**：
 
-需要搭配延遲載入框架（如 `zsh-defer` 或 `zsh-lazyload`）才能實現：
+需要搭配延遲載入框架（如 [`zsh-defer`](https://github.com/romkatv/zsh-defer) 或 `zsh-lazyload`）才能實現：
 
 ```bash
 # 在 .zshrc 中實作分層載入
@@ -204,13 +204,13 @@ zsh-defer -a -t 1 plugins+=(colored-man-pages copyfile web-search)
 - 測試各插件的實際載入時間來調整分層策略
 
 **進階優化**：
-- 使用 `zinit` 或 `antigen` 等更強大的插件管理器
+- 使用 [`zinit`](https://github.com/zdharma-continuum/zinit) 或 [`antigen`](https://github.com/zsh-users/antigen) 等更強大的插件管理器
 - 實作條件式載入（只在需要時載入特定語言插件）
 - 使用編譯的 `.zwc` 檔案加速腳本執行
 
-## Powerlevel10k 主題
+## [Powerlevel10k](https://github.com/romkatv/powerlevel10k) 主題
 
-### 安裝 Powerlevel10k
+### 安裝 [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
 
 #### 背景（問題發現）
 
@@ -218,7 +218,7 @@ zsh-defer -a -t 1 plugins+=(colored-man-pages copyfile web-search)
 
 #### 方法
 
-Powerlevel10k 是目前最快的 Zsh 主題，採用以下技術：
+[Powerlevel10k](https://github.com/romkatv/powerlevel10k) 是目前最快的 Zsh 主題，採用以下技術：
 1. **C 語言實作**的 Git 狀態檢查（比 shell 腳本快 10-100 倍）
 2. **快取機制**避免重複計算
 3. **非同步更新**不阻塞主執行緒
@@ -245,7 +245,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 **首次設定精靈**：
 重啟終端機後會自動執行 `p10k configure` 設定精靈，提供互動式選項：
-- 字型選擇（推薦安裝 Meslo Nerd Font）
+- 字型選擇（推薦安裝 [Meslo Nerd Font](https://github.com/ryanoasis/nerd-fonts)）
 - 提示符樣式（Rainbow、Pure、Lean 等）
 - 顯示元素（時間、目錄、Git、指令執行時間等）
 
@@ -496,7 +496,7 @@ num  calls                time                       self            name
    - 移除不常用的插件
    - 使用延遲載入策略（參見「插件載入策略」章節）
 
-3. **NVM/RVM 等版本管理器**：
+3. **[NVM](https://github.com/nvm-sh/nvm)/RVM 等版本管理器**：
    ```bash
    # 延遲載入 nvm（只在需要時）
    export NVM_DIR="$HOME/.nvm"

@@ -37,7 +37,7 @@ echo "Today is $today"
 - 變數賦值時等號兩邊不能有空格（`name="World"` 正確，`name = "World"` 錯誤）
 - 使用雙引號 `"$var"` 可以正確處理包含空格的變數值
 - 命令替換也可使用反引號 `` `command` ``，但 `$()` 更現代且易讀
-- 考慮使用 `shellcheck` 工具檢查腳本常見錯誤
+- 考慮使用 [shellcheck](https://www.shellcheck.net/) 工具檢查腳本常見錯誤
 
 ### 條件判斷
 
@@ -221,7 +221,7 @@ function newpj() {
 
 ### 轉換影片為 GIF
 
-**背景（問題發現）**：在文件、README 或技術部落格中展示操作流程時，GIF 動畫比靜態截圖更直觀。但 ffmpeg 的參數複雜，每次都要查文件才能記得正確的轉換命令。
+**背景（問題發現）**：在文件、README 或技術部落格中展示操作流程時，GIF 動畫比靜態截圖更直觀。但 [ffmpeg](https://ffmpeg.org/) 的參數複雜，每次都要查文件才能記得正確的轉換命令。
 
 **方法**：封裝 ffmpeg 轉換邏輯並設定合理的預設值：
 - `-z "$1"`：檢查第一個參數是否為空
@@ -258,7 +258,7 @@ function mp4_to_gif() {
 - 優化檔案大小：使用調色盤 `-vf "fps=10,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"`
 - 支援自訂時間範圍：改為接受三個參數 `mp4_to_gif input.mp4 00:00:05 00:00:15`
 - 批次處理：結合 for 迴圈轉換目錄下所有 MP4 檔案
-- 替代工具：`gifsicle` 可進一步壓縮 GIF、`gifski` 提供更高品質的轉換
+- 替代工具：[gifsicle](https://www.lcdf.org/gifsicle/) 可進一步壓縮 GIF、[gifski](https://gif.ski/) 提供更高品質的轉換
 
 ### 提醒功能
 
@@ -337,7 +337,7 @@ source "$DOTFILES/zsh/modules/note_related.zsh"
 
 **背景（問題發現）**：當 CLI 工具需要複雜的邏輯、資料處理、API 呼叫或跨平台支援時，Shell script 會變得難以維護。Python 提供了更好的結構化程式設計能力和豐富的生態系統。
 
-**方法**：使用 Click 框架快速建立 Python CLI 工具：
+**方法**：使用 [Click](https://click.palletsprojects.com/) 框架快速建立 Python CLI 工具：
 - `#!/usr/bin/env python3`：使腳本可執行，自動找到 Python 3 直譯器
 - `@click.command()`：裝飾器，將函數轉換為 CLI 命令
 - `@click.option()`：定義命令列選項，支援預設值、說明文字、型別驗證
@@ -364,8 +364,8 @@ if __name__ == '__main__':
 - 安裝 Click：`pip install click` 或 `uv add click`
 - 使腳本可執行：`chmod +x script.py`，然後直接執行 `./script.py --name Alice`
 - Click 進階功能：子命令、參數驗證、互動式提示、進度條、顏色輸出
-- 替代框架：`argparse`（標準庫）、`typer`（基於型別提示）、`fire`（自動生成 CLI）
-- 打包發布：使用 `setuptools` 或 `poetry` 將工具打包成可安裝的套件
+- 替代框架：[argparse](https://docs.python.org/3/library/argparse.html)（標準庫）、[typer](https://typer.tiangolo.com/)（基於型別提示）、[fire](https://github.com/google/python-fire)（自動生成 CLI）
+- 打包發布：使用 [setuptools](https://setuptools.pypa.io/) 或 [poetry](https://python-poetry.org/) 將工具打包成可安裝的套件
 - 測試：使用 Click 的 `CliRunner` 進行單元測試
 
 ## 實作練習

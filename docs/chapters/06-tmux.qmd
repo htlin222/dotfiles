@@ -4,7 +4,7 @@ title: "多工管理：tmux 深入指南"
 
 # 多工管理：tmux 深入指南
 
-tmux 是終端多工器，讓你在單一終端視窗中管理多個 session、window 和 pane。
+[tmux](https://github.com/tmux/tmux) 是終端多工器，讓你在單一終端視窗中管理多個 session、window 和 pane。
 
 ## 為什麼需要 tmux？
 
@@ -80,7 +80,7 @@ set -g pane-base-index 1
 
 **注意事項**：
 
-- `Ctrl+A` 是 GNU Screen 的慣例，但會與 shell 中「移到行首」的快捷鍵衝突。若需要原功能，按兩次 `prefix` 即可（`C-a C-a`）
+- `Ctrl+A` 是 [GNU Screen](https://www.gnu.org/software/screen/) 的慣例，但會與 shell 中「移到行首」的快捷鍵衝突。若需要原功能，按兩次 `prefix` 即可（`C-a C-a`）
 - 若使用 iTerm2 或 Alacritty，可能需要額外設定 `set -g default-terminal "tmux-256color"` 以獲得更好的顯色支援
 - `escape-time 0` 雖然解決延遲問題，但某些終端可能需要保留小量延遲（如 `set -sg escape-time 10`）
 
@@ -207,7 +207,7 @@ bind g split-window -h \; split-window -v \; select-pane -L \; split-window -v
 
 ### 方法
 
-使用 `vim-tmux-navigator` 插件實現無縫導航，核心概念：
+使用 [`vim-tmux-navigator`](https://github.com/christoomey/vim-tmux-navigator) 插件實現無縫導航，核心概念：
 
 - **統一快捷鍵**：在 tmux pane 和 vim split 中使用相同的 `Ctrl-h/j/k/l`
 - **智慧判斷**：插件自動偵測當前是在 vim split 邊緣還是 tmux pane 邊緣
@@ -226,7 +226,7 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 
 **完整設定步驟**：
 
-1. **安裝 Neovim 插件**（使用 lazy.nvim）：
+1. **安裝 Neovim 插件**（使用 [lazy.nvim](https://github.com/folke/lazy.nvim)）：
 ```lua
 {
   'christoomey/vim-tmux-navigator',
@@ -251,7 +251,7 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 
 - 此插件會覆蓋 vim 的 `Ctrl-l`（清除螢幕），可改用 `:nohl` 或自訂快捷鍵
 - 在 tmux 的複製模式（copy-mode）下不會觸發導航
-- 若使用 fzf.vim，可能需要額外設定以避免衝突
+- 若使用 [fzf.vim](https://github.com/junegunn/fzf.vim)，可能需要額外設定以避免衝突
 
 **實際工作流範例**：
 
@@ -283,7 +283,7 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 
 ### 方法
 
-使用 TPM (Tmux Plugin Manager) 統一管理插件，核心概念：
+使用 [TPM (Tmux Plugin Manager)](https://github.com/tmux-plugins/tpm) 統一管理插件，核心概念：
 
 - **宣告式管理**：在設定檔中宣告所需插件，TPM 負責下載和載入
 - **快捷鍵操作**：`prefix I` 安裝、`prefix U` 更新、`prefix alt-u` 移除
@@ -303,7 +303,7 @@ set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'catppuccin/tmux'
 
-# 初始化 TPM（放在 tmux.conf 最後）
+# 初始化 [TPM](https://github.com/tmux-plugins/tpm)（放在 tmux.conf 最後）
 run '~/.tmux/plugins/tpm/tpm'
 ```
 
@@ -352,14 +352,21 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @plugin 'catppuccin/tmux'
 ```
 
+**插件說明**：
+
+- [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) - 提供基礎的合理預設設定
+- [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) - 保存和恢復 tmux session
+- [tmux-yank](https://github.com/tmux-plugins/tmux-yank) - 系統剪貼簿整合
+- [catppuccin/tmux](https://github.com/catppuccin/tmux) - Catppuccin 主題
+
 ## 實用插件推薦
 
 | 插件 | 功能 |
 |------|------|
-| `tmux-resurrect` | 保存/恢復 session |
-| `tmux-fzf` | fzf 整合 |
-| `catppuccin/tmux` | 美觀的主題 |
-| `tmux-yank` | 系統剪貼簿整合 |
+| [`tmux-resurrect`](https://github.com/tmux-plugins/tmux-resurrect) | 保存/恢復 session |
+| [`tmux-fzf`](https://github.com/sainnhe/tmux-fzf) | fzf 整合 |
+| [`catppuccin/tmux`](https://github.com/catppuccin/tmux) | 美觀的主題 |
+| [`tmux-yank`](https://github.com/tmux-plugins/tmux-yank) | 系統剪貼簿整合 |
 
 ## 實作練習
 
@@ -479,6 +486,6 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @plugin 'christoomey/vim-tmux-navigator'
 set -g @plugin 'catppuccin/tmux'
 
-# 初始化 TPM（必須放在最後）
+# 初始化 [TPM](https://github.com/tmux-plugins/tpm)（必須放在最後）
 run '~/.tmux/plugins/tpm/tpm'
 ```

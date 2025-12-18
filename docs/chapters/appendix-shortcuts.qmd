@@ -147,7 +147,7 @@ $ git commit -m "Add !$"  # 這裡 !$ 會擴展為 important-file.txt
 
 **討論/延伸**：
 - `Ctrl+R` 可重複按以循環搜尋結果
-- 結合 fzf 可獲得更強大的歷史搜尋（視覺化介面）
+- 結合 [fzf](https://github.com/junegunn/fzf) 可獲得更強大的歷史搜尋（視覺化介面）
 - 其他有用的歷史擴展：
   - `!n`：執行歷史中第 n 個命令
   - `!-n`：執行倒數第 n 個命令
@@ -157,6 +157,8 @@ $ git commit -m "Add !$"  # 這裡 !$ 會擴展為 important-file.txt
 ## Tmux 快捷鍵
 
 > 假設 prefix 設為 `Ctrl+A`
+
+[Tmux](https://github.com/tmux/tmux) 是一個終端多路器，提供會話管理、視窗分割等功能。
 
 ### Session
 
@@ -446,6 +448,8 @@ $ npm run build
 
 > 假設 leader 設為 `Space`
 
+[Neovim](https://neovim.io/) 是 Vim 的現代分支，提供可擴展的編輯功能。
+
 ### 基本移動
 
 **背景（問題發現）**：使用方向鍵或滑鼠移動游標需要手離開主鍵盤區，降低編輯效率。大型檔案中跳轉到特定位置很慢。
@@ -609,7 +613,7 @@ Ctrl+v      " 區塊選取模式
 | `n/N` | 下/上一個結果 |
 | `*/#` | 搜尋游標下的單詞 |
 
-### Telescope (fzf)
+### Telescope ([fzf](https://github.com/junegunn/fzf) 整合)
 
 | 快捷鍵 | 功能 |
 |--------|------|
@@ -629,6 +633,8 @@ Ctrl+v      " 區塊選取模式
 | `<leader>rn` | 重新命名 |
 
 ## fzf 快捷鍵
+
+[fzf](https://github.com/junegunn/fzf) 是一個強大的模糊搜尋工具，提供互動式的命令列搜尋體驗。
 
 ### Shell 整合
 
