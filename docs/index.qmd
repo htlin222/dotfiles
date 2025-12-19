@@ -8,7 +8,7 @@ subtitle: "終端人生：純 CLI 開發者的完全指南"
 ::: {.callout-important}
 ## 授權條款
 
-[![CC BY-NC-SA](https://tw.creativecommons.net/wp-content/uploads/sites/20/2020/11/by-nc-sa-300x105.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)
+<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank"><img src="https://tw.creativecommons.net/wp-content/uploads/sites/20/2020/11/by-nc-sa-300x105.png" alt="CC BY-NC-SA" height="40"></a>
 
 **姓名標示-非商業性-相同方式分享**
 
