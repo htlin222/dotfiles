@@ -48,18 +48,10 @@ touch ~/.hushlogin
 # 請依照指示將 Homebrew 加入 PATH
 ```
 
-### 3. 安裝必要工具並複製此專案
+### 3. 複製此專案
 
 ```bash
-brew install wget gh && \
-brew install --cask iterm2 microsoft-edge 1password logitech-options
-```
-
-登入 GitHub 並複製專案：
-
-```bash
-gh auth login
-gh repo clone htlin222/dotfiles ~/.dotfiles
+git clone https://github.com/htlin222/dotfiles.git ~/.dotfiles
 ```
 
 ### 4. 透過 Brewfile 安裝套件

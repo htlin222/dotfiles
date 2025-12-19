@@ -46,18 +46,10 @@ touch ~/.hushlogin
 # Follow the instructions to add Homebrew to your PATH
 ```
 
-### 3. Install essential tools and clone this repository
+### 3. Clone this repository
 
 ```bash
-brew install wget gh && \
-brew install --cask iterm2 microsoft-edge 1password logitech-options
-```
-
-Login to GitHub and clone:
-
-```bash
-gh auth login
-gh repo clone htlin222/dotfiles ~/.dotfiles
+git clone https://github.com/htlin222/dotfiles.git ~/.dotfiles
 ```
 
 ### 4. Install packages via Brewfile
