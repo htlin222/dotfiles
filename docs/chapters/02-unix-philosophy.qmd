@@ -25,7 +25,6 @@ Unix 哲學是終端工作流的基石。理解它，你就理解了為什麼終
 所有工具都用純文字溝通，這讓它們可以無縫組合：
 
 ```{bash}
-#| eval: false
 # 統計最常見的錯誤類型
 cat error.log | grep "ERROR" | cut -d: -f2 | sort | uniq -c | sort -rn
 ```
@@ -35,7 +34,6 @@ cat error.log | grep "ERROR" | cut -d: -f2 | sort | uniq -c | sort -rn
 管道 (`|`) 讓小工具組合成強大的工具鏈：
 
 ```{bash}
-#| eval: false
 # 找出專案中最長的 10 個檔案
 find . -name "*.py" -exec wc -l {} \; | sort -rn | head -10
 ```
@@ -57,7 +55,6 @@ find . -name "*.py" -exec wc -l {} \; | sort -rn | head -10
 以下是一個真實的工作流範例：
 
 ```{bash}
-#| eval: false
 # 找出所有包含 TODO 的 markdown 檔案並計數
 fd -e md | xargs rg "TODO" -c | sort -t: -k2 -rn
 ```
@@ -73,14 +70,12 @@ fd -e md | xargs rg "TODO" -c | sort -t: -k2 -rn
 1. 安裝現代工具：
 
 ```{bash}
-#| eval: false
 brew install fd ripgrep bat lsd zoxide
 ```
 
 2. 嘗試用管道組合命令：
 
 ```{bash}
-#| eval: false
 # 你的歷史命令中，最常用的 10 個命令是什麼？
 history | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
 ```

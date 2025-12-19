@@ -19,7 +19,6 @@ title: "版本控制的日常"
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # ~/.gitconfig
 [user]
     name = Your Name
@@ -71,7 +70,6 @@ Git 的基本工作流程分為四個階段：
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 查看狀態
 git status
 
@@ -115,7 +113,6 @@ Git 的分支機制提供了輕量級的解決方案：
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 建立並切換分支
 git checkout -b feature/new-feature
 
@@ -160,7 +157,6 @@ git branch -d feature/new-feature
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝
 npm install -g aicommits
 
@@ -195,7 +191,6 @@ aicommits
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 function zgit() {
   git add -A
   aicommits --type conventional
@@ -236,7 +231,6 @@ function zgit() {
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 brew install lazygit
 ```
 
@@ -290,7 +284,6 @@ Git 的原生指令雖然功能強大，但在以下場景缺乏互動性：
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 互動式 git add
 ga
 
@@ -362,7 +355,6 @@ source /path/to/forgit/forgit.plugin.zsh
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝
 brew install gh
 
@@ -444,7 +436,6 @@ gh extension install github/gh-copilot  # 安裝擴充功能
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 查看最近失敗的 run
 alias gha-last-fail='gh run view --log-failed'
 

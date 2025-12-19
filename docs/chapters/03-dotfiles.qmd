@@ -26,7 +26,6 @@ Dotfiles 是以點 (`.`) 開頭的配置檔案。管理好它們，你就能：
 最常見的管理方式是使用 symlink（符號連結）：
 
 ```{bash}
-#| eval: false
 # 建立結構
 ~/.dotfiles/
 ├── zsh/
@@ -41,7 +40,6 @@ Dotfiles 是以點 (`.`) 開頭的配置檔案。管理好它們，你就能：
 安裝腳本會建立連結：
 
 ```{bash}
-#| eval: false
 # install.sh
 ln -sf ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 ln -sf ~/.dotfiles/tmux/tmux.conf.symlink ~/.tmux.conf
@@ -53,7 +51,6 @@ ln -sf ~/.dotfiles/git/gitconfig.symlink ~/.gitconfig
 在 `zprofile` 中設定環境變數：
 
 ```{bash}
-#| eval: false
 # ~/.dotfiles/zsh/zprofile.symlink
 export DOTFILES=$HOME/.dotfiles
 export EDITOR="nvim"
@@ -69,7 +66,6 @@ export PATH="$DOTFILES/shellscripts:$PATH"
 將設定分成多個模組：
 
 ```{bash}
-#| eval: false
 # zshrc.symlink
 source "$DOTFILES/zsh/modules/alias.zsh"
 source "$DOTFILES/zsh/modules/functions.zsh"
@@ -85,7 +81,6 @@ source "$DOTFILES/zsh/modules/fzf.zsh"
 ## Git 管理
 
 ```{bash}
-#| eval: false
 cd ~/.dotfiles
 git init
 git add .
@@ -97,7 +92,6 @@ git push -u origin main
 ## 快速同步函數
 
 ```{bash}
-#| eval: false
 # 一鍵提交 dotfiles
 function dp() {
   cd $DOTFILES
@@ -113,7 +107,6 @@ function dp() {
 1. 建立你的 dotfiles 目錄：
 
 ```{bash}
-#| eval: false
 mkdir -p ~/.dotfiles
 cd ~/.dotfiles
 git init
@@ -122,7 +115,6 @@ git init
 2. 移動你的第一個設定檔：
 
 ```{bash}
-#| eval: false
 mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
 ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 ```
@@ -130,7 +122,6 @@ ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 3. 提交你的第一個 commit：
 
 ```{bash}
-#| eval: false
 git add .
 git commit -m "Add zsh configuration"
 ```

@@ -37,7 +37,6 @@ title: "終端模擬器"
 **結果（程式碼）**
 
 ```{bash}
-#| eval: false
 brew install --cask wezterm
 ```
 
@@ -67,7 +66,6 @@ Lua 的優勢在於可讀性高、支援條件邏輯，且設定檔本身就是�
 **結果（程式碼）**
 
 ```{lua}
-#| eval: false
 -- ~/.config/wezterm/wezterm.lua
 local wezterm = require 'wezterm'
 local config = {}
@@ -116,7 +114,6 @@ return config
 **結果（程式碼）**
 
 ```{bash}
-#| eval: false
 # 在 WezTerm 中自動啟動 tmux
 if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
   exec tmux
@@ -157,7 +154,6 @@ fi
 **結果（程式碼）**
 
 ```{bash}
-#| eval: false
 brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font
 ```
@@ -208,7 +204,6 @@ brew install --cask font-jetbrains-mono-nerd-font
 **結果（程式碼）**
 
 ```{lua}
-#| eval: false
 -- WezTerm 快捷鍵
 config.keys = {
   -- 使用 Cmd+D 水平分割

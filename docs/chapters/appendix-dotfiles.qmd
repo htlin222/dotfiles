@@ -72,7 +72,6 @@ title: "推薦 dotfiles 範例"
 
 **結果（程式碼）**：
 ```{bash}
-#| eval: false
 mkdir -p ~/.dotfiles
 cd ~/.dotfiles
 git init
@@ -92,7 +91,6 @@ git init
 
 **結果（程式碼）**：
 ```{bash}
-#| eval: false
 # 移動 zshrc
 mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
 ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
@@ -113,7 +111,6 @@ ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 
 **結果（程式碼）**：
 ```{bash}
-#| eval: false
 # install.sh
 #!/bin/bash
 
@@ -143,7 +140,6 @@ echo "Dotfiles installed!"
 
 **結果（程式碼）**：
 ```{bash}
-#| eval: false
 git add .
 git commit -m "Initial dotfiles setup"
 git remote add origin git@github.com:username/dotfiles.git

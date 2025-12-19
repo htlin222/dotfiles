@@ -21,7 +21,6 @@ title: "容器化開發"
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # macOS
 brew install --cask docker
 
@@ -60,7 +59,6 @@ Docker 映像檔（Image）就像是應用程式的「模板」或「快照」�
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 拉取映像檔
 docker pull python:3.12
 
@@ -110,7 +108,6 @@ docker image prune -a
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 執行容器
 docker run -it python:3.12 bash
 
@@ -166,7 +163,6 @@ docker container prune
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 掛載當前目錄
 docker run -v $(pwd):/app -w /app python:3.12 python script.py
 ```
@@ -214,7 +210,6 @@ Dockerfile 是一個文字檔，包含一系列指令來建置映像檔：
 ### 結果（程式碼）
 
 ```{dockerfile}
-#| eval: false
 # Python 應用範例
 FROM python:3.12-slim
 
@@ -231,7 +226,6 @@ CMD ["python", "main.py"]
 建置和執行：
 
 ```{bash}
-#| eval: false
 # 建置映像檔
 docker build -t myapp .
 
@@ -296,7 +290,6 @@ CMD ["python", "main.py"]
 ### 結果（程式碼）
 
 ```{yaml}
-#| eval: false
 version: '3.8'
 services:
   web:
@@ -322,7 +315,6 @@ volumes:
 操作命令：
 
 ```{bash}
-#| eval: false
 # 啟動所有服務
 docker compose up -d
 
@@ -411,7 +403,6 @@ services:
 #### 結果（程式碼）
 
 ```{yaml}
-#| eval: false
 # docker-compose.dev.yml
 services:
   dev:
@@ -481,7 +472,6 @@ CMD ["npm", "run", "dev"]
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 docker exec -it <container_name> bash
 ```
 
@@ -546,7 +536,6 @@ Docker 指令往往很長，需要記憶多個參數和選項。重複的操作�
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 清理無用的容器和映像檔
 alias docker-clean='docker system prune -af'
 

@@ -30,7 +30,6 @@ title: "除錯與效能分析"
 - 報告按照累積時間（cumulative time）排序
 
 ```{bash}
-#| eval: false
 # 在 .zshrc 開頭加入
 zmodload zsh/zprof
 
@@ -49,7 +48,6 @@ zprof
 - 只有在明確設定 `ZSH_DEBUGRC` 時才執行 `zprof`
 
 ```{bash}
-#| eval: false
 if [ -n "${ZSH_DEBUGRC+1}" ]; then
     zprof
 fi
@@ -60,7 +58,6 @@ fi
 當需要分析時，設定環境變數並啟動 zsh：
 
 ```{bash}
-#| eval: false
 ZSH_DEBUGRC=1 zsh -i -c exit
 ```
 
@@ -87,7 +84,6 @@ ZSH_DEBUGRC=1 zsh -i -c exit
 - 觀察 real time（實際經過的時間）
 
 ```{bash}
-#| eval: false
 function timezsh() {
     for i in $(seq 1 4); do
         /usr/bin/time $SHELL -i -c exit
@@ -147,7 +143,6 @@ Neovim 內建 `--startuptime` 選項，可以記錄啟動過程中每個步驟�
 - `tail -20` 查看最後 20 行（最耗時的部分）
 
 ```{bash}
-#| eval: false
 nvim --startuptime startup.log -c exit
 tail -20 startup.log
 ```
@@ -157,7 +152,6 @@ tail -20 startup.log
 為了方便反覆測試，可以設定一個別名：
 
 ```{bash}
-#| eval: false
 alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
 ```
 
@@ -246,7 +240,6 @@ Python 提供兩個主要的效能分析工具：
 - 系統層級的效能概覽
 
 ```{bash}
-#| eval: false
 # 使用 cProfile
 python -m cProfile -s cumtime script.py
 ```
@@ -273,7 +266,6 @@ python -m cProfile -s cumtime script.py
 - 深入分析特定函數
 
 ```{bash}
-#| eval: false
 # 使用 line_profiler（需要安裝）
 kernprof -l -v script.py
 ```
@@ -316,7 +308,6 @@ Node.js 內建效能分析工具，可以產生詳細的效能報告。
 **步驟 1：收集效能資料**
 
 ```{bash}
-#| eval: false
 # 使用內建 profiler
 node --prof app.js
 ```
@@ -326,7 +317,6 @@ node --prof app.js
 **步驟 2：處理並分析資料**
 
 ```{bash}
-#| eval: false
 node --prof-process isolate-*.log > processed.txt
 ```
 
@@ -378,7 +368,6 @@ node --prof-process isolate-*.log > processed.txt
 **基本監控：**
 
 ```{bash}
-#| eval: false
 # 基本
 top
 htop
@@ -392,7 +381,6 @@ htop
 **推薦使用 [zenith](https://github.com/bvaisvil/zenith)（Rust 開發）：**
 
 ```{bash}
-#| eval: false
 # 更現代的替代
 brew install zenith  # Rust 寫的
 alias ztop='zenith'
@@ -437,7 +425,6 @@ alias ztop='zenith'
 **傳統指令：**
 
 ```{bash}
-#| eval: false
 # 基本
 df -h    # 查看檔案系統使用情況
 du -sh * # 查看當前目錄下各項目大小
@@ -456,7 +443,6 @@ du -sh * # 查看當前目錄下各項目大小
 **推薦使用 [diskonaut](https://github.com/imsnif/diskonaut)：**
 
 ```{bash}
-#| eval: false
 # 互動式
 brew install diskonaut
 diskonaut
@@ -501,7 +487,6 @@ diskonaut
 **基本指令：**
 
 ```{bash}
-#| eval: false
 # 查看連線
 netstat -an | grep LISTEN
 ```
@@ -522,7 +507,6 @@ netstat -an | grep LISTEN
 **推薦使用 [bandwhich](https://github.com/imsnif/bandwhich)：**
 
 ```{bash}
-#| eval: false
 # 監控流量
 brew install bandwhich
 sudo bandwhich
@@ -570,7 +554,6 @@ Shell script 除錯困難的原因：
 **核心選項：**
 
 ```{bash}
-#| eval: false
 # 啟用除錯模式
 set -x  # 顯示每個命令
 set -e  # 錯誤時停止
@@ -638,7 +621,6 @@ set -euo pipefail  # 推薦的安全組合
 使用 `trap` 命令在每個命令執行後暫停，讓你可以檢查當下的狀態。
 
 ```{bash}
-#| eval: false
 # 使用 trap 在每個命令後暫停
 trap 'read -p "Press enter to continue"' DEBUG
 ```
@@ -693,7 +675,6 @@ trap - DEBUG  # 移除 DEBUG trap
 **基本指令：**
 
 ```{bash}
-#| eval: false
 # 即時追蹤
 tail -f /var/log/system.log
 ```
@@ -715,7 +696,6 @@ tail -f /var/log/system.log
 **使用 [ripgrep](https://github.com/BurntSushi/ripgrep)（推薦）：**
 
 ```{bash}
-#| eval: false
 # 搜尋錯誤
 rg -i "error|fail" /var/log/*.log
 ```
@@ -737,7 +717,6 @@ rg -i "error|fail" /var/log/*.log
 **分析錯誤分布：**
 
 ```{bash}
-#| eval: false
 # 統計錯誤類型
 grep "ERROR" app.log | cut -d: -f2 | sort | uniq -c | sort -rn
 ```

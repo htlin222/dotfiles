@@ -34,7 +34,6 @@ title: "多語言版本管理"
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝
 brew install mise
 
@@ -62,7 +61,6 @@ echo 'eval "$(mise activate zsh)"' >> ~/.zshrc
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝 Node.js
 mise install node@20
 mise use node@20
@@ -99,7 +97,6 @@ mise list
 在專案目錄建立 `.mise.toml`：
 
 ```{toml}
-#| eval: false
 [tools]
 node = "20"
 python = "3.12"
@@ -138,7 +135,6 @@ fnm（Fast Node Manager）專注於 Node.js 版本管理，使用 Rust 編寫，
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝
 brew install fnm
 
@@ -181,7 +177,6 @@ uv 重新設計了 Python 套件管理流程：
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝
 brew install uv
 
@@ -217,7 +212,6 @@ uv pip install pandas numpy
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 在 .zshrc 中
 if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
@@ -247,7 +241,6 @@ fi
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 使用 uv 作為 pipx 替代
 alias pipx='uv tool'
 
@@ -280,7 +273,6 @@ uv tool install black
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 alias uvinit="uv venv && source .venv/bin/activate"
 ```
 
@@ -317,7 +309,6 @@ alias uvinit="uv venv && source .venv/bin/activate"
 #### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 function chpwd() {
   # 自動啟用 Python 虛擬環境
   if [ -f ".venv/bin/activate" ]; then

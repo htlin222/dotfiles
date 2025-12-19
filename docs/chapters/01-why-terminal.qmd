@@ -11,7 +11,6 @@ title: "為什麼選擇終端？"
 當你的手指不需要離開鍵盤，工作流就不會被打斷。想像一下：
 
 ```{bash}
-#| eval: false
 # 一行命令完成：搜尋、編輯、提交
 rg "TODO" --files-with-matches | xargs nvim
 ```
@@ -23,7 +22,6 @@ rg "TODO" --files-with-matches | xargs nvim
 你做過的每件事都可以變成腳本：
 
 ```{bash}
-#| eval: false
 # 每天早上的工作流
 function morning() {
   cd ~/projects
@@ -38,7 +36,6 @@ function morning() {
 ## 遠端工作：SSH 到任何地方
 
 ```{bash}
-#| eval: false
 ssh user@remote-server
 tmux attach
 ```

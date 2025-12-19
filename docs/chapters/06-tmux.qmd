@@ -51,7 +51,6 @@ tmux 的預設設定在實際使用中會遇到以下問題：
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # ~/.tmux.conf
 
 # 改用 Ctrl+A 作為 prefix
@@ -142,7 +141,6 @@ tmux 預設的快捷鍵設計有以下痛點：
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 分割視窗時保持當前目錄
 bind b split-window -h -c "#{pane_current_path}"
 bind v split-window -v -c "#{pane_current_path}"
@@ -217,7 +215,6 @@ bind g split-window -h \; split-window -v \; select-pane -L \; split-window -v
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 在 tmux.conf 中
 set -g @plugin 'christoomey/vim-tmux-navigator'
 ```
@@ -293,7 +290,6 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝 TPM
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
@@ -418,7 +414,6 @@ bind r source-file ~/.tmux.conf \; display 'Reloaded!'
 結合本章所有概念的完整 `~/.tmux.conf`：
 
 ```{bash}
-#| eval: false
 # ============================================
 # 基礎設定
 # ============================================

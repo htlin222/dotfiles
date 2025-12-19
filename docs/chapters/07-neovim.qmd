@@ -22,7 +22,6 @@ title: "編輯器之道：Neovim"
 **結果（程式碼）**：
 
 ```{bash}
-#| eval: false
 brew install neovim
 ```
 
@@ -46,7 +45,6 @@ brew install neovim
 **結果（程式碼）**：
 
 ```{bash}
-#| eval: false
 git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 nvim
 ```
@@ -85,7 +83,6 @@ nvim
 **結果（程式碼）**：
 
 ```{lua}
-#| eval: false
 -- lua/options.lua
 local opt = vim.opt
 
@@ -120,7 +117,6 @@ opt.spelllang = { "en_us" }
 **結果（程式碼）**：
 
 ```{lua}
-#| eval: false
 -- lua/plugins/example.lua
 return {
   "username/plugin-name",
@@ -168,7 +164,6 @@ return {
 **結果（程式碼）**：
 
 ```{lua}
-#| eval: false
 -- lua/configs/lspconfig.lua
 local lspconfig = require "lspconfig"
 
@@ -231,7 +226,6 @@ lspconfig.lua_ls.setup {
 **結果（程式碼）**：
 
 ```{lua}
-#| eval: false
 return {
   "christoomey/vim-tmux-navigator",
   lazy = false,

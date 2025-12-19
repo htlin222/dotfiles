@@ -29,7 +29,6 @@ title: "現代 CLI 工具集"
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 brew install fd ripgrep bat eza zoxide fzf yazi lsd
 ```
 
@@ -81,7 +80,6 @@ brew install fd ripgrep bat eza zoxide fzf yazi lsd
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 搜尋所有 .md 檔案
 fd -e md
 
@@ -151,7 +149,6 @@ fd -e md -e txt --max-depth 3
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 搜尋文字
 rg "pattern"
 
@@ -243,7 +240,6 @@ rg -c "import" -t py --sort path
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 顯示檔案
 bat file.py
 
@@ -351,7 +347,6 @@ alias less='bat'
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 基本列表
 eza
 
@@ -470,7 +465,6 @@ alias tree='lsd --tree'
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 初始化
 eval "$(zoxide init zsh)"
 
@@ -612,7 +606,6 @@ function fcd() {
 ### 結果（程式碼）
 
 ```{bash}
-#| eval: false
 # 安裝
 brew install yazi
 
@@ -769,7 +762,6 @@ ya ~/projects/myapp
 2. 設定 shell 別名：
 
 ```{bash}
-#| eval: false
 alias cat='bat'
 alias ls='eza'
 alias tree='lsd --tree'

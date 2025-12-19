@@ -57,6 +57,8 @@ bibliography: references.bib
 
 format:
   html:
+    open-graph:
+      image: https://tw.creativecommons.net/wp-content/uploads/sites/20/2020/11/by-nc-sa-300x105.png
     theme:
       light: flatly
       dark: darkly
