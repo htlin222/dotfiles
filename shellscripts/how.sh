@@ -16,7 +16,7 @@ trap cleanup EXIT
 # Ensure llm CLI is installed
 if ! command -v llm &>/dev/null; then
   echo "Error: 'llm' CLI is not installed. Please install it using:"
-  echo "pip install llm"
+  echo "uv tool install llm"
   exit 1
 fi
 
@@ -58,7 +58,7 @@ SHELL=$(ps -p $$ -o command= | awk '{print $1}')
 spinner() {
   pid=$!
   local delay=0.05
-  local spin=('▖' '▘' '▝' '▗' '▖' '▘' '▝' '▗')
+  local spin=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
   while kill -0 "$pid" 2>/dev/null; do
     for X in "${spin[@]}"; do
       echo -ne "\r$X"
@@ -108,19 +108,45 @@ if [ -z "$COMMAND" ]; then
 fi
 
 while true; do
-  echo "Generated command: $COMMAND"
+  # Draw box around command with max width
+  term_width=$(tput cols 2>/dev/null || echo 80)
+  max_width=$((term_width - 4))
+  [ $max_width -gt 76 ] && max_width=76
+  [ $max_width -lt 30 ] && max_width=30
+
+  inner_width=$((max_width - 2))  # space for "│ " and "│"
+
+  top_line="╭─ Generated command "
+  top_padding=$((max_width - ${#top_line}))
+  top_line+=$(printf '─%.0s' $(seq 1 $top_padding))
+  top_line+="╮"
+
+  bottom_line="╰$(printf '─%.0s' $(seq 1 $((max_width - 1))))╯"
+
+  echo -e "$top_line"
+
+  # Wrap long commands
+  cmd_remaining="$COMMAND"
+  while [ -n "$cmd_remaining" ]; do
+    line="${cmd_remaining:0:$inner_width}"
+    cmd_remaining="${cmd_remaining:$inner_width}"
+    line_len=${#line}
+    padding=$((inner_width - line_len))
+    if [ $padding -lt 0 ]; then padding=0; fi
+    echo -e "│ \033[32m$line\033[0m$(printf ' %.0s' $(seq 1 $padding))│"
+  done
+
+  echo -e "$bottom_line"
 
   if [ "$auto_execute" = true ]; then
-    echo "Executing: $COMMAND"
     eval "$COMMAND"
     exit $?
   fi
 
   # Request user confirmation
-  read -p "Confirm (y/n/e/?) >> " CONFIRMATION
+  read -p "» Confirm (y/n/e/?) " CONFIRMATION
 
   if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
-    echo "Executing: $COMMAND"
     OUTPUT=$(eval "$COMMAND")
     exit_code=$?
     echo "$OUTPUT"

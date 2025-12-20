@@ -22,7 +22,6 @@ alias flash='make_flashcard'
 alias cd..='cd ..'
 alias pipx='uv tool'
 alias mcpconfig='nvim ~/Library/Application\ Support/Claude/claude_desktop_config.json'
-alias ask='~/.local/pipx/venvs/gpt-command-line/bin/gpt -p'
 alias man='colored man'
 alias how="/Users/htlin/.dotfiles/shellscripts/how.sh"
 alias ztop='zenith'
