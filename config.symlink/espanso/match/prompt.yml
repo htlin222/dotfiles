@@ -1,17 +1,17 @@
 matches:
-  - trigger: "/key"
+  - trigger: "askey"
     replace: "to zh-tw, bullet point in markdown, add a h2 title:\n\n{{clipboard}}\n"
     vars:
       - name: "clipboard"
         type: "clipboard"
-  - trigger: "/tb"
+  - trigger: "astb"
     replace: "as markdown table:\n{{clipboard}}\n"
     vars:
       - name: "clipboard"
         type: "clipboard"
-  - trigger: "/list"
+  - trigger: "aslist"
     replace: "as nested, nested markdown list, keep the same text, don't makeup additional words"
-  - trigger: "/yaml"
+  - trigger: "asyaml"
     replace: "as nested, YAML"
-  - trigger: "/q"
-    replace: "According to the text, return me a question as specific as possilbe"
+  - trigger: "asmd"
+    replace: "將內容輸出為 markdown 檔供我下載，yaml 應有 slug date tags title"
