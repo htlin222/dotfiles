@@ -225,6 +225,129 @@ return {
 以上是經過篩選的推薦清單，請根據自己的需求選擇。寧可少裝幾個，也不要讓 Neovim 變得臃腫。建議從核心插件開始，遇到需求再逐步添加。
 :::
 
+## 打造個人 Wiki：Markdown 編輯的魔法
+
+如果你像我一樣用 Markdown 來管理筆記、知識庫或個人 Wiki，以下是一些讓編輯體驗更順暢的設定技巧。
+
+### Wikilink 與自動模板
+
+你有沒有想過：在特定資料夾建立新的 `.md` 檔案時，自動幫你填好 frontmatter 和反向連結？
+
+我的做法是在 Wiki 目錄放一個 `.iswiki` 標記檔，當 Neovim 偵測到這個標記，建立新檔案時就會自動套用模板：
+
+```{lua}
+-- after/ftplugin/markdown.lua
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = "*.md",
+  callback = function()
+    if vim.fn.filereadable(".iswiki") == 1 then
+      local filename = vim.fn.expand("%:t:r")
+      local title = filename:gsub("_", " ")
+      local date = os.date("%Y-%m-%d")
+      local previous = vim.g.previous or ""
+
+      local lines = {
+        "---",
+        "title: '" .. title .. "'",
+        'date: "' .. date .. '"',
+        "---",
+        "",
+        "> [!info]",
+        ">",
+        "> 🌱 來自: [[" .. previous .. "]]",
+        "",
+        "# " .. filename,
+      }
+      vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+    end
+  end,
+})
+```
+
+這裡有個小巧思：`vim.g.previous` 會在你離開一個 Markdown 檔案時自動記錄檔名，所以新建的筆記會自動包含「來自哪裡」的反向連結，形成知識網絡。
+
+### 快速操作 Wikilink
+
+編輯 Wiki 時，最常做的事就是建立連結。這幾個快捷鍵讓我省下大量時間：
+
+| 快捷鍵 | 功能 | 說明 |
+|--------|------|------|
+| `<leader>yw` | 複製為 wikilink | 把當前檔名變成 `[[filename]]` 格式複製 |
+| `<leader>pw` | 貼上為 wikilink | 把剪貼簿內容包上 `[[]]` 貼上 |
+| `<leader>of` | 插入「of this file」 | 快速建立子筆記的命名後綴 |
+
+```{lua}
+-- 複製當前檔名為 wikilink
+vim.keymap.set("n", "<leader>yw", function()
+  local filename = vim.fn.expand("%:t:r")
+  local wikilink = "[[" .. filename .. "]]"
+  vim.fn.setreg("+", wikilink)
+  print(wikilink)
+end, { desc = "Yank as wikilink" })
+```
+
+### mkdnflow：Wiki 導航的核心
+
+[mkdnflow.nvim](https://github.com/jakewvincent/mkdnflow.nvim) 是讓 Neovim 變成 Wiki 編輯器的關鍵：
+
+- **`<CR>`（Enter）**：在 wikilink 上按 Enter 就跳轉，檔案不存在會自動建立
+- **`<BS>`（Backspace）**：返回上一個檔案，就像瀏覽器的上一頁
+- **`<Tab>` / `<S-Tab>`**：在連結間快速跳轉
+- **`]]` / `[[`**：跳到下/上一個標題
+
+```{lua}
+require("mkdnflow").setup({
+  links = {
+    style = "wiki",  -- 使用 [[wikilink]] 風格
+    transform_explicit = function(text)
+      -- 自動把空格轉底線、轉小寫
+      return text:gsub(" ", "_"):lower()
+    end,
+  },
+  mappings = {
+    MkdnEnter = { { "n", "v" }, "<CR>" },
+    MkdnGoBack = { "n", "<BS>" },
+    MkdnNextLink = { "n", "<Tab>" },
+    MkdnPrevLink = { "n", "<S-Tab>" },
+  },
+})
+```
+
+### 草稿發佈提醒
+
+寫部落格或技術文章時，常常會忘記把 `draft: true` 改成 `false`。這個自動命令會在儲存時提醒你：
+
+```{lua}
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.md",
+  callback = function()
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    for i, line in ipairs(lines) do
+      if line:match("draft: true") then
+        local response = vim.fn.input("Ready to publish? (y/n): ")
+        if response == "y" then
+          lines[i] = line:gsub("draft: true", "draft: false")
+          vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+        end
+        break
+      end
+    end
+  end,
+})
+```
+
+::: {.callout-tip}
+## 為什麼這樣設計？
+
+這些看似瑣碎的自動化，累積起來會大幅提升筆記體驗：
+
+- **降低摩擦**：建立新筆記零成本，不用手動填 frontmatter
+- **自動建立連結**：知識網絡自然形成，不用刻意維護
+- **減少遺忘**：草稿發佈提醒避免尷尬
+
+當寫筆記變得像呼吸一樣自然，你就會更願意記錄想法。
+:::
+
 ## LSP 設定
 
 **背景（問題發現）**：沒有 LSP（Language Server Protocol）的編輯器就像沒有智慧的文字編輯器，缺少：
