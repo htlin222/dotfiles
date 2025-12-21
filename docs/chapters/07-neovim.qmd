@@ -331,3 +331,21 @@ return {
 ## 學習曲線
 Vim 的學習曲線陡峭，但值得投資。建議從 `vimtutor` 開始，每天練習 15 分鐘。
 :::
+
+## 推薦 YouTube 教學頻道
+
+如果你偏好透過影片學習，以下是幾個高品質的 Neovim 教學頻道：
+
+| 頻道 | 特色 | 適合對象 |
+|------|------|----------|
+| [typecraft](https://www.youtube.com/@typaboringcraft) | 「Neovim for Newbs」系列，循序漸進 | 完全初學者 |
+| [TJ DeVries](https://www.youtube.com/@teloviews) | Neovim 核心開發者，kickstart.nvim 作者 | 想深入理解原理者 |
+| [ThePrimeagen](https://www.youtube.com/@ThePrimeagen) | 高能量、實戰導向，Vim 動作技巧 | 想提升效率者 |
+| [Josean Martinez](https://www.youtube.com/@joseanmartinez) | 完整設定教學，Mac 環境友善 | 想要完整配置者 |
+| [devaslife](https://www.youtube.com/@devaslife) | 優美的影片風格，Web 開發導向 | 前端開發者 |
+
+::: {.callout-note}
+## 從 kickstart.nvim 開始
+
+如果你不想用 NvChad 這類預設框架，可以考慮 [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)。這是由 Neovim 核心開發者 TJ DeVries 維護的入門配置，只有一個 `init.lua` 檔案，註解詳盡，非常適合想要從頭理解 Neovim 配置的人。
+:::
