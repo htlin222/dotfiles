@@ -484,3 +484,53 @@ set -g @plugin 'catppuccin/tmux'
 # 初始化 [TPM](https://github.com/tmux-plugins/tpm)（必須放在最後）
 run '~/.tmux/plugins/tpm/tpm'
 ```
+
+## 彩蛋：不會消失的浮動終端機
+
+如果你用過 IDE 的「快速終端機」功能（如 VS Code 的 `Ctrl+\``），應該會很羨慕那種「按一下叫出來、再按一下收起來」的體驗。
+
+好消息是，tmux 3.2+ 支援 popup 功能，我們可以打造一個**持久的浮動終端機**：
+
+```{bash}
+# ~/.tmux.conf
+unbind i
+bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
+    detach-client
+} {
+    run-shell "~/.dotfiles/shellscripts/tmux_popup.sh"
+}
+```
+
+搭配這個腳本 `tmux_popup.sh`：
+
+```{bash}
+#!/bin/bash
+current_session_name=$(tmux display-message -p '#S')
+parent_session_dir=$(tmux display-message -p -F "#{pane_current_path}" -t0)
+session_name="floating_${current_session_name}"
+
+if tmux has-session -t "$session_name" 2>/dev/null; then
+    tmux popup -w 90% -h 80% -E "tmux attach -t $session_name"
+else
+    tmux new-session -d -s "$session_name" -c "$parent_session_dir"
+    tmux popup -w 90% -h 80% -E "tmux attach -t $session_name"
+fi
+```
+
+現在按 `prefix i` 就會彈出一個佔據 90% 畫面的浮動終端機。最棒的是：
+
+- **不會消失**：關掉 popup 後，裡面執行的程式還在跑
+- **繼承路徑**：自動在當前工作目錄開啟
+- **獨立 session**：每個主 session 有自己的浮動 session
+
+::: {.callout-tip}
+## 使用情境
+
+這個浮動終端機非常適合：
+
+- 快速跑個指令，不想打亂現有的 pane 佈局
+- 開一個 `htop` 或 `lazygit` 常駐在背景
+- 當作便條紙，隨手記點東西
+
+按 `prefix i` 叫出來，再按一次收起來。你值得擁有！
+:::
