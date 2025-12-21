@@ -20,7 +20,7 @@ title: "容器化開發"
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # macOS
 brew install --cask docker
 
@@ -58,7 +58,7 @@ Docker 映像檔（Image）就像是應用程式的「模板」或「快照」�
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 # 拉取映像檔
 docker pull python:3.12
 
@@ -107,7 +107,7 @@ docker image prune -a
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 # 執行容器
 docker run -it python:3.12 bash
 
@@ -162,7 +162,7 @@ docker container prune
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 # 掛載當前目錄
 docker run -v $(pwd):/app -w /app python:3.12 python script.py
 ```
@@ -225,7 +225,7 @@ CMD ["python", "main.py"]
 
 建置和執行：
 
-```{bash}
+```bash
 # 建置映像檔
 docker build -t myapp .
 
@@ -314,7 +314,7 @@ volumes:
 
 操作命令：
 
-```{bash}
+```bash
 # 啟動所有服務
 docker compose up -d
 
@@ -471,7 +471,7 @@ CMD ["npm", "run", "dev"]
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 docker exec -it <container_name> bash
 ```
 
@@ -535,7 +535,7 @@ Docker 指令往往很長，需要記憶多個參數和選項。重複的操作�
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # 清理無用的容器和映像檔
 alias docker-clean='docker system prune -af'
 

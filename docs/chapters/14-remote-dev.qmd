@@ -20,7 +20,7 @@ SSH 提供了 `~/.ssh/config` 設定檔，讓你為每台伺服器定義別名�
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # ~/.ssh/config
 Host myserver
     HostName 192.168.1.100
@@ -36,7 +36,7 @@ Host work
 
 使用方式：
 
-```{bash}
+```bash
 ssh myserver  # 等同於 ssh htlin@192.168.1.100 -p 22 -i ~/.ssh/id_ed25519
 ssh work      # 自動使用 developer 帳號，並啟用 agent forwarding
 ```
@@ -64,7 +64,7 @@ SSH 金鑰認證使用非對稱加密：產生一對金鑰（私鑰和公鑰）�
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 產生金鑰（會在 ~/.ssh/ 產生 id_ed25519 和 id_ed25519.pub）
 ssh-keygen -t ed25519 -C "your@email.com"
 
@@ -99,7 +99,7 @@ SSH Agent 是一個背景程式，會將解鎖後的私鑰暫存在記憶體中�
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 啟動 agent（通常會輸出類似 "Agent pid 12345"）
 eval "$(ssh-agent -s)"
 
@@ -151,7 +151,7 @@ Mosh (Mobile Shell) 是 SSH 的替代品，採用完全不同的架構：使用 
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 在本機安裝
 brew install mosh
 
@@ -205,7 +205,7 @@ tmux (terminal multiplexer) 在遠端伺服器上建立一個持久化的終端�
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 在遠端建立新的 tmux session（名稱為 work）
 ssh myserver
 tmux new -s work
@@ -267,7 +267,7 @@ tmux new -As work
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # SSH 到遠端，在 tmux session 中執行 Neovim
 ssh myserver
 tmux new -As dev
@@ -297,7 +297,7 @@ nvim /path/to/file
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 透過 scp 協議直接編輯遠端檔案
 nvim scp://myserver//path/to/file
 
@@ -326,7 +326,7 @@ nvim scp://myserver/~/project/main.py
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 同步本機專案到遠端（推送）
 rsync -avz --progress ./project/ myserver:~/project/
 
@@ -379,7 +379,7 @@ rsync 的完整選項太長難記，每次都要查文件或翻歷史指令。�
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 在 ~/.zshrc 或 ~/.bashrc 中加入
 alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
 
@@ -431,7 +431,7 @@ SSH Port Forwarding 有兩種模式：(1) Local forwarding (`-L`)：將遠端 po
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # Local forwarding：將遠端 8000 port 轉發到本機 8000 port
 # 之後可在本機瀏覽器開啟 http://localhost:8000
 ssh -L 8000:localhost:8000 myserver
@@ -483,7 +483,7 @@ ssh -L 8000:internal-server:8000 jumphost
 
 在新伺服器上快速設定環境：
 
-```{bash}
+```bash
 # 在遠端
 git clone https://github.com/username/dotfiles ~/.dotfiles
 cd ~/.dotfiles

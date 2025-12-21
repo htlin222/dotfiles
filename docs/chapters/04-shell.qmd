@@ -44,7 +44,7 @@ Shell 是你與系統溝通的介面。選擇合適的 shell 並調教它，是�
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # ~/.zshrc 基礎設定
 
 # 歷史記錄設定
@@ -92,7 +92,7 @@ setopt interactive_comments     # 允許在互動模式使用 # 註解
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # 安裝 Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
@@ -137,7 +137,7 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 # 立即載入：必要的核心插件（啟動階段）
 EAGER_PLUGINS=(
   git                        # Git 命令別名和補全
@@ -225,7 +225,7 @@ zsh-defer -a -t 1 plugins+=(colored-man-pages copyfile web-search)
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 # 淺層 clone Powerlevel10k 到 Oh-My-Zsh 主題目錄
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
   ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
@@ -275,7 +275,7 @@ ln -s /path/to/local ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
 
 #### 結果（程式碼）
 
-```{bash}
+```bash
 # 在 .zshrc 的最前面（所有其他設定之前）加入
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -342,7 +342,7 @@ Zsh 的預設補全功能雖然強大，但有幾個使用體驗問題：
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # 補全系統進階設定
 zstyle ':completion:*' rehash true                      # 自動偵測新安裝的命令
 zstyle ':completion:*' menu select                      # 啟用互動式選單
@@ -420,7 +420,7 @@ zstyle ':completion:*' matcher-list \
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # Shell 啟動時間測量函數
 function timezsh() {
   for i in $(seq 1 4); do

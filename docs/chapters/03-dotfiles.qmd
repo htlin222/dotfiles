@@ -25,7 +25,7 @@ Dotfiles 是以點 (`.`) 開頭的配置檔案。管理好它們，你就能：
 
 最常見的管理方式是使用 symlink（符號連結）：
 
-```{bash}
+```bash
 # 建立結構
 ~/.dotfiles/
 ├── zsh/
@@ -37,9 +37,37 @@ Dotfiles 是以點 (`.`) 開頭的配置檔案。管理好它們，你就能：
 └── install.sh
 ```
 
+### 為什麼使用 `.symlink` 副檔名？
+
+你可能會好奇：為什麼不直接叫 `.zshrc`，而要命名為 `zshrc.symlink`？
+
+這個命名慣例有幾個重要的好處：
+
+1. **辨識性**：一眼就能知道哪些檔案需要被建立 symlink，哪些是輔助檔案
+2. **自動化安裝**：安裝腳本可以自動找出所有 `.symlink` 結尾的檔案，批次建立連結
+3. **避免混淆**：在 dotfiles 目錄中，你可能還有 README、安裝腳本等其他檔案，`.symlink` 後綴讓目的一目了然
+
+舉例來說，自動安裝腳本可以這樣寫：
+
+```bash
+# 自動找出所有 .symlink 檔案並建立連結
+for src in $(find ~/.dotfiles -name "*.symlink"); do
+  dst="$HOME/.$(basename "${src%.symlink}")"
+  ln -sf "$src" "$dst"
+done
+```
+
+這樣一來，不管你新增多少設定檔，只要遵循 `.symlink` 命名規則，安裝腳本就能自動處理。
+
+::: {.callout-tip}
+## 手動安裝也可以
+
+如果你偏好手動管理，完全不使用 `.symlink` 命名也沒問題。你可以直接用原本的檔名（如 `.zshrc`），然後自己手動建立 symlink。命名慣例只是讓自動化更方便，並非強制規定。
+:::
+
 安裝腳本會建立連結：
 
-```{bash}
+```bash
 # install.sh
 ln -sf ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 ln -sf ~/.dotfiles/tmux/tmux.conf.symlink ~/.tmux.conf
@@ -50,7 +78,7 @@ ln -sf ~/.dotfiles/git/gitconfig.symlink ~/.gitconfig
 
 在 `zprofile` 中設定環境變數：
 
-```{bash}
+```bash
 # ~/.dotfiles/zsh/zprofile.symlink
 export DOTFILES=$HOME/.dotfiles
 export EDITOR="nvim"
@@ -65,7 +93,7 @@ export PATH="$DOTFILES/shellscripts:$PATH"
 
 將設定分成多個模組：
 
-```{bash}
+```bash
 # zshrc.symlink
 source "$DOTFILES/zsh/modules/alias.zsh"
 source "$DOTFILES/zsh/modules/functions.zsh"
@@ -80,7 +108,7 @@ source "$DOTFILES/zsh/modules/fzf.zsh"
 
 ## Git 管理
 
-```{bash}
+```bash
 cd ~/.dotfiles
 git init
 git add .
@@ -91,7 +119,7 @@ git push -u origin main
 
 ## 快速同步函數
 
-```{bash}
+```bash
 # 一鍵提交 dotfiles
 function dp() {
   cd $DOTFILES
@@ -106,7 +134,7 @@ function dp() {
 
 1. 建立你的 dotfiles 目錄：
 
-```{bash}
+```bash
 mkdir -p ~/.dotfiles
 cd ~/.dotfiles
 git init
@@ -114,14 +142,14 @@ git init
 
 2. 移動你的第一個設定檔：
 
-```{bash}
+```bash
 mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
 ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 ```
 
 3. 提交你的第一個 commit：
 
-```{bash}
+```bash
 git add .
 git commit -m "Add zsh configuration"
 ```

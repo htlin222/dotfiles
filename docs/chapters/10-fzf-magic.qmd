@@ -14,7 +14,7 @@ title: "模糊搜尋的魔法"
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 brew install fzf
 
 # 安裝快捷鍵綁定和補全
@@ -35,7 +35,7 @@ $(brew --prefix)/opt/fzf/install
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 # ~/.zshrc 或 fzf.zsh
 
 # 使用 fd 作為預設命令
@@ -77,7 +77,7 @@ export FZF_DEFAULT_OPTS='
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function vf() {
   local file
   file=$(fzf --preview 'bat --style=numbers --color=always {}')
@@ -103,7 +103,7 @@ function vf() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function fcd() {
   local dir
   dir=$(fd --type d | fzf) && cd "$dir"
@@ -126,7 +126,7 @@ function fcd() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function rgnv() {
   local rg_prefix='rg -i --column --line-number --no-heading --color=always'
   local result
@@ -165,7 +165,7 @@ function rgnv() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 # 安裝
 git clone https://github.com/Aloxaf/fzf-tab \
   ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fzf-tab
@@ -191,7 +191,7 @@ plugins=(... fzf-tab)
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function fzf-pre() {
   fzf -m --height 50% \
     --layout=reverse \
@@ -230,7 +230,7 @@ function fzf-pre() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function study() {
   cd ~/Dropbox/Medical/
   local file
@@ -259,7 +259,7 @@ function study() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function pdf() {
   cd ~/Documents/PDF/
   local file
@@ -294,7 +294,7 @@ function pdf() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 # 切換分支
 alias gco='git checkout $(git branch | fzf)'
 
