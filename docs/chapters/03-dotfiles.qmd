@@ -2,8 +2,6 @@
 title: "打造你的 dotfiles"
 ---
 
-# 打造你的 dotfiles
-
 Dotfiles 是以點 (`.`) 開頭的配置檔案。管理好它們，你就能：
 
 - 版本控制你的環境

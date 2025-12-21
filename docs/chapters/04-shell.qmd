@@ -2,8 +2,6 @@
 title: "Shell 的選擇與調教"
 ---
 
-# Shell 的選擇與調教
-
 Shell 是你與系統溝通的介面。選擇合適的 shell 並調教它，是提升效率的第一步。
 
 ## Shell 比較

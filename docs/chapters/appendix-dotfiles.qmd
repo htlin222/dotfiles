@@ -2,8 +2,6 @@
 title: "推薦 dotfiles 範例"
 ---
 
-# 推薦 dotfiles 範例 {.unnumbered}
-
 ## 本書使用的 dotfiles
 
 本書所有範例都來自作者實際使用的 dotfiles：

@@ -2,8 +2,6 @@
 title: "多工管理：tmux 深入指南"
 ---
 
-# 多工管理：tmux 深入指南
-
 [tmux](https://github.com/tmux/tmux) 是終端多工器，讓你在單一終端視窗中管理多個 session、window 和 pane。
 
 ## 為什麼需要 tmux？

@@ -2,8 +2,6 @@
 title: "模糊搜尋的魔法"
 ---
 
-# 模糊搜尋的魔法
-
 [fzf](https://github.com/junegunn/fzf) 是模糊搜尋工具，可以整合到幾乎任何工作流中。
 
 ## 安裝與設定

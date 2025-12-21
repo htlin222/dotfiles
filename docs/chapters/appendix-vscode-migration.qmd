@@ -2,8 +2,6 @@
 title: "從 VS Code 遷移指南"
 ---
 
-# 從 VS Code 遷移指南 {.unnumbered}
-
 如果你習慣 [VS Code](https://code.visualstudio.com/)，這份指南幫助你逐步遷移到終端工作流。
 
 ## 為什麼遷移？

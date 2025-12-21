@@ -2,8 +2,6 @@
 title: "遠端開發"
 ---
 
-# 遠端開發
-
 透過 [SSH](https://www.openssh.com/) 和 [tmux](https://github.com/tmux/tmux/wiki)，你可以在任何地方工作，而且工作環境完全一致。
 
 ## SSH 基礎

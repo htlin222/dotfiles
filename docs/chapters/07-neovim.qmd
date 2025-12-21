@@ -2,8 +2,6 @@
 title: "編輯器之道：Neovim"
 ---
 
-# 編輯器之道：Neovim
-
 [Neovim](https://neovim.io/) 是 Vim 的現代化分支，提供更好的擴展性和更活躍的開發社群。
 
 ## 為什麼選擇 Neovim？
