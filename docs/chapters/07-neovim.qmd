@@ -145,6 +145,86 @@ return {
 | [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp) | 自動補全 |
 | [`gitsigns.nvim`](https://github.com/lewis6991/gitsigns.nvim) | Git 整合 |
 
+## 推薦插件清單
+
+以下是依據實際使用經驗整理的插件推薦，按功能分類：
+
+### 導航與搜尋
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim) | 模糊搜尋 | Neovim 生態系的核心，幾乎所有東西都能搜 |
+| [`flash.nvim`](https://github.com/folke/flash.nvim) | 快速跳轉 | 用標籤快速跳到畫面任何位置 |
+| [`harpoon`](https://github.com/ThePrimeagen/harpoon) | 檔案書籤 | 標記常用檔案，一鍵切換 |
+| [`oil.nvim`](https://github.com/stevearc/oil.nvim) | 檔案管理 | 用 buffer 編輯檔案系統，超直覺 |
+
+### UI 美化與體驗
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`noice.nvim`](https://github.com/folke/noice.nvim) | 訊息 UI | 取代內建的命令列和通知，更現代化 |
+| [`dressing.nvim`](https://github.com/stevearc/dressing.nvim) | 輸入框美化 | 讓 `vim.ui.select` 和 `vim.ui.input` 更好看 |
+| [`fidget.nvim`](https://github.com/j-hui/fidget.nvim) | LSP 進度 | 右下角顯示 LSP 載入狀態 |
+| [`barbecue.nvim`](https://github.com/utilyre/barbecue.nvim) | 麵包屑導航 | 頂部顯示目前位置（類似 VS Code） |
+
+### 程式碼編輯
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip) | 程式碼片段 | 強大的 snippet 引擎，支援動態內容 |
+| [`nvim-surround`](https://github.com/kylechui/nvim-surround) | 括號操作 | 快速增刪改括號、引號等 |
+| [`Comment.nvim`](https://github.com/numToStr/Comment.nvim) | 註解 | `gc` 快速註解程式碼 |
+| [`treesj`](https://github.com/Wansmer/treesj) | 拆分合併 | 一鍵拆分/合併程式碼區塊 |
+| [`dial.nvim`](https://github.com/monaqa/dial.nvim) | 增減強化 | `Ctrl+a/x` 支援日期、布林值等 |
+
+### LSP 增強
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`lspsaga.nvim`](https://github.com/nvimdev/lspsaga.nvim) | LSP UI | 更漂亮的 hover、rename、code action |
+| [`trouble.nvim`](https://github.com/folke/trouble.nvim) | 診斷清單 | 集中顯示所有錯誤和警告 |
+| [`aerial.nvim`](https://github.com/stevearc/aerial.nvim) | 大綱視圖 | 顯示程式碼結構，快速跳轉 |
+
+### Git 整合
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`gitsigns.nvim`](https://github.com/lewis6991/gitsigns.nvim) | Git 狀態 | 行號旁顯示增刪改，支援 blame |
+| [`neogit`](https://github.com/NeogitOrg/neogit) | Git 客戶端 | 類似 Magit 的完整 Git 介面 |
+| [`gitgraph.nvim`](https://github.com/isakbm/gitgraph.nvim) | Git 圖形 | 視覺化分支歷史 |
+
+### AI 輔助
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`avante.nvim`](https://github.com/yetone/avante.nvim) | AI 編輯 | 類似 Cursor 的 AI 編輯體驗 |
+| [`codecompanion.nvim`](https://github.com/olimorris/codecompanion.nvim) | AI 對話 | 支援多種 LLM 的程式碼助手 |
+| [`codeium.nvim`](https://github.com/Exafunction/codeium.nvim) | AI 補全 | 免費的 AI 程式碼補全 |
+
+### Markdown 與寫作
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`render-markdown.nvim`](https://github.com/MeanderingProgrammer/render-markdown.nvim) | Markdown 渲染 | 在編輯器內即時渲染 Markdown |
+| [`markdown-preview.nvim`](https://github.com/iamcco/markdown-preview.nvim) | 預覽 | 瀏覽器即時預覽 |
+| [`zen-mode.nvim`](https://github.com/folke/zen-mode.nvim) | 專注模式 | 隱藏干擾，專心寫作 |
+| [`pangu.vim`](https://github.com/hotoo/pangu.vim) | 中英排版 | 自動在中英文間加空格 |
+
+### 實用工具
+
+| 插件 | 功能 | 說明 |
+|------|------|------|
+| [`todo-comments.nvim`](https://github.com/folke/todo-comments.nvim) | TODO 高亮 | 高亮 TODO、FIXME 等註解 |
+| [`yanky.nvim`](https://github.com/gbprod/yanky.nvim) | 複製歷史 | 記錄複製歷史，可回溯貼上 |
+| [`better-escape.nvim`](https://github.com/max397574/better-escape.nvim) | 快速離開 | 用 `jk` 離開插入模式，無延遲 |
+| [`bigfile.nvim`](https://github.com/LunarVim/bigfile.nvim) | 大檔優化 | 開啟大檔時自動停用耗資源功能 |
+
+::: {.callout-note}
+## 不需要全部安裝
+
+以上是經過篩選的推薦清單，請根據自己的需求選擇。寧可少裝幾個，也不要讓 Neovim 變得臃腫。建議從核心插件開始，遇到需求再逐步添加。
+:::
+
 ## LSP 設定
 
 **背景（問題發現）**：沒有 LSP（Language Server Protocol）的編輯器就像沒有智慧的文字編輯器，缺少：
