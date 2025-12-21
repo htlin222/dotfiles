@@ -213,10 +213,16 @@ autocmd("QuitPre", {
   end,
 })
 
+-- 優化：只在 nvim-tree 已載入時才檢查，避免強制載入
 autocmd("BufEnter", {
   nested = true,
   callback = function()
-    if #vim.api.nvim_list_wins() == 1 and require("nvim-tree.utils").is_nvim_tree_buf() then
+    -- 檢查 nvim-tree 是否已在記憶體中載入（不會觸發載入）
+    if not package.loaded["nvim-tree.utils"] then
+      return
+    end
+    local utils = require("nvim-tree.utils")
+    if #vim.api.nvim_list_wins() == 1 and utils.is_nvim_tree_buf() then
       vim.cmd "quit"
     end
   end,
