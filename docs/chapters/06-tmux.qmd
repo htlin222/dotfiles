@@ -50,7 +50,7 @@ tmux 的預設設定在實際使用中會遇到以下問題：
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # ~/.tmux.conf
 
 # 改用 Ctrl+A 作為 prefix
@@ -140,7 +140,7 @@ tmux 預設的快捷鍵設計有以下痛點：
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # 分割視窗時保持當前目錄
 bind b split-window -h -c "#{pane_current_path}"
 bind v split-window -v -c "#{pane_current_path}"
@@ -214,7 +214,7 @@ bind g split-window -h \; split-window -v \; select-pane -L \; split-window -v
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # 在 tmux.conf 中
 set -g @plugin 'christoomey/vim-tmux-navigator'
 ```
@@ -289,7 +289,7 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 
 ### 結果（程式碼）
 
-```{bash}
+```bash
 # 安裝 TPM
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
@@ -413,7 +413,7 @@ bind r source-file ~/.tmux.conf \; display 'Reloaded!'
 
 結合本章所有概念的完整 `~/.tmux.conf`：
 
-```{bash}
+```bash
 # ============================================
 # 基礎設定
 # ============================================
@@ -491,7 +491,7 @@ run '~/.tmux/plugins/tpm/tpm'
 
 好消息是，tmux 3.2+ 支援 popup 功能，我們可以打造一個**持久的浮動終端機**：
 
-```{bash}
+```bash
 # ~/.tmux.conf
 unbind i
 bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
@@ -503,7 +503,7 @@ bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
 
 搭配這個腳本 `tmux_popup.sh`：
 
-```{bash}
+```bash
 #!/bin/bash
 current_session_name=$(tmux display-message -p '#S')
 parent_session_dir=$(tmux display-message -p -F "#{pane_current_path}" -t0)

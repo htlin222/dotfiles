@@ -71,7 +71,7 @@ title: "推薦 dotfiles 範例"
 **方法**：使用 [Git](https://git-scm.com/) 版本控制系統來管理所有設定檔。選擇 `~/.dotfiles` 作為中央儲存目錄，這是慣例的命名方式，也方便日後辨識。`mkdir -p` 確保目錄不存在時才建立，避免覆蓋現有檔案。
 
 **結果（程式碼）**：
-```{bash}
+```bash
 mkdir -p ~/.dotfiles
 cd ~/.dotfiles
 git init
@@ -90,7 +90,7 @@ git init
 **方法**：使用符號連結（symbolic link）作為橋樑。原始檔案移至 dotfiles 目錄，並在原位置建立指向新位置的連結。`.symlink` 後綴是命名慣例，表示這個檔案將被符號連結至主目錄。系統透過符號連結讀取檔案，如同檔案仍在原位置。
 
 **結果（程式碼）**：
-```{bash}
+```bash
 # 移動 zshrc
 mv ~/.zshrc ~/.dotfiles/zsh/zshrc.symlink
 ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
@@ -110,7 +110,7 @@ ln -s ~/.dotfiles/zsh/zshrc.symlink ~/.zshrc
 **方法**：將所有符號連結操作封裝成可執行的 shell 腳本。使用變數 `$DOTFILES` 儲存基礎路徑，讓腳本更易維護。`ln -sf` 的 `-f` 選項會強制覆蓋已存在的連結，確保腳本可以重複執行（冪等性，idempotent）。
 
 **結果（程式碼）**：
-```{bash}
+```bash
 # install.sh
 #!/bin/bash
 
@@ -139,7 +139,7 @@ echo "Dotfiles installed!"
 **方法**：使用 [Git](https://git-scm.com/) 的基本工作流程將檔案加入版本控制，並推送到遠端儲存庫（如 [GitHub](https://github.com/)）。`git add .` 暫存所有變更，`git commit` 建立版本快照，`git remote add` 連結遠端儲存庫，`git push -u` 推送並設定上游分支。
 
 **結果（程式碼）**：
-```{bash}
+```bash
 git add .
 git commit -m "Initial dotfiles setup"
 git remote add origin git@github.com:username/dotfiles.git

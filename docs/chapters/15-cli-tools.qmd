@@ -19,7 +19,7 @@ title: "打造個人 CLI 工具"
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 #!/bin/bash
 # 這是註解
 
@@ -50,7 +50,7 @@ echo "Today is $today"
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 if [ -f "$file" ]; then
     echo "File exists"
 elif [ -d "$file" ]; then
@@ -77,7 +77,7 @@ fi
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 # for 迴圈
 for file in *.md; do
     echo "Processing $file"
@@ -107,7 +107,7 @@ done < input.txt
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function greet() {
     local name="$1"
     echo "Hello, $name!"
@@ -136,7 +136,7 @@ greet "World"
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function mkcd() {
     mkdir -p "$@" && cd "$_"
 }
@@ -160,7 +160,7 @@ function mkcd() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function mkymd() {
     local d="$(date +%F)"
     mkdir -p "./$d"
@@ -187,7 +187,7 @@ function mkymd() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function newpj() {
     echo -n "Enter project name: "
     read -r project_name
@@ -225,7 +225,7 @@ function newpj() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function mp4_to_gif() {
     if [[ -z "$1" ]]; then
         echo "Usage: mp4_to_gif <input.mp4>"
@@ -264,7 +264,7 @@ function mp4_to_gif() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 function remind() {
     local text="$1"
     local date="$2"
@@ -309,7 +309,7 @@ function remind() {
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 source "$DOTFILES/zsh/modules/functions.zsh"
 source "$DOTFILES/zsh/modules/note_related.zsh"
 ```

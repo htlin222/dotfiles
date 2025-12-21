@@ -21,7 +21,7 @@ title: "編輯器之道：Neovim"
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 brew install neovim
 ```
 
@@ -44,7 +44,7 @@ brew install neovim
 
 **結果（程式碼）**：
 
-```{bash}
+```bash
 git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 nvim
 ```
@@ -82,7 +82,7 @@ nvim
 
 **結果（程式碼）**：
 
-```{lua}
+```lua
 -- lua/options.lua
 local opt = vim.opt
 
@@ -116,7 +116,7 @@ opt.spelllang = { "en_us" }
 
 **結果（程式碼）**：
 
-```{lua}
+```lua
 -- lua/plugins/example.lua
 return {
   "username/plugin-name",
@@ -235,7 +235,7 @@ return {
 
 我的做法是在 Wiki 目錄放一個 `.iswiki` 標記檔，當 Neovim 偵測到這個標記，建立新檔案時就會自動套用模板：
 
-```{lua}
+```lua
 -- after/ftplugin/markdown.lua
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*.md",
@@ -276,7 +276,7 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 | `<leader>pw` | 貼上為 wikilink | 把剪貼簿內容包上 `[[]]` 貼上 |
 | `<leader>of` | 插入「of this file」 | 快速建立子筆記的命名後綴 |
 
-```{lua}
+```lua
 -- 複製當前檔名為 wikilink
 vim.keymap.set("n", "<leader>yw", function()
   local filename = vim.fn.expand("%:t:r")
@@ -295,7 +295,7 @@ end, { desc = "Yank as wikilink" })
 - **`<Tab>` / `<S-Tab>`**：在連結間快速跳轉
 - **`]]` / `[[`**：跳到下/上一個標題
 
-```{lua}
+```lua
 require("mkdnflow").setup({
   links = {
     style = "wiki",  -- 使用 [[wikilink]] 風格
@@ -317,7 +317,7 @@ require("mkdnflow").setup({
 
 寫部落格或技術文章時，常常會忘記把 `draft: true` 改成 `false`。這個自動命令會在儲存時提醒你：
 
-```{lua}
+```lua
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.md",
   callback = function()
@@ -366,7 +366,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 **結果（程式碼）**：
 
-```{lua}
+```lua
 -- lua/configs/lspconfig.lua
 local lspconfig = require "lspconfig"
 
@@ -428,7 +428,7 @@ lspconfig.lua_ls.setup {
 
 **結果（程式碼）**：
 
-```{lua}
+```lua
 return {
   "christoomey/vim-tmux-navigator",
   lazy = false,

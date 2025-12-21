@@ -23,7 +23,7 @@ title: "文字處理三劍客"
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 搜尋包含 pattern 的行
 grep "pattern" file.txt
 
@@ -62,7 +62,7 @@ grep 支援正規表示式（Regular Expression）來實現更精確的匹配：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 使用延伸正規表示式
 grep -E "pattern1|pattern2" file.txt
 
@@ -101,7 +101,7 @@ grep -B 2 "pattern" file.txt  # 前 2 行
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 取代第一個匹配
 sed 's/old/new/' file.txt
 
@@ -138,7 +138,7 @@ sed 的刪除操作使用 `d` 指令，可以搭配不同的定位方式：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 刪除第 3 行
 sed '3d' file.txt
 
@@ -174,7 +174,7 @@ sed 提供兩種插入方式，差別在於插入位置：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 在第 2 行後插入
 sed '2a\新的一行' file.txt
 
@@ -210,7 +210,7 @@ sed '2i\新的一行' file.txt
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 awk 'pattern { action }' file.txt
 ```
 
@@ -239,7 +239,7 @@ awk 的欄位處理機制非常直覺：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 印出第一欄
 awk '{print $1}' file.txt
 
@@ -276,7 +276,7 @@ awk 允許在處理每一行時進行運算，並在最後輸出結果：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 計算總和
 awk '{sum += $1} END {print sum}' file.txt
 
@@ -310,7 +310,7 @@ awk 的條件過濾結合了模式匹配和程式邏輯：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 第二欄大於 100 的行
 awk '$2 > 100 {print}' file.txt
 
@@ -347,7 +347,7 @@ awk '/pattern/ {print $1}' file.txt
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 統計 HTTP 狀態碼
 cat access.log | awk '{print $9}' | sort | uniq -c | sort -rn
 
@@ -368,7 +368,7 @@ cat access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head -10
 
 ### 處理 CSV
 
-```{bash}
+```bash
 # 取得 CSV 第二欄
 awk -F, '{print $2}' data.csv
 
@@ -378,7 +378,7 @@ awk -F, '{sum += $3} END {print sum}' data.csv
 
 ### 歷史命令分析
 
-```{bash}
+```bash
 # 最常用的 10 個命令
 history | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
 ```

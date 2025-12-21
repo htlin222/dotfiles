@@ -48,7 +48,7 @@ title: "自動化與腳本"
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 一鍵提交 dotfiles
 function dp() {
     cd $DOTFILES
@@ -110,7 +110,7 @@ function zgit() {
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 function cloneclaude() {
     cd $HOME
 
@@ -209,7 +209,7 @@ function cloneclaude() {
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 按日期整理檔案
 function chore() {
     for file in *; do
@@ -305,7 +305,7 @@ function chore-type() {
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 下載 YouTube 音樂
 function yt-mp3() {
     yt-dlp --extract-audio --audio-format mp3 \
@@ -457,7 +457,7 @@ function clip-vid() {
 
 載入任務：
 
-```{bash}
+```bash
 launchctl load ~/Library/LaunchAgents/com.user.backup.plist
 ```
 
@@ -594,7 +594,7 @@ Cron 時間格式說明：
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 # 編輯 crontab
 crontab -e
 
@@ -732,7 +732,7 @@ sudo tail -f /var/log/cron                  # CentOS/RHEL
 
 **結果（程式碼）**
 
-```{bash}
+```bash
 function notify() {
     local title="$1"
     local message="$2"
@@ -893,7 +893,7 @@ deploy: build
 
 使用：
 
-```{bash}
+```bash
 make dev
 make deploy
 ```
