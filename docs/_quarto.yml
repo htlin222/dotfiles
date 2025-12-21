@@ -5,7 +5,9 @@ project:
 book:
   title: "The Terminal Way"
   subtitle: "終端人生：純 CLI 開發者的完全指南"
-  author: "林協霆"
+  author:
+    - name: "林協霆"
+      affiliation: "和信治癌中心醫院腫瘤內科部"
   date: today
   date-format: "YYYY-MM-DD"
   repo-url: https://github.com/htlin222/dotfiles
