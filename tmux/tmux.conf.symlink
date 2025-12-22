@@ -141,6 +141,20 @@ set -g @continuum-restore 'on'
 
 # jump 設定：prefix + s 啟動跳轉
 set -g @jump-key 's'
+
+# SSH 嵌套必備：F12 暫停本地 tmux
+set -g @plugin 'MunifTanjim/tmux-suspend'
+set -g @suspend_key 'F12'
+
+# 長命令完成通知
+set -g @plugin 'rickstaa/tmux-notify'
+
+# 快速選取 URL/路徑/hash：prefix + F
+set -g @plugin 'Morantron/tmux-fingers'
+set -g @fingers-key 'F'
+
+# 自動重載 config
+set -g @plugin 'b0o/tmux-autoreload'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'dreamsofcode-io/catppuccin-tmux'
 # Smart pane switching with awareness of Vim splits.
