@@ -8,7 +8,21 @@ bind C-a send-prefix
 # Setting up the colors and copy/paste
 # highlight (change color) on control key (send-prefix) event?
 set -g status-left '#{?client_prefix,#[bg=colour212]PFX.#[bg=colour202]#S,#[fg=white,bg=colour203,bold]#S}'
+# ─── Active Pane 視覺辨識 ───────────────────────────
+# 內容區差異：inactive 背景微暗（整片視覺差異，不被內容干擾）
+set -g window-style        'fg=colour245,bg=terminal'
+set -g window-active-style 'fg=terminal,bg=colour233'
 
+# 邊框差異：active 用高對比色（輔助定位）
+set -g pane-border-style        'fg=colour238'
+set -g pane-active-border-style 'fg=colour214,bg=colour214'
+set -g pane-border-indicators both
+set -g pane-border-lines heavy
+
+# 快速定位：prefix + q 顯示 pane 編號（備援）
+set -g display-panes-time 1500
+set -g display-panes-colour colour238
+set -g display-panes-active-colour colour214
 set -g default-terminal "screen-256color"
 setw -g mode-keys vi
 set-option -g status-interval 5
