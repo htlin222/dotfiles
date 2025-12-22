@@ -130,8 +130,17 @@ set -g @plugin 'jimeh/tmuxifier'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'imomaliev/tmux-keyboard-layout'
 set -g @plugin 'tmux-plugins/tmux-yank'
-# set -g @plugin 'laktak/extrakto'
+set -g @plugin 'laktak/extrakto'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @plugin 'tmux-plugins/tmux-open'
+set -g @plugin 'schasse/tmux-jump'
+
+# continuum 設定：自動恢復 session
+set -g @continuum-restore 'on'
+
+# jump 設定：prefix + s 啟動跳轉
+set -g @jump-key 's'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'dreamsofcode-io/catppuccin-tmux'
 # Smart pane switching with awareness of Vim splits.
