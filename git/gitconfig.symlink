@@ -1,6 +1,7 @@
 [user]
 	email = hsieh.ting.lin@gmail.com
 	name = Hsiehting Lin
+	useConfigOnly = true
 [init]
 	defaultBranch = main
 	templateDir = /Users/htlin/.git-templates
@@ -9,13 +10,17 @@
 
 [delta]
     navigate = true    # use n and N to move between diff sections
+    side-by-side = true
 
     # delta detects terminal colors automatically; set one of these to disable auto-detection
     # dark = true
     # light = true
 
 [merge]
-    conflictstyle = diff3
+    conflictstyle = zdiff3
+
+[help]
+    autocorrect = prompt
 
 [log]
     date = iso
@@ -27,6 +32,10 @@
     mnemonicPrefix = true
     algorithm = histogram  # 更好的 diff 比對算法
     colorMoved = default
+    colorMovedWS = allow-indentation-change
+
+[diff "bin"]
+    textconv = hexdump -C
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -35,6 +44,24 @@
 
 [pull]
 	rebase = true
+	ff = only
+
+[fetch]
+    prune = true
+    pruneTags = true
+
+[rerere]
+    enabled = true
+    autoUpdate = true
+
+[branch]
+    sort = -committerdate
+
+[tag]
+    sort = -version:refname
+
+[commit]
+    verbose = true
 
 [gc]
     auto = 256  # 當有 256 個鬆散物件時自動執行 `git gc`
@@ -42,13 +69,22 @@
 [status]
     showUntrackedFiles = all
     aheadBehind = true
+    short = true
+    branch = true
 [rebase]
     autosquash = true
+    autoStash = true
+    updateRefs = true
 
 [core]
 	editor = vim
     pager = delta
 	autocrlf = input
+	excludesFile = ~/.gitignore_global
+	fsmonitor = true
+
+[column]
+    ui = auto
 
 [push]
     default = current
@@ -66,3 +102,16 @@
     added = green bold
     changed = yellow bold
     untracked = red bold
+
+[alias]
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    lg = log --oneline --graph --all
+    last = log -1 HEAD
+    unstage = restore --staged --
+    fixup = commit --fixup
+    amend = commit --amend --no-edit
+    clean = clean -fd
+    nuke = clean -fdn
