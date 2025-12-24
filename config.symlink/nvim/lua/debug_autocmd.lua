@@ -2,7 +2,7 @@
 print("=== Debugging autocmd registration ===")
 
 -- Check OS detection
-local uname = vim.loop.os_uname()
+local uname = vim.uv.os_uname()
 print("OS detected:", uname.sysname)
 
 -- Check if autocmd is registered

@@ -34,7 +34,7 @@ local options = {
 
   format_on_save = {
     -- These options will be passed to conform.format()
-    timeout_ms = 3500,
+    timeout_ms = 2000, -- 減少超時時間以避免阻塞
     lsp_fallback = false,
   },
 }

@@ -1,46 +1,111 @@
-local vim = vim
 return {
   "MeanderingProgrammer/markdown.nvim",
-  name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
-  -- ft = { "markdown", "quarto", "qmd" },
-  event = "VeryLazy",
-  dependencies = { "nvim-treesitter/nvim-treesitter" },
+  name = "render-markdown",
+  ft = { "markdown", "quarto", "Avante" }, -- 只在需要時載入
+  dependencies = {
+    "nvim-treesitter/nvim-treesitter",
+    "nvim-tree/nvim-web-devicons", -- 可選：用於代碼區塊圖標
+  },
   config = function()
     require("render-markdown").setup {
-      file_types = { "markdown", "quarto" },
-      bullet = {
-        -- Turn on / off list bullet rendering
+      file_types = { "markdown", "quarto", "Avante" },
+      render_modes = { "n", "c" }, -- 普通模式和命令模式時渲染
+
+      -- 標題樣式
+      heading = {
         enabled = true,
-        -- Additional modes to render list bullets
-        render_modes = false,
-        -- Replaces '-'|'+'|'*' of 'list_item'
-        -- How deeply nested the list is determines the 'level', how far down at that level determines the 'index'
-        -- If a function is provided both of these values are provided in the context using 1 based indexing
-        -- If a list is provided we index into it using a cycle based on the level
-        -- If the value at that level is also a list we further index into it using a clamp based on the index
-        -- If the item is a 'checkbox' a conceal is used to hide the bullet instead
+        sign = true, -- 在標誌列顯示標題圖標
+        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+        width = "block", -- 背景延伸到整行
+      },
+
+      -- 代碼區塊
+      code = {
+        enabled = true,
+        sign = false,
+        style = "full", -- full, normal, language, none
+        width = "block",
+        left_pad = 2,
+        right_pad = 2,
+        border = "thin", -- thin, thick, none
+        highlight = "RenderMarkdownCode",
+      },
+
+      -- 列表項目符號
+      bullet = {
+        enabled = true,
         icons = { "●", "○", "◆", "◇" },
-        -- Replaces 'n.'|'n)' of 'list_item'
-        -- How deeply nested the list is determines the 'level', how far down at that level determines the 'index'
-        -- If a function is provided both of these values are provided in the context using 1 based indexing
-        -- If a list is provided we index into it using a cycle based on the level
-        -- If the value at that level is also a list we further index into it using a clamp based on the index
         right_pad = 1,
         highlight = "RenderMarkdownBullet",
       },
+
+      -- Checkbox 樣式
+      checkbox = {
+        enabled = true,
+        unchecked = { icon = "󰄱 ", highlight = "RenderMarkdownUnchecked" },
+        checked = { icon = "󰄵 ", highlight = "RenderMarkdownChecked" },
+        custom = {
+          todo = { raw = "[-]", rendered = "󰥔 ", highlight = "RenderMarkdownTodo" },
+          important = { raw = "[!]", rendered = "󰀨 ", highlight = "DiagnosticWarn" },
+          doing = { raw = "[~]", rendered = "󰦖 ", highlight = "DiagnosticInfo" },
+          canceled = { raw = "[>]", rendered = "󰜺 ", highlight = "Comment" },
+        },
+      },
+
+      -- 引用區塊
+      quote = {
+        enabled = true,
+        icon = "▎",
+        repeat_linebreak = true,
+        highlight = "RenderMarkdownQuote",
+      },
+
+      -- 表格
+      pipe_table = {
+        enabled = true,
+        style = "full", -- full, normal, none
+        cell = "padded", -- padded, raw, overlay
+        border = { "┌", "┬", "┐", "├", "┼", "┤", "└", "┴", "┘", "│", "─" },
+      },
+
+      -- 連結
+      link = {
+        enabled = true,
+        image = "󰥶 ",
+        email = "󰀓 ",
+        hyperlink = "󰌹 ",
+        custom = {
+          web = { pattern = "^http", icon = "󰖟 " },
+          youtube = { pattern = "youtube%.com", icon = "󰗃 " },
+          github = { pattern = "github%.com", icon = "󰊤 " },
+          zotero = { pattern = "^zotero:", icon = "󱉟 " },
+        },
+      },
+
+      -- 分隔線
+      dash = {
+        enabled = true,
+        icon = "─",
+        width = "full",
+        highlight = "RenderMarkdownDash",
+      },
+
+      -- Callout / Alert 區塊
+      callout = {
+        note = { raw = "[!NOTE]", rendered = "󰋽 Note", highlight = "RenderMarkdownInfo" },
+        tip = { raw = "[!TIP]", rendered = "󰌶 Tip", highlight = "RenderMarkdownSuccess" },
+        important = { raw = "[!IMPORTANT]", rendered = "󰅾 Important", highlight = "RenderMarkdownHint" },
+        warning = { raw = "[!WARNING]", rendered = "󰀪 Warning", highlight = "RenderMarkdownWarn" },
+        caution = { raw = "[!CAUTION]", rendered = "󰳦 Caution", highlight = "RenderMarkdownError" },
+      },
+
       win_options = {
-        -- See :h 'conceallevel'
         conceallevel = {
-          -- Used when not being rendered, get user setting
           default = vim.api.nvim_get_option_value("conceallevel", {}),
-          -- Used when being rendered, concealed text is completely hidden
           rendered = 3,
         },
-        -- See :h 'concealcursor'
         concealcursor = {
-          -- Used when not being rendered, get user setting
           default = vim.api.nvim_get_option_value("concealcursor", {}),
-          -- Used when being rendered, conceal text in all modes
           rendered = "",
         },
       },

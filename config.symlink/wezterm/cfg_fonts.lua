@@ -11,7 +11,6 @@ cfg.adjust_window_size_when_changing_font_size = false
 cfg.warn_about_missing_glyphs = false
 
 cfg.cell_width = 1.0
-cfg.window_decorations = "RESIZE"
 
 -- Makes FontAwesome's double-width glyphs display properly!
 cfg.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"

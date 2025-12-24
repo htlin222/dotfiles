@@ -5,8 +5,8 @@ local M = {}
 
 -- Safe dimension calculator with multiple fallback strategies
 local function get_safe_dimensions()
-  local columns = vim.o.columns or vim.api.nvim_get_option "columns" or 80
-  local lines = vim.o.lines or vim.api.nvim_get_option "lines" or 24
+  local columns = vim.o.columns or vim.api.nvim_get_option_value("columns", {}) or 80
+  local lines = vim.o.lines or vim.api.nvim_get_option_value("lines", {}) or 24
 
   -- Handle edge cases where dimensions might be invalid
   if columns <= 0 or columns == nil then

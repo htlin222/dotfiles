@@ -18,7 +18,7 @@ end
 autocmd("InsertEnter", {
 	group = augroup("InsertBefore", { clear = true }),
 	callback = function()
-		local now = vim.loop.now()
+		local now = vim.uv.now()
 		if now - last_im_check < debounce_delay then
 			return
 		end
@@ -34,7 +34,7 @@ autocmd("InsertEnter", {
 autocmd("InsertLeavePre", {
 	group = augroup("IMswitch", { clear = true }),
 	callback = function()
-		local now = vim.loop.now()
+		local now = vim.uv.now()
 		if now - last_im_check < debounce_delay then
 			return
 		end

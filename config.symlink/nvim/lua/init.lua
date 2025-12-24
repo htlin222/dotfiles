@@ -15,7 +15,7 @@ end
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 -- 檢查 lazy.nvim 是否已安裝，如果沒有則自動安裝
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   local repo = "https://github.com/folke/lazy.nvim.git"
   -- 使用 git 克隆 lazy.nvim 倉庫到指定路徑
   vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
@@ -57,11 +57,11 @@ vim.schedule(function()
   local defaults_file = vim.g.base46_cache .. "defaults"
   local statusline_file = vim.g.base46_cache .. "statusline"
   
-  if vim.loop.fs_stat(defaults_file) then
+  if vim.uv.fs_stat(defaults_file) then
     dofile(defaults_file)
   end
   
-  if vim.loop.fs_stat(statusline_file) then
+  if vim.uv.fs_stat(statusline_file) then
     dofile(statusline_file)
   end
 end)

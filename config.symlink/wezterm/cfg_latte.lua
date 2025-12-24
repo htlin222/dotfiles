@@ -1,77 +1,77 @@
 local col = {}
 
--- Colors converted from Catppuccin Latte theme
-col.background = "#eff1f5"
-col.foreground = "#4c4f69"
+-- High contrast light theme
+col.background = "#fafafa"
+col.foreground = "#1a1a1a"
 
-col.cursor_bg = "#dc8a78"
-col.cursor_fg = "#dce0e8"
-col.cursor_border = "#dc8a78" -- same as cursor_bg
+col.cursor_bg = "#d02020"
+col.cursor_fg = "#fafafa"
+col.cursor_border = "#d02020"
 
+-- High contrast ANSI colors for light background
 col.ansi = {
-	"#bcc0cc", -- black
-	"#d20f39", -- red
-	"#40a02b", -- green
-	"#df8e1d", -- yellow
-	"#1e66f5", -- blue
-	"#ea76cb", -- magenta
-	"#179299", -- cyan
-	"#5c5f77", -- white
+	"#1a1a1a", -- black (true black for max contrast)
+	"#c41a16", -- red (dark red)
+	"#007400", -- green (dark green)
+	"#aa5500", -- yellow (dark orange/brown for readability)
+	"#0451a5", -- blue (dark blue)
+	"#a626a4", -- magenta (purple)
+	"#0184bc", -- cyan (dark cyan)
+	"#d0d0d0", -- white
 }
 
 col.brights = {
-	"#acb0be", -- bright black
-	"#d20f39", -- bright red
-	"#40a02b", -- bright green
-	"#df8e1d", -- bright yellow
-	"#1e66f5", -- bright blue
-	"#ea76cb", -- bright magenta
-	"#179299", -- bright cyan
-	"#6c6f85", -- bright white
+	"#505050", -- bright black (dark gray)
+	"#e45649", -- bright red
+	"#50a14f", -- bright green
+	"#c18401", -- bright yellow
+	"#4078f2", -- bright blue
+	"#ca1243", -- bright magenta
+	"#20a5ba", -- bright cyan
+	"#fafafa", -- bright white
 }
 
 col.indexed = {
-	[16] = "#fe640b",
-	[17] = "#dc8a78",
+	[16] = "#d75f00",
+	[17] = "#af0000",
 }
 
--- Slightly grayish selection with clear fg
-col.selection_bg = "#acb0be"
-col.selection_fg = "#4c4f69"
+-- Clear selection highlighting
+col.selection_bg = "#add6ff"
+col.selection_fg = "#1a1a1a"
 
--- Additional optional properties (not always used in all terminals)
-col.scrollbar_thumb = "#acb0be"
-col.split = "#9ca0b0"
-col.visual_bell = "#ccd0da"
+col.scrollbar_thumb = "#c0c0c0"
+col.split = "#808080"
+col.visual_bell = "#e0e0e0"
 
 -- Tab bar
 col.tab_bar = {
-	background = "#dce0e8",
-	inactive_tab_edge = "#ccd0da",
+	background = "#e8e8e8",
+	inactive_tab_edge = "#d0d0d0",
 
 	active_tab = {
-		bg_color = "#8839ef",
-		fg_color = "#dce0e8",
+		bg_color = "#fafafa",
+		fg_color = "#1a1a1a",
 	},
 
 	inactive_tab = {
-		bg_color = "#e6e9ef",
-		fg_color = "#4c4f69",
+		bg_color = "#d0d0d0",
+		fg_color = "#505050",
 	},
 
 	inactive_tab_hover = {
-		bg_color = "#eff1f5",
-		fg_color = "#4c4f69",
+		bg_color = "#e0e0e0",
+		fg_color = "#1a1a1a",
 	},
 
 	new_tab = {
-		bg_color = "#ccd0da",
-		fg_color = "#4c4f69",
+		bg_color = "#c0c0c0",
+		fg_color = "#505050",
 	},
 
 	new_tab_hover = {
-		bg_color = "#bcc0cc",
-		fg_color = "#4c4f69",
+		bg_color = "#d0d0d0",
+		fg_color = "#1a1a1a",
 	},
 }
 

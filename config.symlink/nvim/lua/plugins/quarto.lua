@@ -20,7 +20,7 @@ return {
   },
   config = function()
     require("quarto").setup {
-      debug = true,
+      debug = false,
       closePreviewOnExit = false,
       lspFeatures = {
         enabled = true,

@@ -17,7 +17,13 @@ cfg.keys = {
 	{
 		key = "q",
 		mods = "CMD",
-		action = wezterm.action.CloseCurrentTab({ confirm = true }),
+		action = wezterm.action.QuitApplication,
+	},
+	-- Toggle between dark/light themes
+	{
+		key = "t",
+		mods = "CMD|SHIFT",
+		action = wezterm.action.EmitEvent("toggle-theme"),
 	},
 	{
 		key = "LeftArrow",

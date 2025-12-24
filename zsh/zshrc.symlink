@@ -51,30 +51,23 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-
 ### FAST compinit settings ###
 ##############################
 
-# 1. 快速同步 compinit 讓 plugins 不卡
+# Fast compinit - always use cache, rebuild daily in background
 autoload -Uz compinit
 compinit -C -d "${ZSH_COMPDUMP}"
 
-# 2. 背景重新整理 compdump
-#
-#
-_load_completions_async() {
-  {
-    autoload -Uz compinit
-    setopt localoptions extendedglob
-
-    if [[ -f "${ZSH_COMPDUMP}" && $(find "${ZSH_COMPDUMP}" -mtime +7 2>/dev/null) ]]; then
-      compinit -d "${ZSH_COMPDUMP}"
-    else
-      compinit -C -d "${ZSH_COMPDUMP}"
-    fi
-
-    if [[ -s "${ZSH_COMPDUMP}" && (! -s "${ZSH_COMPDUMP}.zwc" || "${ZSH_COMPDUMP}" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
-      zcompile "${ZSH_COMPDUMP}"
-    fi
-  } >/dev/null 2>&1 &|
-}
-_load_completions_async
+# Background: rebuild if older than 1 day, then compile
+{
+  setopt localoptions extendedglob
+  local dump="${ZSH_COMPDUMP}"
+  # Rebuild if older than 1 day
+  if [[ -f "$dump" ]] && [[ $(find "$dump" -mtime +1 2>/dev/null) ]]; then
+    compinit -d "$dump"
+  fi
+  # Compile if needed
+  if [[ -s "$dump" && (! -s "$dump.zwc" || "$dump" -nt "$dump.zwc") ]]; then
+    zcompile "$dump"
+  fi
+} &!
 
 ##############################
 ### Oh-My-Zsh and Plugins ###
@@ -89,6 +82,7 @@ export ZSH="$HOME/.oh-my-zsh"
 ulimit -n 4096
 DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
+ZSH_DISABLE_COMPFIX="true"  # Skip compaudit (saves ~20% startup time)
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
 
@@ -186,17 +180,18 @@ _load_keypress_plugins() {
 }
 zle -N zle-line-init _load_keypress_plugins
 
-# Deferred plugin loading with error handling (silent background)
+# Deferred plugin loading - loads once after first command
 _load_deferred_plugins() {
+  # Self-destruct: only run once
   _load_deferred_plugins() { :; }
+
+  # Load plugins synchronously (runs after first prompt displayed)
   for plugin in "${DEFERRED_PLUGINS[@]}"; do
     local plugin_path=$(_find_plugin_path "$plugin")
     if [[ -n "$plugin_path" ]]; then
-      (source "$plugin_path" 2>/dev/null || echo "Warning: Failed to load deferred plugin: $plugin" >&2) &!
+      source "$plugin_path" 2>/dev/null
     fi
   done
-  wait
-  zle -R 2>/dev/null
 }
 add-zsh-hook precmd _load_deferred_plugins
 
@@ -209,9 +204,8 @@ add-zsh-hook precmd _load_deferred_plugins
   [ -f "$file" ] && source "$file"
 done
 
-if [ -f /Users/htlin/.config/op/plugins.sh ]; then
-  source /Users/htlin/.config/op/plugins.sh
-fi
+# 1Password CLI plugins
+[[ -f "$HOME/.config/op/plugins.sh" ]] && source "$HOME/.config/op/plugins.sh"
 
 # Key bindings
 bindkey -s '^o' 'ya\n'
@@ -219,26 +213,39 @@ bindkey -s '^n' 'tmux new-window\n'
 
 # Source modules
 source "$DOTFILES/zsh/modules/alias.zsh"
-source "$DOTFILES/zsh/modules/functions.zsh"
-source "$DOTFILES/zsh/modules/note_related.zsh"
 source "$DOTFILES/zsh/modules/fzf.zsh"
-source "$DOTFILES/zsh/modules/snippets.zsh"
+source "$DOTFILES/zsh/modules/note_related.zsh"
+
+# Source function modules (split from functions.zsh)
+source "$DOTFILES/zsh/modules/fn_navigation.zsh"
+source "$DOTFILES/zsh/modules/fn_git.zsh"
+source "$DOTFILES/zsh/modules/fn_fzf.zsh"
+source "$DOTFILES/zsh/modules/fn_utils.zsh"
+source "$DOTFILES/zsh/modules/fn_dev.zsh"
+source "$DOTFILES/zsh/modules/fn_notes.zsh"
+source "$DOTFILES/zsh/modules/fn_media.zsh"
+[[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
+
 source "$HOME/.uvv"
 
 # Lazy load external tools
+# Lazy load fnm (Node version manager)
 _load_fnm() {
-  if [ -d "$FNM_PATH" ]; then
-    export PATH="/Users/mac/Library/Application Support/fnm:$PATH"
+  if [[ -n "$IS_MAC" ]]; then
+    local fnm_path="$HOME/Library/Application Support/fnm"
+  else
+    local fnm_path="$HOME/.local/share/fnm"
+  fi
+  if [[ -d "$fnm_path" ]]; then
+    export PATH="$fnm_path:$PATH"
     eval "$(fnm env)"
   fi
 }
-_load_broot() {
-  if [ -f /Users/htlin/.config/broot/launcher/bash/br ]; then
-    source /Users/htlin/.config/broot/launcher/bash/br
-  fi
-}
 
-FNM_PATH="/Users/mac/Library/Application Support/fnm"
+# Lazy load broot
+_load_broot() {
+  [[ -f "$HOME/.config/broot/launcher/bash/br" ]] && source "$HOME/.config/broot/launcher/bash/br"
+}
 # lazyload fnm node npm -- _load_fnm
 # lazyload br -- _load_broot
 
@@ -247,9 +254,14 @@ _cached_path_check() {
   local cache_file="$ZSH_CACHE_DIR/.path_cache"
   if [[ ! -f "$cache_file" || "$cache_file" -ot ~/.zshrc ]]; then
     {
-      [[ -d "/Users/htlin/.codeium/windsurf/bin" ]] && echo "CODEIUM_EXISTS=1"
-      [[ -d "/Users/htlin/.cache/lm-studio/bin" ]] && echo "LMSTUDIO_EXISTS=1"
-      [[ -d "/Users/htlin/Library/pnpm" ]] && echo "PNPM_EXISTS=1"
+      [[ -d "$HOME/.codeium/windsurf/bin" ]] && echo "CODEIUM_EXISTS=1"
+      [[ -d "$HOME/.cache/lm-studio/bin" ]] && echo "LMSTUDIO_EXISTS=1"
+      # pnpm path differs by OS
+      if [[ -n "$IS_MAC" ]]; then
+        [[ -d "$HOME/Library/pnpm" ]] && echo "PNPM_EXISTS=1"
+      else
+        [[ -d "$HOME/.local/share/pnpm" ]] && echo "PNPM_EXISTS=1"
+      fi
     } > "$cache_file"
   fi
   source "$cache_file"
@@ -257,10 +269,14 @@ _cached_path_check() {
 _cached_path_check
 
 # Add paths only if they exist
-[[ "$CODEIUM_EXISTS" == "1" ]] && export PATH="/Users/htlin/.codeium/windsurf/bin:$PATH"
-[[ "$LMSTUDIO_EXISTS" == "1" ]] && export PATH="$PATH:/Users/htlin/.cache/lm-studio/bin"
+[[ "$CODEIUM_EXISTS" == "1" ]] && export PATH="$HOME/.codeium/windsurf/bin:$PATH"
+[[ "$LMSTUDIO_EXISTS" == "1" ]] && export PATH="$PATH:$HOME/.cache/lm-studio/bin"
 if [[ "$PNPM_EXISTS" == "1" ]]; then
-  export PNPM_HOME="/Users/htlin/Library/pnpm"
+  if [[ -n "$IS_MAC" ]]; then
+    export PNPM_HOME="$HOME/Library/pnpm"
+  else
+    export PNPM_HOME="$HOME/.local/share/pnpm"
+  fi
   case ":$PATH:" in
     *":$PNPM_HOME:"*) ;;
     *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -285,7 +301,12 @@ _deferred_init() {
 # Python venv
 if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
-  screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
+  # Notification (OS-specific)
+  if [[ -n "$IS_MAC" ]]; then
+    screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
+  elif command -v notify-send &>/dev/null; then
+    notify-send "Python Venv" "uv .venv is activated ✨" 2>/dev/null &!
+  fi
 fi
 
 # Load Tmux Layout
@@ -306,16 +327,65 @@ if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; 
   exec tmux
 fi
 
-# Atuin (deferred)
-if [[ -f "$HOME/.atuin/bin/env" ]]; then
-  . "$HOME/.atuin/bin/env"
-  eval "$(atuin init zsh)"
-fi
-eval "$(zoxide init zsh)"
+# Lazy load zoxide (saves ~50ms)
+_init_zoxide() {
+  unfunction _init_zoxide z zi 2>/dev/null
+  eval "$(zoxide init zsh)"
+}
+z()  { _init_zoxide; z "$@" }
+zi() { _init_zoxide; zi "$@" }
+
+# Lazy load atuin - triggers on Up arrow or Ctrl+R
+_atuin_loaded=0
+_init_atuin_and_up() {
+  if (( ! _atuin_loaded )); then
+    _atuin_loaded=1
+    if [[ -f "$HOME/.atuin/bin/env" ]]; then
+      . "$HOME/.atuin/bin/env"
+      eval "$(atuin init zsh)"
+    fi
+  fi
+  # Call the real up-line-or-history or atuin widget
+  if (( $+functions[_atuin_up_search_widget] )); then
+    _atuin_up_search_widget
+  else
+    zle up-line-or-history
+  fi
+}
+zle -N _init_atuin_and_up
+
+_init_atuin_and_search() {
+  if (( ! _atuin_loaded )); then
+    _atuin_loaded=1
+    if [[ -f "$HOME/.atuin/bin/env" ]]; then
+      . "$HOME/.atuin/bin/env"
+      eval "$(atuin init zsh)"
+    fi
+  fi
+  if (( $+functions[_atuin_search_widget] )); then
+    _atuin_search_widget
+  else
+    zle history-incremental-search-backward
+  fi
+}
+zle -N _init_atuin_and_search
+
+# Bind Up arrow and Ctrl+R to lazy-load atuin
+bindkey '^[[A' _init_atuin_and_up      # Up arrow
+bindkey '^[OA' _init_atuin_and_up      # Up arrow (alternate)
+bindkey '^r' _init_atuin_and_search    # Ctrl+R
+bindkey -M vicmd 'k' _init_atuin_and_up # Vi mode: k for up
+
 export PATH=~/.npm-global/bin:$PATH
 
 # Added by Antigravity
-export PATH="/Users/htlin/.antigravity/antigravity/bin:$PATH"
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
-# Added by Antigravity
-export PATH="/Users/htlin/.antigravity/antigravity/bin:$PATH"
+# Background compile modules for faster future loads
+{
+  for f in "$DOTFILES/zsh/modules"/*.zsh; do
+    if [[ -f "$f" && (! -f "$f.zwc" || "$f" -nt "$f.zwc") ]]; then
+      zcompile "$f"
+    fi
+  done
+} &!

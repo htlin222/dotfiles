@@ -10,8 +10,8 @@ local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
 -- Autocommand functions
 -----------------------------------------------------------
 
--- 優化：使用vim.loop.os_uname()代替系統調用，性能更好
-local uname = vim.loop.os_uname()
+-- 優化：使用vim.uv.os_uname()代替系統調用，性能更好
+local uname = vim.uv.os_uname()
 if uname.sysname == "Linux" then
   require "autocmd.linux"
 else
@@ -131,6 +131,14 @@ autocmd("Filetype", {
   command = "setlocal shiftwidth=2 tabstop=2",
 })
 
+-- 只在文字類型檔案啟用拼寫檢查
+augroup("setSpell", { clear = true })
+autocmd("Filetype", {
+  group = "setSpell",
+  pattern = { "text", "markdown", "quarto", "gitcommit", "tex", "plaintex" },
+  command = "setlocal spell",
+})
+
 -- set lines (優化：只在沒有設置時才更新，避免重複設置)
 local colorcolumn_set = false
 autocmd("InsertEnter", {
@@ -182,7 +190,7 @@ autocmd("BufEnter", {
     local layout = vim.api.nvim_call_function("winlayout", {})
     if
       layout[1] == "leaf"
-      and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "NvimTree"
+      and vim.api.nvim_get_option_value("filetype", { buf = vim.api.nvim_win_get_buf(layout[2]) }) == "NvimTree"
       and layout[3] == nil
     then
       vim.cmd "quit"

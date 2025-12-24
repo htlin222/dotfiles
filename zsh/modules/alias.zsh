@@ -1,9 +1,17 @@
-if uname | grep -q "Darwin"; then
+# Cross-platform aliases
+if [[ -n "$IS_MAC" ]]; then
   alias open="open"
   alias xdg-open="open"
 else
   alias open="xdg-open"
-  alias xdg-open="xdg-open"
+  # Clipboard support for Linux (requires xclip or xsel)
+  if command -v xclip &>/dev/null; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+  elif command -v xsel &>/dev/null; then
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
+  fi
 fi
 # alias R="/opt/homebrew/opt/r/bin/R --vanilla"
 alias dtc='tmux detach-client'
@@ -21,9 +29,14 @@ alias flash='make_flashcard'
 # alias yarn='pnpm'
 alias cd..='cd ..'
 alias pipx='uv tool'
-alias mcpconfig='nvim ~/Library/Application\ Support/Claude/claude_desktop_config.json'
-alias man='colored man'
-alias how="/Users/htlin/.dotfiles/shellscripts/how.sh"
+# Claude config path (OS-specific)
+if [[ -n "$IS_MAC" ]]; then
+  alias mcpconfig='nvim ~/Library/Application\ Support/Claude/claude_desktop_config.json'
+else
+  alias mcpconfig='nvim ~/.config/claude/claude_desktop_config.json'
+fi
+# man coloring handled by colored-man-pages plugin
+alias how="$DOTFILES/shellscripts/how.sh"
 alias ztop='zenith'
 alias f="fix"
 alias ec="echo"
@@ -33,9 +46,15 @@ alias claupub_lab="cd ~/claude_lab && npm run build && netlify deploy --prod --d
 alias ripnetlify="rip ./.netlify"
 alias artifact="cd ~/claude_lab/src/ && vim ~/claude_lab/src/App.jsx"
 alias todo='pter ~/Dropbox/todo/todo.txt'
-alias cdropbox='cd /Users/htlin/Library/CloudStorage/Dropbox/'
+# Dropbox path (OS-specific)
+if [[ -n "$IS_MAC" ]]; then
+  alias cdropbox='cd $HOME/Library/CloudStorage/Dropbox/'
+else
+  alias cdropbox='cd $HOME/Dropbox/'
+fi
 alias ignoredp='ignore_dropbox_folder'
-alias ignore="xattr -w 'com.apple.fileprovider.ignore#P' 1"
+# macOS Dropbox ignore (macOS only)
+[[ -n "$IS_MAC" ]] && alias ignore="xattr -w 'com.apple.fileprovider.ignore#P' 1"
 alias zshconfig="vim ~/.zshrc"
 alias clens="csvlens"
 alias mkdir="mkdir -p"
@@ -48,17 +67,19 @@ alias dr="drafts"
 alias pyinbin="pyinstaller --onedir --distpath ~/bin"
 alias tt="taskwarrior-tui"
 alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
-alias mac_gdrive="cd /Users/mac/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
-alias up="ffsend upload"
+# Google Drive path (macOS only)
+[[ -n "$IS_MAC" ]] && alias mac_gdrive="cd $HOME/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
+alias fup="ffsend upload"  # renamed from 'up' to avoid conflict with up() function
 alias uvinit="uv venv && source .venv/bin/activate"
 # alias upip="uv pip install"
 alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
-alias "brewcask"="brew install --cask --no-quarantine"
+# Homebrew cask (macOS only)
+[[ -n "$IS_MAC" ]] && alias brewcask="brew install --cask --no-quarantine"
 alias bc='bc --quiet <(echo "scale=5;print\"scale=5\n\"")'
-alias googledrive="cd /Users/htlin/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
+# Google Drive (macOS only)
+[[ -n "$IS_MAC" ]] && alias googledrive="cd $HOME/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
 alias xo='xdg-open'
 alias lc='lolcat'
-alias tldr='tldr'
 alias asco="yazi ~/Documents/textbook/ASCO-SEP/"
 alias ash="yazi ~/Documents/textbook/8th\ ASH-SEP/"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
@@ -125,10 +146,31 @@ alias vs='nvim -S'
 alias vsauto='nvim -S .vim_auto_session.vim'
 alias wpy="pyenv which python"
 alias yt-mp4='yt-dlp --merge-output-format mp4'
-alias zshconfig="vim ~/.zshrc"
 # 查看最近一次失敗 run 的失敗步驟 log
 alias gha-last-fail='gh run view --log-failed'
 # 追蹤最近一次 run 的執行狀況（像看 live log）
 alias gha-watch='gh run watch --compact --exit-status'
 # 查看最近幾個失敗 run 的列表
 alias gha-failed-list='gh run list --status failure'
+
+# ========================================
+# Community-inspired aliases (Reddit/Lobsters)
+# ========================================
+
+# Quick temp directory - cd to a fresh temp dir
+alias tmp='cd $(mktemp -d)'
+
+# Show PATH entries one per line
+alias path='echo $PATH | tr ":" "\n"'
+
+# Sudo last command (like "sudo !!")
+alias please='sudo $(fc -ln -1)'
+
+# Global aliases - can be used anywhere in the command line
+alias -g G='| grep'      # e.g., ps aux G chrome
+alias -g L='| less'      # e.g., cat file L
+alias -g H='| head'      # e.g., ls -la H
+alias -g T='| tail'      # e.g., log T
+alias -g J='| jq'        # e.g., curl api J
+alias -g C='| pbcopy'    # e.g., pwd C
+alias -g N='>/dev/null 2>&1'  # e.g., cmd N (silence output)

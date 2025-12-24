@@ -1,7 +1,6 @@
 return { --mkdnflow
   "jakewvincent/mkdnflow.nvim",
-  evnt = "VeryLazy",
-  ft = { "markdown" },
+  ft = { "markdown" }, -- 只在 markdown 檔案載入
   config = function()
     -- by default, the fold method was set by tree-sitter expr
     vim.opt.foldmethod = "manual"

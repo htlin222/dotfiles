@@ -82,7 +82,7 @@ return function()
     end
   end, { desc = "Paste Below" })
   
-  -- 切換輸入法
+  -- 切換輸入法（異步執行，避免阻塞）
   map("n", "<leader>i", function()
     vim.cmd "startinsert"
     local line_num = vim.api.nvim_win_get_cursor(0)[1] - 1
@@ -90,6 +90,6 @@ return function()
       virt_text = { { " 嘸蝦米", "Comment" } },
       virt_text_pos = "eol",
     })
-    os.execute "im-select com.boshiamy.inputmethod.BoshiamyIMK"
+    vim.fn.jobstart("im-select com.boshiamy.inputmethod.BoshiamyIMK", { detach = true })
   end, { desc = "when go into the insert mode, switch to boshiamy.inputmethod" })
 end

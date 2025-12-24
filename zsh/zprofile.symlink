@@ -1,17 +1,42 @@
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# ---- OS Detection ----
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export IS_MAC=1
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  export IS_LINUX=1
+fi
+
 # ---- start export ----
 export DOTFILES=$HOME/.dotfiles
 export EDITOR="nvim"
 export ML=$HOME/Dropbox/scripts/ml/
 export SMEAR=$HOME/Documents/images/smear/
-export DOTFONTPATH=$HOME/Library/Fonts
+# Font path (OS-specific)
+if [[ -n "$IS_MAC" ]]; then
+  export DOTFONTPATH=$HOME/Library/Fonts
+else
+  export DOTFONTPATH=$HOME/.local/share/fonts
+fi
+
 export BETTER_EXCEPTIONS=1 # Linux / macOS
 export VISUAL="nvim"
 export DISPLAY=:0
-# 確保 PIPX 使用特定的 Python 版本：PIPX 預設會使用系統環境中的 python3，但你可能需要固定在 Homebrew 安裝的 Python 3.11 版本，避免版本衝突或相容性問題。
-export PIPX_DEFAULT_PYTHON="/opt/homebrew/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/bin/python3.11"
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+# Python path (OS-specific)
+if [[ -n "$IS_MAC" ]] && [[ -f "/opt/homebrew/bin/python3.11" ]]; then
+  export PIPX_DEFAULT_PYTHON="/opt/homebrew/bin/python3.11"
+elif command -v python3 &>/dev/null; then
+  export PIPX_DEFAULT_PYTHON="$(command -v python3)"
+fi
+
+# VS Code path (OS-specific)
+if [[ -n "$IS_MAC" ]] && [[ -d "/Applications/Visual Studio Code.app" ]]; then
+  export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+elif command -v code &>/dev/null; then
+  : # code already in PATH on Linux
+fi
 export NODE_OPTIONS="--no-deprecation"
 export PATH="/usr/bin/python3:$PATH"
 export PATH="$HOME/bin:$PATH"
@@ -20,7 +45,8 @@ export PATH="$HOME/pyscripts:$PATH"
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ENV_HINTS=1
 export PATH="$HOME/Dropbox/scripts:$PATH"
-export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
+# WezTerm path (macOS only)
+[[ -n "$IS_MAC" ]] && export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
 export TMP=$HOME/Dropbox/tmp
 export INBOX=$HOME/Dropbox/inbox
 # export PATH="$HOME/.pyenv/bin:$PATH"
@@ -31,9 +57,9 @@ export INBOX=$HOME/Dropbox/inbox
 # export PYENV_ROOT="$HOME/.pyenv"
 # export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
-export PATH=$PATH:/Users/htlin/.spicetify
+[[ -d "$HOME/.spicetify" ]] && export PATH="$PATH:$HOME/.spicetify"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-export PATH="$PATH:/Users/htlin/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 export PATH="Users/htlin/edirect:${PATH}"
 export NODE_OPTIONS='--disable-warning=ExperimentalWarning'
 export AIDER_YES_ALWAYS=true
@@ -83,4 +109,9 @@ alias bam-less='sam-less'
 alias fai-less='source-highlight      -f esc --lang-def=faidx.lang    --outlang-def=bioSyntax.outlang   --style-file=sam.style   | less'
 alias flagstat-less='source-highlight -f esc --lang-def=flagstat.lang --outlang-def=bioSyntax.outlang   --style-file=sam.style   | less'
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (OS-specific paths)
+if [[ -n "$IS_MAC" ]] && [[ -f "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -n "$IS_LINUX" ]] && [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi

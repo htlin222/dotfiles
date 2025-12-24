@@ -18,6 +18,8 @@ local fmta = require("luasnip.extras.fmt").fmta
 local types = require "luasnip.util.types"
 local conds = require "luasnip.extras.conditions"
 local conds_expand = require "luasnip.extras.conditions.expand"
+local helpers = require "lua_snippets.helpers"
+local date_input = helpers.date_input
 local vim = vim
 
 ls.setup {

@@ -17,7 +17,7 @@ opt.linebreak = true -- 在單詞邊界處換行
 opt.textwidth = 80 -- 設定文本寬度為 80 個字符
 opt.shiftwidth = 2 -- 縮排寬度為 2 個空格
 
-opt.spell = true -- 啟用拼寫檢查
+opt.spell = false -- 拼寫檢查預設關閉，在特定文件類型中啟用
 opt.spelllang = { "en_us" } -- 設定拼寫檢查語言為美式英語
 opt.smartindent = true -- 啟用智能縮排
 opt.softtabstop = 2 -- 編輯時 Tab 鍵的寬度為 2 個空格

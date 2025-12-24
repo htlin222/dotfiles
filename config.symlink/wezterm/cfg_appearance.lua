@@ -1,6 +1,9 @@
+local themes = require("cfg_themes")
+
 local cfg = {}
 
 cfg.hide_tab_bar_if_only_one_tab = true
+cfg.window_decorations = "RESIZE"
 
 -- Pad window to avoid the content to be too close to the border,
 -- so it's easier to see and select.
@@ -19,6 +22,11 @@ cfg.inactive_pane_hsb = {
 	brightness = 0.6,
 }
 
-cfg.colors = require("cfg_bew_colors")
+-- Use theme system for colors (default: dark theme)
+-- Toggle with CMD+SHIFT+T
+cfg.colors = themes.get_current_colors()
+
+-- Setup theme switching event handler
+themes.setup_theme_switching()
 
 return cfg

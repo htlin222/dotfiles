@@ -134,7 +134,7 @@ local all_servers = {
   -- 重型
   "julials",
   "eslint",
-  "pylsp",
+  -- "pylsp", -- disabled: use ruff instead (faster, modern)
   "ruff",
   "ts_ls",
   "tailwindcss",

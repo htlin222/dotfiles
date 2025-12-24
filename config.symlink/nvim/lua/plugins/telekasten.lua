@@ -11,26 +11,24 @@ local function determine_home()
 end
 return { --telekasten
   "renerocksai/telekasten.nvim",
-  -- event = { "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox/Medical/**.md" },
-  event = "VeryLazy",
-  -- ft = { "markdown", "quarto" },
+  cmd = { "Telekasten" }, -- 只在使用 Telekasten 命令時載入
+  keys = {
+    { "<leader>z", "<cmd>Telekasten panel<CR>", desc = "Telekasten panel" },
+    { "<leader>zf", "<cmd>Telekasten find_notes<CR>", desc = "Find notes" },
+    { "<leader>zg", "<cmd>Telekasten search_notes<CR>", desc = "Search notes" },
+    { "<leader>zd", "<cmd>Telekasten goto_today<CR>", desc = "Go to today" },
+    { "<leader>zn", "<cmd>Telekasten new_note<CR>", desc = "New note" },
+    { "<leader>zc", "<cmd>Telekasten show_calendar<CR>", desc = "Show calendar" },
+    { "<leader>zb", "<cmd>Telekasten show_backlinks<CR>", desc = "Show backlinks" },
+    { "<leader>zI", "<cmd>Telekasten insert_img_link<CR>", desc = "Insert image link" },
+  },
   dependencies = { "nvim-telescope/telescope.nvim" },
   config = function()
-    vim.keymap.set("n", "<leader>z", "<cmd>Telekasten panel<CR>")
-    vim.keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>")
-    vim.keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>")
-    vim.keymap.set("n", "<leader>zd", "<cmd>Telekasten goto_today<CR>")
-    -- vim.keymap.set("n", "<leader>zz", "<cmd>Telekasten follow_link<CR>")
-    vim.keymap.set("n", "<leader>zn", "<cmd>Telekasten new_note<CR>")
-    vim.keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>")
-    vim.keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>")
-    vim.keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>")
-    vim.keymap.set("i", "\\[", "<cmd>Telekasten insert_link<CR>")
-    -- Call insert link automatically when we start typing a link
-    -- vim.keymap.set("i", "[[", "<cmd>Telekasten insert_link<CR>")
-    -- q.v. treesitter README : Adding parsers
+    -- 插入模式快捷鍵（不在 keys 表中）
+    vim.keymap.set("i", "\\[", "<cmd>Telekasten insert_link<CR>", { desc = "Insert link" })
+    -- 註冊 treesitter parser
     vim.treesitter.language.register("markdown", "telekasten")
-    vim.opt.foldlevel = 3
+
     require("telekasten").setup {
       subdirs_in_links = false,
       -- home = vim.fn.expand("~/Dropbox/inbox"), -- Put the name of your notes directory here

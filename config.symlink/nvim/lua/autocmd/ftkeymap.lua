@@ -29,7 +29,7 @@ autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup("bash_and_zsh", { clear = true }),
+  group = augroup("jrnl_filetype", { clear = true }),
   pattern = { "*.jrnl" },
   callback = function()
     vim.bo.filetype = "markdown"
