@@ -25,6 +25,12 @@ cfg.keys = {
 		mods = "CMD|SHIFT",
 		action = wezterm.action.EmitEvent("toggle-theme"),
 	},
+	-- Toggle background transparency
+	{
+		key = "u",
+		mods = "CMD|SHIFT",
+		action = wezterm.action.EmitEvent("toggle-transparency"),
+	},
 	{
 		key = "LeftArrow",
 		mods = "OPT",
