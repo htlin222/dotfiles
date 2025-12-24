@@ -85,6 +85,17 @@ DISABLE_MAGIC_FUNCTIONS="true"
 ZSH_DISABLE_COMPFIX="true"  # Skip compaudit (saves ~20% startup time)
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=30'
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
+# you-should-use settings
+export YSU_MESSAGE_POSITION="after"
+export YSU_MODE=ALL
+
+# zsh-auto-notify settings
+export AUTO_NOTIFY_THRESHOLD=10  # seconds
+export AUTO_NOTIFY_IGNORE=(vim nvim less man watch tmux ssh top htop)
 
 # Plugin loading - reduced eager loading for faster startup
 EAGER_PLUGINS=(
@@ -113,6 +124,8 @@ DEFERRED_PLUGINS=(
   web-search
   pnpm
   wd
+  # you-should-use    # Reminds you of existing aliases
+  zsh-auto-notify     # Desktop notifications for long commands
 )
 
 # Set plugins for oh-my-zsh - minimal initial load
@@ -143,6 +156,7 @@ _find_plugin_path() {
   local plugin_paths=(
     "$ZSH/custom/plugins/$plugin/$plugin.plugin.zsh"
     "$ZSH/custom/plugins/$plugin/${plugin}.zsh"
+    "$ZSH/custom/plugins/$plugin/${plugin#zsh-}.plugin.zsh"  # zsh-auto-notify → auto-notify.plugin.zsh
     "$ZSH/plugins/$plugin/$plugin.plugin.zsh"
   )
 
@@ -375,6 +389,20 @@ bindkey '^[[A' _init_atuin_and_up      # Up arrow
 bindkey '^[OA' _init_atuin_and_up      # Up arrow (alternate)
 bindkey '^r' _init_atuin_and_search    # Ctrl+R
 bindkey -M vicmd 'k' _init_atuin_and_up # Vi mode: k for up
+
+# Lazy load direnv - triggers on cd
+_direnv_loaded=0
+_init_direnv() {
+  if (( ! _direnv_loaded )); then
+    _direnv_loaded=1
+    if command -v direnv &>/dev/null; then
+      eval "$(direnv hook zsh)"
+    fi
+  fi
+}
+add-zsh-hook chpwd _init_direnv
+# Also init if .envrc exists in current dir
+[[ -f .envrc ]] && _init_direnv
 
 export PATH=~/.npm-global/bin:$PATH
 

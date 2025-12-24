@@ -134,7 +134,7 @@ alias st="study"
 alias str="studyrg"
 alias temp="curl wttr.in/Taipei?format='%l:+%c+%t+but+it+feels+like+%f+%h\\n'"
 alias today='dia'
-alias tree='lsd --tree'
+# alias tree='lsd --tree'  # Replaced by eza's lt alias
 alias uptodate="ddgr -n 5 'https://www.uptodate.com/'"
 alias ur=undelfile
 alias v='nvim'
@@ -174,3 +174,25 @@ alias -g T='| tail'      # e.g., log T
 alias -g J='| jq'        # e.g., curl api J
 alias -g C='| pbcopy'    # e.g., pwd C
 alias -g N='>/dev/null 2>&1'  # e.g., cmd N (silence output)
+
+# ========================================
+# Modern CLI Tools (Rust-based replacements)
+# ========================================
+
+# eza - modern ls replacement
+if command -v eza &>/dev/null; then
+  alias ls='eza --icons --group-directories-first'
+  alias ll='eza -la --icons --git --header --group-directories-first'
+  alias la='eza -a --icons --group-directories-first'
+  alias lt='eza --tree --level=2 --icons'
+  alias lm='eza -la --sort=modified --icons'
+  alias lsize='eza -la --sort=size --icons'
+fi
+
+# bat - modern cat replacement
+if command -v bat &>/dev/null; then
+  alias cat='bat --paging=never --style=plain'
+  alias catn='bat --paging=never'  # with line numbers
+  alias batdiff='git diff --name-only | xargs bat --diff'
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
