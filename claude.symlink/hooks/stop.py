@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Stop hook - Send notification when Claude finishes.
+Shows folder name and last 3 conversation messages.
+"""
 
 import json
 import os
@@ -6,8 +10,8 @@ import subprocess
 import sys
 
 
-def get_transcript_summary(transcript_path: str, num_lines: int = 10) -> str:
-    """Read last N lines from transcript and extract conversation content."""
+def get_last_messages(transcript_path: str, num_lines: int = 20) -> str:
+    """Read last N lines from transcript and extract last 3 conversation messages."""
     if not transcript_path or not os.path.exists(transcript_path):
         return ""
 
@@ -15,97 +19,83 @@ def get_transcript_summary(transcript_path: str, num_lines: int = 10) -> str:
         with open(transcript_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
-        # Get last N lines
         recent_lines = lines[-num_lines:] if len(lines) >= num_lines else lines
 
-        summaries = []
+        messages = []
         for line in recent_lines:
             try:
                 entry = json.loads(line.strip())
-                # Extract meaningful content based on message type
-                if isinstance(entry, dict):
-                    role = entry.get("role", "")
-                    content = entry.get("content", "")
+                if not isinstance(entry, dict):
+                    continue
 
-                    # Handle different content formats
-                    if isinstance(content, str) and content:
-                        text = content[:100]  # Truncate long content
-                        if len(content) > 100:
-                            text += "..."
-                        summaries.append(f"[{role}] {text}")
-                    elif isinstance(content, list):
-                        # Handle structured content (tool use, etc.)
-                        for item in content:
-                            if isinstance(item, dict):
-                                if item.get("type") == "text":
-                                    text = item.get("text", "")[:80]
-                                    if len(item.get("text", "")) > 80:
-                                        text += "..."
-                                    summaries.append(f"[{role}] {text}")
-                                elif item.get("type") == "tool_use":
-                                    tool_name = item.get("name", "unknown")
-                                    summaries.append(f"[tool] {tool_name}")
-                                elif item.get("type") == "tool_result":
-                                    summaries.append("[tool_result]")
+                role = entry.get("role", "")
+                content = entry.get("content", "")
+
+                if role not in ("user", "assistant"):
+                    continue
+
+                # Handle string content
+                if isinstance(content, str) and content.strip():
+                    text = content.strip()[:60]
+                    if len(content) > 60:
+                        text += "..."
+                    messages.append(f"{'👤' if role == 'user' else '🤖'} {text}")
+
+                # Handle structured content (list)
+                elif isinstance(content, list):
+                    for item in content:
+                        if isinstance(item, dict) and item.get("type") == "text":
+                            text = item.get("text", "").strip()[:60]
+                            if len(item.get("text", "")) > 60:
+                                text += "..."
+                            if text:
+                                messages.append(
+                                    f"{'👤' if role == 'user' else '🤖'} {text}"
+                                )
+                                break
+
             except json.JSONDecodeError:
                 continue
 
-        return (
-            "\n".join(summaries[-5:]) if summaries else ""
-        )  # Return last 5 meaningful entries
+        return "\n".join(messages[-3:]) if messages else ""
     except Exception:
         return ""
 
 
 def main():
     try:
-        # Read JSON from stdin
         raw_input = sys.stdin.read()
 
         if not raw_input.strip():
-            # Fallback if no input
             subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
             subprocess.run(
                 ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
             )
             return
 
-        # Parse JSON
         data = json.loads(raw_input)
-
-        # Extract fields
         cwd = data.get("cwd", "")
         transcript_path = data.get("transcript_path", "")
-        session_id = data.get("session_id", "")[:8]  # First 8 chars
 
-        # Get basename of cwd
         folder_name = os.path.basename(cwd) if cwd else ""
+        last_messages = get_last_messages(transcript_path)
 
-        # Get transcript summary
-        transcript_summary = get_transcript_summary(transcript_path)
-
-        # Build notification body
-        body_parts = ["對話已經完成"]
+        # Build notification
+        body_parts = []
         if folder_name:
             body_parts.append(f"📁 {folder_name}")
-        if session_id:
-            body_parts.append(f"🔑 {session_id}")
-        if transcript_summary:
-            body_parts.append(f"---\n{transcript_summary}")
+        if last_messages:
+            body_parts.append(last_messages)
 
-        full_body = "\n".join(body_parts)
+        full_body = "\n".join(body_parts) if body_parts else "對話已完成"
 
-        # Use macOS 'say' command
         subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
-
-        # Send notification via ntfy with title
         subprocess.run(
             ["ntfy", "publish", "--title", "Claude Code 完成", "lizard", full_body],
             check=False,
         )
 
     except json.JSONDecodeError:
-        # Fallback
         subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
         subprocess.run(
             ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
