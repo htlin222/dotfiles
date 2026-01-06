@@ -88,6 +88,10 @@
 					{
 						"type": "command",
 						"command": "python3 ~/.claude/hooks/check_rm.py"
+					},
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/check_file_exists.py"
 					}
 				]
 			},
@@ -97,6 +101,15 @@
 					{
 						"type": "command",
 						"command": "python3 ~/.claude/hooks/file_guard.py"
+					}
+				]
+			},
+			{
+				"matcher": "Read",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/check_read_exists.py"
 					}
 				]
 			},
@@ -144,8 +157,7 @@
 			},
 			{
 				"matcher": "Bash",
-				"hooks": [
-				]
+				"hooks": []
 			}
 		],
 		"Notification": [
@@ -170,17 +182,6 @@
 					{
 						"type": "prompt",
 						"prompt": "檢查任務完成狀態：1) TodoWrite 中的所有項目是否都已完成？2) 是否有未處理的錯誤或警告？3) 用戶的原始請求是否已完整滿足？如果有遺漏，請繼續完成。"
-					}
-				]
-			}
-		],
-		"SubagentStop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/subagent_stop.py"
 					}
 				]
 			}
