@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Stop hook - Send notification when Claude finishes.
-Shows folder name and last 3 conversation messages.
+Sends git status via ntfy.
 """
 
 import json
@@ -9,57 +9,64 @@ import os
 import subprocess
 import sys
 
+STATUS_EMOJI = {
+    "??": "❓",  # Untracked
+    " A": "➕",  # Added to staging
+    "A ": "➕",  # Added to staging
+    " M": "📝",  # Modified (not staged)
+    "M ": "✏️",  # Modified and staged
+    "MM": "✏️",  # Modified, staged, then modified again
+    "AM": "🆕",  # Added, then modified
+    " D": "🗑️",  # Deleted (not staged)
+    "D ": "🗑️",  # Deleted and staged
+    "R ": "📛",  # Renamed
+    "C ": "📋",  # Copied
+    "U ": "⚠️",  # Unmerged
+}
 
-def get_last_messages(transcript_path: str, num_lines: int = 20) -> str:
-    """Read last N lines from transcript and extract last 3 conversation messages."""
-    if not transcript_path or not os.path.exists(transcript_path):
-        return ""
+
+def format_status_line(line: str) -> str:
+    """Convert git status line to emoji format."""
+    if len(line) < 3:
+        return line
+    code = line[:2]
+    path = line[3:]
+    filename = os.path.basename(path.rstrip("/"))
+    emoji = STATUS_EMOJI.get(code, "🪾")
+    return f"{emoji} {filename}"
+
+
+def get_git_status_and_notify(cwd: str, folder_name: str) -> None:
+    """Get git status and send ntfy notification."""
+    title = f"Claude Code 📁 {folder_name}" if folder_name else "Claude Code"
 
     try:
-        with open(transcript_path, "r", encoding="utf-8") as f:
-            lines = f.readlines()
+        git_result = subprocess.run(
+            ["git", "status", "-s"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        git_status = git_result.stdout.strip()
 
-        recent_lines = lines[-num_lines:] if len(lines) >= num_lines else lines
+        if git_status:
+            lines = git_status.split("\n")
+            formatted = [format_status_line(line) for line in lines]
+            body = "\n".join(formatted)
+        else:
+            body = "無 Git 變動"
 
-        messages = []
-        for line in recent_lines:
-            try:
-                entry = json.loads(line.strip())
-                if not isinstance(entry, dict):
-                    continue
+        subprocess.run(
+            ["ntfy", "publish", "--title", title, "lizard", body],
+            check=False,
+        )
 
-                role = entry.get("role", "")
-                content = entry.get("content", "")
-
-                if role not in ("user", "assistant"):
-                    continue
-
-                # Handle string content
-                if isinstance(content, str) and content.strip():
-                    text = content.strip()[:60]
-                    if len(content) > 60:
-                        text += "..."
-                    messages.append(f"{'👤' if role == 'user' else '🤖'} {text}")
-
-                # Handle structured content (list)
-                elif isinstance(content, list):
-                    for item in content:
-                        if isinstance(item, dict) and item.get("type") == "text":
-                            text = item.get("text", "").strip()[:60]
-                            if len(item.get("text", "")) > 60:
-                                text += "..."
-                            if text:
-                                messages.append(
-                                    f"{'👤' if role == 'user' else '🤖'} {text}"
-                                )
-                                break
-
-            except json.JSONDecodeError:
-                continue
-
-        return "\n".join(messages[-3:]) if messages else ""
     except Exception:
-        return ""
+        subprocess.run(
+            ["ntfy", "publish", "--title", title, "lizard", "對話已完成"],
+            check=False,
+        )
 
 
 def main():
@@ -74,24 +81,9 @@ def main():
 
         data = json.loads(raw_input)
         cwd = data.get("cwd", "")
-        transcript_path = data.get("transcript_path", "")
-
         folder_name = os.path.basename(cwd) if cwd else ""
-        last_messages = get_last_messages(transcript_path)
 
-        # Build notification
-        body_parts = []
-        if folder_name:
-            body_parts.append(f"📁 {folder_name}")
-        if last_messages:
-            body_parts.append(last_messages)
-
-        full_body = "\n".join(body_parts) if body_parts else "對話已完成"
-
-        subprocess.run(
-            ["ntfy", "publish", "--title", "Claude Code 完成", "lizard", full_body],
-            check=False,
-        )
+        get_git_status_and_notify(cwd, folder_name)
 
     except json.JSONDecodeError:
         subprocess.run(

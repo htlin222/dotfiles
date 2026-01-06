@@ -60,7 +60,9 @@ claude.symlink/shell-snapshots/
 claude.symlink/ide/
 claude.symlink/plugins/*
 claude.symlink/stats-cache.json
+claude.symlink/context-snapshots/
 **/logs/
+**/codebase-maps/
 
 # Quarto
 docs/_book/

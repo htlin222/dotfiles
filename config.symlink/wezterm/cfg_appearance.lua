@@ -5,6 +5,7 @@ local cfg = {}
 
 cfg.hide_tab_bar_if_only_one_tab = true
 cfg.window_decorations = "RESIZE"
+cfg.front_end = "WebGpu"
 
 -- Background opacity settings
 cfg.window_background_opacity = 1.0 -- Default: opaque

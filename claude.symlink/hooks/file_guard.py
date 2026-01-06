@@ -61,12 +61,13 @@ SENSITIVE_PATTERNS = {
     ],
     # Category 4: GCP Credentials
     "gcp": [
-        "*.json",  # Service account keys (filtered by content)
         "gcloud/",
         "application_default_credentials.json",
         "service-account*.json",
         "service_account*.json",
         "credentials.json",
+        "*-credentials.json",
+        "gcp*.json",
     ],
     # Category 5: SSH & Certificates
     "ssh_certs": [

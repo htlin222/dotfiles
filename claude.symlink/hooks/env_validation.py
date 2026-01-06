@@ -32,6 +32,12 @@ REQUIRED_TOOLS = {
     "pnpm": {"cmd": ["pnpm", "--version"], "min_version": "8.0", "optional": True},
     "ruff": {"cmd": ["ruff", "--version"], "min_version": "0.1", "optional": True},
     "rip": {"cmd": ["rip", "--version"], "min_version": None, "optional": True},
+    "scip-typescript": {
+        "cmd": ["scip-typescript", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_hint": "npm install -g @sourcegraph/scip-typescript",
+    },
 }
 
 # Project-specific requirements based on files present
@@ -69,6 +75,7 @@ def check_tool(name: str, config: dict) -> dict:
         "meets_requirement": False,
         "optional": config.get("optional", False),
         "error": None,
+        "install_hint": config.get("install_hint"),
     }
 
     # Check if tool exists
@@ -133,7 +140,10 @@ def format_validation_report(tool_results: list, project_missing: list) -> str:
     for result in tool_results:
         if not result["available"]:
             if not result["optional"]:
-                issues.append(f"❌ {result['name']}: {result['error']}")
+                msg = f"❌ {result['name']}: {result['error']}"
+                if result.get("install_hint"):
+                    msg += f"\n   → {result['install_hint']}"
+                issues.append(msg)
         elif not result["meets_requirement"]:
             issues.append(f"⚠️ {result['name']}: version outdated ({result['version']})")
 

@@ -7,11 +7,19 @@ Features:
 1. Safety check for dangerous commands
 2. Log prompts for reference
 3. Skills Auto-Activation - suggest relevant skills based on keywords
+4. Project-aware suggestions - detect project type and suggest relevant skills
+5. Smart context loading - suggest /prime or /load for large projects
+6. Git status reminder - warn about uncommitted changes
+7. Similar prompt detection - suggest previous solutions
+8. Token estimation warning - detect potentially expensive requests
+9. Time reminder - late night / long session warnings
 """
 
+import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime
 
@@ -20,6 +28,7 @@ from datetime import datetime
 # =============================================================================
 
 LOG_DIR = os.path.expanduser("~/.claude/logs")
+STATE_FILE = os.path.join(LOG_DIR, "hook_state.json")
 
 # Dangerous patterns to warn about (not block, just warn)
 DANGEROUS_PATTERNS = [
@@ -119,6 +128,87 @@ SKILL_RULES = [
     ),
 ]
 
+# Project type detection
+PROJECT_TYPES = {
+    "node": {
+        "files": ["package.json"],
+        "skills": ["build", "test"],
+        "message": "📦 Node.js 專案",
+    },
+    "python": {
+        "files": ["pyproject.toml", "setup.py", "requirements.txt"],
+        "skills": ["test", "analyze"],
+        "message": "🐍 Python 專案",
+    },
+    "rust": {
+        "files": ["Cargo.toml"],
+        "skills": ["build", "test"],
+        "message": "🦀 Rust 專案",
+    },
+    "go": {
+        "files": ["go.mod"],
+        "skills": ["build", "test"],
+        "message": "🐹 Go 專案",
+    },
+    "ruby": {
+        "files": ["Gemfile"],
+        "skills": ["test"],
+        "message": "💎 Ruby 專案",
+    },
+    "java": {
+        "files": ["pom.xml", "build.gradle"],
+        "skills": ["build", "test"],
+        "message": "☕ Java 專案",
+    },
+}
+
+# Token estimation patterns (potentially expensive)
+TOKEN_HEAVY_PATTERNS = [
+    (
+        r"整個專案|entire project|whole codebase|all files",
+        "⚠️ 整個專案操作可能消耗大量 tokens",
+    ),
+    (r"所有檔案|every file|each file", "⚠️ 處理所有檔案可能消耗大量 tokens"),
+    (r"重構整個|refactor all|refactor entire", "⚠️ 大規模重構可能消耗大量 tokens"),
+    (
+        r"完整分析|full analysis|comprehensive review",
+        "⚠️ 完整分析可能消耗大量 tokens，建議分階段進行",
+    ),
+    (r"從頭開始|from scratch|start over", "⚠️ 從頭開始可能消耗大量 tokens"),
+]
+
+
+# =============================================================================
+# State Management
+# =============================================================================
+
+
+def load_state() -> dict:
+    """Load persistent state from file."""
+    try:
+        if os.path.exists(STATE_FILE):
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {
+        "session_start": None,
+        "prompt_count": 0,
+        "prompt_hashes": [],
+        "last_git_check": None,
+        "last_context_suggestion": None,
+    }
+
+
+def save_state(state: dict):
+    """Save persistent state to file."""
+    try:
+        os.makedirs(LOG_DIR, exist_ok=True)
+        with open(STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
 
 # =============================================================================
 # Feature 1: Dangerous Pattern Check
@@ -181,6 +271,194 @@ def suggest_skill(prompt: str) -> str | None:
 
 
 # =============================================================================
+# Feature 4: Project-aware Suggestions
+# =============================================================================
+
+
+def detect_project_type(cwd: str) -> dict | None:
+    """Detect project type based on config files."""
+    if not cwd:
+        return None
+
+    for project_type, config in PROJECT_TYPES.items():
+        for file in config["files"]:
+            if os.path.exists(os.path.join(cwd, file)):
+                return {"type": project_type, **config}
+    return None
+
+
+# =============================================================================
+# Feature 5: Smart Context Loading
+# =============================================================================
+
+
+def check_large_project(cwd: str, state: dict) -> str | None:
+    """Check if project is large and suggest context loading."""
+    if not cwd:
+        return None
+
+    # Don't suggest too frequently (once per 10 prompts)
+    if state.get("last_context_suggestion"):
+        prompts_since = state.get("prompt_count", 0) - state.get(
+            "last_context_suggestion", 0
+        )
+        if prompts_since < 10:
+            return None
+
+    try:
+        # Count files (rough estimate)
+        file_count = 0
+        for root, dirs, files in os.walk(cwd):
+            # Skip common non-source directories
+            dirs[:] = [
+                d
+                for d in dirs
+                if d
+                not in [
+                    ".git",
+                    "node_modules",
+                    "__pycache__",
+                    ".venv",
+                    "venv",
+                    "dist",
+                    "build",
+                    ".next",
+                ]
+            ]
+            file_count += len(files)
+            if file_count > 100:
+                break
+
+        if file_count > 100:
+            state["last_context_suggestion"] = state.get("prompt_count", 0)
+            return "📂 大型專案偵測（100+ 檔案），建議先執行 /prime 載入 context"
+
+    except Exception:
+        pass
+
+    return None
+
+
+# =============================================================================
+# Feature 6: Git Status Reminder
+# =============================================================================
+
+
+def check_git_status(cwd: str, state: dict) -> str | None:
+    """Check git status and warn about uncommitted changes."""
+    if not cwd:
+        return None
+
+    # Check at most once per 5 prompts
+    if state.get("last_git_check"):
+        prompts_since = state.get("prompt_count", 0) - state.get("last_git_check", 0)
+        if prompts_since < 5:
+            return None
+
+    try:
+        # Check if in git repo
+        result = subprocess.run(
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode != 0:
+            return None
+
+        # Get status
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+
+        state["last_git_check"] = state.get("prompt_count", 0)
+
+        if result.stdout.strip():
+            lines = result.stdout.strip().split("\n")
+            change_count = len(lines)
+            if change_count > 10:
+                return f"📝 Git: {change_count} 個未提交變更，建議適時 commit"
+
+    except Exception:
+        pass
+
+    return None
+
+
+# =============================================================================
+# Feature 7: Similar Prompt Detection
+# =============================================================================
+
+
+def check_similar_prompt(prompt: str, state: dict) -> str | None:
+    """Check for similar previous prompts."""
+    # Create a simple hash of the prompt (normalized)
+    normalized = re.sub(r"\s+", " ", prompt.lower().strip())
+    prompt_hash = hashlib.md5(normalized.encode()).hexdigest()[:8]
+
+    prompt_hashes = state.get("prompt_hashes", [])
+
+    # Check for exact or similar match
+    if prompt_hash in prompt_hashes:
+        return "🔄 偵測到相似問題，可參考之前的對話紀錄"
+
+    # Keep last 50 prompt hashes
+    prompt_hashes.append(prompt_hash)
+    state["prompt_hashes"] = prompt_hashes[-50:]
+
+    return None
+
+
+# =============================================================================
+# Feature 8: Token Estimation Warning
+# =============================================================================
+
+
+def check_token_heavy(prompt: str) -> str | None:
+    """Check for potentially token-heavy requests."""
+    prompt_lower = prompt.lower()
+    for pattern, warning in TOKEN_HEAVY_PATTERNS:
+        if re.search(pattern, prompt_lower):
+            return warning
+    return None
+
+
+# =============================================================================
+# Feature 9: Time Reminder
+# =============================================================================
+
+
+def check_time_reminder(state: dict) -> str | None:
+    """Check for late night or long session."""
+    now = datetime.now()
+    messages = []
+
+    # Late night check (23:00 - 05:00)
+    if now.hour >= 23 or now.hour < 5:
+        messages.append("🌙 深夜了，注意休息")
+
+    # Long session check
+    session_start = state.get("session_start")
+    if session_start:
+        try:
+            start_time = datetime.fromisoformat(session_start)
+            duration = (now - start_time).total_seconds() / 3600  # hours
+            if duration > 2:
+                messages.append(f"⏰ 已工作 {duration:.1f} 小時，建議休息一下")
+        except Exception:
+            pass
+    else:
+        state["session_start"] = now.isoformat()
+
+    return " | ".join(messages) if messages else None
+
+
+# =============================================================================
 # Main
 # =============================================================================
 
@@ -195,21 +473,55 @@ def main():
         prompt = data.get("prompt", "")
         cwd = data.get("cwd", "")
 
+        # Load state
+        state = load_state()
+        state["prompt_count"] = state.get("prompt_count", 0) + 1
+
         messages = []
 
         # Log the prompt
         if prompt:
             log_prompt(cwd, prompt)
 
-        # Check for dangerous patterns
+        # Feature 1: Check for dangerous patterns
         warning = check_dangerous_patterns(prompt)
         if warning:
             messages.append(f"⚠️ {warning} - 請確認這是你想要的操作")
 
-        # Suggest skill if applicable
+        # Feature 8: Token estimation warning (check early)
+        token_warning = check_token_heavy(prompt)
+        if token_warning:
+            messages.append(token_warning)
+
+        # Feature 3: Suggest skill if applicable
         skill_suggestion = suggest_skill(prompt)
         if skill_suggestion:
             messages.append(skill_suggestion)
+
+        # Feature 5: Smart context loading (first few prompts only)
+        if state.get("prompt_count", 0) <= 3:
+            context_suggestion = check_large_project(cwd, state)
+            if context_suggestion:
+                messages.append(context_suggestion)
+
+        # Feature 6: Git status reminder
+        git_reminder = check_git_status(cwd, state)
+        if git_reminder:
+            messages.append(git_reminder)
+
+        # Feature 7: Similar prompt detection
+        similar_warning = check_similar_prompt(prompt, state)
+        if similar_warning:
+            messages.append(similar_warning)
+
+        # Feature 9: Time reminder (limit frequency)
+        if state.get("prompt_count", 0) % 10 == 0:  # Every 10 prompts
+            time_reminder = check_time_reminder(state)
+            if time_reminder:
+                messages.append(time_reminder)
+
+        # Save state
+        save_state(state)
 
         # Output response if there are messages
         if messages:
