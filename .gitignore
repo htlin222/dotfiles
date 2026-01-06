@@ -59,6 +59,7 @@ claude.symlink/file-history/
 claude.symlink/shell-snapshots/
 claude.symlink/ide/
 claude.symlink/plugins/*
+claude.symlink/stats-cache.json
 **/logs/
 
 # Quarto
