@@ -27,14 +27,16 @@ return {
       handle_leading_whitespace = false,
     }
 
-    -- Activate on filetype enter
+    -- Activate on filetype enter (deferred to allow treesitter to parse first)
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "markdown", "quarto", "norg", "rmd" },
       callback = function()
-        local languages = { "python", "r", "lua", "bash" }
-        local completion = true
-        local diagnostics = false
-        otter.activate(languages, completion, diagnostics)
+        vim.defer_fn(function()
+          local languages = { "python", "r", "lua", "bash" }
+          local completion = true
+          local diagnostics = false
+          otter.activate(languages, completion, diagnostics)
+        end, 100)
       end,
     })
   end,
