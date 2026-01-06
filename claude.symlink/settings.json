@@ -73,6 +73,10 @@
 					{
 						"type": "command",
 						"command": "python3 ~/.claude/hooks/session_start.py"
+					},
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/env_validation.py"
 					}
 				]
 			}
@@ -88,11 +92,24 @@
 				]
 			},
 			{
+				"matcher": "Read|Write|Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/file_guard.py"
+					}
+				]
+			},
+			{
 				"matcher": "Write|Edit|MultiEdit",
 				"hooks": [
 					{
 						"type": "command",
 						"command": "afplay /System/Library/Sounds/Funk.aiff"
+					},
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/git_checkpoint.py"
 					}
 				]
 			},
@@ -128,10 +145,6 @@
 			{
 				"matcher": "Bash",
 				"hooks": [
-					{
-						"type": "command",
-						"command": "say '終端指令已完成'"
-					}
 				]
 			}
 		],
@@ -161,6 +174,28 @@
 				]
 			}
 		],
+		"SubagentStop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/subagent_stop.py"
+					}
+				]
+			}
+		],
+		"PreCompact": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/pre_compact.py"
+					}
+				]
+			}
+		],
 		"UserPromptSubmit": [
 			{
 				"matcher": "",
@@ -168,6 +203,10 @@
 					{
 						"type": "command",
 						"command": "python3 ~/.claude/hooks/user_prompt.py"
+					},
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/codebase_map.py"
 					}
 				]
 			}

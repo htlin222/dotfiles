@@ -1,0 +1,299 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"description": "Skill auto-activation rules based on file patterns and keywords",
+	"version": "1.0.0",
+	"rules": [
+		{
+			"skill": "frontend-design",
+			"description": "Frontend UI/UX development",
+			"triggers": {
+				"file_patterns": [
+					"**/*.tsx",
+					"**/*.jsx",
+					"**/*.vue",
+					"**/*.svelte",
+					"**/components/**",
+					"**/pages/**",
+					"**/app/**/*.tsx",
+					"**/*.css",
+					"**/*.scss",
+					"**/tailwind.config.*"
+				],
+				"keywords": [
+					"component",
+					"ui",
+					"button",
+					"form",
+					"modal",
+					"dialog",
+					"layout",
+					"responsive",
+					"tailwind",
+					"css",
+					"style"
+				],
+				"intent_patterns": [
+					"create.*(?:component|ui|button|form|modal)",
+					"build.*(?:interface|page|layout)",
+					"design.*(?:component|ui)"
+				]
+			},
+			"suggestion": "💡 建議使用 /frontend-design 來建立 UI 元件",
+			"auto_activate": false
+		},
+		{
+			"skill": "code-review",
+			"description": "Code quality review",
+			"triggers": {
+				"file_patterns": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.py"],
+				"keywords": ["review", "check", "審查", "檢查", "quality", "pr"],
+				"intent_patterns": [
+					"review.*(?:code|pr|pull|change)",
+					"check.*(?:quality|code)",
+					"審查.*(?:程式碼|代碼)"
+				]
+			},
+			"suggestion": "💡 建議使用 /code-review 進行程式碼審查",
+			"auto_activate": false
+		},
+		{
+			"skill": "feature-dev",
+			"description": "Feature development workflow",
+			"triggers": {
+				"file_patterns": ["**/src/**", "**/lib/**", "**/app/**"],
+				"keywords": ["feature", "implement", "功能", "實作", "develop", "add"],
+				"intent_patterns": [
+					"(?:add|create|implement|build).*feature",
+					"新增.*功能",
+					"implement.*(?:feature|function)"
+				]
+			},
+			"suggestion": "💡 建議使用 /feature-dev 進行功能開發",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:git",
+			"description": "Git version control operations",
+			"triggers": {
+				"file_patterns": [".git/**", ".github/**"],
+				"keywords": [
+					"commit",
+					"push",
+					"merge",
+					"branch",
+					"rebase",
+					"pr",
+					"pull request",
+					"git"
+				],
+				"intent_patterns": [
+					"(?:create|make).*(?:commit|pr|branch)",
+					"git.*(?:push|merge|rebase)",
+					"提交.*(?:代碼|程式碼)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:git 進行版本控制操作",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:test",
+			"description": "Testing workflows",
+			"triggers": {
+				"file_patterns": [
+					"**/*.test.*",
+					"**/*.spec.*",
+					"**/tests/**",
+					"**/__tests__/**",
+					"**/test/**"
+				],
+				"keywords": [
+					"test",
+					"testing",
+					"spec",
+					"e2e",
+					"unit test",
+					"測試",
+					"jest",
+					"vitest",
+					"pytest"
+				],
+				"intent_patterns": [
+					"(?:write|create|add|run).*test",
+					"測試.*(?:功能|程式碼)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:test 進行測試相關操作",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:document",
+			"description": "Documentation generation",
+			"triggers": {
+				"file_patterns": ["**/*.md", "**/docs/**", "**/README*"],
+				"keywords": [
+					"document",
+					"readme",
+					"doc",
+					"文件",
+					"說明",
+					"documentation"
+				],
+				"intent_patterns": [
+					"(?:write|create|update).*(?:doc|readme|documentation)",
+					"撰寫.*(?:文件|說明)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:document 生成文件",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:analyze",
+			"description": "Code analysis and investigation",
+			"triggers": {
+				"file_patterns": [],
+				"keywords": [
+					"analyze",
+					"分析",
+					"investigate",
+					"debug",
+					"troubleshoot",
+					"find",
+					"search"
+				],
+				"intent_patterns": [
+					"(?:analyze|investigate|debug|find).*(?:issue|bug|problem|error)",
+					"分析.*(?:問題|錯誤)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:analyze 進行深度分析",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:build",
+			"description": "Build and deployment",
+			"triggers": {
+				"file_patterns": [
+					"**/Dockerfile*",
+					"**/docker-compose*",
+					"**/.github/workflows/**",
+					"**/package.json",
+					"**/pyproject.toml"
+				],
+				"keywords": [
+					"build",
+					"deploy",
+					"ci",
+					"cd",
+					"pipeline",
+					"docker",
+					"發布",
+					"部署"
+				],
+				"intent_patterns": [
+					"(?:set up|create|configure).*(?:build|deploy|ci|cd|pipeline)",
+					"部署.*(?:應用|服務)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:build 進行建置相關操作",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:cleanup",
+			"description": "Code cleanup and refactoring",
+			"triggers": {
+				"file_patterns": [],
+				"keywords": [
+					"cleanup",
+					"refactor",
+					"clean",
+					"整理",
+					"重構",
+					"simplify",
+					"optimize"
+				],
+				"intent_patterns": [
+					"(?:cleanup|refactor|clean up|reorganize)",
+					"(?:整理|重構).*程式碼"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:cleanup 進行程式碼清理",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:design",
+			"description": "System design and architecture",
+			"triggers": {
+				"file_patterns": [
+					"**/architecture/**",
+					"**/design/**",
+					"**/*.puml",
+					"**/*.mmd"
+				],
+				"keywords": [
+					"design",
+					"architecture",
+					"設計",
+					"架構",
+					"schema",
+					"database",
+					"api",
+					"system"
+				],
+				"intent_patterns": [
+					"(?:design|architect|plan).*(?:system|api|database|schema)",
+					"設計.*(?:系統|架構|API)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:design 進行系統設計",
+			"auto_activate": false
+		},
+		{
+			"skill": "dev-docs",
+			"description": "Development documentation for context preservation",
+			"triggers": {
+				"file_patterns": ["**/dev/active/**"],
+				"keywords": [
+					"dev docs",
+					"context",
+					"plan",
+					"大型",
+					"複雜",
+					"multiple sessions"
+				],
+				"intent_patterns": [
+					"(?:large|complex|multi-session).*(?:task|feature|project)",
+					"需要.*(?:計劃|規劃)"
+				]
+			},
+			"suggestion": "💡 建議使用 /dev-docs 建立開發文檔以保持上下文",
+			"auto_activate": false
+		},
+		{
+			"skill": "sc:implement",
+			"description": "Feature implementation with persona activation",
+			"triggers": {
+				"file_patterns": ["**/src/**", "**/lib/**"],
+				"keywords": [
+					"implement",
+					"create",
+					"build",
+					"develop",
+					"實作",
+					"建立",
+					"開發"
+				],
+				"intent_patterns": [
+					"implement.*(?:feature|component|service|api)",
+					"(?:建立|實作).*(?:功能|元件|服務)"
+				]
+			},
+			"suggestion": "💡 建議使用 /sc:implement 進行功能實作",
+			"auto_activate": false
+		}
+	],
+	"settings": {
+		"max_suggestions_per_prompt": 2,
+		"cooldown_prompts": 3,
+		"respect_explicit_commands": true
+	}
+}

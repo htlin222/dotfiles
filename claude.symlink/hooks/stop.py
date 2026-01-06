@@ -67,7 +67,6 @@ def main():
         raw_input = sys.stdin.read()
 
         if not raw_input.strip():
-            subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
             subprocess.run(
                 ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
             )
@@ -89,14 +88,12 @@ def main():
 
         full_body = "\n".join(body_parts) if body_parts else "對話已完成"
 
-        subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
         subprocess.run(
             ["ntfy", "publish", "--title", "Claude Code 完成", "lizard", full_body],
             check=False,
         )
 
     except json.JSONDecodeError:
-        subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
         subprocess.run(
             ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
         )

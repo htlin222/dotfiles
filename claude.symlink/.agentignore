@@ -1,0 +1,74 @@
+# =============================================================================
+# .agentignore - Patterns for files Claude should not access
+# =============================================================================
+# This file is used by file_guard.py to determine which files to protect
+# Use glob patterns similar to .gitignore
+
+# ===== Environment & Secrets =====
+.env
+.env.*
+!.env.sample
+!.env.example
+!.env.template
+.envrc
+*.secret
+*.secrets
+
+# ===== Cloud Credentials =====
+.aws/credentials
+.aws/config
+.azure/
+.gcloud/
+*_accessKeys.csv
+credentials.csv
+
+# ===== SSH & Certificates =====
+.ssh/
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+*.pem
+*.key
+*.p12
+*.pfx
+known_hosts
+authorized_keys
+
+# ===== API Tokens =====
+.npmrc
+.pypirc
+.netrc
+.docker/config.json
+.git-credentials
+*.token
+auth.json
+tokens.json
+
+# ===== Database =====
+.pgpass
+.my.cnf
+*.sqlite
+*.sqlite3
+*.db
+
+# ===== Infrastructure Secrets =====
+kubeconfig
+.kube/config
+terraform.tfstate*
+*.tfvars
+vault.yml
+vault.yaml
+
+# ===== Application Secrets =====
+config/master.key
+config/credentials.yml.enc
+wp-config.php
+local_settings.py
+
+# ===== IDE Settings (may contain secrets) =====
+.idea/workspace.xml
+.vscode/settings.json
+
+# ===== Custom Exceptions (prefix with !) =====
+# !path/to/allowed/file.env

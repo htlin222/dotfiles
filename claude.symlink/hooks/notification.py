@@ -5,7 +5,6 @@ Triggers: permission needed or idle 60+ seconds.
 """
 
 import json
-import subprocess
 import sys
 
 
@@ -19,8 +18,8 @@ def main():
         message = data.get("message", "")
 
         if message:
-            # Voice alert only - no ntfy to avoid duplicate with Stop hook
-            subprocess.run(["say", "--rate=200", message], check=False)
+            # Audio disabled - ntfy handled by Stop hook
+            pass
 
     except (json.JSONDecodeError, Exception):
         pass
