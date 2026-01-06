@@ -40,6 +40,59 @@ REQUIRED_TOOLS = {
     },
 }
 
+# Processor tools - optional linters/formatters used by hooks/processors/
+PROCESSOR_TOOLS = {
+    "eslint": {
+        "cmd": ["eslint", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["pnpm", "install", "-g", "eslint"],
+        "install_hint": "pnpm install -g eslint",
+    },
+    "prettier": {
+        "cmd": ["prettier", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["pnpm", "install", "-g", "prettier"],
+        "install_hint": "pnpm install -g prettier",
+    },
+    "biome": {
+        "cmd": ["biome", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["pnpm", "install", "-g", "@biomejs/biome"],
+        "install_hint": "pnpm install -g @biomejs/biome",
+    },
+    "vale": {
+        "cmd": ["vale", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["brew", "install", "vale"],
+        "install_hint": "brew install vale",
+    },
+    "write-good": {
+        "cmd": ["write-good", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["pnpm", "install", "-g", "write-good"],
+        "install_hint": "pnpm install -g write-good",
+    },
+    "bibtex-tidy": {
+        "cmd": ["bibtex-tidy", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["pnpm", "install", "-g", "bibtex-tidy"],
+        "install_hint": "pnpm install -g bibtex-tidy",
+    },
+    "shellcheck": {
+        "cmd": ["shellcheck", "--version"],
+        "min_version": None,
+        "optional": True,
+        "install_cmd": ["brew", "install", "shellcheck"],
+        "install_hint": "brew install shellcheck",
+    },
+}
+
 # Project-specific requirements based on files present
 PROJECT_REQUIREMENTS = {
     "package.json": ["node", "pnpm"],
@@ -49,6 +102,53 @@ PROJECT_REQUIREMENTS = {
     "go.mod": ["go"],
     "Gemfile": ["ruby"],
 }
+
+
+def install_tool_async(name: str, config: dict) -> None:
+    """Install a tool asynchronously in the background."""
+    install_cmd = config.get("install_cmd")
+    if not install_cmd:
+        return
+
+    # Check if the installer (pnpm, brew) is available
+    installer = install_cmd[0]
+    if not shutil.which(installer):
+        return
+
+    try:
+        # Fork a background process to install
+        pid = os.fork()
+        if pid == 0:
+            # Child process - detach and install
+            os.setsid()  # Create new session
+            # Redirect stdout/stderr to log file
+            log_file = os.path.join(LOG_DIR, "install.log")
+            with open(log_file, "a") as f:
+                f.write(f"\n[{datetime.now().isoformat()}] Installing {name}...\n")
+                try:
+                    result = subprocess.run(
+                        install_cmd,
+                        capture_output=True,
+                        text=True,
+                        timeout=300,  # 5 min timeout
+                    )
+                    f.write(f"  Command: {' '.join(install_cmd)}\n")
+                    f.write(f"  Exit code: {result.returncode}\n")
+                    if result.stdout:
+                        f.write(f"  stdout: {result.stdout[:500]}\n")
+                    if result.stderr:
+                        f.write(f"  stderr: {result.stderr[:500]}\n")
+                    if result.returncode == 0:
+                        f.write(f"  ✅ {name} installed successfully\n")
+                    else:
+                        f.write(f"  ❌ {name} installation failed\n")
+                except Exception as e:
+                    f.write(f"  ❌ Error installing {name}: {e}\n")
+            os._exit(0)
+        # Parent process continues immediately
+    except (OSError, AttributeError):
+        # os.fork() not available (Windows) - skip async install
+        pass
 
 
 def parse_version(version_str: str) -> tuple:
@@ -176,11 +276,21 @@ def main():
         if source not in ("startup", "clear"):
             return
 
-        # Check tools
+        # Check required tools
         tool_results = []
         for name, config in REQUIRED_TOOLS.items():
             result = check_tool(name, config)
             tool_results.append(result)
+
+        # Check processor tools and install missing ones async
+        processor_results = []
+        tools_to_install = []
+        for name, config in PROCESSOR_TOOLS.items():
+            result = check_tool(name, config)
+            processor_results.append(result)
+            # Track missing tools that have install commands
+            if not result["available"] and config.get("install_cmd"):
+                tools_to_install.append((name, config))
 
         # Check project requirements
         project_missing = []
@@ -194,15 +304,26 @@ def main():
             "cwd": cwd,
             "source": source,
             "tools": tool_results,
+            "processor_tools": processor_results,
             "project_missing": project_missing,
+            "installing": [t[0] for t in tools_to_install],
         }
         with open(os.path.join(LOG_DIR, "env_validation.jsonl"), "a") as f:
             f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
 
-        # Generate report
+        # Install missing processor tools asynchronously in background
+        for name, config in tools_to_install:
+            install_tool_async(name, config)
+
+        # Generate report (only for required tools, not optional processors)
         report = format_validation_report(tool_results, project_missing)
 
-        # Only output if there are issues or it's a fresh startup
+        # Add installing info if any
+        if tools_to_install:
+            installing_names = [t[0] for t in tools_to_install]
+            report += f"\n🔄 背景安裝中: {', '.join(installing_names)}"
+
+        # Only output if there are issues or installing
         has_issues = (
             any(
                 (not r["available"] and not r["optional"]) or not r["meets_requirement"]
@@ -211,7 +332,7 @@ def main():
             or project_missing
         )
 
-        if has_issues:
+        if has_issues or tools_to_install:
             response = {
                 "continue": True,
                 "systemMessage": report,
