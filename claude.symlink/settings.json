@@ -79,6 +79,15 @@
 		],
 		"PreToolUse": [
 			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "python3 ~/.claude/hooks/check_rm.py"
+					}
+				]
+			},
+			{
 				"matcher": "Write|Edit|MultiEdit",
 				"hooks": [
 					{
