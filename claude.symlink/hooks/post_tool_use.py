@@ -1,31 +1,42 @@
 #!/usr/bin/env python3
+"""
+PostToolUse hook - Process files after Claude edits them.
+
+Features:
+1. File Edit Tracker - Log all file edits to ~/.claude/logs/edits.jsonl
+2. Auto Formatting - Run formatters (Biome, Prettier, Ruff, etc.)
+3. Build Checker - Run typecheck/lint after edits, warn if errors > threshold
+4. Risky Pattern Detector - Detect risky code patterns and warn
+"""
+
 import json
 import os
 import re
+import subprocess
 import sys
+from datetime import datetime
 
 # Import processors
-from processors import (process_bibtex_files, process_biome_files,
-                        process_prettier_files, process_python_files,
-                        process_r_files, process_vale_files)
+from processors import (
+    process_bibtex_files,
+    process_biome_files,
+    process_prettier_files,
+    process_python_files,
+    process_r_files,
+    process_vale_files,
+)
 
-# Read input
-raw_input = sys.stdin.read()
+# =============================================================================
+# Configuration
+# =============================================================================
 
-# Find file paths using regex
-pattern = r'"(?:filePath|file_path)"\s*:\s*"([^"]+)"'
-file_paths = re.findall(pattern, raw_input)
+LOG_DIR = os.path.expanduser("~/.claude/logs")
+EDIT_LOG_FILE = os.path.join(LOG_DIR, "edits.jsonl")
+BUILD_ERROR_THRESHOLD = 5  # Warn if errors exceed this
 
 # File type mappings
-biome_exts = {
-    ".js",
-    ".jsx",
-    ".tsx",
-    ".ts",
-    ".json",
-    ".css",
-}
-prettier_exts = {
+BIOME_EXTS = {".js", ".jsx", ".tsx", ".ts", ".json", ".css"}
+PRETTIER_EXTS = {
     ".html",
     ".md",
     ".qmd",
@@ -36,43 +47,260 @@ prettier_exts = {
     ".yaml",
     ".yml",
 }
-python_exts = {".py", ".pyi"}
-bibtex_exts = {".bib"}
-shell_exts = {".sh", ".bash", ".zsh", ".fish"}
-r_exts = {".R", ".r"}
-markdown_exts = {".md", ".mdx", ".qmd"}
+PYTHON_EXTS = {".py", ".pyi"}
+BIBTEX_EXTS = {".bib"}
+R_EXTS = {".R", ".r"}
+MARKDOWN_EXTS = {".md", ".mdx", ".qmd"}
+TYPESCRIPT_EXTS = {".ts", ".tsx"}
+
+# Risky patterns to detect (pattern, description, severity)
+RISKY_PATTERNS = [
+    # Async without error handling
+    (
+        r"async\s+(?:function|def|\w+\s*=\s*async)\s+[^}]+(?<!try\s*\{)",
+        "Async 函數可能缺少 try-catch",
+        "medium",
+    ),
+    # Hardcoded credentials
+    (
+        r'(?:password|secret|api_key|apikey|token)\s*[=:]\s*["\'][^"\']{8,}["\']',
+        "可能的硬編碼憑證",
+        "high",
+    ),
+    # Direct SQL queries (SQL injection risk)
+    (
+        r'(?:execute|query)\s*\(\s*f["\']|\.format\s*\(.*(?:SELECT|INSERT|UPDATE|DELETE)',
+        "可能的 SQL 注入風險",
+        "high",
+    ),
+    # eval/exec usage
+    (r"\b(?:eval|exec)\s*\(", "使用 eval/exec 有安全風險", "high"),
+    # Console.log in production code (not test files)
+    (r"console\.log\s*\(", "殘留 console.log", "low"),
+    # TODO/FIXME comments
+    (r"(?://|#)\s*(?:TODO|FIXME|XXX|HACK):", "未完成的 TODO/FIXME", "low"),
+    # Disabled eslint/type checks
+    (
+        r"(?:eslint-disable|@ts-ignore|@ts-nocheck|type:\s*ignore|noqa)",
+        "停用的 lint/type 檢查",
+        "medium",
+    ),
+]
 
 
-# Process found paths
-for file_path in file_paths:
-    if os.path.exists(file_path):
+# =============================================================================
+# Feature 1: File Edit Tracker
+# =============================================================================
+
+
+def log_file_edit(file_path: str, tool_name: str, cwd: str):
+    """Log file edit to edits.jsonl."""
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "file": file_path,
+        "tool": tool_name,
+        "cwd": cwd,
+        "project": os.path.basename(cwd) if cwd else "",
+    }
+
+    with open(EDIT_LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+# =============================================================================
+# Feature 2: Build Checker
+# =============================================================================
+
+
+def check_typescript_build(cwd: str) -> tuple[bool, int, str]:
+    """Run TypeScript type check. Returns (success, error_count, output)."""
+    if not cwd or not os.path.exists(os.path.join(cwd, "package.json")):
+        return True, 0, ""
+
+    try:
+        # Try pnpm first, then npm
+        for cmd in [
+            ["pnpm", "typecheck"],
+            ["pnpm", "tsc", "--noEmit"],
+            ["npx", "tsc", "--noEmit"],
+        ]:
+            result = subprocess.run(
+                cmd,
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            if result.returncode == 0:
+                return True, 0, ""
+
+            # Count errors
+            error_count = len(
+                re.findall(r"error TS\d+:", result.stdout + result.stderr)
+            )
+            return False, error_count, result.stderr[:500]
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+
+    return True, 0, ""
+
+
+def check_python_lint(file_path: str) -> tuple[bool, int, str]:
+    """Run Ruff check on Python file. Returns (success, error_count, output)."""
+    try:
+        result = subprocess.run(
+            ["ruff", "check", file_path, "--output-format=concise"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode == 0:
+            return True, 0, ""
+
+        error_count = (
+            len(result.stdout.strip().split("\n")) if result.stdout.strip() else 0
+        )
+        return False, error_count, result.stdout[:500]
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+
+    return True, 0, ""
+
+
+# =============================================================================
+# Feature 3: Risky Pattern Detector
+# =============================================================================
+
+
+def detect_risky_patterns(file_path: str) -> list[dict]:
+    """Detect risky patterns in file. Returns list of findings."""
+    findings = []
+
+    # Skip test files for some patterns
+    is_test_file = any(
+        x in file_path.lower() for x in ["test", "spec", "__test__", ".test.", "_test."]
+    )
+
+    try:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            content = f.read()
+
+        for pattern, description, severity in RISKY_PATTERNS:
+            # Skip console.log detection for test files
+            if "console.log" in pattern and is_test_file:
+                continue
+
+            matches = re.findall(pattern, content, re.IGNORECASE | re.MULTILINE)
+            if matches:
+                findings.append(
+                    {
+                        "pattern": description,
+                        "severity": severity,
+                        "count": len(matches),
+                    }
+                )
+    except Exception:
+        pass
+
+    return findings
+
+
+# =============================================================================
+# Main Processing
+# =============================================================================
+
+
+def main():
+    # Read input
+    raw_input = sys.stdin.read()
+
+    # Parse JSON to get tool info
+    try:
+        data = json.loads(raw_input)
+        tool_name = data.get("tool_name", "Unknown")
+        cwd = data.get("cwd", "")
+    except json.JSONDecodeError:
+        tool_name = "Unknown"
+        cwd = ""
+
+    # Find file paths using regex
+    pattern = r'"(?:filePath|file_path)"\s*:\s*"([^"]+)"'
+    file_paths = re.findall(pattern, raw_input)
+
+    warnings = []
+    ts_files_edited = False
+
+    # Process found paths
+    for file_path in file_paths:
+        if not os.path.exists(file_path):
+            continue
+
         _, ext = os.path.splitext(file_path)
-        filename = os.path.basename(file_path)
-        # subprocess.run(["say", f"{filename} 編輯完成"], check=False)
 
-        if ext in biome_exts:
+        # Feature 1: Log the edit
+        log_file_edit(file_path, tool_name, cwd)
+
+        # Feature 2: Track if TypeScript files were edited
+        if ext in TYPESCRIPT_EXTS:
+            ts_files_edited = True
+
+        # Feature 3: Detect risky patterns
+        findings = detect_risky_patterns(file_path)
+        for finding in findings:
+            if finding["severity"] in ("high", "medium"):
+                warnings.append(
+                    f"⚠️ {os.path.basename(file_path)}: {finding['pattern']}"
+                )
+
+        # Auto formatting (existing functionality)
+        if ext in BIOME_EXTS:
             process_biome_files(file_path)
-        elif ext in prettier_exts:
+        elif ext in PRETTIER_EXTS:
             process_prettier_files(file_path)
-            # If markdown, also run Vale after Prettier
-            if ext in markdown_exts:
+            if ext in MARKDOWN_EXTS:
                 process_vale_files(file_path)
-        elif ext in python_exts:
+        elif ext in PYTHON_EXTS:
             process_python_files(file_path)
-        elif ext in bibtex_exts:
+            # Feature 2: Check Python lint
+            success, error_count, _ = check_python_lint(file_path)
+            if not success and error_count > BUILD_ERROR_THRESHOLD:
+                warnings.append(
+                    f"🔴 Ruff: {error_count} errors in {os.path.basename(file_path)}"
+                )
+        elif ext in BIBTEX_EXTS:
             process_bibtex_files(file_path)
-        # elif ext in shell_exts:
-        # process_shellcheck_files(file_path)
-        elif ext in r_exts:
+        elif ext in R_EXTS:
             process_r_files(file_path)
 
+    # Feature 2: Run TypeScript build check if ts/tsx files were edited
+    if ts_files_edited and cwd:
+        success, error_count, _ = check_typescript_build(cwd)
+        if not success and error_count > BUILD_ERROR_THRESHOLD:
+            warnings.append(
+                f"🔴 TypeScript: {error_count} type errors - 建議執行 /build-and-fix"
+            )
 
-# Output the original input (with control chars escaped if needed)
-try:
-    # Try to parse and re-output as valid JSON
-    data = json.loads(raw_input)
-    print(json.dumps(data))
-except json.JSONDecodeError:
-    # If JSON is malformed, try to clean it
-    cleaned = raw_input.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
-    print(cleaned)
+    # Output response
+    try:
+        data = json.loads(raw_input)
+        if warnings:
+            # Add warnings as system message
+            data["_warnings"] = warnings
+            response = {
+                "continue": True,
+                "systemMessage": "\n".join(warnings[:5]),  # Limit to 5 warnings
+            }
+            print(json.dumps(response))
+        else:
+            print(json.dumps(data))
+    except json.JSONDecodeError:
+        cleaned = (
+            raw_input.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+        )
+        print(cleaned)
+
+
+if __name__ == "__main__":
+    main()

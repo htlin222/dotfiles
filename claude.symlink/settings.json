@@ -1,180 +1,179 @@
 {
-	"env": {
-		"DISABLE_AUTOUPDATER": "1"
-	},
-	"permissions": {
-		"allow": [
-			"Bash(ls:*)",
-			"Bash(cd:*)",
-			"Bash(cat:*)",
-			"Bash(bat:*)",
-			"Bash(python:*)",
-			"Bash(Rscript:*)",
-			"Bash(brew:*)",
-			"Bash(pwd)",
-			"Bash(mkdir:*)",
-			"Bash(cp:*)",
-			"Bash(mv:*)",
-			"Bash(touch:*)",
-			"Bash(cat:*)",
-			"Bash(head:*)",
-			"Bash(tail:*)",
-			"Bash(less:*)",
-			"Bash(more:*)",
-			"Bash(grep:*)",
-			"Bash(rg:*)",
-			"Bash(awk:*)",
-			"Bash(sed:*)",
-			"Bash(find:*)",
-			"Bash(du:*)",
-			"Bash(df:*)",
-			"Bash(wc:*)",
-			"Bash(cut:*)",
-			"Bash(sort:*)",
-			"Bash(uniq:*)",
-			"Bash(xargs:*)",
-			"Bash(tr:*)",
-			"Bash(split:*)",
-			"Bash(diff:*)",
-			"Bash(cmp:*)",
-			"Bash(tree:*)",
-			"Bash(date)",
-			"Bash(cal)",
-			"Bash(whoami)",
-			"Bash(id)",
-			"Bash(env)",
-			"Bash(export:*)",
-			"Bash(unset:*)",
-			"Bash(alias:*)",
-			"Bash(unalias:*)",
-			"Bash(echo:*)",
-			"Bash(seq:*)",
-			"Bash(printf:*)",
-			"Bash(history)",
-			"Bash(clear)",
-			"Bash(file:*)",
-			"Bash(stat:*)",
-			"Bash(basename:*)",
-			"Bash(dirname:*)",
-			"Bash(pnpm:*)",
-			"Bash(uv venv:*)",
-			"Bash(source:*)",
-			"Bash(uv pip install:*)",
-			"Bash(chmod:*)"
-		],
-		"defaultMode": "acceptEdits"
-	},
-	"enableAllProjectMcpServers": true,
-	"hooks": {
-		"SessionStart": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/session_start.py"
-					}
-				]
-			}
-		],
-		"PreToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "afplay /System/Library/Sounds/Funk.aiff"
-					}
-				]
-			},
-			{
-				"matcher": "Read|Grep",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "node ~/.claude/hooks/read_hook.js"
-					}
-				]
-			},
-			{
-				"matcher": "Read",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "afplay /System/Library/Sounds/Funk.aiff"
-					}
-				]
-			}
-		],
-		"PostToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
-					}
-				]
-			},
-			{
-				"matcher": "Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "say '終端指令已完成'"
-					}
-				]
-			}
-		],
-		"Notification": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/notification.py"
-					}
-				]
-			}
-		],
-		"Stop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/stop.py"
-					},
-					{
-						"type": "prompt",
-						"prompt": "檢查任務完成狀態：1) TodoWrite 中的所有項目是否都已完成？2) 是否有未處理的錯誤或警告？3) 用戶的原始請求是否已完整滿足？如果有遺漏，請繼續完成。"
-					}
-				]
-			}
-		],
-		"UserPromptSubmit": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/user_prompt.py"
-					}
-				]
-			}
-		]
-	},
-	"enabledPlugins": {
-		"example-skills@anthropic-agent-skills": false,
-		"pyright-lsp@claude-plugins-official": true,
-		"context7@claude-plugins-official": true,
-		"github@claude-plugins-official": true,
-		"code-review@claude-plugins-official": true,
-		"frontend-design@claude-plugins-official": true,
-		"serena@claude-plugins-official": true,
-		"feature-dev@claude-plugins-official": true,
-		"typescript-lsp@claude-plugins-official": true,
-		"scientific-skills@claude-scientific-skills": true
-	},
-	"alwaysThinkingEnabled": true
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Bash(bat:*)",
+      "Bash(python:*)",
+      "Bash(Rscript:*)",
+      "Bash(brew:*)",
+      "Bash(pwd)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(less:*)",
+      "Bash(more:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(wc:*)",
+      "Bash(cut:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(xargs:*)",
+      "Bash(tr:*)",
+      "Bash(split:*)",
+      "Bash(diff:*)",
+      "Bash(cmp:*)",
+      "Bash(tree:*)",
+      "Bash(date)",
+      "Bash(cal)",
+      "Bash(whoami)",
+      "Bash(id)",
+      "Bash(env)",
+      "Bash(export:*)",
+      "Bash(unset:*)",
+      "Bash(alias:*)",
+      "Bash(unalias:*)",
+      "Bash(echo:*)",
+      "Bash(seq:*)",
+      "Bash(printf:*)",
+      "Bash(history)",
+      "Bash(clear)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(pnpm:*)",
+      "Bash(uv venv:*)",
+      "Bash(source:*)",
+      "Bash(uv pip install:*)",
+      "Bash(chmod:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/session_start.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Funk.aiff"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/read_hook.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Funk.aiff"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "say '終端指令已完成'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/notification.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/stop.py"
+          },
+          {
+            "type": "prompt",
+            "prompt": "檢查任務完成狀態：1) TodoWrite 中的所有項目是否都已完成？2) 是否有未處理的錯誤或警告？3) 用戶的原始請求是否已完整滿足？如果有遺漏，請繼續完成。"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/user_prompt.py"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": false,
+    "pyright-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "scientific-skills@claude-scientific-skills": true
+  },
+  "alwaysThinkingEnabled": true
 }
