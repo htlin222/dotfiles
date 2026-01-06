@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Notification hook - only voice alert, no ntfy (Stop hook handles ntfy).
+Triggers: permission needed or idle 60+ seconds.
+"""
 
 import json
 import subprocess
@@ -7,30 +11,18 @@ import sys
 
 def main():
     try:
-        # Read JSON from stdin
         raw_input = sys.stdin.read()
-
         if not raw_input.strip():
             return
 
-        # Parse JSON
         data = json.loads(raw_input)
-
-        # Extract message from JSON
         message = data.get("message", "")
 
         if message:
-            # Use macOS 'say' command to speak the message
+            # Voice alert only - no ntfy to avoid duplicate with Stop hook
             subprocess.run(["say", "--rate=200", message], check=False)
 
-            # Send notification via ntfy
-            subprocess.run(["ntfy", "publish", "lizard", message], check=False)
-
-    except json.JSONDecodeError:
-        # Silently ignore invalid JSON
-        pass
-    except Exception:
-        # Silently ignore other errors to avoid disrupting the hook system
+    except (json.JSONDecodeError, Exception):
         pass
 
 

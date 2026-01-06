@@ -1,195 +1,117 @@
-#!/usr/bin/env -S uv run --script
+#!/usr/bin/env python3
 
-import argparse
 import json
 import os
-import random
 import subprocess
 import sys
-from pathlib import Path
-
-try:
-    from dotenv import load_dotenv
-
-    load_dotenv()
-except ImportError:
-    pass  # dotenv is optional
 
 
-def get_completion_messages():
-    """Return list of friendly completion messages."""
-    return [
-        "Work complete!",
-        "All done!",
-        "Task finished!",
-        "Job complete!",
-        "Ready for next task!",
-    ]
+def get_transcript_summary(transcript_path: str, num_lines: int = 10) -> str:
+    """Read last N lines from transcript and extract conversation content."""
+    if not transcript_path or not os.path.exists(transcript_path):
+        return ""
 
-
-def get_tts_script_path():
-    """
-    Determine which TTS script to use based on available API keys.
-    Priority order: ElevenLabs > OpenAI > pyttsx3
-    """
-    # Get current script directory and construct utils/tts path
-    script_dir = Path(__file__).parent
-    tts_dir = script_dir / "utils" / "tts"
-
-    # Check for OpenAI API key (second priority)
-    if os.getenv("OPENAI_API_KEY"):
-        openai_script = tts_dir / "openai_tts.py"
-        if openai_script.exists():
-            return str(openai_script)
-    return None
-
-
-def get_llm_completion_message():
-    """
-    Generate completion message using available LLM services.
-    Priority order: OpenAI > Anthropic > fallback to random message
-
-    Returns:
-        str: Generated or fallback completion message
-    """
-    # Get current script directory and construct utils/llm path
-    script_dir = Path(__file__).parent
-    llm_dir = script_dir / "utils" / "llm"
-
-    # Try OpenAI first (highest priority)
-    if os.getenv("OPENAI_API_KEY"):
-        oai_script = llm_dir / "oai.py"
-        if oai_script.exists():
-            try:
-                result = subprocess.run(
-                    ["uv", "run", str(oai_script), "--completion"],
-                    capture_output=True,
-                    text=True,
-                    timeout=10,
-                )
-                if result.returncode == 0 and result.stdout.strip():
-                    return result.stdout.strip()
-            except (subprocess.TimeoutExpired, subprocess.SubprocessError):
-                pass
-
-    # Try Anthropic second
-    if os.getenv("ANTHROPIC_API_KEY"):
-        anth_script = llm_dir / "anth.py"
-        if anth_script.exists():
-            try:
-                result = subprocess.run(
-                    ["uv", "run", str(anth_script), "--completion"],
-                    capture_output=True,
-                    text=True,
-                    timeout=10,
-                )
-                if result.returncode == 0 and result.stdout.strip():
-                    return result.stdout.strip()
-            except (subprocess.TimeoutExpired, subprocess.SubprocessError):
-                pass
-
-    # Fallback to random predefined message
-    messages = get_completion_messages()
-    return random.choice(messages)
-
-
-def announce_completion():
-    """Announce completion using the best available TTS service."""
     try:
-        tts_script = get_tts_script_path()
-        if not tts_script:
-            return  # No TTS scripts available
+        with open(transcript_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
 
-        # Get completion message (LLM-generated or fallback)
-        completion_message = get_llm_completion_message()
+        # Get last N lines
+        recent_lines = lines[-num_lines:] if len(lines) >= num_lines else lines
 
-        # Call the TTS script with the completion message
-        subprocess.run(
-            ["uv", "run", tts_script, completion_message],
-            capture_output=True,  # Suppress output
-            timeout=10,  # 10-second timeout
-        )
+        summaries = []
+        for line in recent_lines:
+            try:
+                entry = json.loads(line.strip())
+                # Extract meaningful content based on message type
+                if isinstance(entry, dict):
+                    role = entry.get("role", "")
+                    content = entry.get("content", "")
 
-    except (subprocess.TimeoutExpired, subprocess.SubprocessError, FileNotFoundError):
-        # Fail silently if TTS encounters issues
-        pass
+                    # Handle different content formats
+                    if isinstance(content, str) and content:
+                        text = content[:100]  # Truncate long content
+                        if len(content) > 100:
+                            text += "..."
+                        summaries.append(f"[{role}] {text}")
+                    elif isinstance(content, list):
+                        # Handle structured content (tool use, etc.)
+                        for item in content:
+                            if isinstance(item, dict):
+                                if item.get("type") == "text":
+                                    text = item.get("text", "")[:80]
+                                    if len(item.get("text", "")) > 80:
+                                        text += "..."
+                                    summaries.append(f"[{role}] {text}")
+                                elif item.get("type") == "tool_use":
+                                    tool_name = item.get("name", "unknown")
+                                    summaries.append(f"[tool] {tool_name}")
+                                elif item.get("type") == "tool_result":
+                                    summaries.append("[tool_result]")
+            except json.JSONDecodeError:
+                continue
+
+        return (
+            "\n".join(summaries[-5:]) if summaries else ""
+        )  # Return last 5 meaningful entries
     except Exception:
-        # Fail silently for any other errors
-        pass
+        return ""
 
 
 def main():
     try:
-        # Parse command line arguments
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            "--chat", action="store_true", help="Copy transcript to chat.json"
+        # Read JSON from stdin
+        raw_input = sys.stdin.read()
+
+        if not raw_input.strip():
+            # Fallback if no input
+            subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
+            subprocess.run(
+                ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
+            )
+            return
+
+        # Parse JSON
+        data = json.loads(raw_input)
+
+        # Extract fields
+        cwd = data.get("cwd", "")
+        transcript_path = data.get("transcript_path", "")
+        session_id = data.get("session_id", "")[:8]  # First 8 chars
+
+        # Get basename of cwd
+        folder_name = os.path.basename(cwd) if cwd else ""
+
+        # Get transcript summary
+        transcript_summary = get_transcript_summary(transcript_path)
+
+        # Build notification body
+        body_parts = ["對話已經完成"]
+        if folder_name:
+            body_parts.append(f"📁 {folder_name}")
+        if session_id:
+            body_parts.append(f"🔑 {session_id}")
+        if transcript_summary:
+            body_parts.append(f"---\n{transcript_summary}")
+
+        full_body = "\n".join(body_parts)
+
+        # Use macOS 'say' command
+        subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
+
+        # Send notification via ntfy with title
+        subprocess.run(
+            ["ntfy", "publish", "--title", "Claude Code 完成", "lizard", full_body],
+            check=False,
         )
-        args = parser.parse_args()
-
-        # Read JSON input from stdin
-        input_data = json.load(sys.stdin)
-
-        # Extract required fields
-        session_id = input_data.get("session_id", "")
-        stop_hook_active = input_data.get("stop_hook_active", False)
-
-        # Ensure log directory exists
-        log_dir = os.path.join(os.getcwd(), "logs")
-        os.makedirs(log_dir, exist_ok=True)
-        log_path = os.path.join(log_dir, "stop.json")
-
-        # Read existing log data or initialize empty list
-        if os.path.exists(log_path):
-            with open(log_path, "r") as f:
-                try:
-                    log_data = json.load(f)
-                except (json.JSONDecodeError, ValueError):
-                    log_data = []
-        else:
-            log_data = []
-
-        # Append new data
-        log_data.append(input_data)
-
-        # Write back to file with formatting
-        with open(log_path, "w") as f:
-            json.dump(log_data, f, indent=2)
-
-        # Handle --chat switch
-        if args.chat and "transcript_path" in input_data:
-            transcript_path = input_data["transcript_path"]
-            if os.path.exists(transcript_path):
-                # Read .jsonl file and convert to JSON array
-                chat_data = []
-                try:
-                    with open(transcript_path, "r") as f:
-                        for line in f:
-                            line = line.strip()
-                            if line:
-                                try:
-                                    chat_data.append(json.loads(line))
-                                except json.JSONDecodeError:
-                                    pass  # Skip invalid lines
-
-                    # Write to logs/chat.json
-                    chat_file = os.path.join(log_dir, "chat.json")
-                    with open(chat_file, "w") as f:
-                        json.dump(chat_data, f, indent=2)
-                except Exception:
-                    pass  # Fail silently
-
-        # Announce completion via TTS
-        announce_completion()
-
-        sys.exit(0)
 
     except json.JSONDecodeError:
-        # Handle JSON decode errors gracefully
-        sys.exit(0)
+        # Fallback
+        subprocess.run(["say", "-r", "220", "對話已經完成"], check=False)
+        subprocess.run(
+            ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
+        )
     except Exception:
-        # Handle any other errors gracefully
-        sys.exit(0)
+        pass
 
 
 if __name__ == "__main__":
