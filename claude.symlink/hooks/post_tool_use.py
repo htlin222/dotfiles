@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import datetime
 
 # Import processors
@@ -28,6 +29,7 @@ from processors import (
 
 # Import TTS utility
 from tts import notify_bash_complete, notify_file_saved
+from metrics import log_hook_metrics, log_hook_event
 
 # =============================================================================
 # Configuration
@@ -277,6 +279,7 @@ def detect_risky_patterns(file_path: str) -> list[dict]:
 
 
 def main():
+    start_time = time.time()
     # Read input
     raw_input = sys.stdin.read()
 
@@ -287,11 +290,13 @@ def main():
         tool_input = data.get("tool_input", {})
         tool_result = data.get("tool_result", {})
         cwd = data.get("cwd", "")
+        session_id = data.get("session_id", "")
     except json.JSONDecodeError:
         tool_name = "Unknown"
         tool_input = {}
         tool_result = {}
         cwd = ""
+        session_id = ""
 
     # Feature: Log Bash commands for audit trail + TTS
     if tool_name == "Bash":
@@ -378,6 +383,33 @@ def main():
             raw_input.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
         )
         print(cleaned)
+
+    # Log metrics
+    execution_time_ms = (time.time() - start_time) * 1000
+    log_hook_metrics(
+        hook_name="post_tool_use",
+        event_type="PostToolUse",
+        execution_time_ms=execution_time_ms,
+        session_id=session_id,
+        success=True,
+        metadata={
+            "tool_name": tool_name,
+            "files_processed": len(file_paths),
+            "warnings_count": len(warnings),
+        },
+    )
+
+    log_hook_event(
+        event_type="PostToolUse",
+        hook_name="post_tool_use",
+        session_id=session_id,
+        cwd=cwd,
+        metadata={
+            "tool_name": tool_name,
+            "file_paths": file_paths[:5],  # Limit to first 5
+            "warnings": warnings[:3],  # Limit to first 3
+        },
+    )
 
 
 if __name__ == "__main__":

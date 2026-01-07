@@ -14,10 +14,12 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timedelta
 
 # Import TTS utility
 from tts import notify_session_complete
+from metrics import log_hook_metrics, log_hook_event
 
 # =============================================================================
 # Configuration
@@ -305,6 +307,7 @@ def get_git_status_and_notify(cwd: str, folder_name: str) -> None:
 
 
 def main():
+    start_time = time.time()
     try:
         raw_input = sys.stdin.read()
 
@@ -344,6 +347,33 @@ def main():
             files_formatted=formatted_count,
             files_edited=stats["unique_files"],
             transcript_backed_up=bool(transcript_backup),
+        )
+
+        # Log metrics
+        execution_time_ms = (time.time() - start_time) * 1000
+        log_hook_metrics(
+            hook_name="stop",
+            event_type="Stop",
+            execution_time_ms=execution_time_ms,
+            session_id=session_id,
+            success=True,
+            metadata={
+                "files_formatted": formatted_count,
+                "files_edited": stats["unique_files"],
+                "bash_commands": stats["bash_commands"],
+                "transcript_backed_up": bool(transcript_backup),
+            },
+        )
+
+        log_hook_event(
+            event_type="Stop",
+            hook_name="stop",
+            session_id=session_id,
+            cwd=cwd,
+            metadata={
+                "project": folder_name,
+                "stats": stats,
+            },
         )
 
         # Print summary to stderr (visible in transcript mode)

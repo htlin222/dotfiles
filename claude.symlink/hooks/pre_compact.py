@@ -12,11 +12,13 @@ Features:
 import json
 import os
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
 # Import TTS utility
 from tts import notify_compact
+from metrics import log_hook_metrics, log_hook_event
 
 # =============================================================================
 # Configuration
@@ -139,6 +141,7 @@ def cleanup_old_snapshots():
 
 
 def main():
+    start_time = time.time()
     try:
         raw_input = sys.stdin.read()
         if not raw_input.strip():
@@ -166,6 +169,28 @@ def main():
         }
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+
+        # Log metrics
+        execution_time_ms = (time.time() - start_time) * 1000
+        log_hook_metrics(
+            hook_name="pre_compact",
+            event_type="PreCompact",
+            execution_time_ms=execution_time_ms,
+            session_id=session_id,
+            success=True,
+            metadata={
+                "project": project_name,
+                "snapshot_file": os.path.basename(snapshot_file) if snapshot_file else None,
+            },
+        )
+
+        log_hook_event(
+            event_type="PreCompact",
+            hook_name="pre_compact",
+            session_id=session_id,
+            cwd=cwd,
+            metadata={"snapshot_file": snapshot_file},
+        )
 
         # Return message to Claude
         response = {
