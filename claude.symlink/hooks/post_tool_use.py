@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import datetime
 
 # Import processors
@@ -26,12 +27,17 @@ from processors import (
     process_vale_files,
 )
 
+# Import TTS utility
+from tts import notify_bash_complete, notify_file_saved
+from metrics import log_hook_metrics, log_hook_event
+
 # =============================================================================
 # Configuration
 # =============================================================================
 
 LOG_DIR = os.path.expanduser("~/.claude/logs")
 EDIT_LOG_FILE = os.path.join(LOG_DIR, "edits.jsonl")
+BASH_LOG_FILE = os.path.join(LOG_DIR, "bash_commands.jsonl")
 BUILD_ERROR_THRESHOLD = 5  # Warn if errors exceed this
 
 # Directories to always skip (build outputs, dependencies, etc.)
@@ -147,6 +153,28 @@ def log_file_edit(file_path: str, tool_name: str, cwd: str):
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
+def log_bash_command(command: str, cwd: str, exit_code: int | None = None):
+    """Log bash command to bash_commands.jsonl for audit trail."""
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    # Truncate very long commands
+    truncated_cmd = command[:500] + "..." if len(command) > 500 else command
+
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "command": truncated_cmd,
+        "cwd": cwd,
+        "project": os.path.basename(cwd) if cwd else "",
+        "exit_code": exit_code,
+    }
+
+    try:
+        with open(BASH_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
 # =============================================================================
 # Feature 2: Build Checker
 # =============================================================================
@@ -251,6 +279,7 @@ def detect_risky_patterns(file_path: str) -> list[dict]:
 
 
 def main():
+    start_time = time.time()
     # Read input
     raw_input = sys.stdin.read()
 
@@ -258,10 +287,24 @@ def main():
     try:
         data = json.loads(raw_input)
         tool_name = data.get("tool_name", "Unknown")
+        tool_input = data.get("tool_input", {})
+        tool_result = data.get("tool_result", {})
         cwd = data.get("cwd", "")
+        session_id = data.get("session_id", "")
     except json.JSONDecodeError:
         tool_name = "Unknown"
+        tool_input = {}
+        tool_result = {}
         cwd = ""
+        session_id = ""
+
+    # Feature: Log Bash commands for audit trail + TTS
+    if tool_name == "Bash":
+        command = tool_input.get("command", "")
+        exit_code = tool_result.get("exit_code") if isinstance(tool_result, dict) else None
+        if command:
+            log_bash_command(command, cwd, exit_code)
+            notify_bash_complete(command, exit_code, cwd)
 
     # Find file paths using regex
     pattern = r'"(?:filePath|file_path)"\s*:\s*"([^"]+)"'
@@ -279,6 +322,10 @@ def main():
 
         # Feature 1: Log the edit (always log, even for ignored files)
         log_file_edit(file_path, tool_name, cwd)
+
+        # TTS notification for file edits (Write, Edit, MultiEdit)
+        if tool_name in ("Write", "Edit", "MultiEdit"):
+            notify_file_saved(file_path, tool_name)
 
         # Skip gitignored files and build directories for linting
         if is_gitignored(file_path, cwd):
@@ -336,6 +383,33 @@ def main():
             raw_input.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
         )
         print(cleaned)
+
+    # Log metrics
+    execution_time_ms = (time.time() - start_time) * 1000
+    log_hook_metrics(
+        hook_name="post_tool_use",
+        event_type="PostToolUse",
+        execution_time_ms=execution_time_ms,
+        session_id=session_id,
+        success=True,
+        metadata={
+            "tool_name": tool_name,
+            "files_processed": len(file_paths),
+            "warnings_count": len(warnings),
+        },
+    )
+
+    log_hook_event(
+        event_type="PostToolUse",
+        hook_name="post_tool_use",
+        session_id=session_id,
+        cwd=cwd,
+        metadata={
+            "tool_name": tool_name,
+            "file_paths": file_paths[:5],  # Limit to first 5
+            "warnings": warnings[:3],  # Limit to first 3
+        },
+    )
 
 
 if __name__ == "__main__":

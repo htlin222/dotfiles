@@ -21,7 +21,12 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import datetime
+
+# Import metrics and pattern detection
+from metrics import estimate_tokens, log_hook_event, log_hook_metrics
+from patterns import detect_patterns, format_suggestions
 
 # =============================================================================
 # Configuration
@@ -464,6 +469,7 @@ def check_time_reminder(state: dict) -> str | None:
 
 
 def main():
+    start_time = time.time()
     try:
         raw_input = sys.stdin.read()
         if not raw_input.strip():
@@ -472,6 +478,7 @@ def main():
         data = json.loads(raw_input)
         prompt = data.get("prompt", "")
         cwd = data.get("cwd", "")
+        session_id = data.get("session_id", "")
 
         # Load state
         state = load_state()
@@ -497,6 +504,12 @@ def main():
         skill_suggestion = suggest_skill(prompt)
         if skill_suggestion:
             messages.append(skill_suggestion)
+
+        # Feature 10: Advanced pattern detection
+        pattern_matches = detect_patterns(prompt)
+        pattern_suggestion = format_suggestions(pattern_matches)
+        if pattern_suggestion and not skill_suggestion:  # Avoid duplicate suggestions
+            messages.append(pattern_suggestion)
 
         # Feature 5: Smart context loading (first few prompts only)
         if state.get("prompt_count", 0) <= 3:
@@ -531,8 +544,43 @@ def main():
             }
             print(json.dumps(response))
 
+        # Log metrics and events
+        execution_time_ms = (time.time() - start_time) * 1000
+        log_hook_metrics(
+            hook_name="user_prompt",
+            event_type="UserPromptSubmit",
+            execution_time_ms=execution_time_ms,
+            session_id=session_id,
+            success=True,
+            metadata={
+                "prompt_length": len(prompt),
+                "estimated_tokens": estimate_tokens(prompt),
+                "messages_count": len(messages),
+                "patterns_detected": len(pattern_matches) if pattern_matches else 0,
+            },
+        )
+
+        # Log event for dashboard
+        log_hook_event(
+            event_type="UserPromptSubmit",
+            hook_name="user_prompt",
+            session_id=session_id,
+            cwd=cwd,
+            metadata={
+                "prompt_preview": prompt[:100] if prompt else "",
+                "suggestions": messages,
+            },
+        )
+
     except (json.JSONDecodeError, Exception):
-        pass
+        # Log failed execution
+        execution_time_ms = (time.time() - start_time) * 1000
+        log_hook_metrics(
+            hook_name="user_prompt",
+            event_type="UserPromptSubmit",
+            execution_time_ms=execution_time_ms,
+            success=False,
+        )
 
 
 if __name__ == "__main__":

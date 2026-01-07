@@ -2,7 +2,6 @@
 """
 SessionStart hook - Load project context and set environment.
 Triggers: session start, resume, clear, compact.
-
 Uses CLAUDE_ENV_FILE to persist environment variables for the session.
 """
 
@@ -19,24 +18,20 @@ def main():
 
         data = json.loads(raw_input)
         cwd = data.get("cwd", "")
-        source = data.get("source", "startup")  # startup, resume, clear, compact
-        env_file = os.environ.get("CLAUDE_ENV_FILE", "")
+        source = data.get("source", "startup")
 
-        # Get project name
+        # Get project name from cwd
         project_name = os.path.basename(cwd) if cwd else "unknown"
 
-        # Write environment variables for the session
+        # Write environment variables if env file exists
+        env_file = os.environ.get("CLAUDE_ENV_FILE", "")
         if env_file:
             with open(env_file, "a") as f:
                 f.write(f"export PROJECT_NAME='{project_name}'\n")
                 f.write(f"export SESSION_SOURCE='{source}'\n")
 
-        # Output JSON response with system message
-        response = {
-            "continue": True,
-            "systemMessage": f"📂 {project_name} | 🚀 {source}",
-        }
-        print(json.dumps(response))
+        # Output JSON response
+        print(json.dumps({"continue": True, "systemMessage": "Success"}))
 
     except (json.JSONDecodeError, Exception):
         pass

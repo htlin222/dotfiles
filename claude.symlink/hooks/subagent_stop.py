@@ -1,151 +1,83 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#     "python-dotenv",
-# ]
-# ///
+#!/usr/bin/env python3
+"""
+SubagentStop hook - Notify when a subagent (Task tool) completes.
 
-import argparse
+Features:
+1. TTS notification (async, non-blocking)
+2. Log subagent completion for tracking
+3. Hook metrics logging
+"""
+
 import json
 import os
 import sys
-import subprocess
-from pathlib import Path
+import time
 from datetime import datetime
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass  # dotenv is optional
+# Import TTS utility
+from tts import notify_subagent_complete
+from metrics import log_hook_metrics, log_hook_event
+
+LOG_DIR = os.path.expanduser("~/.claude/logs")
+SUBAGENT_LOG_FILE = os.path.join(LOG_DIR, "subagents.jsonl")
 
 
-def get_tts_script_path():
-    """
-    Determine which TTS script to use based on available API keys.
-    Priority order: ElevenLabs > OpenAI > pyttsx3
-    """
-    # Get current script directory and construct utils/tts path
-    script_dir = Path(__file__).parent
-    tts_dir = script_dir / "utils" / "tts"
-    
-    # Check for ElevenLabs API key (highest priority)
-    if os.getenv('ELEVENLABS_API_KEY'):
-        elevenlabs_script = tts_dir / "elevenlabs_tts.py"
-        if elevenlabs_script.exists():
-            return str(elevenlabs_script)
-    
-    # Check for OpenAI API key (second priority)
-    if os.getenv('OPENAI_API_KEY'):
-        openai_script = tts_dir / "openai_tts.py"
-        if openai_script.exists():
-            return str(openai_script)
-    
-    # Fall back to pyttsx3 (no API key required)
-    pyttsx3_script = tts_dir / "pyttsx3_tts.py"
-    if pyttsx3_script.exists():
-        return str(pyttsx3_script)
-    
-    return None
+def log_subagent_completion(session_id: str, cwd: str):
+    """Log subagent completion."""
+    os.makedirs(LOG_DIR, exist_ok=True)
 
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "session_id": session_id,
+        "project": os.path.basename(cwd) if cwd else "",
+    }
 
-def announce_subagent_completion():
-    """Announce subagent completion using the best available TTS service."""
     try:
-        tts_script = get_tts_script_path()
-        if not tts_script:
-            return  # No TTS scripts available
-        
-        # Use fixed message for subagent completion
-        completion_message = "Subagent Complete"
-        
-        # Call the TTS script with the completion message
-        subprocess.run([
-            "uv", "run", tts_script, completion_message
-        ], 
-        capture_output=True,  # Suppress output
-        timeout=10  # 10-second timeout
-        )
-        
-    except (subprocess.TimeoutExpired, subprocess.SubprocessError, FileNotFoundError):
-        # Fail silently if TTS encounters issues
-        pass
+        with open(SUBAGENT_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     except Exception:
-        # Fail silently for any other errors
         pass
 
 
 def main():
+    start_time = time.time()
     try:
-        # Parse command line arguments
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--chat', action='store_true', help='Copy transcript to chat.json')
-        args = parser.parse_args()
-        
-        # Read JSON input from stdin
-        input_data = json.load(sys.stdin)
+        raw_input = sys.stdin.read()
+        if not raw_input.strip():
+            return
 
-        # Extract required fields
-        session_id = input_data.get("session_id", "")
-        stop_hook_active = input_data.get("stop_hook_active", False)
+        data = json.loads(raw_input)
+        session_id = data.get("session_id", "")
+        cwd = data.get("cwd", "")
+        project_name = os.path.basename(cwd) if cwd else ""
 
-        # Ensure log directory exists
-        log_dir = os.path.join(os.getcwd(), "logs")
-        os.makedirs(log_dir, exist_ok=True)
-        log_path = os.path.join(log_dir, "subagent_stop.json")
+        # Log completion
+        log_subagent_completion(session_id, cwd)
 
-        # Read existing log data or initialize empty list
-        if os.path.exists(log_path):
-            with open(log_path, 'r') as f:
-                try:
-                    log_data = json.load(f)
-                except (json.JSONDecodeError, ValueError):
-                    log_data = []
-        else:
-            log_data = []
-        
-        # Append new data
-        log_data.append(input_data)
-        
-        # Write back to file with formatting
-        with open(log_path, 'w') as f:
-            json.dump(log_data, f, indent=2)
-        
-        # Handle --chat switch (same as stop.py)
-        if args.chat and 'transcript_path' in input_data:
-            transcript_path = input_data['transcript_path']
-            if os.path.exists(transcript_path):
-                # Read .jsonl file and convert to JSON array
-                chat_data = []
-                try:
-                    with open(transcript_path, 'r') as f:
-                        for line in f:
-                            line = line.strip()
-                            if line:
-                                try:
-                                    chat_data.append(json.loads(line))
-                                except json.JSONDecodeError:
-                                    pass  # Skip invalid lines
-                    
-                    # Write to logs/chat.json
-                    chat_file = os.path.join(log_dir, 'chat.json')
-                    with open(chat_file, 'w') as f:
-                        json.dump(chat_data, f, indent=2)
-                except Exception:
-                    pass  # Fail silently
+        # TTS notification with project name
+        notify_subagent_complete(project_name)
 
-        # Announce subagent completion via TTS
-        announce_subagent_completion()
+        # Log metrics
+        execution_time_ms = (time.time() - start_time) * 1000
+        log_hook_metrics(
+            hook_name="subagent_stop",
+            event_type="SubagentStop",
+            execution_time_ms=execution_time_ms,
+            session_id=session_id,
+            success=True,
+            metadata={"project": project_name},
+        )
 
-        sys.exit(0)
+        log_hook_event(
+            event_type="SubagentStop",
+            hook_name="subagent_stop",
+            session_id=session_id,
+            cwd=cwd,
+            metadata={"project": project_name},
+        )
 
-    except json.JSONDecodeError:
-        # Handle JSON decode errors gracefully
-        sys.exit(0)
-    except Exception:
-        # Handle any other errors gracefully
-        sys.exit(0)
+    except (json.JSONDecodeError, Exception):
+        pass
 
 
 if __name__ == "__main__":

@@ -72,11 +72,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/session_start.sh"
+            "command": "python3 ~/.claude/hooks/session_start.py"
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/env_validation.sh"
+            "command": "python3 ~/.claude/hooks/env_validation.py"
           }
         ]
       }
@@ -96,38 +96,16 @@
         ]
       },
       {
-        "matcher": "Read|Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/file_guard.py"
-          }
-        ]
-      },
-      {
-        "matcher": "Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/check_read_exists.py"
-          }
-        ]
-      },
-      {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Funk.aiff"
-          }
-        ]
-      },
-      {
-        "matcher": "Read|Grep",
-        "hooks": [
+            "command": "python3 ~/.claude/hooks/file_guard.py"
+          },
           {
             "type": "command",
-            "command": "node ~/.claude/hooks/read_hook.js"
+            "command": "[ \"$(git branch --show-current 2>/dev/null)\" != \"main\" ] && [ \"$(git branch --show-current 2>/dev/null)\" != \"master\" ] || echo '{\"block\": true, \"message\": \"禁止在 main/master branch 直接編輯\"}' && exit 2",
+            "timeout": 5
           }
         ]
       },
@@ -136,24 +114,24 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Funk.aiff"
+            "command": "python3 ~/.claude/hooks/file_guard.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/check_read_exists.py"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit|MultiEdit|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
+            "command": "python3 ~/.claude/hooks/post_tool_use.py"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": []
       }
     ],
     "Notification": [
@@ -178,6 +156,17 @@
           {
             "type": "prompt",
             "prompt": "如果本次對話有使用 TodoWrite 建立任務清單，請檢查：1) 是否所有項目都已標記為 completed？2) 是否有未處理的錯誤？如果有未完成的任務，請繼續完成。如果沒有使用 TodoWrite（例如簡單問答），則無需檢查，直接結束即可。"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/subagent_stop.py"
           }
         ]
       }
