@@ -125,16 +125,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "say -v Samantha 'File saved' & python3 ~/.claude/hooks/post_tool_use.py"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
+        "matcher": "Write|Edit|MultiEdit|Bash",
         "hooks": [
           {
             "type": "command",
@@ -149,7 +140,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "say -v Samantha 'Notification from Claude'"
+            "command": "python3 ~/.claude/hooks/notification.py"
           }
         ]
       }
@@ -161,10 +152,6 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/stop.py"
-          },
-          {
-            "type": "command",
-            "command": "say -v Samantha 'Task completed'"
           },
           {
             "type": "prompt",
@@ -191,10 +178,6 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/pre_compact.py"
-          },
-          {
-            "type": "command",
-            "command": "say -v Samantha 'Backing up transcript before compaction'"
           }
         ]
       }

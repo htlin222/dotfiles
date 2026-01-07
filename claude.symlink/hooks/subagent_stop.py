@@ -9,9 +9,11 @@ Features:
 
 import json
 import os
-import subprocess
 import sys
 from datetime import datetime
+
+# Import TTS utility
+from tts import notify_subagent_complete
 
 LOG_DIR = os.path.expanduser("~/.claude/logs")
 SUBAGENT_LOG_FILE = os.path.join(LOG_DIR, "subagents.jsonl")
@@ -43,17 +45,13 @@ def main():
         data = json.loads(raw_input)
         session_id = data.get("session_id", "")
         cwd = data.get("cwd", "")
+        project_name = os.path.basename(cwd) if cwd else ""
 
         # Log completion
         log_subagent_completion(session_id, cwd)
 
-        # TTS notification (async with &, fire and forget)
-        # This runs in background so it doesn't block
-        subprocess.Popen(
-            ["say", "-v", "Samantha", "Subagent complete"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        # TTS notification with project name
+        notify_subagent_complete(project_name)
 
     except (json.JSONDecodeError, Exception):
         pass

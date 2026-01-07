@@ -16,6 +16,9 @@ import subprocess
 import sys
 from datetime import datetime, timedelta
 
+# Import TTS utility
+from tts import notify_session_complete
+
 # =============================================================================
 # Configuration
 # =============================================================================
@@ -334,6 +337,14 @@ def main():
 
         # Feature 4: Git status & notification
         get_git_status_and_notify(cwd, folder_name)
+
+        # Feature 5: TTS notification with rich summary
+        notify_session_complete(
+            project_name=folder_name,
+            files_formatted=formatted_count,
+            files_edited=stats["unique_files"],
+            transcript_backed_up=bool(transcript_backup),
+        )
 
         # Print summary to stderr (visible in transcript mode)
         if formatted_count > 0 or transcript_backup:

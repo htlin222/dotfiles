@@ -26,6 +26,9 @@ from processors import (
     process_vale_files,
 )
 
+# Import TTS utility
+from tts import notify_bash_complete, notify_file_saved
+
 # =============================================================================
 # Configuration
 # =============================================================================
@@ -290,12 +293,13 @@ def main():
         tool_result = {}
         cwd = ""
 
-    # Feature: Log Bash commands for audit trail
+    # Feature: Log Bash commands for audit trail + TTS
     if tool_name == "Bash":
         command = tool_input.get("command", "")
         exit_code = tool_result.get("exit_code") if isinstance(tool_result, dict) else None
         if command:
             log_bash_command(command, cwd, exit_code)
+            notify_bash_complete(command, exit_code, cwd)
 
     # Find file paths using regex
     pattern = r'"(?:filePath|file_path)"\s*:\s*"([^"]+)"'
@@ -313,6 +317,10 @@ def main():
 
         # Feature 1: Log the edit (always log, even for ignored files)
         log_file_edit(file_path, tool_name, cwd)
+
+        # TTS notification for file edits (Write, Edit, MultiEdit)
+        if tool_name in ("Write", "Edit", "MultiEdit"):
+            notify_file_saved(file_path, tool_name)
 
         # Skip gitignored files and build directories for linting
         if is_gitignored(file_path, cwd):
