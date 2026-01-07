@@ -121,15 +121,6 @@
             "command": "python3 ~/.claude/hooks/check_read_exists.py"
           }
         ]
-      },
-      {
-        "matcher": "Read|Grep",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ~/.claude/hooks/read_hook.js"
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -147,10 +138,6 @@
       {
         "matcher": "",
         "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/notification.py"
-          },
           {
             "type": "command",
             "command": "say -v Samantha 'Notification from Claude'"
