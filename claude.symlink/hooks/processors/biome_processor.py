@@ -6,45 +6,25 @@ import sys
 
 
 def process_biome_files(file_path):
-    """Process files with Biome formatter and linter."""
+    """Process files with Biome - check only, no auto-fix."""
     try:
-        # Run Biome format
-        format_result = subprocess.run(
-            ["biome", "format", file_path, "--write"], capture_output=True, text=True
-        )
-        if format_result.returncode == 0:
-            print(f"✨ Formatted {file_path} with Biome", file=sys.stderr)
-        else:
-            print(
-                f"⚠️  Biome format failed: {format_result.stderr.strip()}",
-                file=sys.stderr,
-            )
-
-        # Run Biome check with --write to apply fixes
+        # Run Biome check (no --write, just diagnose)
         check_result = subprocess.run(
-            ["biome", "check", file_path, "--write"],
+            ["biome", "check", file_path],
             capture_output=True,
             text=True,
         )
+
         if check_result.returncode == 0:
-            if check_result.stdout and "Fixed" in check_result.stdout:
-                # If Biome fixed issues, send details to Claude via exit code 2
-                print(
-                    f"Biome fixed issues in {file_path}:\n{check_result.stdout.strip()}",
-                    file=sys.stderr,
-                )
-                sys.exit(
-                    2
-                )  # Exit code 2 passes stderr to Claude for automatic processing
-            else:
-                print(f"🔍 No linting issues in {file_path}", file=sys.stderr)
+            print(f"✅ {file_path}: Biome checks passed", file=sys.stderr)
         else:
-            # Send Biome linting issues to Claude via stderr and exit code 2
+            # Report issues to Claude
+            output = check_result.stdout.strip() or check_result.stderr.strip()
             print(
-                f"Biome found issues in {file_path}:\n{check_result.stderr.strip()}",
+                f"✨ {file_path}: Biome 發現問題:\n{output}",
                 file=sys.stderr,
             )
-            sys.exit(2)  # Exit code 2 passes stderr to Claude for automatic processing
+            sys.exit(2)  # Exit code 2 passes stderr to Claude
 
     except FileNotFoundError:
         print(

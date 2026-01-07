@@ -6,15 +6,19 @@ import sys
 
 
 def process_prettier_files(file_path):
-    """Process files with Prettier formatter."""
+    """Process files with Prettier - check only, no auto-fix."""
     try:
         result = subprocess.run(
-            ["prettier", "--write", file_path], capture_output=True, text=True
+            ["prettier", "--check", file_path], capture_output=True, text=True
         )
         if result.returncode == 0:
-            print(f"✨ Formatted {file_path} with Prettier", file=sys.stderr)
+            print(f"✅ {file_path}: Prettier checks passed", file=sys.stderr)
         else:
-            print(f"⚠️  Prettier failed: {result.stderr.strip()}", file=sys.stderr)
+            print(
+                f"✨ {file_path}: Prettier 格式問題 - 需要格式化",
+                file=sys.stderr,
+            )
+            sys.exit(2)  # Exit code 2 passes stderr to Claude
     except FileNotFoundError:
         print(
             "ERROR: prettier not found. Install with: npm install -g prettier",

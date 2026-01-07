@@ -34,6 +34,44 @@ LOG_DIR = os.path.expanduser("~/.claude/logs")
 EDIT_LOG_FILE = os.path.join(LOG_DIR, "edits.jsonl")
 BUILD_ERROR_THRESHOLD = 5  # Warn if errors exceed this
 
+# Directories to always skip (build outputs, dependencies, etc.)
+SKIP_DIRS = {
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".nuxt",
+    "__pycache__",
+    ".venv",
+    "venv",
+    ".git",
+    "coverage",
+    ".cache",
+    "out",
+    ".output",
+}
+
+
+def is_gitignored(file_path: str, cwd: str = "") -> bool:
+    """Check if file is gitignored or in a skip directory."""
+    # Check skip directories first (fast path)
+    path_parts = file_path.replace("\\", "/").split("/")
+    if any(part in SKIP_DIRS for part in path_parts):
+        return True
+
+    # Use git check-ignore for accurate gitignore detection
+    try:
+        result = subprocess.run(
+            ["git", "check-ignore", "-q", file_path],
+            cwd=cwd or os.path.dirname(file_path) or ".",
+            capture_output=True,
+            timeout=5,
+        )
+        return result.returncode == 0  # 0 means ignored
+    except Exception:
+        return False
+
+
 # File type mappings
 BIOME_EXTS = {".js", ".jsx", ".tsx", ".ts", ".json", ".css"}
 PRETTIER_EXTS = {
@@ -239,8 +277,12 @@ def main():
 
         _, ext = os.path.splitext(file_path)
 
-        # Feature 1: Log the edit
+        # Feature 1: Log the edit (always log, even for ignored files)
         log_file_edit(file_path, tool_name, cwd)
+
+        # Skip gitignored files and build directories for linting
+        if is_gitignored(file_path, cwd):
+            continue
 
         # Feature 2: Track if TypeScript files were edited
         if ext in TYPESCRIPT_EXTS:
@@ -254,7 +296,7 @@ def main():
                     f"⚠️ {os.path.basename(file_path)}: {finding['pattern']}"
                 )
 
-        # Auto formatting (existing functionality)
+        # Run linters/formatters in check-only mode (no file modifications)
         if ext in BIOME_EXTS:
             process_biome_files(file_path)
         elif ext in PRETTIER_EXTS:
@@ -263,12 +305,6 @@ def main():
                 process_vale_files(file_path)
         elif ext in PYTHON_EXTS:
             process_python_files(file_path)
-            # Feature 2: Check Python lint
-            success, error_count, _ = check_python_lint(file_path)
-            if not success and error_count > BUILD_ERROR_THRESHOLD:
-                warnings.append(
-                    f"🔴 Ruff: {error_count} errors in {os.path.basename(file_path)}"
-                )
         elif ext in BIBTEX_EXTS:
             process_bibtex_files(file_path)
         elif ext in R_EXTS:

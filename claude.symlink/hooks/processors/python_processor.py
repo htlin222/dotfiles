@@ -6,45 +6,36 @@ import sys
 
 
 def process_python_files(file_path):
-    """Process Python files with Ruff formatter and linter."""
+    """Process Python files with Ruff - check only, no auto-fix."""
     try:
-        # Run Ruff format
-        result = subprocess.run(
-            ["ruff", "format", file_path], capture_output=True, text=True
+        # Run Ruff format check (no --write, just diagnose)
+        format_result = subprocess.run(
+            ["ruff", "format", "--check", file_path], capture_output=True, text=True
         )
-        if result.returncode == 0:
-            print(f"🐍 Formatted {file_path} with Ruff", file=sys.stderr)
-        else:
-            print(
-                f"⚠️  Ruff format failed: {result.stderr.strip()}",
-                file=sys.stderr,
-            )
+        format_issues = format_result.returncode != 0
 
-        # Run Ruff check with fix
-        result = subprocess.run(
-            ["ruff", "check", "--fix", file_path],
+        # Run Ruff lint check (no --fix, just diagnose)
+        lint_result = subprocess.run(
+            ["ruff", "check", file_path],
             capture_output=True,
             text=True,
         )
-        if result.returncode == 0:
-            if result.stdout or result.stderr:
-                # If Ruff fixed issues, send details to Claude via exit code 2
-                print(
-                    f"Ruff fixed issues in {file_path}:\n{result.stdout.strip()}",
-                    file=sys.stderr,
-                )
-                sys.exit(
-                    2
-                )  # Exit code 2 passes stderr to Claude for automatic processing
-            else:
-                print(f"✅ No linting issues in {file_path}", file=sys.stderr)
-        else:
-            # Send Ruff linting issues to Claude via stderr and exit code 2
+        lint_issues = lint_result.returncode != 0
+
+        # Report issues to Claude
+        if format_issues or lint_issues:
+            issues = []
+            if format_issues:
+                issues.append("格式問題")
+            if lint_issues:
+                issues.append(f"Lint: {lint_result.stdout.strip()}")
             print(
-                f"Ruff found unfixable issues in {file_path}:\n{result.stdout.strip()}",
+                f"🐍 {file_path}: {'; '.join(issues)}",
                 file=sys.stderr,
             )
-            sys.exit(2)  # Exit code 2 passes stderr to Claude for automatic processing
+            sys.exit(2)  # Exit code 2 passes stderr to Claude
+        else:
+            print(f"✅ {file_path}: Ruff checks passed", file=sys.stderr)
 
     except FileNotFoundError:
         print(
