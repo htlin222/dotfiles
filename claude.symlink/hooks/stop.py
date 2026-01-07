@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """
-Stop hook - Format files and send notification when Claude finishes.
+Stop hook - Format files, backup transcript, and send notification when Claude finishes.
 
 Features:
 1. Format edited files with Biome/Prettier/Ruff (--write mode)
-2. Send git status via ntfy
+2. Backup transcript to ~/.claude/transcripts/
+3. Log session summary to ~/.claude/logs/sessions.jsonl
+4. Send git status via ntfy
 """
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timedelta
@@ -17,8 +20,13 @@ from datetime import datetime, timedelta
 # Configuration
 # =============================================================================
 
-EDIT_LOG_FILE = os.path.expanduser("~/.claude/logs/edits.jsonl")
+LOG_DIR = os.path.expanduser("~/.claude/logs")
+TRANSCRIPT_BACKUP_DIR = os.path.expanduser("~/.claude/transcripts")
+EDIT_LOG_FILE = os.path.join(LOG_DIR, "edits.jsonl")
+SESSION_LOG_FILE = os.path.join(LOG_DIR, "sessions.jsonl")
+BASH_LOG_FILE = os.path.join(LOG_DIR, "bash_commands.jsonl")
 SESSION_TIMEOUT_MINUTES = 60  # Only format files edited in last N minutes
+MAX_TRANSCRIPT_BACKUPS = 50  # Keep last N transcript backups
 
 # File extension to formatter mapping
 FORMATTERS = {
@@ -58,6 +66,11 @@ STATUS_EMOJI = {
     "C ": "📋",  # Copied
     "U ": "⚠️",  # Unmerged
 }
+
+
+# =============================================================================
+# Feature 1: File Formatting
+# =============================================================================
 
 
 def get_recent_edited_files() -> set[str]:
@@ -105,13 +118,134 @@ def format_edited_files(files: set[str]) -> int:
                 )
                 if result.returncode == 0:
                     formatted_count += 1
-                    print(
-                        f"✨ Formatted: {os.path.basename(file_path)}", file=sys.stderr
-                    )
             except (subprocess.TimeoutExpired, FileNotFoundError):
                 pass
 
     return formatted_count
+
+
+# =============================================================================
+# Feature 2: Transcript Backup
+# =============================================================================
+
+
+def backup_transcript(transcript_path: str, project_name: str, session_id: str) -> str | None:
+    """Backup transcript file. Returns backup path or None."""
+    if not transcript_path or not os.path.exists(transcript_path):
+        return None
+
+    os.makedirs(TRANSCRIPT_BACKUP_DIR, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    safe_session_id = session_id[:8] if session_id else "unknown"
+    backup_name = f"{project_name}_{timestamp}_{safe_session_id}.jsonl"
+    backup_path = os.path.join(TRANSCRIPT_BACKUP_DIR, backup_name)
+
+    try:
+        shutil.copy2(transcript_path, backup_path)
+        cleanup_old_backups()
+        return backup_path
+    except Exception:
+        return None
+
+
+def cleanup_old_backups():
+    """Remove old transcript backups, keeping only the most recent ones."""
+    try:
+        backups = sorted(
+            [f for f in os.listdir(TRANSCRIPT_BACKUP_DIR) if f.endswith(".jsonl")],
+            key=lambda x: os.path.getmtime(os.path.join(TRANSCRIPT_BACKUP_DIR, x)),
+            reverse=True,
+        )
+        for old_backup in backups[MAX_TRANSCRIPT_BACKUPS:]:
+            os.remove(os.path.join(TRANSCRIPT_BACKUP_DIR, old_backup))
+    except Exception:
+        pass
+
+
+# =============================================================================
+# Feature 3: Session Summary
+# =============================================================================
+
+
+def get_session_stats() -> dict:
+    """Get session statistics from logs."""
+    stats = {
+        "files_edited": 0,
+        "bash_commands": 0,
+        "unique_files": set(),
+    }
+
+    cutoff = datetime.now() - timedelta(minutes=SESSION_TIMEOUT_MINUTES)
+
+    # Count edited files
+    if os.path.exists(EDIT_LOG_FILE):
+        try:
+            with open(EDIT_LOG_FILE, encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        entry = json.loads(line.strip())
+                        timestamp = datetime.fromisoformat(entry.get("timestamp", ""))
+                        if timestamp >= cutoff:
+                            stats["files_edited"] += 1
+                            stats["unique_files"].add(entry.get("file", ""))
+                    except (json.JSONDecodeError, ValueError):
+                        continue
+        except Exception:
+            pass
+
+    # Count bash commands
+    if os.path.exists(BASH_LOG_FILE):
+        try:
+            with open(BASH_LOG_FILE, encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        entry = json.loads(line.strip())
+                        timestamp = datetime.fromisoformat(entry.get("timestamp", ""))
+                        if timestamp >= cutoff:
+                            stats["bash_commands"] += 1
+                    except (json.JSONDecodeError, ValueError):
+                        continue
+        except Exception:
+            pass
+
+    stats["unique_files"] = len(stats["unique_files"])
+    return stats
+
+
+def log_session_summary(
+    session_id: str,
+    cwd: str,
+    project_name: str,
+    stats: dict,
+    transcript_backup: str | None,
+):
+    """Log session summary to sessions.jsonl."""
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "session_id": session_id,
+        "project": project_name,
+        "cwd": cwd,
+        "stats": {
+            "files_edited": stats["files_edited"],
+            "unique_files": stats["unique_files"],
+            "bash_commands": stats["bash_commands"],
+        },
+        "transcript_backup": transcript_backup,
+    }
+
+    try:
+        with open(SESSION_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
+# =============================================================================
+# Feature 4: Git Status & Notification
+# =============================================================================
 
 
 def format_status_line(line: str) -> str:
@@ -123,7 +257,7 @@ def format_status_line(line: str) -> str:
     filename = os.path.basename(path)
     parent = os.path.basename(os.path.dirname(path))
     display_name = f"{parent}/{filename}" if parent else filename
-    emoji = STATUS_EMOJI.get(code, "🪾")
+    emoji = STATUS_EMOJI.get(code, "📄")
     return f"{emoji} {display_name}"
 
 
@@ -151,13 +285,20 @@ def get_git_status_and_notify(cwd: str, folder_name: str) -> None:
         subprocess.run(
             ["ntfy", "publish", "--title", title, "lizard", body],
             check=False,
+            capture_output=True,
         )
 
     except Exception:
         subprocess.run(
             ["ntfy", "publish", "--title", title, "lizard", "對話已完成"],
             check=False,
+            capture_output=True,
         )
+
+
+# =============================================================================
+# Main
+# =============================================================================
 
 
 def main():
@@ -166,26 +307,48 @@ def main():
 
         if not raw_input.strip():
             subprocess.run(
-                ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
+                ["ntfy", "publish", "lizard", "Claude Code 對話結束"],
+                check=False,
+                capture_output=True,
             )
             return
 
         data = json.loads(raw_input)
         cwd = data.get("cwd", "")
+        session_id = data.get("session_id", "unknown")
+        transcript_path = data.get("transcript_path", "")
         folder_name = os.path.basename(cwd) if cwd else ""
 
-        # Format edited files before notification
+        # Feature 1: Format edited files
         edited_files = get_recent_edited_files()
+        formatted_count = 0
         if edited_files:
-            count = format_edited_files(edited_files)
-            if count > 0:
-                print(f"📝 Formatted {count} files on stop", file=sys.stderr)
+            formatted_count = format_edited_files(edited_files)
 
+        # Feature 2: Backup transcript
+        transcript_backup = backup_transcript(transcript_path, folder_name, session_id)
+
+        # Feature 3: Log session summary
+        stats = get_session_stats()
+        log_session_summary(session_id, cwd, folder_name, stats, transcript_backup)
+
+        # Feature 4: Git status & notification
         get_git_status_and_notify(cwd, folder_name)
+
+        # Print summary to stderr (visible in transcript mode)
+        if formatted_count > 0 or transcript_backup:
+            summary_parts = []
+            if formatted_count > 0:
+                summary_parts.append(f"📝 {formatted_count} files formatted")
+            if transcript_backup:
+                summary_parts.append("💾 Transcript backed up")
+            print(" | ".join(summary_parts), file=sys.stderr)
 
     except json.JSONDecodeError:
         subprocess.run(
-            ["ntfy", "publish", "lizard", "Claude Code 對話結束"], check=False
+            ["ntfy", "publish", "lizard", "Claude Code 對話結束"],
+            check=False,
+            capture_output=True,
         )
     except Exception:
         pass

@@ -32,6 +32,7 @@ from processors import (
 
 LOG_DIR = os.path.expanduser("~/.claude/logs")
 EDIT_LOG_FILE = os.path.join(LOG_DIR, "edits.jsonl")
+BASH_LOG_FILE = os.path.join(LOG_DIR, "bash_commands.jsonl")
 BUILD_ERROR_THRESHOLD = 5  # Warn if errors exceed this
 
 # Directories to always skip (build outputs, dependencies, etc.)
@@ -147,6 +148,28 @@ def log_file_edit(file_path: str, tool_name: str, cwd: str):
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
+def log_bash_command(command: str, cwd: str, exit_code: int | None = None):
+    """Log bash command to bash_commands.jsonl for audit trail."""
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    # Truncate very long commands
+    truncated_cmd = command[:500] + "..." if len(command) > 500 else command
+
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "command": truncated_cmd,
+        "cwd": cwd,
+        "project": os.path.basename(cwd) if cwd else "",
+        "exit_code": exit_code,
+    }
+
+    try:
+        with open(BASH_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
 # =============================================================================
 # Feature 2: Build Checker
 # =============================================================================
@@ -258,10 +281,21 @@ def main():
     try:
         data = json.loads(raw_input)
         tool_name = data.get("tool_name", "Unknown")
+        tool_input = data.get("tool_input", {})
+        tool_result = data.get("tool_result", {})
         cwd = data.get("cwd", "")
     except json.JSONDecodeError:
         tool_name = "Unknown"
+        tool_input = {}
+        tool_result = {}
         cwd = ""
+
+    # Feature: Log Bash commands for audit trail
+    if tool_name == "Bash":
+        command = tool_input.get("command", "")
+        exit_code = tool_result.get("exit_code") if isinstance(tool_result, dict) else None
+        if command:
+            log_bash_command(command, cwd, exit_code)
 
     # Find file paths using regex
     pattern = r'"(?:filePath|file_path)"\s*:\s*"([^"]+)"'

@@ -132,6 +132,15 @@
             "command": "say -v Samantha 'File saved' & python3 ~/.claude/hooks/post_tool_use.py"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/post_tool_use.py"
+          }
+        ]
       }
     ],
     "Notification": [
@@ -160,6 +169,17 @@
           {
             "type": "prompt",
             "prompt": "如果本次對話有使用 TodoWrite 建立任務清單，請檢查：1) 是否所有項目都已標記為 completed？2) 是否有未處理的錯誤？如果有未完成的任務，請繼續完成。如果沒有使用 TodoWrite（例如簡單問答），則無需檢查，直接結束即可。"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/subagent_stop.py"
           }
         ]
       }
