@@ -96,11 +96,16 @@
         ]
       },
       {
-        "matcher": "Read|Write|Edit|MultiEdit",
+        "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/file_guard.py"
+          },
+          {
+            "type": "command",
+            "command": "[ \"$(git branch --show-current 2>/dev/null)\" != \"main\" ] && [ \"$(git branch --show-current 2>/dev/null)\" != \"master\" ] || echo '{\"block\": true, \"message\": \"禁止在 main/master branch 直接編輯\"}' && exit 2",
+            "timeout": 5
           }
         ]
       },
@@ -109,16 +114,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/check_read_exists.py"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
+            "command": "python3 ~/.claude/hooks/file_guard.py"
+          },
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Funk.aiff"
+            "command": "python3 ~/.claude/hooks/check_read_exists.py"
           }
         ]
       },
@@ -130,15 +130,6 @@
             "command": "node ~/.claude/hooks/read_hook.js"
           }
         ]
-      },
-      {
-        "matcher": "Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /System/Library/Sounds/Funk.aiff"
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -147,13 +138,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff && python3 ~/.claude/hooks/post_tool_use.py"
+            "command": "say -v Samantha 'File saved' & python3 ~/.claude/hooks/post_tool_use.py"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": []
       }
     ],
     "Notification": [
@@ -163,6 +150,10 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/notification.py"
+          },
+          {
+            "type": "command",
+            "command": "say -v Samantha 'Notification from Claude'"
           }
         ]
       }
@@ -174,6 +165,10 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/stop.py"
+          },
+          {
+            "type": "command",
+            "command": "say -v Samantha 'Task completed'"
           },
           {
             "type": "prompt",
@@ -189,6 +184,10 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/pre_compact.py"
+          },
+          {
+            "type": "command",
+            "command": "say -v Samantha 'Backing up transcript before compaction'"
           }
         ]
       }
