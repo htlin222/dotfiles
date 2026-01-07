@@ -3,12 +3,13 @@
 Shared TTS (Text-to-Speech) utility for Claude Code hooks.
 
 Features:
-1. Non-blocking TTS using subprocess.Popen
+1. Queued TTS - only one plays at a time across all sessions
 2. Mute mode via CLAUDE_MUTE environment variable
 3. Fallback handling for systems without 'say' command
 4. Rich notification messages based on hook data
 """
 
+import fcntl
 import os
 import shutil
 import subprocess
@@ -16,6 +17,7 @@ import subprocess
 # Configuration
 DEFAULT_VOICE = "Samantha"
 DEFAULT_RATE = 200  # Words per minute
+LOCK_FILE = os.path.expanduser("~/.claude/.tts.lock")
 
 
 def is_muted() -> bool:
@@ -25,7 +27,10 @@ def is_muted() -> bool:
 
 def say(message: str, voice: str = DEFAULT_VOICE, rate: int = DEFAULT_RATE) -> bool:
     """
-    Non-blocking TTS notification.
+    Queued TTS notification - waits for previous TTS to finish.
+
+    Uses file locking to ensure only one TTS plays at a time,
+    even across multiple Claude Code sessions.
 
     Args:
         message: Text to speak
@@ -33,7 +38,7 @@ def say(message: str, voice: str = DEFAULT_VOICE, rate: int = DEFAULT_RATE) -> b
         rate: Speech rate in words per minute
 
     Returns:
-        True if TTS was initiated, False if skipped/failed
+        True if TTS completed, False if skipped/failed
     """
     if is_muted():
         return False
@@ -42,12 +47,23 @@ def say(message: str, voice: str = DEFAULT_VOICE, rate: int = DEFAULT_RATE) -> b
         return False  # say command not available (Linux)
 
     try:
-        subprocess.Popen(
-            ["say", "-v", voice, "-r", str(rate), message],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        return True
+        # Ensure lock directory exists
+        os.makedirs(os.path.dirname(LOCK_FILE), exist_ok=True)
+
+        # Acquire lock, wait if another TTS is playing
+        with open(LOCK_FILE, "w") as lock_file:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)  # Blocking lock
+            try:
+                # Run TTS and wait for completion (blocking)
+                subprocess.run(
+                    ["say", "-v", voice, "-r", str(rate), message],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+                return True
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)  # Release lock
     except Exception:
         return False
 
