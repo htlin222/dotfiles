@@ -72,11 +72,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/session_start.sh"
+            "command": "python3 ~/.claude/hooks/session_start.py"
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/env_validation.sh"
+            "command": "python3 ~/.claude/hooks/env_validation.py"
           }
         ]
       }
