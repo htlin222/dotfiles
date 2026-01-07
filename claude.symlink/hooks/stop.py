@@ -119,10 +119,12 @@ def format_status_line(line: str) -> str:
     if len(line) < 3:
         return line
     code = line[:2]
-    path = line[3:]
-    filename = os.path.basename(path.rstrip("/"))
+    path = line[3:].rstrip("/")
+    filename = os.path.basename(path)
+    parent = os.path.basename(os.path.dirname(path))
+    display_name = f"{parent}/{filename}" if parent else filename
     emoji = STATUS_EMOJI.get(code, "🪾")
-    return f"{emoji} {filename}"
+    return f"{emoji} {display_name}"
 
 
 def get_git_status_and_notify(cwd: str, folder_name: str) -> None:
