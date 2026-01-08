@@ -17,7 +17,7 @@ require("reload")
 
 -- VimMode - 全系統 Vim 模式
 -- 需要先安裝: git clone https://github.com/dbalatero/VimMode.spoon ~/.hammerspoon/Spoons/VimMode.spoon
--- require("vimmode")
+require("vimmode")
 
 -- Caffeinate Watcher - 鎖屏/解鎖/睡眠事件處理
 require("caffeinate")
