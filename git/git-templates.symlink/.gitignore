@@ -6,6 +6,7 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+*.bak
 
 # Editor files
 .idea/
@@ -13,13 +14,14 @@ Thumbs.db
 *.swp
 *.swo
 *~
+*.sublime-workspace
 
 # Logs and databases
 *.log
 *.sql
 *.sqlite
 
-# Package files
+# Package/Archive files
 *.7z
 *.dmg
 *.gz
@@ -29,8 +31,70 @@ Thumbs.db
 *.tar
 *.zip
 
-# Build directories
-/dist
-/build
-/node_modules
-/vendor
+# =====================
+# JavaScript / Node.js
+# =====================
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+.npm/
+.yarn/
+.pnpm-store/
+*.tsbuildinfo
+coverage/
+.eslintcache
+
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
+.eggs/
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.uv/
+pip-log.txt
+
+# =====================
+# R
+# =====================
+.Rhistory
+.Rdata
+.RData
+.Ruserdata
+*.Rproj.user/
+.httr-oauth
+.Renviron
+
+# =====================
+# General build/output
+# =====================
+out/
+tmp/
+temp/
+vendor/
+
+# =====================
+# Environment & Secrets
+# =====================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
