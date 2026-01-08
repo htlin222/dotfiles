@@ -173,6 +173,61 @@ bindkey '\e.' insert-last-word
 bindkey '^q' push-line-or-edit
 
 # ========================================
+# Advanced ZLE Widgets
+# ========================================
+
+# Prepend sudo to current command (Esc Esc)
+prepend-sudo() {
+  if [[ $BUFFER != sudo\ * ]]; then
+    BUFFER="sudo $BUFFER"
+    CURSOR=$((CURSOR + 5))
+  fi
+}
+zle -N prepend-sudo
+bindkey '\e\e' prepend-sudo  # Esc Esc
+
+# Copy current line to clipboard
+copy-line-to-clipboard() {
+  if [[ -n "$IS_MAC" ]]; then
+    echo -n "$BUFFER" | pbcopy
+  else
+    echo -n "$BUFFER" | xclip -selection clipboard 2>/dev/null
+  fi
+  zle -M "Copied to clipboard"
+}
+zle -N copy-line-to-clipboard
+bindkey '^x^c' copy-line-to-clipboard  # Ctrl+X Ctrl+C
+
+# Run git diff without losing current command
+widget-git-diff() {
+  zle push-line
+  BUFFER="git diff --stat"
+  zle accept-line
+}
+zle -N widget-git-diff
+bindkey '^x^d' widget-git-diff  # Ctrl+X Ctrl+D
+
+# Run git status without losing current command
+widget-git-status() {
+  zle push-line
+  BUFFER="git status -sb"
+  zle accept-line
+}
+zle -N widget-git-status
+bindkey '^x^s' widget-git-status  # Ctrl+X Ctrl+S
+
+# Jump to beginning/end of command arguments (skip first word)
+beginning-of-args() {
+  zle beginning-of-line
+  zle forward-word
+}
+zle -N beginning-of-args
+bindkey '^x^a' beginning-of-args  # Ctrl+X Ctrl+A
+
+# Double Esc in vi mode returns to normal mode and moves to line start
+# (handled by zsh-vi-mode plugin)
+
+# ========================================
 # Smart Aliases for Common Patterns
 # ========================================
 
@@ -183,3 +238,28 @@ alias rr='fc -s -1'  # repeat second to last
 # Quick edits
 alias ez='$EDITOR ~/.zshrc && source ~/.zshrc'
 alias ea='$EDITOR $DOTFILES/zsh/modules/alias.zsh && source $DOTFILES/zsh/modules/alias.zsh'
+
+# ========================================
+# Smart Expansions
+# ========================================
+
+# Expand ... to ../.. (already in fn_navigation.zsh)
+# This makes typing cd ... expand to cd ../..
+
+# !! expands to last command (built-in)
+# !$ expands to last argument of last command (built-in)
+# !^ expands to first argument of last command (built-in)
+# !* expands to all arguments of last command (built-in)
+
+# ========================================
+# Quick Reference (for muscle memory)
+# ========================================
+# Ctrl+X Ctrl+E  - Edit command in $EDITOR
+# Ctrl+X Ctrl+C  - Copy command to clipboard
+# Ctrl+X Ctrl+D  - Quick git diff (preserves current line)
+# Ctrl+X Ctrl+S  - Quick git status (preserves current line)
+# Ctrl+Q         - Push line to stack, type another, then get it back
+# Esc Esc        - Prepend sudo
+# Alt+.          - Insert last argument
+# Alt+-          - cd to previous dir
+# Ctrl+Z         - Toggle fg/bg
