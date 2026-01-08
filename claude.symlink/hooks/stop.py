@@ -17,9 +17,9 @@ import sys
 import time
 from datetime import datetime, timedelta
 
+from metrics import log_hook_event, log_hook_metrics
 # Import TTS utility
 from tts import notify_session_complete
-from metrics import log_hook_metrics, log_hook_event
 
 # =============================================================================
 # Configuration
@@ -134,7 +134,9 @@ def format_edited_files(files: set[str]) -> int:
 # =============================================================================
 
 
-def backup_transcript(transcript_path: str, project_name: str, session_id: str) -> str | None:
+def backup_transcript(
+    transcript_path: str, project_name: str, session_id: str
+) -> str | None:
     """Backup transcript file. Returns backup path or None."""
     if not transcript_path or not os.path.exists(transcript_path):
         return None
@@ -262,7 +264,7 @@ def format_status_line(line: str) -> str:
     filename = os.path.basename(path)
     parent = os.path.basename(os.path.dirname(path))
     display_name = f"{parent}/{filename}" if parent else filename
-    emoji = STATUS_EMOJI.get(code, "📄")
+    emoji = STATUS_EMOJI.get(code, "🪾")
     return f"{emoji} {display_name}"
 
 
