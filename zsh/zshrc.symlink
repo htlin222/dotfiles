@@ -239,6 +239,7 @@ source "$DOTFILES/zsh/modules/fn_dev.zsh"
 source "$DOTFILES/zsh/modules/fn_notes.zsh"
 source "$DOTFILES/zsh/modules/fn_media.zsh"
 source "$DOTFILES/zsh/modules/fn_efficiency.zsh"
+source "$DOTFILES/zsh/modules/fn_power.zsh"
 [[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
 
 source "$HOME/.uvv"
