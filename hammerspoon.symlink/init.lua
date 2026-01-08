@@ -11,6 +11,25 @@ require("reload")
 -- require "weather"
 -- require "speaker"
 
+-- =============================================
+-- 新功能模組 (2025)
+-- =============================================
+
+-- VimMode - 全系統 Vim 模式
+-- 需要先安裝: git clone https://github.com/dbalatero/VimMode.spoon ~/.hammerspoon/Spoons/VimMode.spoon
+-- require("vimmode")
+
+-- Caffeinate Watcher - 鎖屏/解鎖/睡眠事件處理
+require("caffeinate")
+
+-- WiFi Context - 根據 WiFi 網路自動切換情境
+-- 請先在 wificontext/init.lua 中設定你的 WiFi 網路
+require("wificontext")
+
+-- URL Scheme - 自訂 hammerspoon:// 協議
+-- 可以從 Shortcuts、Alfred、瀏覽器等觸發
+require("urlscheme")
+
 -- 定義一個函數來執行 AppleScript
 function mergeAllWindows(appName)
 	local script = string.format(
