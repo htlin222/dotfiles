@@ -40,28 +40,28 @@ mark() { hash -d "$1"="$PWD"; echo "Marked: ~$1 -> $PWD" }
 # ========================================
 
 # Git status + diff in one view
-gsd() { git status -sb && echo "---" && git diff --stat }
+gsdf() { git status -sb && echo "---" && git diff --stat }
 
-# Quick commit with message
-gc() { git commit -m "$*" }
+# Quick commit with message (use function keyword to override oh-my-zsh aliases)
+function gc { git commit -m "$*" }
 
 # Quick add all + commit
-gac() { git add -A && git commit -m "$*" }
+function gac { git add -A && git commit -m "$*" }
 
 # Quick push current branch
-gp() { git push origin "$(git branch --show-current)" }
+function gp { git push origin "$(git branch --show-current)" }
 
 # Amend last commit (no edit)
-gam() { git commit --amend --no-edit }
+function gam { git commit --amend --no-edit }
 
 # Interactive rebase last N commits
-gri() { git rebase -i HEAD~${1:-5} }
+function gri { git rebase -i HEAD~${1:-5} }
 
 # Stash with message
-gss() { git stash push -m "${*:-WIP}" }
+function gss { git stash push -m "${*:-WIP}" }
 
 # Pop stash by selecting with fzf
-gsp() {
+function gsp {
   local stash=$(git stash list | fzf --height 40% | cut -d: -f1)
   [[ -n "$stash" ]] && git stash pop "$stash"
 }

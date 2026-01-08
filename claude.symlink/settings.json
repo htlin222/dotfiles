@@ -101,11 +101,6 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/file_guard.py"
-          },
-          {
-            "type": "command",
-            "command": "[ \"$(git branch --show-current 2>/dev/null)\" != \"main\" ] && [ \"$(git branch --show-current 2>/dev/null)\" != \"master\" ] || echo '{\"block\": true, \"message\": \"禁止在 main/master branch 直接編輯\"}' && exit 2",
-            "timeout": 5
           }
         ]
       },
