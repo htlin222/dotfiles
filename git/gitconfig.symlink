@@ -1,10 +1,20 @@
+# === 安全性 ===
 [user]
 	email = hsieh.ting.lin@gmail.com
 	name = Hsiehting Lin
 	useConfigOnly = true
+	signingkey = ~/.ssh/id_ed25519.pub
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+# === 路徑修正 ===
 [init]
 	defaultBranch = main
-	templateDir = /Users/htlin/.git-templates
+	templateDir = ~/.git-templates
 [interactive]
     diffFilter = delta --color-only
 
@@ -46,9 +56,16 @@
 	rebase = true
 	ff = only
 
+[transfer]
+	fsckObjects = true
+
 [fetch]
-    prune = true
-    pruneTags = true
+	prune = true
+	pruneTags = true
+	fsckObjects = true
+
+[receive]
+	fsckObjects = true
 
 [rerere]
     enabled = true
@@ -58,14 +75,29 @@
     sort = -committerdate
 
 [tag]
-    sort = -version:refname
+	sort = -version:refname
+	gpgsign = true
 
 [commit]
-    verbose = true
+	verbose = true
+	gpgsign = true
 
 [gc]
-    auto = 256  # 當有 256 個鬆散物件時自動執行 `git gc`
-    autoPackLimit = 50  # 當有 50 個 packfile 時自動壓縮
+	auto = 256  # 當有 256 個鬆散物件時自動執行 `git gc`
+	autoPackLimit = 50  # 當有 50 個 packfile 時自動壓縮
+
+# === 效能 ===
+[feature]
+	experimental = true
+	manyFiles = true
+
+[maintenance]
+	auto = false
+	strategy = incremental
+
+[grep]
+	patternType = perl
+
 [status]
     showUntrackedFiles = all
     aheadBehind = true
@@ -103,15 +135,27 @@
     changed = yellow bold
     untracked = red bold
 
+# === Aliases ===
 [alias]
-    co = checkout
-    br = branch
-    ci = commit
-    st = status
-    lg = log --oneline --graph --all
-    last = log -1 HEAD
-    unstage = restore --staged --
-    fixup = commit --fixup
-    amend = commit --amend --no-edit
-    clean = clean -fd
-    nuke = clean -fdn
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	lg = log --oneline --graph --all
+	last = log -1 HEAD
+	unstage = restore --staged --
+	fixup = commit --fixup
+	amend = commit --amend --no-edit
+	clean = clean -fd
+	nuke = clean -fdn
+	sw = switch
+	swc = switch -c
+	ll = log --oneline -20
+	wip = !git add -A && git commit -m 'WIP'
+	undo = reset HEAD~1 --mixed
+	gone = !git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+	ri = rebase -i
+	ss = stash --staged
+	sp = stash pop
+	staged = diff --cached
+	contributors = shortlog -sn --all
