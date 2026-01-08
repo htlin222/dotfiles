@@ -30,10 +30,6 @@ require("wificontext")
 -- 可以從 Shortcuts、Alfred、瀏覽器等觸發
 require("urlscheme")
 
--- VimExtras - 全系統 Vim 增強功能
--- Ctrl+hjkl 導航、Ctrl+d/u 滾動、Tab 切換等
-require("vimextras")
-
 -- 定義一個函數來執行 AppleScript
 function mergeAllWindows(appName)
 	local script = string.format(
