@@ -61,6 +61,7 @@ claude.symlink/ide/
 claude.symlink/plugins/*
 claude.symlink/stats-cache.json
 claude.symlink/context-snapshots/
+claude.symlink/transcripts/
 **/logs/
 **/codebase-maps/
 
