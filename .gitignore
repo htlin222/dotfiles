@@ -48,7 +48,7 @@ tmux/tmux.symlink/plugins/**
 pyscripts.symlink/openai_api.yaml
 Application_Support/Anki2/HTLIN/
 config.symlink/thefuck/__pycache__/settings.cpython-310.pyc
-
+claude.symlink/paste-cache/
 claude.symlink/statsig/
 claude.symlink/todos/
 claude.symlink/debug/
@@ -62,6 +62,7 @@ claude.symlink/plugins/*
 claude.symlink/stats-cache.json
 claude.symlink/context-snapshots/
 claude.symlink/transcripts/
+
 **/logs/
 **/codebase-maps/
 
