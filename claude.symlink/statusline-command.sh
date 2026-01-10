@@ -1,6 +1,70 @@
 #!/bin/bash
+#
+# Claude Code Statusline Script
+# A custom statusline for Claude Code CLI with real-time usage metrics
+#
+# ============================================================================
+# INSTALLATION
+# ============================================================================
+#
+# 1. Download this script:
+#    curl -o ~/.claude/statusline-command.sh https://gist.githubusercontent.com/YOUR_USERNAME/GIST_ID/raw/statusline-command.sh
+#
+# 2. Make it executable:
+#    chmod +x ~/.claude/statusline-command.sh
+#
+# 3. Add to your Claude Code settings (~/.claude/settings.json):
+#    {
+#      "statusline": {
+#        "enabled": true,
+#        "command": "~/.claude/statusline-command.sh"
+#      }
+#    }
+#
+# 4. Restart Claude Code to see the statusline
+#
+# ============================================================================
+# REQUIREMENTS
+# ============================================================================
+#
+# - Nerd Font (for icons): https://www.nerdfonts.com/
+# - jq (JSON processor): brew install jq / apt install jq
+# - curl (for dad jokes API)
+# - macOS Keychain access (for OAuth token to fetch real usage data)
+#
+# ============================================================================
+# FEATURES
+# ============================================================================
+#
+# - Model name with icon
+# - Current directory
+# - Session tokens (input + output)
+# - Session cost in USD
+# - 5-hour usage % with time until reset (color-coded)
+# - 7-day usage % (color-coded)
+# - Context window usage % (color-coded)
+# - Session duration
+# - Dad joke (cached, updates every minute)
+# - Git branch status with ahead/behind indicators (color-coded)
+# - Git file status with colored status codes
+#
+# Color coding: green (<60%) -> yellow (60-74%) -> orange (75-89%) -> red (90%+)
+#
+# ============================================================================
+# ICONS USED (Nerd Font)
+# ============================================================================
+#
+# \ue20f  - Model (Claude)
+# \uf07b  - Folder
+# \U000f0b77  - Session tokens
+# \uef0c  - 5-hour usage
+# \U000f00ed  - Weekly usage
+# \U000f035c  - Context window
+# \U000f0954  - Time/clock
+# \ue725  - Git branch
+#
+# ============================================================================
 
-# Claude Code statusline script - simple colored text version
 # Colors: green (normal) -> yellow (60%) -> orange (75%) -> red (90%)
 
 # ANSI color codes
