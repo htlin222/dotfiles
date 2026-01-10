@@ -316,9 +316,9 @@ printf "${CYAN}\$%s/h${RESET} " "$burn_rate"
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
 printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET}\n" "$conv_depth"
 # Line 2: 5h usage, weekly, context (with background-colored labels)
-printf "%b${BLACK}5h${RESET} %b%s(%s)${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_display" "$time_left"
-printf "%b${BLACK}Weekly${RESET} %b%s${RESET} " "$weekly_bg" "$weekly_color" "$weekly_display"
-printf "%b${BLACK}Context${RESET} %b%s%%${RESET}\n" "$context_bg" "$context_color" "$context_pct"
+printf "%b${BLACK} 5h ${RESET} %b%s(%s)${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_display" "$time_left"
+printf "%b${BLACK} Weekly ${RESET} %b%s${RESET} " "$weekly_bg" "$weekly_color" "$weekly_display"
+printf "%b${BLACK} Context ${RESET} %b%s%%${RESET}\n" "$context_bg" "$context_color" "$context_pct"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
