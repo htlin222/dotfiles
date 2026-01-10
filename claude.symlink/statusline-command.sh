@@ -307,8 +307,7 @@ else
 fi
 
 # Output the formatted statusline
-# Line 1: vim, model, folder, tokens, cost, time, burn, lines, depth
-printf "%b${ICON_VIM}%s${RESET} " "$vim_color" "$vim_mode"
+# Line 1: model, folder, tokens, cost, time, burn, lines, depth, vim
 printf "${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
 printf "${WHITE}${ICON_FOLDER}%s${RESET} " "$dir"
 printf "${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
@@ -316,7 +315,8 @@ printf "${LIGHT_GREEN}%s${RESET} " "$session_cost_display"
 printf "${GRAY}%s${RESET} " "$session_display"
 printf "${CYAN}\$%s/h${RESET} " "$burn_rate"
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
-printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET}\n" "$conv_depth"
+printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET} " "$conv_depth"
+printf "%b${ICON_VIM}%s${RESET}\n" "$vim_color" "$vim_mode"
 # Line 2: 5h usage, weekly, context (with background-colored labels)
 printf "%b${BLACK} 5h ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s(%s)${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
 printf "%b${ICON_SEP_LEFT}%b${BLACK} Weekly ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} " "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display"
