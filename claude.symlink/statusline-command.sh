@@ -396,19 +396,27 @@ if [ -n "$branch_line" ]; then
         prefix="${branch_line%% \[*}"
         status="${branch_line##*\[}"
         status="${status%\]}"
-        printf "${ICON_BRANCH}%s ${YELLOW}[%s]${RESET}\n" "$prefix" "$status"
+        ahead_num=$(echo "$status" | grep -o 'ahead [0-9]*' | grep -o '[0-9]*')
+        behind_num=$(echo "$status" | grep -o 'behind [0-9]*' | grep -o '[0-9]*')
+        ahead_dots=$(printf '.%.0s' $(seq 1 ${ahead_num:-0}))
+        behind_dots=$(printf '.%.0s' $(seq 1 ${behind_num:-0}))
+        printf "${ICON_BRANCH}%s ${YELLOW}[%s]${RESET} ${GREEN}%s${RESET}${RED}%s${RESET}\n" "$prefix" "$status" "$ahead_dots" "$behind_dots"
     elif [[ "$branch_line" == *"ahead"* ]]; then
         # Ahead only - green
         prefix="${branch_line%% \[*}"
         status="${branch_line##*\[}"
         status="${status%\]}"
-        printf "${ICON_BRANCH}%s ${GREEN}[%s]${RESET}\n" "$prefix" "$status"
+        ahead_num=$(echo "$status" | grep -o '[0-9]*')
+        ahead_dots=$(printf '.%.0s' $(seq 1 ${ahead_num:-0}))
+        printf "${ICON_BRANCH}%s ${GREEN}[%s] %s${RESET}\n" "$prefix" "$status" "$ahead_dots"
     elif [[ "$branch_line" == *"behind"* ]]; then
         # Behind only - red
         prefix="${branch_line%% \[*}"
         status="${branch_line##*\[}"
         status="${status%\]}"
-        printf "${ICON_BRANCH}%s ${RED}[%s]${RESET}\n" "$prefix" "$status"
+        behind_num=$(echo "$status" | grep -o '[0-9]*')
+        behind_dots=$(printf '.%.0s' $(seq 1 ${behind_num:-0}))
+        printf "${ICON_BRANCH}%s ${RED}[%s] %s${RESET}\n" "$prefix" "$status" "$behind_dots"
     else
         # Up to date or no remote
         printf "${ICON_BRANCH}%s\n" "$branch_line"
