@@ -245,15 +245,16 @@ printf "%b${ICON_WEEKLY}%s${RESET} " "$weekly_color" "$weekly_display"
 printf "%b${ICON_CONTEXT}%s%%${RESET} " "$context_color" "$context_pct"
 printf "${GRAY}${ICON_TIME}%s${RESET}\n" "$session_display"
 
-# Dad joke with 1-minute cache
+# Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
 DAD_JOKE_LOCK="/tmp/claude_dad_joke_lock"
-current_minute=$(date +%Y%m%d%H%M)
+# Use 5-minute intervals: floor(minute/5)*5
+current_5min=$(date +%Y%m%d%H)$(printf "%02d" $(($(date +%-M) / 5 * 5)))
 
-# Check if cache exists and is from current minute
+# Check if cache exists and is from current 5-min window
 if [ -f "$DAD_JOKE_CACHE" ]; then
-    cached_minute=$(head -1 "$DAD_JOKE_CACHE" 2>/dev/null)
-    if [ "$cached_minute" = "$current_minute" ]; then
+    cached_time=$(head -1 "$DAD_JOKE_CACHE" 2>/dev/null)
+    if [ "$cached_time" = "$current_5min" ]; then
         dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
     fi
 fi
@@ -261,13 +262,14 @@ fi
 # If no cached joke, fetch new one (with lock to prevent concurrent requests)
 if [ -z "$dad_joke" ]; then
     if mkdir "$DAD_JOKE_LOCK" 2>/dev/null; then
-        dad_joke=$(curl -s --connect-timeout 2 --max-time 3 -H "Accept: text/plain" "https://icanhazdadjoke.com/" 2>/dev/null)
+        dad_joke=$(curl -s --connect-timeout 1 --max-time 2 -H "Accept: text/plain" "https://icanhazdadjoke.com/" 2>/dev/null)
         if [ -n "$dad_joke" ]; then
-            echo "$current_minute" > "$DAD_JOKE_CACHE"
+            echo "$current_5min" > "$DAD_JOKE_CACHE"
             echo "$dad_joke" >> "$DAD_JOKE_CACHE"
         fi
         rmdir "$DAD_JOKE_LOCK" 2>/dev/null
     else
+        # Lock held, use old cached joke regardless of age
         if [ -f "$DAD_JOKE_CACHE" ]; then
             dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
         fi
