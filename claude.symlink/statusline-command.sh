@@ -36,15 +36,19 @@
 # FEATURES
 # ============================================================================
 #
+# - Vim mode indicator (INSERT=green, NORMAL=yellow, VISUAL=magenta)
 # - Model name with icon
 # - Current directory
 # - Session tokens (input + output)
 # - Session cost in USD
+# - Burn rate (cost per hour)
+# - Lines changed (+added / -removed)
+# - Conversation depth (number of turns)
 # - 5-hour usage % with time until reset (color-coded)
 # - 7-day usage % (color-coded)
 # - Context window usage % (color-coded)
 # - Session duration
-# - Dad joke (cached, updates every minute)
+# - Dad joke (cached, updates every 5 minutes)
 # - Git branch status with ahead/behind indicators (color-coded)
 # - Git file status with colored status codes
 #
@@ -54,9 +58,13 @@
 # ICONS USED (Nerd Font)
 # ============================================================================
 #
+# \ue7c5  - Vim mode
 # \ue20f  - Model (Claude)
 # \uf07b  - Folder
 # \U000f0b77  - Session tokens
+# \uf490  - Burn rate
+# \uf44d  - Lines changed
+# \uf075  - Conversation depth
 # \uef0c  - 5-hour usage
 # \U000f00ed  - Weekly usage
 # \U000f035c  - Context window
@@ -77,8 +85,15 @@ LIGHT_GREEN='\033[38;5;119m'
 CLAUDE_ORANGE='\033[38;5;209m'
 GRAY='\033[38;5;245m'
 WHITE='\033[37m'
+BLACK='\033[30m'
 RESET='\033[0m'
 DIM='\033[2m'
+
+# Background colors for labels
+BG_GREEN='\033[42m'
+BG_YELLOW='\033[43m'
+BG_ORANGE='\033[48;5;208m'
+BG_RED='\033[41m'
 
 # Nerd Font icons
 ICON_MODEL=$'\ue20f '
@@ -88,8 +103,16 @@ ICON_USAGE=$'\uef0c '
 ICON_WEEKLY=$'\U000f00ed '
 ICON_TIME=$'\U000f0954 '
 ICON_SESSION=$'\U000f0b77 '
+ICON_VIM=$'\ue7c5 '
+ICON_LINES=$'\uf44d '
+ICON_BURN=$'\uf490 '
+ICON_DEPTH=$'\uf075 '
 
-# Color function based on percentage
+# Vim mode colors
+CYAN='\033[36m'
+MAGENTA='\033[35m'
+
+# Color function based on percentage (foreground)
 get_color() {
     local pct=$1
     if [ "$pct" -ge 90 ]; then
@@ -103,6 +126,20 @@ get_color() {
     fi
 }
 
+# Background color function based on percentage
+get_bg_color() {
+    local pct=$1
+    if [ "$pct" -ge 90 ]; then
+        echo -e "$BG_RED"
+    elif [ "$pct" -ge 75 ]; then
+        echo -e "$BG_ORANGE"
+    elif [ "$pct" -ge 60 ]; then
+        echo -e "$BG_YELLOW"
+    else
+        echo -e "$BG_GREEN"
+    fi
+}
+
 # Read JSON input from stdin
 input=$(cat)
 
@@ -112,6 +149,28 @@ model=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
 # Get session cost in USD
 session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 session_cost_display=$(printf "$%.2f" "$session_cost")
+
+# Get vim mode
+vim_mode=$(echo "$input" | jq -r '.vim.mode // "NORMAL"')
+case "$vim_mode" in
+    INSERT) vim_color="$GREEN" ;;
+    NORMAL) vim_color="$YELLOW" ;;
+    VISUAL) vim_color="$MAGENTA" ;;
+    *) vim_color="$GRAY" ;;
+esac
+
+# Get lines changed
+lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
+lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
+
+# Get conversation depth (count turns from transcript)
+transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+    # Count user messages (conversation turns)
+    conv_depth=$(grep -c '"type":"user"' "$transcript_path" 2>/dev/null || echo "0")
+else
+    conv_depth=0
+fi
 
 # Get current directory name (not full path)
 dir=$(basename "$(echo "$input" | jq -r '.workspace.current_dir // "."')")
@@ -217,10 +276,13 @@ else
     context_pct=0
 fi
 
-# Get colors for each metric
+# Get colors for each metric (foreground and background)
 five_hour_color=$(get_color $five_hour_pct)
+five_hour_bg=$(get_bg_color $five_hour_pct)
 weekly_color=$(get_color $weekly_pct)
+weekly_bg=$(get_bg_color $weekly_pct)
 context_color=$(get_color $context_pct)
+context_bg=$(get_bg_color $context_pct)
 
 # Session time tracking
 PARENT_SESSION_FILE="/tmp/claude_session_start_$PPID"
@@ -235,15 +297,28 @@ elapsed=$((current_time - session_start))
 elapsed_min=$((elapsed / 60))
 session_display=$(printf "%dm" $elapsed_min)
 
-# Output the formatted statusline - single line
+# Calculate burn rate (cost per hour)
+if [ $elapsed_min -gt 0 ]; then
+    burn_rate=$(echo "scale=2; $session_cost * 60 / $elapsed_min" | bc 2>/dev/null || echo "0")
+else
+    burn_rate="0"
+fi
+
+# Output the formatted statusline
+# Line 1: vim, model, folder, tokens, cost, time, burn, lines, depth
+printf "%b${ICON_VIM}%s${RESET} " "$vim_color" "$vim_mode"
 printf "${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
 printf "${WHITE}${ICON_FOLDER}%s${RESET} " "$dir"
-printf "${LIGHT_BLUE}${ICON_SESSION}%s${RESET} " "$session_display_tokens"
+printf "${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
 printf "${LIGHT_GREEN}%s${RESET} " "$session_cost_display"
-printf "%b${ICON_USAGE}%s (%s)${RESET} " "$five_hour_color" "$five_hour_display" "$time_left"
-printf "%b${ICON_WEEKLY}%s${RESET} " "$weekly_color" "$weekly_display"
-printf "%b${ICON_CONTEXT}%s%%${RESET} " "$context_color" "$context_pct"
-printf "${GRAY}${ICON_TIME}%s${RESET}\n" "$session_display"
+printf "${GRAY}%s${RESET} " "$session_display"
+printf "${CYAN}\$%s/h${RESET} " "$burn_rate"
+printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
+printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET}\n" "$conv_depth"
+# Line 2: 5h usage, weekly, context (with background-colored labels)
+printf "%b${BLACK}5h${RESET} %b%s(%s)${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_display" "$time_left"
+printf "%b${BLACK}Weekly${RESET} %b%s${RESET} " "$weekly_bg" "$weekly_color" "$weekly_display"
+printf "%b${BLACK}Context${RESET} %b%s%%${RESET}\n" "$context_bg" "$context_color" "$context_pct"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
