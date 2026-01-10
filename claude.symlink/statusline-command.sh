@@ -271,7 +271,7 @@ else
     weekly_display="N/A"
 fi
 
-# Calculate session tokens
+# Calculate session tokens (cumulative - for display only)
 total_input=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 total_output=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
 session_tokens=$((total_input + total_output))
@@ -285,15 +285,75 @@ else
     session_display_tokens="${session_tokens}"
 fi
 
-# Calculate current context window usage percentage
-# Use total tokens (input + output) for accurate context usage
+# Calculate CURRENT context window usage (not cumulative session tokens)
+# Bug: context_window.total_* are cumulative, not current. See: github.com/anthropics/claude-code/issues/13783
+# Workaround: Parse transcript file to estimate current context
 window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
-if [ "$window_size" -gt 0 ] 2>/dev/null; then
-    context_pct=$((session_tokens * 100 / window_size))
-    # Cap at 100%
-    [ "$context_pct" -gt 100 ] && context_pct=100
+
+# Estimate current context from transcript file
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+    # Count characters in transcript as proxy for tokens (~4 chars per token)
+    # Only count content after last "summary" (compact marker)
+    current_context=$(python3 -c "
+import json
+import sys
+
+try:
+    transcript_path = '$transcript_path'
+    window_size = $window_size
+
+    # Read all messages
+    messages = []
+    with open(transcript_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    messages.append(json.loads(line))
+                except:
+                    pass
+
+    # Find last compact/summary marker (type='summary' or message about compaction)
+    last_compact_idx = 0
+    for i, msg in enumerate(messages):
+        msg_type = msg.get('type', '')
+        if msg_type == 'summary':
+            last_compact_idx = i + 1
+
+    # Sum up content length after last compact
+    total_chars = 0
+    for msg in messages[last_compact_idx:]:
+        # Get message content
+        if 'message' in msg:
+            content = msg['message'].get('content', '')
+            if isinstance(content, list):
+                for item in content:
+                    if isinstance(item, dict):
+                        total_chars += len(str(item.get('text', '')))
+                    else:
+                        total_chars += len(str(item))
+            else:
+                total_chars += len(str(content))
+
+    # Estimate tokens (~4 chars per token)
+    estimated_tokens = total_chars // 4
+
+    # Calculate percentage
+    pct = (estimated_tokens * 100) // window_size
+    pct = min(pct, 100)  # Cap at 100%
+    print(pct)
+except Exception as e:
+    print('0')
+" 2>/dev/null || echo "0")
+    context_pct=${current_context:-0}
 else
-    context_pct=0
+    # Fallback: use cumulative tokens (capped at 100%)
+    if [ "$window_size" -gt 0 ] 2>/dev/null; then
+        context_pct=$((session_tokens * 100 / window_size))
+        [ "$context_pct" -gt 100 ] && context_pct=100
+    else
+        context_pct=0
+    fi
 fi
 
 # Get colors for each metric (foreground and background)
@@ -341,7 +401,7 @@ context_filled=$((context_pct * 20 / 100))
 context_empty=$((20 - context_filled))
 context_bar_filled=$(printf '█%.0s' $(seq 1 ${context_filled:-0}) 2>/dev/null)
 context_bar_empty=$(printf '█%.0s' $(seq 1 ${context_empty:-0}) 2>/dev/null)
-printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f05c4 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b${ICON_SEP_LEFT}%s${RESET}${GRAY}%s${ICON_SEP_RIGHT}${RESET} %b%s%%${RESET}\n" "$context_color" "$context_bg" "$context_color" "$context_color" "$context_bar_filled" "$context_bar_empty" "$context_color" "$context_pct"
+printf "%b${ICON_SEP_LEFT}%s${RESET}${GRAY}%s${ICON_SEP_RIGHT}${RESET} %b%s%% context used${RESET}\n" "$context_color" "$context_bar_filled" "$context_bar_empty" "$context_color" "$context_pct"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
