@@ -72,10 +72,6 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "python3 ~/.claude/hooks/session_start.py"
-					},
-					{
-						"type": "command",
 						"command": "python3 ~/.claude/hooks/env_validation.py"
 					}
 				]
@@ -203,5 +199,9 @@
 		"typescript-lsp@claude-plugins-official": true,
 		"scientific-skills@claude-scientific-skills": true
 	},
-	"alwaysThinkingEnabled": true
+	"alwaysThinkingEnabled": true,
+	"statusLine": {
+		"type": "command",
+		"command": "bash ~/.claude/statusline-command.sh"
+	}
 }

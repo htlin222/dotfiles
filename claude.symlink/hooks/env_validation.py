@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-EnvValidation hook - Validate development environment on session start.
-Triggers: SessionStart hook.
+SessionStart hook - Environment validation and project context setup.
+Triggers: SessionStart hook (startup, resume, clear, compact).
 
 Features:
-1. Check required tools (git, node, python, etc.)
-2. Validate project-specific requirements
-3. Report missing or outdated dependencies
-4. Suggest fixes for common issues
+1. Set project environment variables (PROJECT_NAME, SESSION_SOURCE)
+2. Check required tools (git, node, python, etc.)
+3. Validate project-specific requirements
+4. Report missing or outdated dependencies
+5. Auto-install missing processor tools
 """
 
 import json
@@ -22,6 +23,20 @@ from datetime import datetime
 # =============================================================================
 
 LOG_DIR = os.path.expanduser("~/.claude/logs")
+
+
+# ANSI color codes
+class Colors:
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    MAGENTA = "\033[95m"
+    CYAN = "\033[96m"
+    BOLD = "\033[1m"
+    DIM = "\033[2m"
+    RESET = "\033[0m"
+
 
 # Required tools with version check commands
 REQUIRED_TOOLS = {
@@ -232,7 +247,8 @@ def check_project_requirements(cwd: str) -> list:
 
 
 def format_validation_report(tool_results: list, project_missing: list) -> str:
-    """Format validation results as a report."""
+    """Format validation results as a report with ANSI colors."""
+    C = Colors
     lines = []
     issues = []
 
@@ -240,26 +256,43 @@ def format_validation_report(tool_results: list, project_missing: list) -> str:
     for result in tool_results:
         if not result["available"]:
             if not result["optional"]:
-                msg = f"❌ {result['name']}: {result['error']}"
+                msg = f"{C.RED}❌ {result['name']}: {result['error']}{C.RESET}"
                 if result.get("install_hint"):
-                    msg += f"\n   → {result['install_hint']}"
+                    msg += f"\n   {C.DIM}→ {result['install_hint']}{C.RESET}"
                 issues.append(msg)
         elif not result["meets_requirement"]:
-            issues.append(f"⚠️ {result['name']}: version outdated ({result['version']})")
+            issues.append(
+                f"{C.YELLOW}⚠️ {result['name']}: version outdated ({result['version']}){C.RESET}"
+            )
 
     # Check project requirements
     for missing in project_missing:
-        issues.append(f"📦 {missing['tool']}: {missing['reason']}")
+        issues.append(f"{C.CYAN}📦 {missing['tool']}: {missing['reason']}{C.RESET}")
 
     if issues:
-        lines.append("🔧 環境檢查發現問題:")
+        lines.append(f"{C.BOLD}{C.YELLOW}🔧 環境檢查發現問題:{C.RESET}")
         lines.extend(issues[:5])  # Limit to 5 issues
         if len(issues) > 5:
-            lines.append(f"   ...還有 {len(issues) - 5} 個問題")
+            lines.append(f"   {C.DIM}...還有 {len(issues) - 5} 個問題{C.RESET}")
     else:
-        lines.append("✅ 開發環境檢查通過")
+        lines.append(f"{C.GREEN}✅ 開發環境檢查通過{C.RESET}")
 
     return "\n".join(lines)
+
+
+def write_env_vars(cwd: str, source: str) -> None:
+    """Write project environment variables to CLAUDE_ENV_FILE."""
+    env_file = os.environ.get("CLAUDE_ENV_FILE", "")
+    if not env_file:
+        return
+
+    project_name = os.path.basename(cwd) if cwd else "unknown"
+    try:
+        with open(env_file, "a") as f:
+            f.write(f"export PROJECT_NAME='{project_name}'\n")
+            f.write(f"export SESSION_SOURCE='{source}'\n")
+    except (OSError, IOError):
+        pass
 
 
 def main():
@@ -272,8 +305,12 @@ def main():
         cwd = data.get("cwd", "")
         source = data.get("source", "startup")
 
+        # Always write env vars for all session events
+        write_env_vars(cwd, source)
+
         # Only run full validation on startup, not resume/compact
         if source not in ("startup", "clear"):
+            print(json.dumps({"continue": True, "systemMessage": "Success"}))
             return
 
         # Check required tools
@@ -321,7 +358,7 @@ def main():
         # Add installing info if any
         if tools_to_install:
             installing_names = [t[0] for t in tools_to_install]
-            report += f"\n🔄 背景安裝中: {', '.join(installing_names)}"
+            report += f"\n{Colors.MAGENTA}🔄 背景安裝中: {', '.join(installing_names)}{Colors.RESET}"
 
         # Only output if there are issues or installing
         has_issues = (
