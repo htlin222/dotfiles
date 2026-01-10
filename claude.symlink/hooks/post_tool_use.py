@@ -301,10 +301,16 @@ def main():
     # Feature: Log Bash commands for audit trail + TTS
     if tool_name == "Bash":
         command = tool_input.get("command", "")
-        exit_code = tool_result.get("exit_code") if isinstance(tool_result, dict) else None
+        exit_code = (
+            tool_result.get("exit_code") if isinstance(tool_result, dict) else None
+        )
         if command:
             log_bash_command(command, cwd, exit_code)
             notify_bash_complete(command, exit_code, cwd)
+            # Skip further processing for git commands to avoid index.lock race condition
+            if command.strip().startswith("git ") or "git " in command:
+                print(json.dumps({"continue": True}))
+                sys.exit(0)
 
     # Find file paths using regex
     pattern = r'"(?:filePath|file_path)"\s*:\s*"([^"]+)"'
