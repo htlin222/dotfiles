@@ -286,14 +286,12 @@ else
 fi
 
 # Calculate current context window usage percentage
-current_usage=$(echo "$input" | jq '.context_window.current_usage')
-if [ "$current_usage" != "null" ]; then
-    input_tokens=$(echo "$current_usage" | jq '.input_tokens // 0')
-    cache_creation=$(echo "$current_usage" | jq '.cache_creation_input_tokens // 0')
-    cache_read=$(echo "$current_usage" | jq '.cache_read_input_tokens // 0')
-    current_total=$((input_tokens + cache_creation + cache_read))
-    window_size=$(echo "$input" | jq '.context_window.context_window_size // 200000')
-    context_pct=$((current_total * 100 / window_size))
+# Use total tokens (input + output) for accurate context usage
+window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+if [ "$window_size" -gt 0 ] 2>/dev/null; then
+    context_pct=$((session_tokens * 100 / window_size))
+    # Cap at 100%
+    [ "$context_pct" -gt 100 ] && context_pct=100
 else
     context_pct=0
 fi
