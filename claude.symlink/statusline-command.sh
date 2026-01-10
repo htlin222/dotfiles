@@ -231,7 +231,7 @@ printf "${FG_FOLDER}${ROUND_LEFT}${BG_FOLDER}${ICON_FOLDER}%s${RESET}${FG_FOLDER
     "$dir"
 printf "${FG_LIGHT_BLUE}${ROUND_LEFT}${BG_LIGHT_BLUE}${ICON_SESSION}%s${RESET}${FG_LIGHT_BLUE}${ROUND_RIGHT}${RESET} " \
     "$session_display_tokens"
-printf "${FG_LIGHT_GREEN}${ROUND_LEFT}${BG_LIGHT_GREEN}%s${RESET}${FG_LIGHT_GREEN}${ROUND_RIGHT}${RESET} " \
+printf "${FG_LIGHT_GREEN}${ROUND_LEFT}${BG_LIGHT_GREEN}%s${RESET}${FG_LIGHT_GREEN}${ROUND_RIGHT}${RESET}\n" \
     "$session_cost_display"
 printf "%b${ROUND_LEFT}%b${ICON_USAGE}%s (%s)${RESET}%b${ROUND_RIGHT}${RESET} " \
     "$five_hour_fg" "$five_hour_bg" "$five_hour_display" "$time_left" "$five_hour_fg"
@@ -242,27 +242,50 @@ printf "%b${ROUND_LEFT}%b${ICON_CONTEXT}%s%%${RESET}%b${ROUND_RIGHT}${RESET} " \
 printf "${FG_TIME}${ROUND_LEFT}${BG_TIME}${ICON_TIME}%s${RESET}${FG_TIME}${ROUND_RIGHT}${RESET}\n" \
     "$session_display"
 
-# Alternate between dad joke and quote based on even/odd minute
-if [ $(($(date +%M) % 2)) -eq 0 ]; then
-    # Even minute: show dad joke
-    dad_joke=$(curl -s --connect-timeout 2 --max-time 3 -H "Accept: text/plain" "https://icanhazdadjoke.com/" 2>/dev/null)
-    if [ -n "$dad_joke" ]; then
-        printf "${DIM}%s${RESET}" "$dad_joke"
-    else
-        printf "${DIM}Keep coding and stay curious!${RESET}"
+# Dad joke with 1-minute cache
+DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
+DAD_JOKE_LOCK="/tmp/claude_dad_joke_lock"
+current_minute=$(date +%Y%m%d%H%M)
+
+# Check if cache exists and is from current minute
+if [ -f "$DAD_JOKE_CACHE" ]; then
+    cached_minute=$(head -1 "$DAD_JOKE_CACHE" 2>/dev/null)
+    if [ "$cached_minute" = "$current_minute" ]; then
+        # Use cached joke
+        dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
     fi
-else
-    # Odd minute: show quote
-    quote_data=$(curl -s --connect-timeout 2 --max-time 3 "https://zenquotes.io/api/random" 2>/dev/null)
-    if [ -n "$quote_data" ] && [ "$quote_data" != "[]" ]; then
-        quote_text=$(echo "$quote_data" | jq -r '.[0].q // empty' 2>/dev/null)
-        quote_author=$(echo "$quote_data" | jq -r '.[0].a // empty' 2>/dev/null)
-        if [ -n "$quote_text" ] && [ "$quote_text" != "null" ]; then
-            printf "${DIM}\"%s\" — %s${RESET}" "$quote_text" "$quote_author"
-        else
-            printf "${DIM}\"Code is poetry.\" — WordPress${RESET}"
+fi
+
+# If no cached joke, fetch new one (with lock to prevent concurrent requests)
+if [ -z "$dad_joke" ]; then
+    # Try to acquire lock (non-blocking)
+    if mkdir "$DAD_JOKE_LOCK" 2>/dev/null; then
+        # Got lock, fetch new joke
+        dad_joke=$(curl -s --connect-timeout 2 --max-time 3 -H "Accept: text/plain" "https://icanhazdadjoke.com/" 2>/dev/null)
+        if [ -n "$dad_joke" ]; then
+            # Cache the joke with timestamp
+            echo "$current_minute" > "$DAD_JOKE_CACHE"
+            echo "$dad_joke" >> "$DAD_JOKE_CACHE"
         fi
+        # Release lock
+        rmdir "$DAD_JOKE_LOCK" 2>/dev/null
     else
-        printf "${DIM}\"Code is poetry.\" — WordPress${RESET}"
+        # Lock held by another process, use cached or fallback
+        if [ -f "$DAD_JOKE_CACHE" ]; then
+            dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
+        fi
     fi
+fi
+
+# Display joke or fallback
+if [ -n "$dad_joke" ]; then
+    printf "${DIM}%s${RESET}" "$dad_joke"
+else
+    printf "${DIM}Keep coding and stay curious!${RESET}"
+fi
+
+# Line 3: Git status short
+git_status=$(git -C "$(echo "$input" | jq -r '.workspace.current_dir // "."')" status -s 2>/dev/null | head -5)
+if [ -n "$git_status" ]; then
+    printf "\n${DIM}%s${RESET}" "$git_status"
 fi
