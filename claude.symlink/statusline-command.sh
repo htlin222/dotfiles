@@ -338,7 +338,12 @@ printf "%b${ICON_VIM}%s${RESET}\n" "$vim_color" "$vim_mode"
 # Line 2: 5h usage, weekly, context (with background-colored labels)
 printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
 printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET} " "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
-printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f05c4 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s%%${RESET}\n" "$context_color" "$context_bg" "$context_color" "$context_color" "$context_pct"
+# Generate context bar chart (20 chars total)
+context_filled=$((context_pct * 20 / 100))
+context_empty=$((20 - context_filled))
+context_bar_filled=$(printf '█%.0s' $(seq 1 ${context_filled:-0}) 2>/dev/null)
+context_bar_empty=$(printf '█%.0s' $(seq 1 ${context_empty:-0}) 2>/dev/null)
+printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f05c4 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET}${GRAY}%s${RESET} %b%s%%${RESET}\n" "$context_color" "$context_bg" "$context_color" "$context_color" "$context_bar_filled" "$context_bar_empty" "$context_color" "$context_pct"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
