@@ -1,46 +1,22 @@
 #!/bin/bash
 
-# Claude Code statusline script with color support
-# Format: {model} | {GitHub} | {dir} | {5h usage}({reset time}) | {weekly usage} | {context usage}
+# Claude Code statusline script - simple colored text version
 # Colors: green (normal) -> yellow (60%) -> orange (75%) -> red (90%)
 
 # ANSI color codes
 GREEN='\033[32m'
-LIGHT_GREEN='\033[38;5;119m'
 YELLOW='\033[33m'
 ORANGE='\033[38;5;208m'
 RED='\033[31m'
-BLUE='\033[34m'
 LIGHT_BLUE='\033[38;5;117m'
+LIGHT_GREEN='\033[38;5;119m'
 CLAUDE_ORANGE='\033[38;5;209m'
+GRAY='\033[38;5;245m'
+WHITE='\033[37m'
 RESET='\033[0m'
 DIM='\033[2m'
 
-# Background colors with contrasting text (bold, pure black)
-BG_GREEN='\033[1;38;5;0;42m'
-BG_YELLOW='\033[1;38;5;0;43m'
-BG_ORANGE='\033[1;38;5;0;48;5;208m'
-BG_RED='\033[1;97;41m'
-
-# Static background colors (bold, pure black)
-BG_CLAUDE_ORANGE='\033[1;38;5;0;48;5;209m'
-BG_FOLDER='\033[1;38;5;0;47m'
-BG_LIGHT_BLUE='\033[1;38;5;0;48;5;117m'
-BG_LIGHT_GREEN='\033[1;38;5;0;48;5;119m'
-BG_TIME='\033[1;97;48;5;240m'
-
-# Foreground colors for round symbols
-FG_CLAUDE_ORANGE='\033[38;5;209m'
-FG_FOLDER='\033[37m'
-FG_LIGHT_BLUE='\033[38;5;117m'
-FG_LIGHT_GREEN='\033[38;5;119m'
-FG_TIME='\033[38;5;240m'
-FG_GREEN='\033[32m'
-FG_YELLOW='\033[33m'
-FG_ORANGE='\033[38;5;208m'
-FG_RED='\033[31m'
-
-# Nerd Font icons (with trailing space) - using larger/filled variants
+# Nerd Font icons
 ICON_MODEL=$'\ue20f '
 ICON_FOLDER=$'\uf07b '
 ICON_CONTEXT=$'\U000f035c '
@@ -48,37 +24,18 @@ ICON_USAGE=$'\uef0c '
 ICON_WEEKLY=$'\U000f00ed '
 ICON_TIME=$'\U000f0954 '
 ICON_SESSION=$'\U000f0b77 '
-ICON_COST=$'\U000f01e0 '
 
-# Powerline round symbols
-ROUND_LEFT=$'\ue0b6'
-ROUND_RIGHT=$'\ue0b4'
-
-# Color function based on percentage (returns inverted bg color)
-get_bg_color() {
+# Color function based on percentage
+get_color() {
     local pct=$1
     if [ "$pct" -ge 90 ]; then
-        echo -e "$BG_RED"
+        echo -e "$RED"
     elif [ "$pct" -ge 75 ]; then
-        echo -e "$BG_ORANGE"
+        echo -e "$ORANGE"
     elif [ "$pct" -ge 60 ]; then
-        echo -e "$BG_YELLOW"
+        echo -e "$YELLOW"
     else
-        echo -e "$BG_GREEN"
-    fi
-}
-
-# Foreground color for round symbols
-get_fg_color() {
-    local pct=$1
-    if [ "$pct" -ge 90 ]; then
-        echo -e "$FG_RED"
-    elif [ "$pct" -ge 75 ]; then
-        echo -e "$FG_ORANGE"
-    elif [ "$pct" -ge 60 ]; then
-        echo -e "$FG_YELLOW"
-    else
-        echo -e "$FG_GREEN"
+        echo -e "$GREEN"
     fi
 }
 
@@ -129,23 +86,18 @@ if [ -n "$usage_data" ] && [ "$usage_data" != "null" ]; then
 
     # Get reset times
     five_hour_reset=$(echo "$usage_data" | jq -r '.five_hour.resets_at // empty')
-    weekly_reset=$(echo "$usage_data" | jq -r '.seven_day.resets_at // empty')
 
     # Calculate time left until reset
     if [ -n "$five_hour_reset" ] && [ "$five_hour_reset" != "null" ]; then
-        # Use Python to calculate time remaining
         time_left=$(python3 -c "
 from datetime import datetime, timezone
 try:
     ts = '$five_hour_reset'
-    # Parse ISO 8601 with timezone
     if '+' in ts:
         reset_dt = datetime.fromisoformat(ts)
     else:
         reset_dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
-    # Get current time with timezone
     now = datetime.now(timezone.utc)
-    # Calculate difference
     diff = reset_dt - now
     total_seconds = int(diff.total_seconds())
     if total_seconds < 0:
@@ -167,7 +119,6 @@ except:
     five_hour_display="${five_hour_pct}%"
     weekly_display="${weekly_pct}%"
 else
-    # Fallback if API fails
     five_hour_pct=0
     weekly_pct=0
     time_left="--"
@@ -203,15 +154,11 @@ else
 fi
 
 # Get colors for each metric
-five_hour_bg=$(get_bg_color $five_hour_pct)
-five_hour_fg=$(get_fg_color $five_hour_pct)
-weekly_bg=$(get_bg_color $weekly_pct)
-weekly_fg=$(get_fg_color $weekly_pct)
-context_bg=$(get_bg_color $context_pct)
-context_fg=$(get_fg_color $context_pct)
+five_hour_color=$(get_color $five_hour_pct)
+weekly_color=$(get_color $weekly_pct)
+context_color=$(get_color $context_pct)
 
 # Session time tracking
-SESSION_FILE="/tmp/claude_session_start_$$"
 PARENT_SESSION_FILE="/tmp/claude_session_start_$PPID"
 if [ -f "$PARENT_SESSION_FILE" ]; then
     session_start=$(cat "$PARENT_SESSION_FILE")
@@ -224,23 +171,15 @@ elapsed=$((current_time - session_start))
 elapsed_min=$((elapsed / 60))
 session_display=$(printf "%dm" $elapsed_min)
 
-# Output the formatted statusline with colors and round corners
-printf "${FG_CLAUDE_ORANGE}${ROUND_LEFT}${BG_CLAUDE_ORANGE}${ICON_MODEL}%s${RESET}${FG_CLAUDE_ORANGE}${ROUND_RIGHT}${RESET} " \
-    "$model"
-printf "${FG_FOLDER}${ROUND_LEFT}${BG_FOLDER}${ICON_FOLDER}%s${RESET}${FG_FOLDER}${ROUND_RIGHT}${RESET} " \
-    "$dir"
-printf "${FG_LIGHT_BLUE}${ROUND_LEFT}${BG_LIGHT_BLUE}${ICON_SESSION}%s${RESET}${FG_LIGHT_BLUE}${ROUND_RIGHT}${RESET} " \
-    "$session_display_tokens"
-printf "${FG_LIGHT_GREEN}${ROUND_LEFT}${BG_LIGHT_GREEN}%s${RESET}${FG_LIGHT_GREEN}${ROUND_RIGHT}${RESET}\n" \
-    "$session_cost_display"
-printf "%b${ROUND_LEFT}%b${ICON_USAGE}%s (%s)${RESET}%b${ROUND_RIGHT}${RESET} " \
-    "$five_hour_fg" "$five_hour_bg" "$five_hour_display" "$time_left" "$five_hour_fg"
-printf "%b${ROUND_LEFT}%b${ICON_WEEKLY}%s${RESET}%b${ROUND_RIGHT}${RESET} " \
-    "$weekly_fg" "$weekly_bg" "$weekly_display" "$weekly_fg"
-printf "%b${ROUND_LEFT}%b${ICON_CONTEXT}%s%%${RESET}%b${ROUND_RIGHT}${RESET} " \
-    "$context_fg" "$context_bg" "$context_pct" "$context_fg"
-printf "${FG_TIME}${ROUND_LEFT}${BG_TIME}${ICON_TIME}%s${RESET}${FG_TIME}${ROUND_RIGHT}${RESET}\n" \
-    "$session_display"
+# Output the formatted statusline - single line
+printf "${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
+printf "${WHITE}${ICON_FOLDER}%s${RESET} " "$dir"
+printf "${LIGHT_BLUE}${ICON_SESSION}%s${RESET} " "$session_display_tokens"
+printf "${LIGHT_GREEN}%s${RESET} " "$session_cost_display"
+printf "%b${ICON_USAGE}%s (%s)${RESET} " "$five_hour_color" "$five_hour_display" "$time_left"
+printf "%b${ICON_WEEKLY}%s${RESET} " "$weekly_color" "$weekly_display"
+printf "%b${ICON_CONTEXT}%s%%${RESET} " "$context_color" "$context_pct"
+printf "${GRAY}${ICON_TIME}%s${RESET}\n" "$session_display"
 
 # Dad joke with 1-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
@@ -251,26 +190,20 @@ current_minute=$(date +%Y%m%d%H%M)
 if [ -f "$DAD_JOKE_CACHE" ]; then
     cached_minute=$(head -1 "$DAD_JOKE_CACHE" 2>/dev/null)
     if [ "$cached_minute" = "$current_minute" ]; then
-        # Use cached joke
         dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
     fi
 fi
 
 # If no cached joke, fetch new one (with lock to prevent concurrent requests)
 if [ -z "$dad_joke" ]; then
-    # Try to acquire lock (non-blocking)
     if mkdir "$DAD_JOKE_LOCK" 2>/dev/null; then
-        # Got lock, fetch new joke
         dad_joke=$(curl -s --connect-timeout 2 --max-time 3 -H "Accept: text/plain" "https://icanhazdadjoke.com/" 2>/dev/null)
         if [ -n "$dad_joke" ]; then
-            # Cache the joke with timestamp
             echo "$current_minute" > "$DAD_JOKE_CACHE"
             echo "$dad_joke" >> "$DAD_JOKE_CACHE"
         fi
-        # Release lock
         rmdir "$DAD_JOKE_LOCK" 2>/dev/null
     else
-        # Lock held by another process, use cached or fallback
         if [ -f "$DAD_JOKE_CACHE" ]; then
             dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
         fi
@@ -284,8 +217,79 @@ else
     printf "${DIM}Keep coding and stay curious!${RESET}"
 fi
 
-# Line 3: Git status short
-git_status=$(git -C "$(echo "$input" | jq -r '.workspace.current_dir // "."')" status -s 2>/dev/null | head -5)
+# Git status with colored branch and status codes
+git_dir=$(echo "$input" | jq -r '.workspace.current_dir // "."')
+
+# Branch status line
+ICON_BRANCH=$'\ue725 '
+branch_line=$(git -C "$git_dir" status -sb 2>/dev/null | head -1)
+if [ -n "$branch_line" ]; then
+    printf "\n"
+    # Remove ## prefix and replace with icon
+    branch_line="${branch_line#\#\# }"
+    # Colorize [ahead X], [behind Y], or [ahead X, behind Y]
+    if [[ "$branch_line" == *"ahead"* ]] && [[ "$branch_line" == *"behind"* ]]; then
+        # Both - yellow
+        prefix="${branch_line%% \[*}"
+        status="${branch_line##*\[}"
+        status="${status%\]}"
+        printf "${ICON_BRANCH}%s ${YELLOW}[%s]${RESET}\n" "$prefix" "$status"
+    elif [[ "$branch_line" == *"ahead"* ]]; then
+        # Ahead only - green
+        prefix="${branch_line%% \[*}"
+        status="${branch_line##*\[}"
+        status="${status%\]}"
+        printf "${ICON_BRANCH}%s ${GREEN}[%s]${RESET}\n" "$prefix" "$status"
+    elif [[ "$branch_line" == *"behind"* ]]; then
+        # Behind only - red
+        prefix="${branch_line%% \[*}"
+        status="${branch_line##*\[}"
+        status="${status%\]}"
+        printf "${ICON_BRANCH}%s ${RED}[%s]${RESET}\n" "$prefix" "$status"
+    else
+        # Up to date or no remote
+        printf "${ICON_BRANCH}%s\n" "$branch_line"
+    fi
+fi
+
+git_status=$(git -C "$git_dir" status -s 2>/dev/null | grep -v '^##' | head -5)
 if [ -n "$git_status" ]; then
-    printf "\n${DIM}%s${RESET}" "$git_status"
+    while IFS= read -r line; do
+        if [ -n "$line" ]; then
+            # XY format: X=index, Y=worktree
+            x_char="${line:0:1}"
+            y_char="${line:1:1}"
+            rest="${line:2}"
+
+            # Color X (index status)
+            case "$x_char" in
+                M) x_colored="${YELLOW}M${RESET}" ;;
+                A) x_colored="${GREEN}A${RESET}" ;;
+                D) x_colored="${RED}D${RESET}" ;;
+                R) x_colored="${LIGHT_BLUE}R${RESET}" ;;
+                C) x_colored="${LIGHT_BLUE}C${RESET}" ;;
+                T) x_colored="${ORANGE}T${RESET}" ;;
+                U) x_colored="${RED}U${RESET}" ;;
+                \?) x_colored="${GRAY}?${RESET}" ;;
+                !) x_colored="${DIM}!${RESET}" ;;
+                *) x_colored="$x_char" ;;
+            esac
+
+            # Color Y (worktree status)
+            case "$y_char" in
+                M) y_colored="${YELLOW}M${RESET}" ;;
+                A) y_colored="${GREEN}A${RESET}" ;;
+                D) y_colored="${RED}D${RESET}" ;;
+                R) y_colored="${LIGHT_BLUE}R${RESET}" ;;
+                C) y_colored="${LIGHT_BLUE}C${RESET}" ;;
+                T) y_colored="${ORANGE}T${RESET}" ;;
+                U) y_colored="${RED}U${RESET}" ;;
+                \?) y_colored="${GRAY}?${RESET}" ;;
+                !) y_colored="${DIM}!${RESET}" ;;
+                *) y_colored="$y_char" ;;
+            esac
+
+            printf "%b%b%s\n" "$x_colored" "$y_colored" "$rest"
+        fi
+    done <<< "$git_status"
 fi
