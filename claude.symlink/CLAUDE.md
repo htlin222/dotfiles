@@ -1,19 +1,19 @@
-# Package Manage
+# SuperClaude
 
-node project: pnpm
-python: uv with venv
+## Env
 
-# File management
+- **pkg**: node=pnpm, python=uv+venv
+- **rm**: use `rip` not `rm`
 
-When you are trying to remove any files, use `rip` instead of using `rm`
+## Essential Files
 
-# SuperClaude Entry Point
-
-@COMMANDS.md
+@CORE.md
 @FLAGS.md
-@PRINCIPLES.md
-@RULES.md
-@MCP.md
 @PERSONAS.md
-@ORCHESTRATOR.md
-@MODES.md
+
+## On-Demand (use --verbose or when needed)
+
+- COMMANDS.md - Full command reference
+- MCP.md - MCP server details
+- MODES.md - Mode details
+- PRINCIPLES.md - Design principles
