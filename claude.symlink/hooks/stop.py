@@ -17,7 +17,7 @@ import sys
 import time
 from datetime import datetime, timedelta
 
-from ansi import C, Icons, git_status_icon
+from ansi import C, Icons, git_status_emoji
 from metrics import log_hook_event, log_hook_metrics
 
 # Import TTS utility
@@ -245,7 +245,7 @@ def log_session_summary(
 
 
 def format_status_line(line: str) -> str:
-    """Convert git status line to emoji format."""
+    """Convert git status line to emoji format for ntfy."""
     if len(line) < 3:
         return line
     code = line[:2]
@@ -253,8 +253,8 @@ def format_status_line(line: str) -> str:
     filename = os.path.basename(path)
     parent = os.path.basename(os.path.dirname(path))
     display_name = f"{parent}/{filename}" if parent else filename
-    icon = git_status_icon(code)
-    return f"{icon} {display_name}"
+    emoji = git_status_emoji(code)
+    return f"{emoji} {display_name}"
 
 
 def get_git_status_and_notify(cwd: str, folder_name: str) -> None:

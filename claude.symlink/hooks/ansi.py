@@ -373,6 +373,31 @@ def git_status_icon(git_code: str) -> str:
 
 
 # =============================================================================
+# Git Status Emoji (for ntfy notifications - no Nerd Font)
+# =============================================================================
+
+GIT_STATUS_EMOJI = {
+    "??": "🆕",  # Untracked/new file
+    " A": "✅",  # Added to staging
+    "A ": "✅",  # Added to staging
+    " M": "✏️",  # Modified (not staged)
+    "M ": "📝",  # Modified and staged
+    "MM": "📝",  # Modified, staged, modified
+    "AM": "✅",  # Added, then modified
+    " D": "🗑️",  # Deleted (not staged)
+    "D ": "🗑️",  # Deleted and staged
+    "R ": "🔄",  # Renamed
+    "C ": "📋",  # Copied
+    "U ": "⚠️",  # Unmerged/conflict
+}
+
+
+def git_status_emoji(git_code: str) -> str:
+    """Get git status emoji (for ntfy - no Nerd Font)."""
+    return GIT_STATUS_EMOJI.get(git_code, "📄")
+
+
+# =============================================================================
 # Severity Styling
 # =============================================================================
 
