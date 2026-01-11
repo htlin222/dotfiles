@@ -46,7 +46,6 @@
 # - Conversation depth (number of turns)
 # - 5-hour usage % with time until reset (color-coded)
 # - 7-day usage % (color-coded)
-# - Context window usage % (color-coded)
 # - Session duration
 # - Dad joke (cached, updates every 5 minutes)
 # - Git branch status with ahead/behind indicators (color-coded)
@@ -252,7 +251,7 @@ try:
         reset_dt = datetime.fromisoformat(ts)
     else:
         reset_dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
-    print(reset_dt.strftime('%m/%d'))
+    print(reset_dt.strftime('%m/%d %H:%M'))
 except:
     print('--')
 " 2>/dev/null || echo "--")
@@ -285,84 +284,11 @@ else
     session_display_tokens="${session_tokens}"
 fi
 
-# Calculate CURRENT context window usage (not cumulative session tokens)
-# Bug: context_window.total_* are cumulative, not current. See: github.com/anthropics/claude-code/issues/13783
-# Workaround: Parse transcript file to estimate current context
-window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
-
-# Estimate current context from transcript file
-if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
-    # Count characters in transcript as proxy for tokens (~4 chars per token)
-    # Only count content after last "summary" (compact marker)
-    current_context=$(python3 -c "
-import json
-import sys
-
-try:
-    transcript_path = '$transcript_path'
-    window_size = $window_size
-
-    # Read all messages
-    messages = []
-    with open(transcript_path, 'r') as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                try:
-                    messages.append(json.loads(line))
-                except:
-                    pass
-
-    # Find last compact/summary marker (type='summary' or message about compaction)
-    last_compact_idx = 0
-    for i, msg in enumerate(messages):
-        msg_type = msg.get('type', '')
-        if msg_type == 'summary':
-            last_compact_idx = i + 1
-
-    # Sum up content length after last compact
-    total_chars = 0
-    for msg in messages[last_compact_idx:]:
-        # Get message content
-        if 'message' in msg:
-            content = msg['message'].get('content', '')
-            if isinstance(content, list):
-                for item in content:
-                    if isinstance(item, dict):
-                        total_chars += len(str(item.get('text', '')))
-                    else:
-                        total_chars += len(str(item))
-            else:
-                total_chars += len(str(content))
-
-    # Estimate tokens (~4 chars per token)
-    estimated_tokens = total_chars // 4
-
-    # Calculate percentage
-    pct = (estimated_tokens * 100) // window_size
-    pct = min(pct, 100)  # Cap at 100%
-    print(pct)
-except Exception as e:
-    print('0')
-" 2>/dev/null || echo "0")
-    context_pct=${current_context:-0}
-else
-    # Fallback: use cumulative tokens (capped at 100%)
-    if [ "$window_size" -gt 0 ] 2>/dev/null; then
-        context_pct=$((session_tokens * 100 / window_size))
-        [ "$context_pct" -gt 100 ] && context_pct=100
-    else
-        context_pct=0
-    fi
-fi
-
 # Get colors for each metric (foreground and background)
 five_hour_color=$(get_color $five_hour_pct)
 five_hour_bg=$(get_bg_color $five_hour_pct)
 weekly_color=$(get_color $weekly_pct)
 weekly_bg=$(get_bg_color $weekly_pct)
-context_color=$(get_color $context_pct)
-context_bg=$(get_bg_color $context_pct)
 
 # Session time tracking
 PARENT_SESSION_FILE="/tmp/claude_session_start_$PPID"
@@ -393,19 +319,18 @@ printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$ses
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
 printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET} " "$conv_depth"
 printf "%b${ICON_VIM}%s${RESET}\n" "$vim_color" "$vim_mode"
-# Line 2: 5h usage, weekly, context (with background-colored labels)
+# Line 2: 5h usage, weekly (with background-colored labels)
 printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
-printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET} " "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
-# Generate context bar chart (20 chars total)
-context_filled=$((context_pct * 20 / 100))
-context_empty=$((20 - context_filled))
-context_bar_filled=$(printf '█%.0s' $(seq 1 ${context_filled:-0}) 2>/dev/null)
-context_bar_empty=$(printf '█%.0s' $(seq 1 ${context_empty:-0}) 2>/dev/null)
-printf "%b${ICON_SEP_LEFT}%s${RESET}${GRAY}%s${ICON_SEP_RIGHT}${RESET} %b%s%% context used${RESET}\n" "$context_color" "$context_bar_filled" "$context_bar_empty" "$context_color" "$context_pct"
+printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET}\n" "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
 DAD_JOKE_LOCK="/tmp/claude_dad_joke_lock"
+# Clean up stale lock (older than 60 seconds)
+if [ -d "$DAD_JOKE_LOCK" ]; then
+    lock_age=$(($(date +%s) - $(stat -f %m "$DAD_JOKE_LOCK" 2>/dev/null || echo "0")))
+    [ "$lock_age" -gt 60 ] && rmdir "$DAD_JOKE_LOCK" 2>/dev/null
+fi
 # Use 5-minute intervals: floor(minute/5)*5
 current_5min=$(date +%Y%m%d%H)$(printf "%02d" $(($(date +%-M) / 5 * 5)))
 
