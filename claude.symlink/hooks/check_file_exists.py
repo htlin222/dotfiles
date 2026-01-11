@@ -69,16 +69,8 @@ def main():
         resolved = resolve_path(file_path)
 
         if not resolved.exists():
-            reason = (
-                f"{C.BRIGHT_RED}{Icons.CROSS} 檔案不存在:{C.RESET} "
-                f"{C.BRIGHT_YELLOW}{file_path}{C.RESET}\n"
-                f"   {C.DIM}{Icons.INFO} 建議先用 {C.BRIGHT_CYAN}ls{C.DIM} 或 "
-                f"{C.BRIGHT_CYAN}find{C.DIM} 確認路徑{C.RESET}"
-            )
-            response = {
-                "decision": "block",
-                "reason": reason,
-            }
+            reason = f"{C.BRIGHT_RED}{Icons.CROSS} 檔案不存在: {C.BRIGHT_YELLOW}{file_path}{C.RESET}"
+            response = {"decision": "block", "reason": reason}
             print(json.dumps(response))
             return
 

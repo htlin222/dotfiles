@@ -33,15 +33,8 @@ def main():
         ]
 
         if any(re.search(pattern, command) for pattern in rm_patterns):
-            reason = (
-                f"{C.BRIGHT_RED}{Icons.LOCK} 請使用 {C.BRIGHT_CYAN}rip{C.BRIGHT_RED} "
-                f"代替 {C.BRIGHT_YELLOW}rm{C.RESET}\n"
-                f"   {C.DIM}{Icons.INFO} rip 會將檔案移到垃圾桶，更安全{C.RESET}"
-            )
-            response = {
-                "decision": "block",
-                "reason": reason,
-            }
+            reason = f"{C.BRIGHT_RED}{Icons.LOCK} 請使用 {C.BRIGHT_CYAN}rip{C.BRIGHT_RED} 代替 {C.BRIGHT_YELLOW}rm{C.RESET}"
+            response = {"decision": "block", "reason": reason}
             print(json.dumps(response))
 
     except (json.JSONDecodeError, Exception):
