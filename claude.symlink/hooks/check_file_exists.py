@@ -9,6 +9,8 @@ import shlex
 import sys
 from pathlib import Path
 
+from ansi import C, Icons
+
 
 def extract_file_path(command: str) -> str | None:
     """Extract file path from cat/bat command."""
@@ -67,9 +69,15 @@ def main():
         resolved = resolve_path(file_path)
 
         if not resolved.exists():
+            reason = (
+                f"{C.BRIGHT_RED}{Icons.CROSS} 檔案不存在:{C.RESET} "
+                f"{C.BRIGHT_YELLOW}{file_path}{C.RESET}\n"
+                f"   {C.DIM}{Icons.INFO} 建議先用 {C.BRIGHT_CYAN}ls{C.DIM} 或 "
+                f"{C.BRIGHT_CYAN}find{C.DIM} 確認路徑{C.RESET}"
+            )
             response = {
                 "decision": "block",
-                "reason": f"檔案不存在: {file_path}\n建議先用 `ls` 或 `find` 確認路徑。",
+                "reason": reason,
             }
             print(json.dumps(response))
             return

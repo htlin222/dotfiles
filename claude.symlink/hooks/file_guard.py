@@ -20,6 +20,8 @@ import os
 import re
 import sys
 
+from ansi import C, Icons
+
 # =============================================================================
 # Sensitive File Patterns (195+ patterns across 12 categories)
 # =============================================================================
@@ -275,10 +277,11 @@ def main():
             is_sensitive, reason = matches_sensitive_pattern(file_path)
             if is_sensitive:
                 print(
-                    f"🛡️ BLOCKED: Access to sensitive file denied\n"
-                    f"   File: {file_path}\n"
-                    f"   Reason: {reason}\n"
-                    f"   Add to .agentignore exceptions if needed",
+                    f"{C.BRIGHT_RED}{Icons.SHIELD} BLOCKED:{C.RESET} "
+                    f"{C.BRIGHT_WHITE}Access to sensitive file denied{C.RESET}\n"
+                    f"   {C.DIM}{Icons.FILE}{C.RESET} {C.BRIGHT_YELLOW}{file_path}{C.RESET}\n"
+                    f"   {C.DIM}{Icons.INFO}{C.RESET} {reason}\n"
+                    f"   {C.DIM}{Icons.ARROW_RIGHT} Add to .agentignore exceptions if needed{C.RESET}",
                     file=sys.stderr,
                 )
                 sys.exit(2)  # Block the operation
@@ -290,9 +293,10 @@ def main():
                 )
                 if has_sensitive_content:
                     print(
-                        f"🛡️ BLOCKED: File contains sensitive content\n"
-                        f"   File: {file_path}\n"
-                        f"   Reason: {content_reason}",
+                        f"{C.BRIGHT_RED}{Icons.SHIELD} BLOCKED:{C.RESET} "
+                        f"{C.BRIGHT_WHITE}File contains sensitive content{C.RESET}\n"
+                        f"   {C.DIM}{Icons.FILE}{C.RESET} {C.BRIGHT_YELLOW}{file_path}{C.RESET}\n"
+                        f"   {C.DIM}{Icons.INFO}{C.RESET} {content_reason}",
                         file=sys.stderr,
                     )
                     sys.exit(2)

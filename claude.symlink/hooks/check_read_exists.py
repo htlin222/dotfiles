@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+from ansi import C, Icons
+
 
 def main():
     try:
@@ -31,17 +33,29 @@ def main():
         path = Path(file_path).expanduser()
 
         if not path.exists():
+            reason = (
+                f"{C.BRIGHT_RED}{Icons.CROSS} 檔案不存在:{C.RESET} "
+                f"{C.BRIGHT_YELLOW}{file_path}{C.RESET}\n"
+                f"   {C.DIM}{Icons.INFO} 建議先用 {C.BRIGHT_CYAN}Glob{C.DIM} 或 "
+                f"{C.BRIGHT_CYAN}ls{C.DIM} 確認路徑{C.RESET}"
+            )
             response = {
                 "decision": "block",
-                "reason": f"檔案不存在: {file_path}\n建議先用 Glob 或 ls 確認路徑。",
+                "reason": reason,
             }
             print(json.dumps(response))
             return
 
         if path.is_dir():
+            reason = (
+                f"{C.BRIGHT_YELLOW}{Icons.FOLDER} 這是目錄不是檔案:{C.RESET} "
+                f"{C.BRIGHT_CYAN}{file_path}{C.RESET}\n"
+                f"   {C.DIM}{Icons.INFO} 請用 {C.BRIGHT_CYAN}ls{C.DIM} 或 "
+                f"{C.BRIGHT_CYAN}Bash{C.DIM} 查看目錄內容{C.RESET}"
+            )
             response = {
                 "decision": "block",
-                "reason": f"這是目錄不是檔案: {file_path}\n請用 ls 或 Bash 查看目錄內容。",
+                "reason": reason,
             }
             print(json.dumps(response))
             return

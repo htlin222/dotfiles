@@ -17,6 +17,9 @@ import sys
 import time
 from datetime import datetime
 
+# Import ANSI styling
+from ansi import C, Icons
+
 # Import processors
 from processors import (
     process_bibtex_files,
@@ -344,9 +347,15 @@ def main():
         # Feature 3: Detect risky patterns
         findings = detect_risky_patterns(file_path)
         for finding in findings:
-            if finding["severity"] in ("high", "medium"):
+            if finding["severity"] == "high":
                 warnings.append(
-                    f"⚠️ {os.path.basename(file_path)}: {finding['pattern']}"
+                    f"{C.BRIGHT_RED}{Icons.WARNING}{C.RESET} "
+                    f"{C.BRIGHT_YELLOW}{os.path.basename(file_path)}{C.RESET}: {finding['pattern']}"
+                )
+            elif finding["severity"] == "medium":
+                warnings.append(
+                    f"{C.BRIGHT_YELLOW}{Icons.WARNING}{C.RESET} "
+                    f"{C.BRIGHT_CYAN}{os.path.basename(file_path)}{C.RESET}: {finding['pattern']}"
                 )
 
         # Run linters/formatters in check-only mode (no file modifications)
@@ -368,7 +377,9 @@ def main():
         success, error_count, _ = check_typescript_build(cwd)
         if not success and error_count > BUILD_ERROR_THRESHOLD:
             warnings.append(
-                f"🔴 TypeScript: {error_count} type errors - 建議執行 /build-and-fix"
+                f"{C.BRIGHT_RED}{Icons.CROSS}{C.RESET} TypeScript: "
+                f"{C.BRIGHT_WHITE}{error_count}{C.RESET} type errors - "
+                f"建議執行 {C.BRIGHT_CYAN}/build-and-fix{C.RESET}"
             )
 
     # Output response

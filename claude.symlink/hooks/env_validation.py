@@ -18,24 +18,14 @@ import subprocess
 import sys
 from datetime import datetime
 
+# Import ANSI styling
+from ansi import C, Icons
+
 # =============================================================================
 # Configuration
 # =============================================================================
 
 LOG_DIR = os.path.expanduser("~/.claude/logs")
-
-
-# ANSI color codes
-class Colors:
-    RED = "\033[91m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    BLUE = "\033[94m"
-    MAGENTA = "\033[95m"
-    CYAN = "\033[96m"
-    BOLD = "\033[1m"
-    DIM = "\033[2m"
-    RESET = "\033[0m"
 
 
 # Required tools with version check commands
@@ -154,11 +144,11 @@ def install_tool_async(name: str, config: dict) -> None:
                     if result.stderr:
                         f.write(f"  stderr: {result.stderr[:500]}\n")
                     if result.returncode == 0:
-                        f.write(f"  ✅ {name} installed successfully\n")
+                        f.write(f"  {Icons.CHECK} {name} installed successfully\n")
                     else:
-                        f.write(f"  ❌ {name} installation failed\n")
+                        f.write(f"  {Icons.CROSS} {name} installation failed\n")
                 except Exception as e:
-                    f.write(f"  ❌ Error installing {name}: {e}\n")
+                    f.write(f"  {Icons.CROSS} Error installing {name}: {e}\n")
             os._exit(0)
         # Parent process continues immediately
     except (OSError, AttributeError):
@@ -247,8 +237,7 @@ def check_project_requirements(cwd: str) -> list:
 
 
 def format_validation_report(tool_results: list, project_missing: list) -> str:
-    """Format validation results as a report with ANSI colors."""
-    C = Colors
+    """Format validation results as a report with ANSI colors and icons."""
     lines = []
     issues = []
 
@@ -256,26 +245,30 @@ def format_validation_report(tool_results: list, project_missing: list) -> str:
     for result in tool_results:
         if not result["available"]:
             if not result["optional"]:
-                msg = f"{C.RED}❌ {result['name']}: {result['error']}{C.RESET}"
+                msg = f"{C.BRIGHT_RED}{Icons.CROSS} {result['name']}: {result['error']}{C.RESET}"
                 if result.get("install_hint"):
-                    msg += f"\n   {C.DIM}→ {result['install_hint']}{C.RESET}"
+                    msg += f"\n   {C.DIM}{Icons.ARROW_RIGHT} {result['install_hint']}{C.RESET}"
                 issues.append(msg)
         elif not result["meets_requirement"]:
             issues.append(
-                f"{C.YELLOW}⚠️ {result['name']}: version outdated ({result['version']}){C.RESET}"
+                f"{C.BRIGHT_YELLOW}{Icons.WARNING} {result['name']}: version outdated ({result['version']}){C.RESET}"
             )
 
     # Check project requirements
     for missing in project_missing:
-        issues.append(f"{C.CYAN}📦 {missing['tool']}: {missing['reason']}{C.RESET}")
+        issues.append(
+            f"{C.BRIGHT_CYAN}{Icons.FOLDER} {missing['tool']}: {missing['reason']}{C.RESET}"
+        )
 
     if issues:
-        lines.append(f"{C.BOLD}{C.YELLOW}🔧 環境檢查發現問題:{C.RESET}")
+        lines.append(
+            f"{C.BOLD}{C.BRIGHT_YELLOW}{Icons.WRENCH} 環境檢查發現問題:{C.RESET}"
+        )
         lines.extend(issues[:5])  # Limit to 5 issues
         if len(issues) > 5:
             lines.append(f"   {C.DIM}...還有 {len(issues) - 5} 個問題{C.RESET}")
     else:
-        lines.append(f"{C.GREEN}✅ 開發環境檢查通過{C.RESET}")
+        lines.append(f"{C.BRIGHT_GREEN}{Icons.CHECK} 開發環境檢查通過{C.RESET}")
 
     return "\n".join(lines)
 
@@ -358,7 +351,7 @@ def main():
         # Add installing info if any
         if tools_to_install:
             installing_names = [t[0] for t in tools_to_install]
-            report += f"\n{Colors.MAGENTA}🔄 背景安裝中: {', '.join(installing_names)}{Colors.RESET}"
+            report += f"\n{C.BRIGHT_MAGENTA}{Icons.SYNC} 背景安裝中: {', '.join(installing_names)}{C.RESET}"
 
         # Only output if there are issues or installing
         has_issues = (

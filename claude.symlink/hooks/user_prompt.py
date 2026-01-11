@@ -24,6 +24,9 @@ import sys
 import time
 from datetime import datetime
 
+# Import ANSI styling
+from ansi import C, Icons
+
 # Import metrics and pattern detection
 from metrics import estimate_tokens, log_hook_event, log_hook_metrics
 from patterns import detect_patterns, format_suggestions
@@ -48,6 +51,7 @@ DANGEROUS_PATTERNS = [
 
 # Skills auto-activation rules
 # Format: (keywords, intent_patterns, skill_name, suggestion_message)
+# Note: Messages will be styled with ANSI in suggest_skill()
 SKILL_RULES = [
     # Frontend Development
     (
@@ -66,70 +70,70 @@ SKILL_RULES = [
         ],
         [r"create.*(?:component|ui|button|form)", r"build.*(?:interface|page|layout)"],
         "frontend-design",
-        "💡 建議使用 /frontend-design 來建立 UI 元件",
+        "建議使用 /frontend-design 來建立 UI 元件",
     ),
     # Code Review
     (
         ["review", "check", "審查", "檢查代碼"],
         [r"review.*(?:code|pr|pull)", r"check.*(?:quality|code)"],
         "code-review",
-        "💡 建議使用 /code-review 進行程式碼審查",
+        "建議使用 /code-review 進行程式碼審查",
     ),
     # Feature Development
     (
         ["feature", "implement", "功能", "實作"],
         [r"(?:add|create|implement|build).*feature", r"新增.*功能"],
         "feature-dev",
-        "💡 建議使用 /feature-dev 進行功能開發",
+        "建議使用 /feature-dev 進行功能開發",
     ),
     # Git Operations
     (
         ["commit", "push", "merge", "branch", "rebase", "pr", "pull request"],
         [r"(?:create|make).*(?:commit|pr|branch)", r"git.*(?:push|merge)"],
         "git",
-        "💡 建議使用 /git 進行版本控制操作",
+        "建議使用 /git 進行版本控制操作",
     ),
     # Testing
     (
         ["test", "testing", "spec", "e2e", "unit test", "測試"],
         [r"(?:write|create|add).*test", r"run.*test"],
         "test",
-        "💡 建議使用 /test 進行測試相關操作",
+        "建議使用 /test 進行測試相關操作",
     ),
     # Documentation
     (
         ["document", "readme", "doc", "文件", "說明"],
         [r"(?:write|create|update).*(?:doc|readme|documentation)"],
         "document",
-        "💡 建議使用 /document 生成文件",
+        "建議使用 /document 生成文件",
     ),
     # Analysis
     (
         ["analyze", "分析", "investigate", "debug", "troubleshoot"],
         [r"(?:analyze|investigate|debug|find).*(?:issue|bug|problem|error)"],
         "analyze",
-        "💡 建議使用 /analyze 進行深度分析",
+        "建議使用 /analyze 進行深度分析",
     ),
     # Build & Deploy
     (
         ["build", "deploy", "ci", "cd", "pipeline", "docker"],
         [r"(?:set up|create|configure).*(?:build|deploy|ci|cd|pipeline)"],
         "build",
-        "💡 建議使用 /build 進行建置相關操作",
+        "建議使用 /build 進行建置相關操作",
     ),
     # Cleanup & Refactor
     (
         ["cleanup", "refactor", "clean", "整理", "重構"],
         [r"(?:cleanup|refactor|clean up|reorganize)"],
         "cleanup",
-        "💡 建議使用 /cleanup 進行程式碼清理",
+        "建議使用 /cleanup 進行程式碼清理",
     ),
     # Design & Architecture
     (
         ["design", "architecture", "設計", "架構", "schema", "database"],
         [r"(?:design|architect|plan).*(?:system|api|database|schema)"],
         "design",
-        "💡 建議使用 /design 進行系統設計",
+        "建議使用 /design 進行系統設計",
     ),
 ]
 
@@ -168,18 +172,19 @@ PROJECT_TYPES = {
 }
 
 # Token estimation patterns (potentially expensive)
+# Note: Messages will be styled with ANSI in check_token_heavy()
 TOKEN_HEAVY_PATTERNS = [
     (
         r"整個專案|entire project|whole codebase|all files",
-        "⚠️ 整個專案操作可能消耗大量 tokens",
+        "整個專案操作可能消耗大量 tokens",
     ),
-    (r"所有檔案|every file|each file", "⚠️ 處理所有檔案可能消耗大量 tokens"),
-    (r"重構整個|refactor all|refactor entire", "⚠️ 大規模重構可能消耗大量 tokens"),
+    (r"所有檔案|every file|each file", "處理所有檔案可能消耗大量 tokens"),
+    (r"重構整個|refactor all|refactor entire", "大規模重構可能消耗大量 tokens"),
     (
         r"完整分析|full analysis|comprehensive review",
-        "⚠️ 完整分析可能消耗大量 tokens，建議分階段進行",
+        "完整分析可能消耗大量 tokens，建議分階段進行",
     ),
-    (r"從頭開始|from scratch|start over", "⚠️ 從頭開始可能消耗大量 tokens"),
+    (r"從頭開始|from scratch|start over", "從頭開始可能消耗大量 tokens"),
 ]
 
 
@@ -270,7 +275,8 @@ def suggest_skill(prompt: str) -> str | None:
         pattern_match = any(re.search(p, prompt_lower) for p in patterns)
 
         if keyword_match or pattern_match:
-            return suggestion
+            # Format with ANSI styling
+            return f"{C.BRIGHT_CYAN}{Icons.MAGIC}{C.RESET} {suggestion}"
 
     return None
 
@@ -336,7 +342,10 @@ def check_large_project(cwd: str, state: dict) -> str | None:
 
         if file_count > 100:
             state["last_context_suggestion"] = state.get("prompt_count", 0)
-            return "📂 大型專案偵測（100+ 檔案），建議先執行 /prime 載入 context"
+            return (
+                f"{C.BRIGHT_YELLOW}{Icons.FOLDER}{C.RESET} "
+                f"大型專案偵測（100+ 檔案），建議先執行 {C.BRIGHT_CYAN}/prime{C.RESET} 載入 context"
+            )
 
     except Exception:
         pass
@@ -387,7 +396,10 @@ def check_git_status(cwd: str, state: dict) -> str | None:
             lines = result.stdout.strip().split("\n")
             change_count = len(lines)
             if change_count > 10:
-                return f"📝 Git: {change_count} 個未提交變更，建議適時 commit"
+                return (
+                    f"{C.BRIGHT_YELLOW}{Icons.GIT}{C.RESET} "
+                    f"Git: {C.BRIGHT_WHITE}{change_count}{C.RESET} 個未提交變更，建議適時 commit"
+                )
 
     except Exception:
         pass
@@ -410,7 +422,9 @@ def check_similar_prompt(prompt: str, state: dict) -> str | None:
 
     # Check for exact or similar match
     if prompt_hash in prompt_hashes:
-        return "🔄 偵測到相似問題，可參考之前的對話紀錄"
+        return (
+            f"{C.BRIGHT_CYAN}{Icons.SYNC}{C.RESET} 偵測到相似問題，可參考之前的對話紀錄"
+        )
 
     # Keep last 50 prompt hashes
     prompt_hashes.append(prompt_hash)
@@ -429,7 +443,7 @@ def check_token_heavy(prompt: str) -> str | None:
     prompt_lower = prompt.lower()
     for pattern, warning in TOKEN_HEAVY_PATTERNS:
         if re.search(pattern, prompt_lower):
-            return warning
+            return f"{C.BRIGHT_YELLOW}{Icons.WARNING}{C.RESET} {warning}"
     return None
 
 
@@ -445,7 +459,7 @@ def check_time_reminder(state: dict) -> str | None:
 
     # Late night check (23:00 - 05:00)
     if now.hour >= 23 or now.hour < 5:
-        messages.append("🌙 深夜了，注意休息")
+        messages.append(f"{C.BRIGHT_MAGENTA}{Icons.CLOCK}{C.RESET} 深夜了，注意休息")
 
     # Long session check
     session_start = state.get("session_start")
@@ -454,13 +468,16 @@ def check_time_reminder(state: dict) -> str | None:
             start_time = datetime.fromisoformat(session_start)
             duration = (now - start_time).total_seconds() / 3600  # hours
             if duration > 2:
-                messages.append(f"⏰ 已工作 {duration:.1f} 小時，建議休息一下")
+                messages.append(
+                    f"{C.BRIGHT_YELLOW}{Icons.HOURGLASS}{C.RESET} "
+                    f"已工作 {C.BRIGHT_WHITE}{duration:.1f}{C.RESET} 小時，建議休息一下"
+                )
         except Exception:
             pass
     else:
         state["session_start"] = now.isoformat()
 
-    return " | ".join(messages) if messages else None
+    return f" {C.DIM}│{C.RESET} ".join(messages) if messages else None
 
 
 # =============================================================================
@@ -493,7 +510,9 @@ def main():
         # Feature 1: Check for dangerous patterns
         warning = check_dangerous_patterns(prompt)
         if warning:
-            messages.append(f"⚠️ {warning} - 請確認這是你想要的操作")
+            messages.append(
+                f"{C.BRIGHT_RED}{Icons.WARNING}{C.RESET} {warning} - 請確認這是你想要的操作"
+            )
 
         # Feature 8: Token estimation warning (check early)
         token_warning = check_token_heavy(prompt)

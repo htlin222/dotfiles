@@ -17,7 +17,9 @@ import sys
 import time
 from datetime import datetime, timedelta
 
+from ansi import C, Icons, git_status_icon
 from metrics import log_hook_event, log_hook_metrics
+
 # Import TTS utility
 from tts import notify_session_complete
 
@@ -57,20 +59,7 @@ FORMATTERS = {
     ".pyi": ["ruff", "format"],
 }
 
-STATUS_EMOJI = {
-    "??": "❓",  # Untracked
-    " A": "➕",  # Added to staging
-    "A ": "➕",  # Added to staging
-    " M": "📝",  # Modified (not staged)
-    "M ": "✏️",  # Modified and staged
-    "MM": "✏️",  # Modified, staged, then modified again
-    "AM": "🆕",  # Added, then modified
-    " D": "🗑️",  # Deleted (not staged)
-    "D ": "🗑️",  # Deleted and staged
-    "R ": "📛",  # Renamed
-    "C ": "📋",  # Copied
-    "U ": "⚠️",  # Unmerged
-}
+# STATUS_ICONS imported from ansi.py as GIT_STATUS_ICONS
 
 
 # =============================================================================
@@ -264,8 +253,8 @@ def format_status_line(line: str) -> str:
     filename = os.path.basename(path)
     parent = os.path.basename(os.path.dirname(path))
     display_name = f"{parent}/{filename}" if parent else filename
-    emoji = STATUS_EMOJI.get(code, "🪾")
-    return f"{emoji} {display_name}"
+    icon = git_status_icon(code)
+    return f"{icon} {display_name}"
 
 
 def get_git_status_and_notify(cwd: str, folder_name: str) -> None:
@@ -382,10 +371,15 @@ def main():
         if formatted_count > 0 or transcript_backup:
             summary_parts = []
             if formatted_count > 0:
-                summary_parts.append(f"📝 {formatted_count} files formatted")
+                summary_parts.append(
+                    f"{C.BRIGHT_GREEN}{Icons.CHECK}{C.RESET} "
+                    f"{C.BRIGHT_WHITE}{formatted_count}{C.RESET} files formatted"
+                )
             if transcript_backup:
-                summary_parts.append("💾 Transcript backed up")
-            print(" | ".join(summary_parts), file=sys.stderr)
+                summary_parts.append(
+                    f"{C.BRIGHT_CYAN}{Icons.SAVE}{C.RESET} Transcript backed up"
+                )
+            print(f" {C.DIM}│{C.RESET} ".join(summary_parts), file=sys.stderr)
 
     except json.JSONDecodeError:
         subprocess.run(

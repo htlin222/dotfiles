@@ -7,6 +7,8 @@ import json
 import re
 import sys
 
+from ansi import C, Icons
+
 
 def main():
     try:
@@ -18,14 +20,27 @@ def main():
         tool_input = data.get("tool_input", {})
         command = tool_input.get("command", "")
 
-        # Check if command uses rm (but not in a string or comment)
-        # Match: rm, rm -rf, rm -f, etc. at start or after && ; |
-        rm_pattern = r"(?:^|&&|\|\||;|\|)\s*rm\s+"
+        # Check if command uses rm (comprehensive detection)
+        # Match: rm, sudo rm, \rm (alias bypass), command rm, etc.
+        # At start of command or after command separators (&&, ||, ;, |)
+        rm_patterns = [
+            r"(?:^|&&|\|\||;|\|)\s*rm\s",  # rm at command position
+            r"(?:^|&&|\|\||;|\|)\s*sudo\s+rm\s",  # sudo rm
+            r"(?:^|&&|\|\||;|\|)\s*\\rm\s",  # \rm (alias bypass)
+            r"(?:^|&&|\|\||;|\|)\s*command\s+rm\s",  # command rm
+            r"(?:^|&&|\|\||;|\|)\s*/bin/rm\s",  # /bin/rm (direct path)
+            r"(?:^|&&|\|\||;|\|)\s*/usr/bin/rm\s",  # /usr/bin/rm
+        ]
 
-        if re.search(rm_pattern, command):
+        if any(re.search(pattern, command) for pattern in rm_patterns):
+            reason = (
+                f"{C.BRIGHT_RED}{Icons.LOCK} 請使用 {C.BRIGHT_CYAN}rip{C.BRIGHT_RED} "
+                f"代替 {C.BRIGHT_YELLOW}rm{C.RESET}\n"
+                f"   {C.DIM}{Icons.INFO} rip 會將檔案移到垃圾桶，更安全{C.RESET}"
+            )
             response = {
                 "decision": "block",
-                "reason": "🚫 請使用 `rip` 代替 `rm`。rip 會將檔案移到垃圾桶，更安全。",
+                "reason": reason,
             }
             print(json.dumps(response))
 

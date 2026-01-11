@@ -17,6 +17,8 @@ import time
 from datetime import datetime
 from typing import Any, Callable
 
+from ansi import C, Icons, header, separator
+
 # =============================================================================
 # Configuration
 # =============================================================================
@@ -293,17 +295,40 @@ def print_performance_report(hours: int = 24):
     stats = get_hook_stats(hours)
 
     if not stats:
-        print("No hook metrics found.", file=sys.stderr)
+        print(f"{C.DIM}{Icons.INFO} No hook metrics found.{C.RESET}", file=sys.stderr)
         return
 
-    print(f"\n📊 Hook Performance Report (last {hours}h)\n", file=sys.stderr)
-    print(f"{'Hook':<25} {'Count':>8} {'Avg(ms)':>10} {'Max(ms)':>10} {'Slow':>6}", file=sys.stderr)
-    print("-" * 65, file=sys.stderr)
+    print(
+        f"\n{header(f'Hook Performance Report (last {hours}h)', Icons.CLOCK)}\n",
+        file=sys.stderr,
+    )
+    print(
+        f"{C.BOLD}{'Hook':<25} {'Count':>8} {'Avg(ms)':>10} {'Max(ms)':>10} {'Slow':>6}{C.RESET}",
+        file=sys.stderr,
+    )
+    print(separator("─", 65), file=sys.stderr)
 
-    for hook, data in sorted(stats.items(), key=lambda x: x[1]["avg_time_ms"], reverse=True):
-        status = "🔴" if data["slow_count"] > 0 else "🟢"
+    for hook, data in sorted(
+        stats.items(), key=lambda x: x[1]["avg_time_ms"], reverse=True
+    ):
+        if data["slow_count"] > 0:
+            status = f"{C.BRIGHT_RED}{Icons.CROSS}{C.RESET}"
+        else:
+            status = f"{C.BRIGHT_GREEN}{Icons.CHECK}{C.RESET}"
+        avg_ms = data.get("avg_time_ms", 0)
+        avg_color = (
+            C.BRIGHT_RED
+            if avg_ms > 500
+            else C.BRIGHT_YELLOW
+            if avg_ms > 200
+            else C.BRIGHT_GREEN
+        )
         print(
-            f"{status} {hook:<23} {data['count']:>8} {data.get('avg_time_ms', 0):>10.1f} {data['max_time_ms']:>10.1f} {data['slow_count']:>6}",
+            f"{status} {C.BRIGHT_CYAN}{hook:<23}{C.RESET} "
+            f"{data['count']:>8} "
+            f"{avg_color}{avg_ms:>10.1f}{C.RESET} "
+            f"{data['max_time_ms']:>10.1f} "
+            f"{C.BRIGHT_YELLOW if data['slow_count'] > 0 else C.DIM}{data['slow_count']:>6}{C.RESET}",
             file=sys.stderr,
         )
 
@@ -347,7 +372,9 @@ def main():
         if os.path.exists(EVENTS_LOG_FILE):
             with open(EVENTS_LOG_FILE, encoding="utf-8") as f:
                 lines = f.readlines()[-args.limit :]
-            print(f"\n📋 Recent Hook Events (last {args.limit})\n")
+            print(
+                f"\n{header(f'Recent Hook Events (last {args.limit})', Icons.COMMENT)}\n"
+            )
             for line in lines:
                 try:
                     entry = json.loads(line.strip())
@@ -355,11 +382,16 @@ def main():
                     event = entry.get("event_type", "")
                     hook = entry.get("hook", "")
                     tool = entry.get("tool_name", "")
-                    print(f"  {ts} | {event:<18} | {hook:<20} | {tool}")
+                    print(
+                        f"  {C.DIM}{ts}{C.RESET} │ "
+                        f"{C.BRIGHT_CYAN}{event:<18}{C.RESET} │ "
+                        f"{C.BRIGHT_YELLOW}{hook:<20}{C.RESET} │ "
+                        f"{C.BRIGHT_MAGENTA}{tool}{C.RESET}"
+                    )
                 except json.JSONDecodeError:
                     continue
         else:
-            print("No events found.")
+            print(f"{C.DIM}{Icons.INFO} No events found.{C.RESET}")
 
     elif args.command == "clear":
         for f in [METRICS_LOG_FILE, EVENTS_LOG_FILE]:
