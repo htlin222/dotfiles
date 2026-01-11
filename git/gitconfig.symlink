@@ -155,3 +155,4 @@
 	sp = stash pop
 	staged = diff --cached
 	contributors = shortlog -sn --all
+  backto = "!f() { git rev-list --reverse \"$1\"..HEAD | while read sha; do git revert --no-commit \"$sha\" || exit 1; done && git commit -m \"Revert back to $1\"; }; f"
