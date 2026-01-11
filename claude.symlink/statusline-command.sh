@@ -169,7 +169,7 @@ lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
 if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
     # Count user messages (conversation turns)
-    conv_depth=$(grep -c '"type":"user"' "$transcript_path" 2>/dev/null || echo "0")
+    conv_depth=$(grep -c '"type":"user"' "$transcript_path" 2>/dev/null) || conv_depth=0
 else
     conv_depth=0
 fi
@@ -362,8 +362,8 @@ printf "${WHITE}${ICON_FOLDER}%s${RESET} " "$dir"
 printf "${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
 printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$session_cost_display" "$session_display" "$burn_rate"
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
-printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET} " "$conv_depth"
-printf "${vim_color}${ICON_VIM}%s${RESET}\n" "$vim_mode"
+printf "${LIGHT_BLUE}%b%s${RESET} " "$ICON_DEPTH" "$conv_depth"
+printf "${vim_color}%b%s${RESET}\n" "$ICON_VIM" "$vim_mode"
 # Line 2: context bar, 5h usage, weekly
 printf "%b${ICON_CONTEXT}${RESET}%b %b%s${RESET}/%s %b%d%%${RESET} " "$context_color" "$context_bar" "$context_color" "$current_display" "$window_display" "$context_color" "$context_pct"
 printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
