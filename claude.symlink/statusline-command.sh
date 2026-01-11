@@ -67,7 +67,7 @@
 # \uf075  - Conversation depth
 # \uef0c  - 5-hour usage
 # \U000f00ed  - Weekly usage
-# \U000f035c  - Context window
+# \ueaa4  - Context window
 # \U000f0954  - Time/clock
 # \ue725  - Git branch
 #
@@ -100,7 +100,7 @@ ICON_MODEL=$'\ue20f '
 ICON_FOLDER=$'\uf07b '
 ICON_SEP_LEFT=$'\ue0ba'
 ICON_SEP_RIGHT=$'\ue0bc'
-ICON_CONTEXT=$'\U000f035c '
+ICON_CONTEXT=$'\ueaa4 '
 ICON_USAGE=$'\uef0c '
 ICON_WEEKLY=$'\U000f00ed '
 ICON_TIME=$'\U000f0954 '
@@ -365,7 +365,7 @@ printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
 printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET} " "$conv_depth"
 printf "%b${ICON_VIM}%s${RESET}\n" "$vim_color" "$vim_mode"
 # Line 2: context bar, 5h usage, weekly
-printf "${ICON_CONTEXT}%b %b%s${RESET}/%s %b%d%%${RESET} " "$context_bar" "$context_color" "$current_display" "$window_display" "$context_color" "$context_pct"
+printf "%b${ICON_CONTEXT}${RESET}%b %b%s${RESET}/%s %b%d%%${RESET} " "$context_color" "$context_bar" "$context_color" "$current_display" "$window_display" "$context_color" "$context_pct"
 printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
 printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET}\n" "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
 
