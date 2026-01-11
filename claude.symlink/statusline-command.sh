@@ -409,7 +409,9 @@ if [ -n "$branch_line" ]; then
     fi
 fi
 
-git_status=$(git -C "$git_dir" status -s 2>/dev/null | grep -v '^##' | head -5)
+git_status_all=$(git -C "$git_dir" status -s 2>/dev/null | grep -v '^##')
+git_status_count=$(echo "$git_status_all" | grep -c . 2>/dev/null || echo "0")
+git_status=$(echo "$git_status_all" | head -6)
 if [ -n "$git_status" ]; then
     while IFS= read -r line; do
         if [ -n "$line" ]; then
@@ -449,4 +451,9 @@ if [ -n "$git_status" ]; then
             printf "%b%b%s\n" "$x_colored" "$y_colored" "$rest"
         fi
     done <<< "$git_status"
+    # Show overflow message if more than 6 files
+    if [ "$git_status_count" -gt 6 ]; then
+        extra=$((git_status_count - 6))
+        printf "${DIM}[+%d more, use git status -sb]${RESET}\n" "$extra"
+    fi
 fi
