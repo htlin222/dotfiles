@@ -44,12 +44,13 @@
 # - Burn rate (cost per hour)
 # - Lines changed (+added / -removed)
 # - Conversation depth (number of turns)
+# - Context bar with current usage % (uses current_usage for accuracy)
 # - 5-hour usage % with time until reset (color-coded)
 # - 7-day usage % (color-coded)
 # - Session duration
 # - Dad joke (cached, updates every 5 minutes)
 # - Git branch status with ahead/behind indicators (color-coded)
-# - Git file status with colored status codes
+# - Git file status with colored status codes (max 6, overflow indicator)
 #
 # Color coding: green (<60%) -> yellow (60-74%) -> orange (75-89%) -> red (90%+)
 #
@@ -284,6 +285,50 @@ else
     session_display_tokens="${session_tokens}"
 fi
 
+# Calculate CURRENT context usage from current_usage (accurate, not cumulative)
+# See: https://code.claude.com/docs/en/statusline#context-window-usage
+window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+current_input=$(echo "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
+cache_creation=$(echo "$input" | jq -r '.context_window.current_usage.cache_creation_input_tokens // 0')
+cache_read=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
+current_tokens=$((current_input + cache_creation + cache_read))
+
+# Calculate context percentage
+if [ "$window_size" -gt 0 ] 2>/dev/null; then
+    context_pct=$((current_tokens * 100 / window_size))
+    [ "$context_pct" -gt 100 ] && context_pct=100
+else
+    context_pct=0
+fi
+
+# Format current tokens for display
+if [ $current_tokens -ge 1000000 ]; then
+    current_display="$(echo "scale=1; $current_tokens / 1000000" | bc)M"
+elif [ $current_tokens -ge 1000 ]; then
+    current_display="$(echo "scale=1; $current_tokens / 1000" | bc)K"
+else
+    current_display="${current_tokens}"
+fi
+
+# Format window size for display
+if [ $window_size -ge 1000000 ]; then
+    window_display="$(echo "scale=0; $window_size / 1000000" | bc)M"
+elif [ $window_size -ge 1000 ]; then
+    window_display="$(echo "scale=0; $window_size / 1000" | bc)K"
+else
+    window_display="${window_size}"
+fi
+
+# Generate context bar (10 chars wide)
+bar_width=10
+filled=$((context_pct * bar_width / 100))
+[ "$filled" -gt "$bar_width" ] && filled=$bar_width
+empty=$((bar_width - filled))
+context_color=$(get_color $context_pct)
+bar_filled=$(printf '█%.0s' $(seq 1 $filled 2>/dev/null) 2>/dev/null)
+bar_empty=$(printf '░%.0s' $(seq 1 $empty 2>/dev/null) 2>/dev/null)
+context_bar="${context_color}${bar_filled}${GRAY}${bar_empty}${RESET}"
+
 # Get colors for each metric (foreground and background)
 five_hour_color=$(get_color $five_hour_pct)
 five_hour_bg=$(get_bg_color $five_hour_pct)
@@ -319,7 +364,8 @@ printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$ses
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
 printf "${LIGHT_BLUE}${ICON_DEPTH}%s${RESET} " "$conv_depth"
 printf "%b${ICON_VIM}%s${RESET}\n" "$vim_color" "$vim_mode"
-# Line 2: 5h usage, weekly (with background-colored labels)
+# Line 2: context bar, 5h usage, weekly
+printf "${ICON_CONTEXT}%b %b%s${RESET}/%s %b%d%%${RESET} " "$context_bar" "$context_color" "$current_display" "$window_display" "$context_color" "$context_pct"
 printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
 printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET}\n" "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
 
