@@ -19,20 +19,13 @@ from datetime import datetime
 
 # Import ANSI styling
 from ansi import C, Icons
-
+from metrics import log_hook_event, log_hook_metrics
 # Import processors
-from processors import (
-    process_bibtex_files,
-    process_biome_files,
-    process_prettier_files,
-    process_python_files,
-    process_r_files,
-    process_vale_files,
-)
-
+from processors import (process_bibtex_files, process_biome_files,
+                        process_prettier_files, process_python_files,
+                        process_r_files, process_vale_files)
 # Import TTS utility
 from tts import notify_bash_complete, notify_file_saved
-from metrics import log_hook_metrics, log_hook_event
 
 # =============================================================================
 # Configuration
@@ -86,7 +79,6 @@ BIOME_EXTS = {".js", ".jsx", ".tsx", ".ts", ".json", ".css"}
 PRETTIER_EXTS = {
     ".html",
     ".md",
-    ".qmd",
     ".mdx",
     ".scss",
     ".less",
@@ -97,7 +89,7 @@ PRETTIER_EXTS = {
 PYTHON_EXTS = {".py", ".pyi"}
 BIBTEX_EXTS = {".bib"}
 R_EXTS = {".R", ".r"}
-MARKDOWN_EXTS = {".md", ".mdx", ".qmd"}
+MARKDOWN_EXTS = {".md", ".mdx"}
 TYPESCRIPT_EXTS = {".ts", ".tsx"}
 
 # Risky patterns to detect (pattern, description, severity)
