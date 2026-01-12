@@ -78,7 +78,7 @@
 
 [commit]
 	verbose = true
-	gpgsign = true
+	gpgsign = false
 
 [gc]
 	auto = 256
