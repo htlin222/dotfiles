@@ -293,12 +293,12 @@ cache_creation=$(echo "$input" | jq -r '.context_window.current_usage.cache_crea
 cache_read=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
 current_tokens=$((current_input + cache_creation + cache_read))
 
-# Calculate context percentage
+# Calculate context percentage (add 20% baseline for system overhead)
 if [ "$window_size" -gt 0 ] 2>/dev/null; then
-    context_pct=$((current_tokens * 100 / window_size))
+    context_pct=$((current_tokens * 100 / window_size + 20))
     [ "$context_pct" -gt 100 ] && context_pct=100
 else
-    context_pct=0
+    context_pct=20
 fi
 
 # Format current tokens for display
@@ -367,7 +367,7 @@ printf "${vim_color}%b%s${RESET}\n" "$ICON_VIM" "$vim_mode"
 # Line 2: context bar, 5h usage, weekly
 printf "%b${ICON_CONTEXT}${RESET}%b %b%s${RESET}/%s %b%d%%${RESET} " "$context_color" "$context_bar" "$context_color" "$current_display" "$window_display" "$context_color" "$context_pct"
 printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
-printf "%b${ICON_SEP_LEFT}%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET}\n" "$weekly_color" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
+printf "%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET}\n" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
