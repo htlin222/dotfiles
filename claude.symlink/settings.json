@@ -1,207 +1,216 @@
 {
-	"env": {
-		"DISABLE_AUTOUPDATER": "1"
-	},
-	"permissions": {
-		"allow": [
-			"Bash(ls:*)",
-			"Bash(cd:*)",
-			"Bash(cat:*)",
-			"Bash(bat:*)",
-			"Bash(python:*)",
-			"Bash(Rscript:*)",
-			"Bash(brew:*)",
-			"Bash(pwd)",
-			"Bash(mkdir:*)",
-			"Bash(cp:*)",
-			"Bash(mv:*)",
-			"Bash(touch:*)",
-			"Bash(cat:*)",
-			"Bash(head:*)",
-			"Bash(tail:*)",
-			"Bash(less:*)",
-			"Bash(more:*)",
-			"Bash(grep:*)",
-			"Bash(rg:*)",
-			"Bash(awk:*)",
-			"Bash(sed:*)",
-			"Bash(find:*)",
-			"Bash(du:*)",
-			"Bash(df:*)",
-			"Bash(wc:*)",
-			"Bash(cut:*)",
-			"Bash(sort:*)",
-			"Bash(uniq:*)",
-			"Bash(xargs:*)",
-			"Bash(tr:*)",
-			"Bash(split:*)",
-			"Bash(diff:*)",
-			"Bash(cmp:*)",
-			"Bash(tree:*)",
-			"Bash(date)",
-			"Bash(cal)",
-			"Bash(whoami)",
-			"Bash(id)",
-			"Bash(env)",
-			"Bash(export:*)",
-			"Bash(unset:*)",
-			"Bash(alias:*)",
-			"Bash(unalias:*)",
-			"Bash(echo:*)",
-			"Bash(seq:*)",
-			"Bash(printf:*)",
-			"Bash(history)",
-			"Bash(clear)",
-			"Bash(file:*)",
-			"Bash(stat:*)",
-			"Bash(basename:*)",
-			"Bash(dirname:*)",
-			"Bash(pnpm:*)",
-			"Bash(uv venv:*)",
-			"Bash(source:*)",
-			"Bash(uv pip install:*)",
-			"Bash(chmod:*)"
-		],
-		"defaultMode": "acceptEdits"
-	},
-	"enableAllProjectMcpServers": true,
-	"hooks": {
-		"SessionStart": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/env_validation.py"
-					}
-				]
-			}
-		],
-		"PreToolUse": [
-			{
-				"matcher": "Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/check_rm.py"
-					},
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/check_file_exists.py"
-					}
-				]
-			},
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/file_guard.py"
-					}
-				]
-			},
-			{
-				"matcher": "Read",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/file_guard.py"
-					},
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/check_read_exists.py"
-					}
-				]
-			}
-		],
-		"PostToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit|Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/post_tool_use.py"
-					}
-				]
-			}
-		],
-		"Notification": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/notification.py"
-					}
-				]
-			}
-		],
-		"Stop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/stop.py"
-					},
-					{
-						"type": "prompt",
-						"prompt": "如果本次對話有使用 TodoWrite 建立任務清單，請檢查：1) 是否所有項目都已標記為 completed？2) 是否有未處理的錯誤？如果有未完成的任務，請繼續完成。如果沒有使用 TodoWrite（例如簡單問答），則無需檢查，直接結束即可。"
-					}
-				]
-			}
-		],
-		"SubagentStop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/subagent_stop.py"
-					}
-				]
-			}
-		],
-		"PreCompact": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/pre_compact.py"
-					}
-				]
-			}
-		],
-		"UserPromptSubmit": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/user_prompt.py"
-					},
-					{
-						"type": "command",
-						"command": "python3 ~/.claude/hooks/codebase_map.py"
-					}
-				]
-			}
-		]
-	},
-	"enabledPlugins": {
-		"example-skills@anthropic-agent-skills": false,
-		"pyright-lsp@claude-plugins-official": true,
-		"context7@claude-plugins-official": true,
-		"code-review@claude-plugins-official": true,
-		"frontend-design@claude-plugins-official": true,
-		"feature-dev@claude-plugins-official": true,
-		"typescript-lsp@claude-plugins-official": true,
-		"scientific-skills@claude-scientific-skills": true
-	},
-	"alwaysThinkingEnabled": true,
-	"statusLine": {
-		"type": "command",
-		"command": "bash ~/.claude/statusline-command.sh"
-	}
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Bash(bat:*)",
+      "Bash(python:*)",
+      "Bash(Rscript:*)",
+      "Bash(brew:*)",
+      "Bash(pwd)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(less:*)",
+      "Bash(more:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(wc:*)",
+      "Bash(cut:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(xargs:*)",
+      "Bash(tr:*)",
+      "Bash(split:*)",
+      "Bash(diff:*)",
+      "Bash(cmp:*)",
+      "Bash(tree:*)",
+      "Bash(date)",
+      "Bash(cal)",
+      "Bash(whoami)",
+      "Bash(id)",
+      "Bash(env)",
+      "Bash(export:*)",
+      "Bash(unset:*)",
+      "Bash(alias:*)",
+      "Bash(unalias:*)",
+      "Bash(echo:*)",
+      "Bash(seq:*)",
+      "Bash(printf:*)",
+      "Bash(history)",
+      "Bash(clear)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(pnpm:*)",
+      "Bash(uv venv:*)",
+      "Bash(source:*)",
+      "Bash(uv pip install:*)",
+      "Bash(chmod:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/env_validation.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/check_rm.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/check_file_exists.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/file_guard.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/file_guard.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/check_read_exists.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/task_model_hint.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/post_tool_use.py"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/notification.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/stop.py"
+          },
+          {
+            "type": "prompt",
+            "prompt": "如果本次對話有使用 TodoWrite 建立任務清單，請檢查：1) 是否所有項目都已標記為 completed？2) 是否有未處理的錯誤？如果有未完成的任務，請繼續完成。如果沒有使用 TodoWrite（例如簡單問答），則無需檢查，直接結束即可。"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/subagent_stop.py"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/pre_compact.py"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/user_prompt.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/codebase_map.py"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": false,
+    "pyright-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "scientific-skills@claude-scientific-skills": true
+  },
+  "alwaysThinkingEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  }
 }

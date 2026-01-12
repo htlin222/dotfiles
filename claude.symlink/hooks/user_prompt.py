@@ -171,6 +171,38 @@ PROJECT_TYPES = {
     },
 }
 
+# Model efficiency hint - show periodically
+MODEL_HINT = "💡 Tip: delegate Edit-heavy tasks to Task(model:haiku) to save context"
+
+# Tool efficiency patterns - detect bash search/read requests
+BASH_SEARCH_PATTERNS = [
+    (r"\bgrep\b", "Grep"),
+    (r"\brg\b", "Grep"),
+    (r"\bripgrep\b", "Grep"),
+    (r"\bfind\s+[./-]", "Glob"),
+    (r"\bls\s+-", "Bash(ls) or Glob"),
+    (r"\bcat\s+", "Read"),
+    (r"\bhead\s+", "Read with limit"),
+    (r"\btail\s+", "Read with offset"),
+]
+
+# Complex task patterns - suggest Task delegation
+COMPLEX_TASK_PATTERNS = [
+    r"multiple files",
+    r"all .*files",
+    r"every .*file",
+    r"across the codebase",
+    r"throughout the project",
+    r"refactor.*(?:module|component|system)",
+    r"fix.*(?:all|every|multiple)",
+    r"update.*(?:all|every|multiple)",
+    r"change.*(?:all|every|multiple)",
+    r"(?:10|20|50|100)\+?\s*(?:files|changes|edits)",
+    r"batch.*(?:edit|update|fix)",
+    r"mass.*(?:edit|update|rename)",
+    r"全部|所有.*檔案|多個.*檔案|批次",
+]
+
 # Token estimation patterns (potentially expensive)
 # Note: Messages will be styled with ANSI in check_token_heavy()
 TOKEN_HEAVY_PATTERNS = [
@@ -452,6 +484,30 @@ def check_token_heavy(prompt: str) -> str | None:
 # =============================================================================
 
 
+def check_tool_efficiency(prompt: str) -> str | None:
+    """Check for bash search commands and suggest native tools."""
+    prompt_lower = prompt.lower()
+    for pattern, native_tool in BASH_SEARCH_PATTERNS:
+        if re.search(pattern, prompt_lower):
+            return (
+                f"{C.BRIGHT_CYAN}{Icons.SEARCH}{C.RESET} "
+                f"Hint: prefer native {native_tool} tool over bash command"
+            )
+    return None
+
+
+def check_complex_task(prompt: str) -> str | None:
+    """Check for complex tasks and suggest Task delegation."""
+    prompt_lower = prompt.lower()
+    for pattern in COMPLEX_TASK_PATTERNS:
+        if re.search(pattern, prompt_lower):
+            return (
+                f"{C.BRIGHT_MAGENTA}{Icons.ROCKET}{C.RESET} "
+                f"Complex task detected: consider using Task agents to delegate work"
+            )
+    return None
+
+
 def check_time_reminder(state: dict) -> str | None:
     """Check for late night or long session."""
     now = datetime.now()
@@ -519,6 +575,16 @@ def main():
         if token_warning:
             messages.append(token_warning)
 
+        # Feature 10: Tool efficiency hint
+        tool_hint = check_tool_efficiency(prompt)
+        if tool_hint:
+            messages.append(tool_hint)
+
+        # Feature 12: Complex task delegation hint
+        complex_hint = check_complex_task(prompt)
+        if complex_hint:
+            messages.append(complex_hint)
+
         # Feature 3: Suggest skill if applicable
         skill_suggestion = suggest_skill(prompt)
         if skill_suggestion:
@@ -551,6 +617,10 @@ def main():
             time_reminder = check_time_reminder(state)
             if time_reminder:
                 messages.append(time_reminder)
+
+        # Feature 11: Model efficiency hint (every 20 prompts)
+        if state.get("prompt_count", 0) % 20 == 0:
+            messages.append(MODEL_HINT)
 
         # Save state
         save_state(state)
