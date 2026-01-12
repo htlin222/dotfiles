@@ -356,8 +356,21 @@ else
 fi
 
 # Output the formatted statusline
+# Clear line escape: \033[2K clears entire line to prevent ghosting during rapid updates
+CLEAR_LINE='\033[2K'
+
+# Synchronized Update Mode (DEC 2026) - tells terminal to batch all updates atomically
+# Prevents flickering/ghosting during rapid re-renders
+# Supported: iTerm2, Kitty, WezTerm, Alacritty 0.13+, Ghostty, Windows Terminal, foot
+# See: https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036
+SYNC_START='\033[?2026h'
+SYNC_END='\033[?2026l'
+
+# Begin synchronized update - terminal holds visual updates until SYNC_END
+printf "${SYNC_START}"
+
 # Line 1: model, folder, tokens, cost, time, burn, lines, depth, vim
-printf "${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
+printf "${CLEAR_LINE}${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
 printf "${WHITE}${ICON_FOLDER}%s${RESET} " "$dir"
 printf "${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
 printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$session_cost_display" "$session_display" "$burn_rate"
@@ -365,9 +378,21 @@ printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
 printf "${LIGHT_BLUE}%b%s${RESET} " "$ICON_DEPTH" "$conv_depth"
 printf "${vim_color}%b%s${RESET}\n" "$ICON_VIM" "$vim_mode"
 # Line 2: context bar, 5h usage, weekly
-printf "%b${ICON_CONTEXT}${RESET}%b %b%s${RESET}/%s %b%d%%${RESET} " "$context_color" "$context_bar" "$context_color" "$current_display" "$window_display" "$context_color" "$context_pct"
-printf "%b${BLACK} \uf252 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}${ICON_TIME}%s${RESET} " "$five_hour_bg" "$five_hour_color" "$five_hour_color" "$five_hour_display" "$time_left"
-printf "%b${BLACK} \U000f00f0 ${RESET}%b${ICON_SEP_RIGHT}${RESET} %b%s${RESET} ${GRAY}\U000f110b %s${RESET}\n" "$weekly_bg" "$weekly_color" "$weekly_color" "$weekly_display" "$weekly_reset_date"
+# Context segment
+printf "${CLEAR_LINE}%b${ICON_CONTEXT}${RESET}" "$context_color"
+printf "%b " "$context_bar"
+printf "%b%s${RESET}/%s " "$context_color" "$current_display" "$window_display"
+printf "%b%d%%${RESET} " "$context_color" "$context_pct"
+# 5-hour segment
+printf "%b${BLACK} \uf252 ${RESET}" "$five_hour_bg"
+printf "%b${ICON_SEP_RIGHT}${RESET} " "$five_hour_color"
+printf "%b%s${RESET} " "$five_hour_color" "$five_hour_display"
+printf "${GRAY}${ICON_TIME}%s${RESET} " "$time_left"
+# Weekly segment
+printf "%b${BLACK} ${ICON_WEEKLY}${RESET}" "$weekly_bg"
+printf "%b${ICON_SEP_RIGHT}${RESET} " "$weekly_color"
+printf "%b%s${RESET} " "$weekly_color" "$weekly_display"
+printf "${GRAY}%s${RESET}\n" "$weekly_reset_date"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
@@ -405,11 +430,11 @@ if [ -z "$dad_joke" ]; then
     fi
 fi
 
-# Display joke or fallback
+# Display joke or fallback (Line 3)
 if [ -n "$dad_joke" ]; then
-    printf "${DIM}%s${RESET}" "$dad_joke"
+    printf "${CLEAR_LINE}${DIM}%s${RESET}" "$dad_joke"
 else
-    printf "${DIM}Keep coding and stay curious!${RESET}"
+    printf "${CLEAR_LINE}${DIM}Keep coding and stay curious!${RESET}"
 fi
 
 # Git status with colored branch and status codes
@@ -419,7 +444,7 @@ git_dir=$(echo "$input" | jq -r '.workspace.current_dir // "."')
 ICON_BRANCH=$'\ue725 '
 branch_line=$(git -C "$git_dir" status -sb 2>/dev/null | head -1)
 if [ -n "$branch_line" ]; then
-    printf "\n"
+    printf "\n${CLEAR_LINE}"
     # Remove ## prefix and replace with icon
     branch_line="${branch_line#\#\# }"
     # Colorize [ahead X], [behind Y], or [ahead X, behind Y]
@@ -494,12 +519,15 @@ if [ -n "$git_status" ]; then
                 *) y_colored="$y_char" ;;
             esac
 
-            printf "%b%b%s\n" "$x_colored" "$y_colored" "$rest"
+            printf "${CLEAR_LINE}%b%b%s\n" "$x_colored" "$y_colored" "$rest"
         fi
     done <<< "$git_status"
     # Show overflow message if more than 6 files
     if [ "$git_status_count" -gt 6 ]; then
         extra=$((git_status_count - 6))
-        printf "${DIM}[+%d more, use git status -sb]${RESET}\n" "$extra"
+        printf "${CLEAR_LINE}${DIM}[+%d more, use git status -sb]${RESET}\n" "$extra"
     fi
 fi
+
+# End synchronized update - terminal now renders all buffered changes atomically
+printf "${SYNC_END}"

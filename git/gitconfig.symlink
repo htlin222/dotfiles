@@ -2,10 +2,10 @@
 	email = hsieh.ting.lin@gmail.com
 	name = Hsiehting Lin
 	useConfigOnly = true
-	signingkey = ~/.ssh/id_ed25519.pub
+	signingkey = 5EF303FEF4BD9F0F
 
 [gpg]
-	format = ssh
+	format = openpgp
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowed_signers
