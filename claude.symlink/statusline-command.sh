@@ -389,10 +389,13 @@ printf "%b${ICON_SEP_RIGHT}${RESET} " "$five_hour_color"
 printf "%b%s${RESET} " "$five_hour_color" "$five_hour_display"
 printf "${GRAY}${ICON_TIME}%s${RESET} " "$time_left"
 # Weekly segment
-printf "%b${BLACK} ${ICON_WEEKLY}${RESET}" "$weekly_bg"
+# Use inline Unicode and add trailing space to match 5-hour format
+# Extra space after icon helps cover ambiguous-width character ghosting
+printf "%b${BLACK} \U000f00ed  ${RESET}" "$weekly_bg"
 printf "%b${ICON_SEP_RIGHT}${RESET} " "$weekly_color"
 printf "%b%s${RESET} " "$weekly_color" "$weekly_display"
-printf "${GRAY}%s${RESET}\n" "$weekly_reset_date"
+# \033[K clears to end of line - prevents background color ghosting on terminal scroll
+printf "${GRAY}%s${RESET}\033[K\n" "$weekly_reset_date"
 
 # Dad joke with 5-minute cache
 DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
