@@ -198,6 +198,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": false,
     "pyright-lsp@claude-plugins-official": true,
@@ -206,11 +210,8 @@
     "frontend-design@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "scientific-skills@claude-scientific-skills": true
+    "scientific-skills@claude-scientific-skills": true,
+    "code-simplifier@claude-plugins-official": true
   },
-  "alwaysThinkingEnabled": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
+  "alwaysThinkingEnabled": true
 }
