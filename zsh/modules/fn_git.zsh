@@ -66,7 +66,10 @@ function gist() {
 
 # Clone claude artifact runner template
 function cloneclaude() {
-  cd $HOME || { echo "無法切換到 $HOME"; return 1; }
+  cd $HOME || {
+    echo "無法切換到 $HOME"
+    return 1
+  }
   echo "正在克隆 htlin222/claude-artifact-runner..."
   if ! gh repo clone htlin222/claude-artifact-runner; then
     echo "克隆失敗，請檢查 gh CLI 是否正確安裝並登入。"
@@ -83,16 +86,30 @@ function cloneclaude() {
       break
     fi
   done
-  mv claude-artifact-runner "$new_folder_name" || { echo "移動資料夾失敗"; return 1; }
-  cd "$new_folder_name" || { echo "無法進入資料夾 $new_folder_name"; return 1; }
+  mv claude-artifact-runner "$new_folder_name" || {
+    echo "移動資料夾失敗"
+    return 1
+  }
+  cd "$new_folder_name" || {
+    echo "無法進入資料夾 $new_folder_name"
+    return 1
+  }
   echo "正在執行 npm install..."
   if ! npm install; then
     echo "npm install 失敗，請檢查環境設定。"
     return 1
   fi
   echo "正在移除 .git 資料夾..."
-  rm -rf .git || { echo "移除 .git 資料夾失敗"; return 1; }
+  rm -rf .git || {
+    echo "移除 .git 資料夾失敗"
+    return 1
+  }
   echo "正在初始化新的 Git 儲存庫..."
-  git init && git add . && git commit -m 'init' || { echo "git 操作失敗"; return 1; }
+  git init && git add . && git commit -m 'init' || {
+    echo "git 操作失敗"
+    return 1
+  }
   echo "專案已成功設定完成！"
 }
+
+git-top() { cd "$(git rev-parse --show-toplevel 2>/dev/null)" || return; }

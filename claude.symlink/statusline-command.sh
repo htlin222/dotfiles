@@ -97,12 +97,15 @@ BG_RED='\033[41m'
 
 # Nerd Font icons
 ICON_MODEL=$'\ue20f '
-ICON_FOLDER=$'\uf07b '
+# Folder icons - Seti-UI range (safe)
+ICON_FOLDER_GIT=$'\ue5fb '   # Git folder
+ICON_FOLDER=$'\ue5ff '       # Regular folder
 ICON_SEP_LEFT=$'\ue0ba'
 ICON_SEP_RIGHT=$'\ue0bc'
 ICON_CONTEXT=$'\ueaa4 '
-ICON_USAGE='5h'
-ICON_WEEKLY='7d'
+# Using Codicons range (EA60-EBEB) - safe width
+ICON_USAGE=$'\ueded'   # Codicons
+ICON_WEEKLY=$'\ueebf'  # Codicons calendar
 ICON_TIME=$'\U000f0954 '
 ICON_SESSION=$'\U000f0b77 '
 ICON_VIM=$'\ue7c5 '
@@ -175,7 +178,15 @@ else
 fi
 
 # Get current directory name (not full path)
-dir=$(basename "$(echo "$input" | jq -r '.workspace.current_dir // "."')")
+dir_path=$(echo "$input" | jq -r '.workspace.current_dir // "."')
+dir=$(basename "$dir_path")
+
+# Check if directory is a git repo
+if git -C "$dir_path" rev-parse --git-dir >/dev/null 2>&1; then
+    folder_icon="$ICON_FOLDER_GIT"
+else
+    folder_icon="$ICON_FOLDER"
+fi
 
 # Fetch real usage data from Anthropic OAuth API
 get_real_usage() {
@@ -371,7 +382,7 @@ printf "${SYNC_START}"
 
 # Line 1: model, folder, tokens, cost, time, burn, lines, depth, vim
 printf "${CLEAR_LINE}${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
-printf "${WHITE}${ICON_FOLDER}%s${RESET} " "$dir"
+printf "${WHITE}${folder_icon}%s${RESET} " "$dir"
 printf "${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
 printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$session_cost_display" "$session_display" "$burn_rate"
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
@@ -383,13 +394,13 @@ printf "${CLEAR_LINE}%b${ICON_CONTEXT}${RESET}" "$context_color"
 printf "%b " "$context_bar"
 printf "%b%s${RESET}/%s " "$context_color" "$current_display" "$window_display"
 printf "%b%d%%${RESET} " "$context_color" "$context_pct"
-# 5-hour segment - use ASCII to avoid icon width issues
-printf "%b${BLACK} 5h ${RESET}" "$five_hour_bg"
+# 5-hour segment - using safe single-width icon
+printf "%b${BLACK} ${ICON_USAGE} ${RESET}" "$five_hour_bg"
 printf "%b${ICON_SEP_RIGHT}${RESET} " "$five_hour_color"
 printf "%b%s${RESET} " "$five_hour_color" "$five_hour_display"
-printf "${GRAY}%s${RESET} " "$time_left"
-# Weekly segment - back on same line
-printf "%b${BLACK} 7d ${RESET}" "$weekly_bg"
+printf "${GRAY}\ueb7c %s${RESET} " "$time_left"
+# Weekly segment
+printf "%b${BLACK} ${ICON_WEEKLY} ${RESET}" "$weekly_bg"
 printf "%b${ICON_SEP_RIGHT}${RESET} " "$weekly_color"
 printf "%b%s${RESET} " "$weekly_color" "$weekly_display"
 printf "${GRAY}%s${RESET}\033[K\n" "$weekly_reset_date"
@@ -448,23 +459,24 @@ if [ -n "$branch_line" ]; then
     # Remove ## prefix and replace with icon
     branch_line="${branch_line#\#\# }"
     # Colorize [ahead X], [behind Y], or [ahead X, behind Y]
+    # Using ● (U+25CF) for both - safe single-width Unicode
     if [[ "$branch_line" == *"ahead"* ]] && [[ "$branch_line" == *"behind"* ]]; then
-        # Both - yellow
+        # Both - yellow status
         prefix="${branch_line%% \[*}"
         status="${branch_line##*\[}"
         status="${status%\]}"
         ahead_num=$(echo "$status" | grep -o 'ahead [0-9]*' | grep -o '[0-9]*')
         behind_num=$(echo "$status" | grep -o 'behind [0-9]*' | grep -o '[0-9]*')
-        ahead_dots=$(printf '\uf445%.0s' $(seq 1 ${ahead_num:-0}))
-        behind_dots=$(printf '● %.0s' $(seq 1 ${behind_num:-0}))
-        printf "${ICON_BRANCH}%s ${YELLOW}[%s]${RESET} ${GREEN}%s${RESET}${RED}%s${RESET}\n" "$prefix" "$status" "$ahead_dots" "$behind_dots"
+        ahead_dots=$(printf '●%.0s' $(seq 1 ${ahead_num:-0}))
+        behind_dots=$(printf '●%.0s' $(seq 1 ${behind_num:-0}))
+        printf "${ICON_BRANCH}%s ${YELLOW}[%s]${RESET} ${GREEN}%s${RESET} ${RED}%s${RESET}\n" "$prefix" "$status" "$ahead_dots" "$behind_dots"
     elif [[ "$branch_line" == *"ahead"* ]]; then
         # Ahead only - green
         prefix="${branch_line%% \[*}"
         status="${branch_line##*\[}"
         status="${status%\]}"
         ahead_num=$(echo "$status" | grep -o '[0-9]*')
-        ahead_dots=$(printf '\uf445%.0s' $(seq 1 ${ahead_num:-0}))
+        ahead_dots=$(printf '●%.0s' $(seq 1 ${ahead_num:-0}))
         printf "${ICON_BRANCH}%s ${GREEN}[%s] %s${RESET}\n" "$prefix" "$status" "$ahead_dots"
     elif [[ "$branch_line" == *"behind"* ]]; then
         # Behind only - red
@@ -472,7 +484,7 @@ if [ -n "$branch_line" ]; then
         status="${branch_line##*\[}"
         status="${status%\]}"
         behind_num=$(echo "$status" | grep -o '[0-9]*')
-        behind_dots=$(printf '● %.0s' $(seq 1 ${behind_num:-0}))
+        behind_dots=$(printf '●%.0s' $(seq 1 ${behind_num:-0}))
         printf "${ICON_BRANCH}%s ${RED}[%s] %s${RESET}\n" "$prefix" "$status" "$behind_dots"
     else
         # Up to date or no remote
