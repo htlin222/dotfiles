@@ -4,6 +4,9 @@
 	useConfigOnly = true
 	signingkey = 5EF303FEF4BD9F0F
 
+[includeIf "hasconfig:remote.*.url:*kfsyscc*"]
+    path = ~/.gitconfig-work
+
 [gpg]
 	format = openpgp
 

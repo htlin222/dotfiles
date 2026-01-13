@@ -78,7 +78,7 @@
 # ANSI color codes
 GREEN='\033[32m'
 YELLOW='\033[33m'
-ORANGE='\033[38;5;208m'
+ORANGE='\033[93m'
 RED='\033[31m'
 LIGHT_BLUE='\033[38;5;117m'
 LIGHT_GREEN='\033[38;5;119m'
@@ -92,7 +92,7 @@ DIM='\033[2m'
 # Background colors for labels
 BG_GREEN='\033[42m'
 BG_YELLOW='\033[43m'
-BG_ORANGE='\033[48;5;208m'
+BG_ORANGE='\033[103m'
 BG_RED='\033[41m'
 
 # Nerd Font icons
@@ -101,8 +101,8 @@ ICON_FOLDER=$'\uf07b '
 ICON_SEP_LEFT=$'\ue0ba'
 ICON_SEP_RIGHT=$'\ue0bc'
 ICON_CONTEXT=$'\ueaa4 '
-ICON_USAGE=$'\uef0c '
-ICON_WEEKLY=$'\U000f00ed '
+ICON_USAGE='5h'
+ICON_WEEKLY='7d'
 ICON_TIME=$'\U000f0954 '
 ICON_SESSION=$'\U000f0b77 '
 ICON_VIM=$'\ue7c5 '
@@ -383,16 +383,15 @@ printf "${CLEAR_LINE}%b${ICON_CONTEXT}${RESET}" "$context_color"
 printf "%b " "$context_bar"
 printf "%b%s${RESET}/%s " "$context_color" "$current_display" "$window_display"
 printf "%b%d%%${RESET} " "$context_color" "$context_pct"
-# 5-hour segment
-printf "%b${BLACK} \uf252 ${RESET}" "$five_hour_bg"
+# 5-hour segment - use ASCII to avoid icon width issues
+printf "%b${BLACK} 5h ${RESET}" "$five_hour_bg"
 printf "%b${ICON_SEP_RIGHT}${RESET} " "$five_hour_color"
 printf "%b%s${RESET} " "$five_hour_color" "$five_hour_display"
-printf "${GRAY}${ICON_TIME}%s${RESET} " "$time_left"
-# Weekly segment
-printf "%b${BLACK} \uf073 ${RESET}" "$weekly_bg"
+printf "${GRAY}%s${RESET} " "$time_left"
+# Weekly segment - back on same line
+printf "%b${BLACK} 7d ${RESET}" "$weekly_bg"
 printf "%b${ICON_SEP_RIGHT}${RESET} " "$weekly_color"
 printf "%b%s${RESET} " "$weekly_color" "$weekly_display"
-# \033[K clears to end of line - prevents background color ghosting on terminal scroll
 printf "${GRAY}%s${RESET}\033[K\n" "$weekly_reset_date"
 
 # Dad joke with 5-minute cache
