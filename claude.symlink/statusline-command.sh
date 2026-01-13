@@ -188,6 +188,29 @@ else
     folder_icon="$ICON_FOLDER"
 fi
 
+# Language detection - safe Nerd Font icons
+ICON_PYTHON=$'\ue73c'
+ICON_JS=$'\ued0d'
+ICON_RPROJECT=$'\uedc1'
+ICON_RUST=$'\ue7a8'
+ICON_LUA=$'\ue826'
+ICON_MARKDOWN=$'\ueb1d'
+
+lang_icon=""
+if [ -f "$dir_path/Cargo.toml" ]; then
+    lang_icon="$ICON_RUST"
+elif [ -f "$dir_path/package.json" ]; then
+    lang_icon="$ICON_JS"
+elif [ -f "$dir_path/pyproject.toml" ] || [ -f "$dir_path/setup.py" ] || [ -f "$dir_path/requirements.txt" ]; then
+    lang_icon="$ICON_PYTHON"
+elif ls "$dir_path"/*.Rproj >/dev/null 2>&1 || [ -f "$dir_path/DESCRIPTION" ]; then
+    lang_icon="$ICON_RPROJECT"
+elif [ -f "$dir_path/init.lua" ] || ls "$dir_path"/*.lua >/dev/null 2>&1; then
+    lang_icon="$ICON_LUA"
+elif ls "$dir_path"/*.md >/dev/null 2>&1 && ! ls "$dir_path"/*.py "$dir_path"/*.js "$dir_path"/*.ts "$dir_path"/*.rs >/dev/null 2>&1; then
+    lang_icon="$ICON_MARKDOWN"
+fi
+
 # Fetch real usage data from Anthropic OAuth API
 get_real_usage() {
     # Get OAuth token from macOS Keychain
@@ -382,8 +405,9 @@ printf "${SYNC_START}"
 
 # Line 1: model, folder, tokens, cost, time, burn, lines, depth, vim
 printf "${CLEAR_LINE}${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
-printf "${WHITE}${folder_icon}%s${RESET} " "$dir"
-printf "${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
+printf "${WHITE}${folder_icon}%s${RESET}" "$dir"
+[ -n "$lang_icon" ] && printf " ${CYAN}%s${RESET}" "$lang_icon"
+printf " ${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
 printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$session_cost_display" "$session_display" "$burn_rate"
 printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
 printf "${LIGHT_BLUE}%b%s${RESET} " "$ICON_DEPTH" "$conv_depth"
@@ -393,7 +417,9 @@ printf "${vim_color}%b%s${RESET}\n" "$ICON_VIM" "$vim_mode"
 printf "${CLEAR_LINE}%b${ICON_CONTEXT}${RESET}" "$context_color"
 printf "%b " "$context_bar"
 printf "%b%s${RESET}/%s " "$context_color" "$current_display" "$window_display"
-printf "%b%d%%${RESET} " "$context_color" "$context_pct"
+printf "%b%d%%${RESET}" "$context_color" "$context_pct"
+# Compaction warning when context > 80%
+[ "$context_pct" -gt 80 ] && printf " ${RED}\uea6c${RESET}" || printf " "
 # 5-hour segment - using safe single-width icon
 printf "%b${BLACK} ${ICON_USAGE} ${RESET}" "$five_hour_bg"
 printf "%b${ICON_SEP_RIGHT}${RESET} " "$five_hour_color"
