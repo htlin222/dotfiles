@@ -77,3 +77,4 @@ docs/*.tex
 docs/*.pdf
 docs/**/*_files/
 .quarto/
+*.zwc
