@@ -46,23 +46,23 @@ ex() {
     return 1
   fi
   case "$1" in
-    *.tar.bz2) tar xjf "$1" ;;
-    *.tar.gz)  tar xzf "$1" ;;
-    *.tar.xz)  tar xJf "$1" ;;
-    *.tar.zst) tar --zstd -xf "$1" ;;
-    *.bz2)     bunzip2 "$1" ;;
-    *.rar)     unrar x "$1" ;;
-    *.gz)      gunzip "$1" ;;
-    *.tar)     tar xf "$1" ;;
-    *.tbz2)    tar xjf "$1" ;;
-    *.tgz)     tar xzf "$1" ;;
-    *.zip)     unzip "$1" ;;
-    *.Z)       uncompress "$1" ;;
-    *.7z)      7z x "$1" ;;
-    *.deb)     ar x "$1" ;;
-    *.xz)      unxz "$1" ;;
-    *.lzma)    unlzma "$1" ;;
-    *)         echo "'$1' cannot be extracted via ex()" ;;
+  *.tar.bz2) tar xjf "$1" ;;
+  *.tar.gz) tar xzf "$1" ;;
+  *.tar.xz) tar xJf "$1" ;;
+  *.tar.zst) tar --zstd -xf "$1" ;;
+  *.bz2) bunzip2 "$1" ;;
+  *.rar) unrar x "$1" ;;
+  *.gz) gunzip "$1" ;;
+  *.tar) tar xf "$1" ;;
+  *.tbz2) tar xjf "$1" ;;
+  *.tgz) tar xzf "$1" ;;
+  *.zip) unzip "$1" ;;
+  *.Z) uncompress "$1" ;;
+  *.7z) 7z x "$1" ;;
+  *.deb) ar x "$1" ;;
+  *.xz) unxz "$1" ;;
+  *.lzma) unlzma "$1" ;;
+  *) echo "'$1' cannot be extracted via ex()" ;;
   esac
 }
 
@@ -177,4 +177,50 @@ findfeed() {
     return 1
   fi
   curl -s "$1" | grep -Eoi '<link[^>]+(rss|atom|xml)[^>]*>' | sed 's/.*href=["'\'']\([^"'\'' ]*\).*/\1/'
+}
+
+line() {
+  local query=""
+  local yank=false
+
+  # Parse arguments
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --yank | -y)
+      yank=true
+      ;;
+    *)
+      query="$1"
+      ;;
+    esac
+    shift
+  done
+
+  local result
+  result=$(rg -n --color=always . 2>/dev/null | fzf \
+    --ansi \
+    --query="$query" \
+    --delimiter=: \
+    --preview='bat --color=always --style=numbers,header --highlight-line {2} -- {1} 2>/dev/null || cat -n {1}' \
+    --preview-window='right:60%:+{2}-10' \
+    --bind='j:down,k:up' \
+    --header="Type to search  |  Enter: $(if $yank; then echo 'yank'; else echo 'open'; fi)  |  Esc: cancel")
+
+  [[ -z "$result" ]] && return
+
+  local file line content fullpath
+  file=$(echo "$result" | cut -d: -f1)
+  line=$(echo "$result" | cut -d: -f2)
+  content=$(echo "$result" | cut -d: -f3-)
+  fullpath="$(pwd)/${file}"
+
+  if [[ -n "$file" ]]; then
+    if $yank; then
+      printf "%s:%s\n%s" "@${fullpath}" " See Line${line}:" "${content}" | pbcopy
+      echo "Copied: ${fullpath}:${line}"
+      echo "${content}"
+    else
+      nvim "+$line" "$file"
+    fi
+  fi
 }
