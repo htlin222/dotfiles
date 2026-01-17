@@ -54,6 +54,7 @@ claude.symlink/todos/
 claude.symlink/debug/
 claude.symlink/projects/
 claude.symlink/logs
+claude.symlink/plans
 claude.symlink/*.jsonl
 claude.symlink/file-history/
 claude.symlink/shell-snapshots/
