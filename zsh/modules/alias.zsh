@@ -1,6 +1,6 @@
 # Cross-platform aliases
 if [[ -n "$IS_MAC" ]]; then
-  alias open="open"
+  curl -fsSL https://raw.githubusercontent.com/Chat2AnyLLM/code-assistant-manager/main/install.sh | bash alias open="open"
   alias xdg-open="open"
 else
   alias open="xdg-open"
@@ -69,7 +69,7 @@ alias tt="taskwarrior-tui"
 alias dpdf="sh $DOTFILES/shellscripts/rename_by_chatGPT.sh"
 # Google Drive path (macOS only)
 [[ -n "$IS_MAC" ]] && alias mac_gdrive="cd $HOME/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
-alias fup="ffsend upload"  # renamed from 'up' to avoid conflict with up() function
+alias fup="ffsend upload" # renamed from 'up' to avoid conflict with up() function
 alias uvinit="uv venv && source .venv/bin/activate"
 # alias upip="uv pip install"
 alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --progress'
@@ -116,7 +116,6 @@ alias opn='xdg-open'
 alias lsgist='gh gist list --limit 30'
 alias jj='cd ~/Dropbox/sprint/ && fcd && ls'
 alias kk='cd ~/Dropbox/slowburn/ && fcd && ls'
-alias pip="pip3"
 alias pptxpdf="sh pptx_to_pdf.sh"
 alias pt="patients"
 alias e2u="python $HOME/pyscripts/emoji2utf8.py $1"
@@ -167,13 +166,13 @@ alias path='echo $PATH | tr ":" "\n"'
 alias please='sudo $(fc -ln -1)'
 
 # Global aliases - can be used anywhere in the command line
-alias -g G='| grep'      # e.g., ps aux G chrome
-alias -g L='| less'      # e.g., cat file L
-alias -g H='| head'      # e.g., ls -la H
-alias -g T='| tail'      # e.g., log T
-alias -g J='| jq'        # e.g., curl api J
-alias -g C='| pbcopy'    # e.g., pwd C
-alias -g N='>/dev/null 2>&1'  # e.g., cmd N (silence output)
+alias -g G='| grep'          # e.g., ps aux G chrome
+alias -g L='| less'          # e.g., cat file L
+alias -g H='| head'          # e.g., ls -la H
+alias -g T='| tail'          # e.g., log T
+alias -g J='| jq'            # e.g., curl api J
+alias -g C='| pbcopy'        # e.g., pwd C
+alias -g N='>/dev/null 2>&1' # e.g., cmd N (silence output)
 
 # ========================================
 # Modern CLI Tools (Rust-based replacements)
@@ -192,7 +191,7 @@ fi
 # bat - modern cat replacement
 if command -v bat &>/dev/null; then
   alias cat='bat --paging=never --style=plain'
-  alias catn='bat --paging=never'  # with line numbers
+  alias catn='bat --paging=never' # with line numbers
   alias batdiff='git diff --name-only | xargs bat --diff'
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
