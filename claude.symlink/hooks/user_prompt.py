@@ -625,13 +625,24 @@ def main():
         # Save state
         save_state(state)
 
-        # Output response if there are messages
+        # Build additionalContext
+        context_parts = []
+
+        # Echo prompt with emphasis prefix
+        context_parts.append(f"Again: {prompt}")
+
+        # Add system messages if any
         if messages:
-            response = {
-                "continue": True,
-                "systemMessage": "\n".join(messages),
-            }
-            print(json.dumps(response))
+            context_parts.extend(messages)
+
+        # Output response using correct schema
+        response = {
+            "hookSpecificOutput": {
+                "hookEventName": "UserPromptSubmit",
+                "additionalContext": "\n".join(context_parts),
+            },
+        }
+        print(json.dumps(response))
 
         # Log metrics and events
         execution_time_ms = (time.time() - start_time) * 1000
