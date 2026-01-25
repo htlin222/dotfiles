@@ -28,7 +28,8 @@ opt.ttimeoutlen = 5 -- 終端按鍵碼超時時間為 5 毫秒
 opt.timeoutlen = 1000 -- 按鍵映射超時時間為 1000 毫秒
 opt.updatetime = 1000 -- CursorHold 事件觸發時間為 1000 毫秒（優化性能）
 opt.tabstop = 2 -- Tab 字符顯示寬度為 2 個空格
-opt.colorcolumn = "80,120" -- 只在第 80 列和 120 列顯示垂直參考線（優化性能）
+opt.colorcolumn = "60,80,120" -- 只在第 80 列和 120 列顯示垂直參考線（優化性能）
+vim.api.nvim_set_hl(0, "ColorColumn", { link = "CursorLine" })
 wo.relativenumber = true -- 啟用相對行號
 vim.cmd [[highlight ColorColumn ctermbg=235 guibg=#2c2d27]] -- 設定參考線顏色
 vim.g.did_load_netrw = 1 -- 禁用 Netrw 文件瀏覽器

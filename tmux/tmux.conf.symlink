@@ -30,6 +30,9 @@ set-option -g automatic-rename on
 set-option -g automatic-rename-format '#{b:pane_current_path}'
 set -sg escape-time 0
 
+# Pass through terminal environment variables for image support (WezTerm, iTerm2, Kitty)
+set -g update-environment "TERM_PROGRAM TERM_PROGRAM_VERSION"
+
 # This is OS/X specific and should only be enabled when the 'reattach-to-user-namespace' is installed
 # set -g default-command "reattach-to-user-namespace -l /bin/bash"
 # bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"

@@ -119,7 +119,7 @@ end
 augroup("setLineLength", { clear = true })
 autocmd("Filetype", {
   group = "setLineLength",
-  pattern = { "text", "markdown", "html", "xhtml", "javascript", "typescript" },
+  pattern = { "text", "html", "xhtml", "javascript", "typescript" },
   command = "setlocal cc=0",
 })
 

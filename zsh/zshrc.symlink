@@ -213,6 +213,8 @@ add-zsh-hook precmd _load_deferred_plugins
 ### Extra Configs          ###
 ##############################
 
+export ENABLE_LSP_TOOLS=1
+
 # API files
 [ -d ~/API ] && for file in ~/API/*; do
   [ -f "$file" ] && source "$file"

@@ -12,6 +12,9 @@ cfg.warn_about_missing_glyphs = false
 
 cfg.cell_width = 1.0
 
+-- Treat ambiguous-width characters (e.g., certain CJK punctuation) as half-width
+cfg.treat_east_asian_ambiguous_width_as_wide = false
+
 -- Makes FontAwesome's double-width glyphs display properly!
 cfg.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
 -- cfg.allow_square_glyphs_to_overflow_width = "Never"
