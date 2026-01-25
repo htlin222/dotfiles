@@ -1,5 +1,7 @@
 matches:
-  - trigger: ".txt"
+  - trigger: "speaker.note"
+    replace: "這張圖為什麼要設計成這樣？想傳達的精神是？我在報簡報時怎麼說？"
+  - trigger: ".astxt"
     replace: "Return only the plain text inside a txt code block for easy copying. nothing else."
   - trigger: ".oncology"
     replace: "Summarize as an oncologist with section titles (h1, no numbering): patient info, cancer type, grade, stage (TNM), genetic mutations, disease course (start with ‘Initial presentation’, each event as ‘- (YYYY-MM-DD): event, treatment’, group by time), and reason for hospitalization in bullet points."
