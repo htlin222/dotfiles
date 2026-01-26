@@ -215,10 +215,6 @@ add-zsh-hook precmd _load_deferred_plugins
 
 export ENABLE_LSP_TOOLS=1
 
-# API files
-[ -d ~/API ] && for file in ~/API/*; do
-  [ -f "$file" ] && source "$file"
-done
 
 # 1Password CLI plugins
 [[ -f "$HOME/.config/op/plugins.sh" ]] && source "$HOME/.config/op/plugins.sh"
@@ -240,6 +236,7 @@ source "$DOTFILES/zsh/modules/fn_utils.zsh"
 source "$DOTFILES/zsh/modules/fn_dev.zsh"
 source "$DOTFILES/zsh/modules/fn_notes.zsh"
 source "$DOTFILES/zsh/modules/fn_media.zsh"
+source "$DOTFILES/zsh/modules/fn_secrets.zsh"
 [[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
 
 source "$HOME/.uvv"
