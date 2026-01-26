@@ -1,2 +1,2 @@
 #!/bin/sh
-# Add your custom logic here
+afplay /System/Library/Sounds/Pop.aiff &
