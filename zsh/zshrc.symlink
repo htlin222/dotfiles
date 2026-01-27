@@ -416,3 +416,15 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
     fi
   done
 } &!
+
+# Himalaya email aliases (suppress IMAP warnings)
+alias hm='himalaya 2>/dev/null'
+alias hmail='himalaya envelope list --account gmail 2>/dev/null'
+alias hmailr='himalaya message read --account gmail 2>/dev/null'
+export RUST_LOG=himalaya=error
+
+# Gmail sync alias (run to fetch new emails)
+alias gsync='mbsync gmail gmail-work && notmuch new'
+
+# Fix Himalaya UTF-8 truncation bug
+export PATH="$HOME/.local/bin:$PATH"
