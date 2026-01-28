@@ -179,6 +179,88 @@ findfeed() {
   curl -s "$1" | grep -Eoi '<link[^>]+(rss|atom|xml)[^>]*>' | sed 's/.*href=["'\'']\([^"'\'' ]*\).*/\1/'
 }
 
+# Get remote host for LAN sync (auto-detect peer device)
+_get_lan_peer() {
+  local HOST_A="192.168.0.219"
+  local HOST_B="192.168.0.222"
+  local my_ip=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
+
+  if [[ "$my_ip" == "$HOST_A" ]]; then
+    echo "$HOST_B"
+  elif [[ "$my_ip" == "$HOST_B" ]]; then
+    echo "$HOST_A"
+  else
+    echo ""
+  fi
+}
+
+# Push files to LAN peer device via rsync over SSH
+# Usage: pushto <local_path> [remote_path]
+# Examples:
+#   pushto ./file.txt              # Push to remote home dir
+#   pushto ./mydir/                # Push directory
+#   pushto ./file.txt ~/Documents/ # Push to specific remote path
+pushto() {
+  local REMOTE_HOST="$(_get_lan_peer)"
+  local REMOTE_USER="$(whoami)"
+  local REMOTE_BASE="/Users/${REMOTE_USER}"
+
+  if [[ -z "$REMOTE_HOST" ]]; then
+    echo "Error: Not on a known LAN host (192.168.0.219 or 192.168.0.222)"
+    return 1
+  fi
+
+  if [[ $# -lt 1 ]]; then
+    echo "Usage: pushto <local_path> [remote_path]"
+    echo "  local_path:  file or directory to push"
+    echo "  remote_path: destination on remote (default: ~)"
+    return 1
+  fi
+
+  local src="$1"
+  local dest="${2:-$REMOTE_BASE}"
+
+  # Expand ~ in dest
+  [[ "$dest" == "~"* ]] && dest="${dest/#\~/$REMOTE_BASE}"
+
+  if [[ ! -e "$src" ]]; then
+    echo "Error: '$src' does not exist"
+    return 1
+  fi
+
+  echo "Pushing: $src → ${REMOTE_USER}@${REMOTE_HOST}:${dest}"
+  rsync -avz --progress "$src" "${REMOTE_USER}@${REMOTE_HOST}:${dest}"
+}
+
+# Pull files from LAN peer device via rsync over SSH
+# Usage: pullfrom <remote_path> [local_path]
+pullfrom() {
+  local REMOTE_HOST="$(_get_lan_peer)"
+  local REMOTE_USER="$(whoami)"
+  local REMOTE_BASE="/Users/${REMOTE_USER}"
+
+  if [[ -z "$REMOTE_HOST" ]]; then
+    echo "Error: Not on a known LAN host (192.168.0.219 or 192.168.0.222)"
+    return 1
+  fi
+
+  if [[ $# -lt 1 ]]; then
+    echo "Usage: pullfrom <remote_path> [local_path]"
+    echo "  remote_path: file or directory on remote"
+    echo "  local_path:  destination locally (default: ./)"
+    return 1
+  fi
+
+  local src="$1"
+  local dest="${2:-.}"
+
+  # Expand ~ in src
+  [[ "$src" == "~"* ]] && src="${src/#\~/$REMOTE_BASE}"
+
+  echo "Pulling: ${REMOTE_USER}@${REMOTE_HOST}:${src} → $dest"
+  rsync -avz --progress "${REMOTE_USER}@${REMOTE_HOST}:${src}" "$dest"
+}
+
 line() {
   local query=""
   local yank=false
