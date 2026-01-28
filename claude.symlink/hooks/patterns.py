@@ -199,9 +199,23 @@ def analyze_prompt(prompt: str) -> dict:
         "token_estimate": estimate_tokens(prompt),
         "patterns": [m.pattern_name for m in detect_patterns(prompt)],
         "has_code_block": "```" in prompt,
-        "has_file_reference": "@" in prompt or re.search(r"\b\w+\.\w{2,4}\b", prompt) is not None,
-        "is_question": prompt.strip().endswith("?") or any(
-            q in prompt.lower() for q in ["what", "why", "how", "where", "when", "which", "什麼", "為什麼", "怎麼", "哪"]
+        "has_file_reference": "@" in prompt
+        or re.search(r"\b\w+\.\w{2,4}\b", prompt) is not None,
+        "is_question": prompt.strip().endswith("?")
+        or any(
+            q in prompt.lower()
+            for q in [
+                "what",
+                "why",
+                "how",
+                "where",
+                "when",
+                "which",
+                "什麼",
+                "為什麼",
+                "怎麼",
+                "哪",
+            ]
         ),
     }
 
