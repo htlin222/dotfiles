@@ -650,9 +650,9 @@ def main():
             hook_name="user_prompt",
             event_type="UserPromptSubmit",
             execution_time_ms=execution_time_ms,
-            session_id=session_id,
             success=True,
-            metadata={
+            extra={
+                "session_id": session_id,
                 "prompt_length": len(prompt),
                 "estimated_tokens": estimate_tokens(prompt),
                 "messages_count": len(messages),
@@ -681,6 +681,8 @@ def main():
             execution_time_ms=execution_time_ms,
             success=False,
         )
+        # Always output valid JSON
+        print(json.dumps({"continue": True}))
 
 
 if __name__ == "__main__":

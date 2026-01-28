@@ -44,6 +44,7 @@ def main():
     try:
         raw_input = sys.stdin.read()
         if not raw_input.strip():
+            print(json.dumps({"continue": True}))
             return
 
         data = json.loads(raw_input)
@@ -63,9 +64,8 @@ def main():
             hook_name="subagent_stop",
             event_type="SubagentStop",
             execution_time_ms=execution_time_ms,
-            session_id=session_id,
             success=True,
-            metadata={"project": project_name},
+            extra={"session_id": session_id, "project": project_name},
         )
 
         log_hook_event(
@@ -76,8 +76,11 @@ def main():
             metadata={"project": project_name},
         )
 
+        # Output valid JSON response for Claude Code
+        print(json.dumps({"continue": True}))
+
     except (json.JSONDecodeError, Exception):
-        pass
+        print(json.dumps({"continue": True}))
 
 
 if __name__ == "__main__":

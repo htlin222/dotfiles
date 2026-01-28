@@ -176,11 +176,13 @@ def main():
             hook_name="pre_compact",
             event_type="PreCompact",
             execution_time_ms=execution_time_ms,
-            session_id=session_id,
             success=True,
-            metadata={
+            extra={
+                "session_id": session_id,
                 "project": project_name,
-                "snapshot_file": os.path.basename(snapshot_file) if snapshot_file else None,
+                "snapshot_file": os.path.basename(snapshot_file)
+                if snapshot_file
+                else None,
             },
         )
 
@@ -200,7 +202,7 @@ def main():
         print(json.dumps(response))
 
     except (json.JSONDecodeError, Exception):
-        pass
+        print(json.dumps({"continue": True}))
 
 
 if __name__ == "__main__":

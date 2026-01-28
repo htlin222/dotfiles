@@ -20,10 +20,17 @@ from datetime import datetime
 # Import ANSI styling
 from ansi import C, Icons
 from metrics import log_hook_event, log_hook_metrics
+
 # Import processors
-from processors import (process_bibtex_files, process_biome_files,
-                        process_prettier_files, process_python_files,
-                        process_r_files, process_vale_files)
+from processors import (
+    process_bibtex_files,
+    process_biome_files,
+    process_prettier_files,
+    process_python_files,
+    process_r_files,
+    process_vale_files,
+)
+
 # Import TTS utility
 from tts import notify_bash_complete, notify_file_saved
 
@@ -399,9 +406,9 @@ def main():
         hook_name="post_tool_use",
         event_type="PostToolUse",
         execution_time_ms=execution_time_ms,
-        session_id=session_id,
         success=True,
-        metadata={
+        extra={
+            "session_id": session_id,
             "tool_name": tool_name,
             "files_processed": len(file_paths),
             "warnings_count": len(warnings),

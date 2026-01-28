@@ -308,6 +308,7 @@ def main():
                 check=False,
                 capture_output=True,
             )
+            print(json.dumps({"continue": True}))
             return
 
         data = json.loads(raw_input)
@@ -346,9 +347,9 @@ def main():
             hook_name="stop",
             event_type="Stop",
             execution_time_ms=execution_time_ms,
-            session_id=session_id,
             success=True,
-            metadata={
+            extra={
+                "session_id": session_id,
                 "files_formatted": formatted_count,
                 "files_edited": stats["unique_files"],
                 "bash_commands": stats["bash_commands"],
@@ -381,14 +382,18 @@ def main():
                 )
             print(f" {C.DIM}│{C.RESET} ".join(summary_parts), file=sys.stderr)
 
+        # Output valid JSON response for Claude Code
+        print(json.dumps({"continue": True}))
+
     except json.JSONDecodeError:
         subprocess.run(
             ["ntfy", "publish", "lizard", "Claude Code 對話結束"],
             check=False,
             capture_output=True,
         )
+        print(json.dumps({"continue": True}))
     except Exception:
-        pass
+        print(json.dumps({"continue": True}))
 
 
 if __name__ == "__main__":
