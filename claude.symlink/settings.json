@@ -203,12 +203,7 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "commit-commands@claude-plugins-official": true,
-    "lua-lsp@claude-plugins-official": true,
-    "supabase@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "plugin-dev@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true
+    "superpowers@superpowers-dev": true
   },
   "alwaysThinkingEnabled": true
 }
