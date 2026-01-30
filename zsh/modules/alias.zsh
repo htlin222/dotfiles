@@ -195,3 +195,14 @@ if command -v bat &>/dev/null; then
   alias batdiff='git diff --name-only | xargs bat --diff'
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
+
+if command -v himalaya &>/dev/null; then
+  # Himalaya email aliases (suppress IMAP warnings)
+  alias hm='himalaya 2>/dev/null'
+  alias hmail='himalaya envelope list --account gmail 2>/dev/null'
+  alias hmailr='himalaya message read --account gmail 2>/dev/null'
+fi
+
+if command -v oco &>/dev/null; then
+  alias oy='oco --yes'
+fi

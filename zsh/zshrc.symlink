@@ -417,10 +417,6 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
   done
 } &!
 
-# Himalaya email aliases (suppress IMAP warnings)
-alias hm='himalaya 2>/dev/null'
-alias hmail='himalaya envelope list --account gmail 2>/dev/null'
-alias hmailr='himalaya message read --account gmail 2>/dev/null'
 export RUST_LOG=himalaya=error
 
 # Gmail sync alias (run to fetch new emails)
