@@ -32,4 +32,5 @@ withkeys() {
 
 # Auto-export common API keys (uses gpg-agent cache)
 export OPENAI_API_KEY="${OPENAI_API_KEY:-$(pass show api/openai 2>/dev/null)}"
+export OPENAI_KEY="${OPENAI_KEY:-$(pass show api/openai 2>/dev/null)}"
 export ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-$(pass show api/anthropic 2>/dev/null)}"
