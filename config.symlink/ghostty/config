@@ -1,0 +1,89 @@
+# =============================================================================
+# Font Settings
+# =============================================================================
+font-family = JetBrainsMono NF
+font-size = 18
+
+# =============================================================================
+# Cursor
+# =============================================================================
+cursor-style = underline
+cursor-style-blink = false
+
+# =============================================================================
+# Window
+# =============================================================================
+window-padding-x = 3
+window-padding-y = 3
+background-opacity = 1.0
+macos-titlebar-style = hidden
+window-save-state = always
+window-inherit-working-directory = true
+window-inherit-font-size = true
+
+# =============================================================================
+# Theme (auto follows system appearance)
+# =============================================================================
+theme = dark:bew-dark,light:bew-light
+
+# =============================================================================
+# Shell Integration
+# =============================================================================
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
+
+# =============================================================================
+# Performance & Scrollback
+# =============================================================================
+scrollback-limit = 100000
+
+# =============================================================================
+# Quick Terminal (全域熱鍵呼叫)
+# =============================================================================
+keybind = global:ctrl+grave_accent=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-screen = main
+quick-terminal-animation-duration = 0.1
+
+# =============================================================================
+# Link & URL
+# =============================================================================
+link-url = true
+
+# =============================================================================
+# macOS
+# =============================================================================
+macos-window-shadow = true
+
+# =============================================================================
+# Behavior
+# =============================================================================
+confirm-close-surface = false
+copy-on-select = clipboard
+mouse-hide-while-typing = true
+
+# =============================================================================
+# Keybindings
+# =============================================================================
+keybind = cmd+w=close_surface
+keybind = cmd+shift+r=reload_config
+keybind = cmd+q=quit
+
+# Option+Arrow for word navigation
+keybind = alt+left=text:\x1bb
+keybind = alt+right=text:\x1bf
+
+# 快速清屏
+keybind = cmd+k=clear_screen
+
+# Split 導航
+keybind = ctrl+shift+h=goto_split:left
+keybind = ctrl+shift+l=goto_split:right
+keybind = ctrl+shift+k=goto_split:up
+keybind = ctrl+shift+j=goto_split:down
+
+# 調整 split 大小
+keybind = ctrl+shift+left=resize_split:left,20
+keybind = ctrl+shift+right=resize_split:right,20
+keybind = ctrl+shift+up=resize_split:up,20
+keybind = ctrl+shift+down=resize_split:down,20

@@ -96,6 +96,14 @@ bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
   run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_popup.sh"
 }
 
+# Claude pane switcher - list and jump to panes running claude
+# Ctrl-g (no prefix needed) to open fzf picker
+bind -n C-g display-popup -w 60% -h 50% -E "/Users/htlin/.dotfiles/shellscripts/tmux_claude_switcher.sh"
+
+# Shift+Up/Down to cycle through Claude panes (cached, fast)
+bind -n S-Up   run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_claude_nav.sh prev"
+bind -n S-Down run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_claude_nav.sh next"
+
 set -g mouse on
 # make scrolling with wheels work
 bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
