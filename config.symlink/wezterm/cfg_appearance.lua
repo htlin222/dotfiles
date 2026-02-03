@@ -9,7 +9,7 @@ cfg.front_end = "WebGpu"
 
 -- Background opacity settings
 cfg.window_background_opacity = 1.0 -- Default: opaque
-cfg.macos_window_background_blur = 20 -- Blur effect when transparent (macOS only)
+cfg.macos_window_background_blur = 0 -- Blur effect when transparent (macOS only)
 
 -- Toggle transparency event handler
 wezterm.on("toggle-transparency", function(window, _)

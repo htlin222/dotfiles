@@ -6,7 +6,7 @@ local cfg_misc = {
 	check_for_updates = false,
 
 	-- Avoid unexpected config breakage and unusable terminal
-	automatically_reload_config = false,
+	automatically_reload_config = true,
 
 	-- Make sure word selection stops on most punctuations.
 	--
