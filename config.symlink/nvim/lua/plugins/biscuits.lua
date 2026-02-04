@@ -1,9 +1,11 @@
+-- DISABLED: nvim-biscuits uses deprecated nvim-treesitter.ts_utils API
+-- Re-enable when plugin is updated for new nvim-treesitter
 return {
   "code-biscuits/nvim-biscuits",
+  enabled = false,
   event = "VeryLazy",
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
-    run = ":TSUpdate",
   },
   keys = {
     {
