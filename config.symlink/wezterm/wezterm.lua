@@ -2,7 +2,6 @@
 ---------------------------------------------------------------
 
 local cfg_misc = {
-	default_prog = { "/opt/homebrew/bin/tmux" },
 	window_close_confirmation = "NeverPrompt",
 	check_for_updates = false,
 
