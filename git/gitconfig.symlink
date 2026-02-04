@@ -157,5 +157,5 @@
 	contributors = shortlog -sn --all
   backto = "!f() { git rev-list --reverse \"$1\"..HEAD | while read sha; do git revert --no-commit \"$sha\" || exit 1; done && git commit -m \"Revert back to $1\"; }; f"
 [credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper =
+	helper = !/opt/homebrew/bin/gh auth git-credential
