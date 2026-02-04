@@ -2,7 +2,10 @@
 # Font Settings
 # =============================================================================
 font-family = JetBrainsMono NF
+font-family = Noto Sans CJK TC Bold
 font-size = 18
+font-feature = liga
+font-feature = calt
 
 # =============================================================================
 # Cursor
@@ -15,8 +18,10 @@ cursor-style-blink = false
 # =============================================================================
 window-padding-x = 3
 window-padding-y = 3
+window-padding-balance = true
 background-opacity = 1.0
 macos-titlebar-style = hidden
+window-decoration = false
 window-save-state = always
 window-inherit-working-directory = true
 window-inherit-font-size = true
@@ -58,6 +63,7 @@ macos-window-shadow = true
 # =============================================================================
 # Behavior
 # =============================================================================
+desktop-notifications = true
 confirm-close-surface = false
 copy-on-select = clipboard
 mouse-hide-while-typing = true
@@ -75,6 +81,12 @@ keybind = alt+right=text:\x1bf
 
 # 快速清屏
 keybind = cmd+k=clear_screen
+
+# Split 分割
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+enter=toggle_split_zoom
+
 
 # Split 導航
 keybind = ctrl+shift+h=goto_split:left
