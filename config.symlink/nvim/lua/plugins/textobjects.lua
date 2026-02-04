@@ -5,24 +5,26 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   config = function()
-    require("nvim-treesitter-textobjects").setup {
-      select = {
-        lookahead = true,
-        selection_modes = {
-          ["@parameter.outer"] = "v", -- charwise
-          ["@function.outer"] = "V", -- linewise
-          ["@class.outer"] = "<c-v>", -- blockwise
+    require("nvim-treesitter.configs").setup {
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
+            ["ac"] = "@class.outer",
+            ["ic"] = "@class.inner",
+            ["as"] = { query = "@local.scope", query_group = "locals", desc = "language scope" },
+          },
+          selection_modes = {
+            ["@parameter.outer"] = "v",
+            ["@function.outer"] = "V",
+            ["@class.outer"] = "<c-v>",
+          },
+          include_surrounding_whitespace = true,
         },
-        include_surrounding_whitespace = true,
       },
     }
-
-    local select = require("nvim-treesitter-textobjects.select").select_textobject
-    -- Select keymaps
-    vim.keymap.set({ "x", "o" }, "af", function() select("@function.outer", "textobjects") end, { desc = "outer function" })
-    vim.keymap.set({ "x", "o" }, "if", function() select("@function.inner", "textobjects") end, { desc = "inner function" })
-    vim.keymap.set({ "x", "o" }, "ac", function() select("@class.outer", "textobjects") end, { desc = "outer class" })
-    vim.keymap.set({ "x", "o" }, "ic", function() select("@class.inner", "textobjects") end, { desc = "inner class" })
-    vim.keymap.set({ "x", "o" }, "as", function() select("@local.scope", "locals") end, { desc = "language scope" })
   end,
 }
