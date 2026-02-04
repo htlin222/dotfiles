@@ -219,6 +219,15 @@ export ENABLE_LSP_TOOLS=1
 # 1Password CLI plugins
 [[ -f "$HOME/.config/op/plugins.sh" ]] && source "$HOME/.config/op/plugins.sh"
 
+# Cursor style: solid block
+echo -ne '\e[2 q'  # Set default cursor to solid block
+
+# zsh-vi-mode cursor configuration (solid cursors)
+ZVM_CURSOR_STYLE_ENABLED=true
+ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+ZVM_OPPEND_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
 # Key bindings
 bindkey -s '^o' 'ya\n'
 bindkey -s '^n' 'tmux new-window\n'
@@ -422,4 +431,5 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # HTTP Proxy (sourced from separate config file for security)
 [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
+
 

@@ -41,6 +41,7 @@ bind r source-file ~/.tmux.conf \; display 'Reloaded!'
 # Vim style copy / paste
 unbind [
 bind Escape copy-mode
+bind-key -n C-b copy-mode  # Ctrl+b directly enters copy mode (no prefix)
 unbind p
 bind p paste-buffer
 # Use v to trigger selection
@@ -90,21 +91,20 @@ unbind i
 bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
     detach-client
 } {
-  run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_popup.sh"
+  run-shell "$HOME/dotfile/shellscripts/tmux_popup.sh"
 }
 
-# Claude pane switcher - list and jump to panes running claude
-# Ctrl-g (no prefix needed) to open fzf picker
-bind -n C-g display-popup -w 60% -h 50% -E "/Users/htlin/.dotfiles/shellscripts/tmux_claude_switcher.sh"
+# Claude pane switcher - Ctrl-g toggles popup
+bind -n C-g display-popup -w 60% -h 50% -E "$HOME/dotfile/shellscripts/tmux_claude_switcher.sh"
 
 # Shift+Up/Down to cycle through Claude panes (cached, fast)
-bind -n S-Up   run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_claude_nav.sh prev"
-bind -n S-Down run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_claude_nav.sh next"
+bind -n S-Up   run-shell "$HOME/dotfile/shellscripts/tmux_claude_nav.sh prev"
+bind -n S-Down run-shell "$HOME/dotfile/shellscripts/tmux_claude_nav.sh next"
 
 set -g mouse off  # Let terminal handle selection natively (Ghostty over SSH)
-# Mouse scrolling disabled - using terminal native selection
-# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
-# bind -n WheelDownPane select-pane -t= \; send-keys -M
+# Mouse scroll enters copy mode automatically
+bind -n WheelUpPane if-shell -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e; send-keys -M'
+bind -n WheelDownPane send-keys -M
 # Lower escape timing from 500ms to 50ms for quicker response to scroll-buffer access.
 set -s escape-time 50
 # Mouse interactions disabled - using terminal native selection

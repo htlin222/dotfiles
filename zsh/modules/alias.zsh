@@ -206,3 +206,6 @@ fi
 if command -v oco &>/dev/null; then
   alias oy='oco --yes'
 fi
+
+# better-rm: 更安全的 rm 命令 / A safer rm command
+alias rm='/home/htlin222/.better-rm/better-rm'

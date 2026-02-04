@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh -f
 # title: "tmux_claude_nav"
 # author: Hsieh-Ting Lin
 # date: "2025-02-03"
@@ -7,7 +7,7 @@
 # Usage: tmux_claude_nav.sh [next|prev|refresh]
 
 CACHE_DIR="/tmp/tmux_claude_cache"
-CACHE_TTL=10  # seconds before refresh
+CACHE_TTL=60  # seconds before refresh (was 10)
 
 session=$(tmux display-message -p '#S')
 cache_file="$CACHE_DIR/${session}_panes"
@@ -46,7 +46,10 @@ refresh_cache() {
 
 needs_refresh() {
     [[ ! -f "$cache_file" ]] && return 0
-    local age=$(( $(date +%s) - $(stat -f %m "$cache_file" 2>/dev/null || echo 0) ))
+    # Linux: stat -c %Y, macOS: stat -f %m
+    local mtime
+    mtime=$(stat -c %Y "$cache_file" 2>/dev/null || stat -f %m "$cache_file" 2>/dev/null || echo 0)
+    local age=$(( $(date +%s) - mtime ))
     (( age > CACHE_TTL )) && return 0
     return 1
 }
