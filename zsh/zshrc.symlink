@@ -335,11 +335,6 @@ if [ -n "${ZSH_DEBUGRC+1}" ]; then
   zprof
 fi
 
-# Auto-Tmux (WezTerm)
-if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
-  exec tmux
-fi
-
 # Lazy load zoxide (saves ~50ms)
 _init_zoxide() {
   unfunction _init_zoxide z zi 2>/dev/null

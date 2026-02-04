@@ -65,10 +65,6 @@ export NODE_OPTIONS='--disable-warning=ExperimentalWarning'
 export AIDER_YES_ALWAYS=true
 export AIDER_AUTO_TEST=true
 export AIDER_WATCH_FILES=true
-if [[ "$TERM_PROGRAM" == "WezTerm" && -z "$TMUX" && -x "$(command -v tmux)" ]]; then
-  exec tmux
-fi
-
 ##   __     __   __           ___
 ##  |__) | /  \ /__` \ / |\ |  |   /\  \_/
 ##  |__) | \__/ .__/  |  | \|  |  /~~\ / \

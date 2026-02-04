@@ -36,6 +36,7 @@ theme = dark:bew-dark,light:bew-light
 # =============================================================================
 shell-integration = zsh
 shell-integration-features = cursor,sudo,title
+command = /opt/homebrew/bin/tmux
 
 # =============================================================================
 # Performance & Scrollback
