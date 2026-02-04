@@ -13,12 +13,6 @@ set -g status-left '#{?client_prefix,#[bg=colour212]PFX.#[bg=colour202]#S,#[fg=w
 set -g window-style        'fg=colour245,bg=terminal'
 set -g window-active-style 'fg=terminal,bg=colour233'
 
-# 邊框差異：active 用高對比色（輔助定位）
-set -g pane-border-style        'fg=colour238'
-set -g pane-active-border-style 'fg=colour214,bg=colour214'
-set -g pane-border-indicators both
-set -g pane-border-lines heavy
-
 # 快速定位：prefix + q 顯示 pane 編號（備援）
 set -g display-panes-time 1500
 set -g display-panes-colour colour238
@@ -39,7 +33,7 @@ set -g update-environment "TERM_PROGRAM TERM_PROGRAM_VERSION"
 # bind C-v run "tmux set-buffer $(reattach-to-user-namespace pbpaste); tmux paste-buffer"
 
 # Reload key
-bind r source-file ~/.tmux.conf \; display 'Reloaded!🦎'
+bind r source-file ~/.tmux.conf \; display 'Reloaded!'
 
 # Vim style copy / paste
 unbind [
@@ -152,17 +146,6 @@ set -g @continuum-restore 'on'
 
 # jump 設定：prefix + s 啟動跳轉
 set -g @jump-key 's'
-
-# SSH 嵌套必備：F12 暫停本地 tmux
-set -g @plugin 'MunifTanjim/tmux-suspend'
-set -g @suspend_key 'F12'
-
-# 長命令完成通知
-set -g @plugin 'rickstaa/tmux-notify'
-
-# 快速選取 URL/路徑/hash：prefix + F
-set -g @plugin 'Morantron/tmux-fingers'
-set -g @fingers-key 'F'
 
 # 自動重載 config
 set -g @plugin 'b0o/tmux-autoreload'
