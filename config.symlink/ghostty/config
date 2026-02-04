@@ -68,6 +68,12 @@ copy-on-select = clipboard
 mouse-hide-while-typing = true
 
 # =============================================================================
+# Clipboard (allow terminal programs to read/write clipboard via OSC 52)
+# =============================================================================
+clipboard-read = allow
+clipboard-write = allow
+
+# =============================================================================
 # Keybindings
 # =============================================================================
 keybind = cmd+w=close_surface
