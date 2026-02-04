@@ -19,6 +19,9 @@ set -g display-panes-colour colour238
 set -g display-panes-active-colour colour214
 set -g default-terminal "screen-256color"
 setw -g mode-keys vi
+
+# OSC 52 clipboard (works over SSH to sync with local Mac clipboard)
+set -g set-clipboard on
 set-option -g status-interval 5
 set-option -g automatic-rename on
 set-option -g automatic-rename-format '#{b:pane_current_path}'
@@ -58,8 +61,8 @@ bind -n S-Right next-window
 bind -n M-H previous-window
 bind -n M-L next-window
 
-# Use y to yank current selection
-bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+# Use y to yank current selection (OSC 52 for SSH clipboard sync)
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel
 
 # unbind =
 bind b split-window -h -c "#{pane_current_path}"
@@ -98,16 +101,15 @@ bind -n C-g display-popup -w 60% -h 50% -E "/Users/htlin/.dotfiles/shellscripts/
 bind -n S-Up   run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_claude_nav.sh prev"
 bind -n S-Down run-shell "/Users/htlin/.dotfiles/shellscripts/tmux_claude_nav.sh next"
 
-set -g mouse on
-# make scrolling with wheels work
-bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
-bind -n WheelDownPane select-pane -t= \; send-keys -M
+set -g mouse off  # Let terminal handle selection natively (Ghostty over SSH)
+# Mouse scrolling disabled - using terminal native selection
+# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+# bind -n WheelDownPane select-pane -t= \; send-keys -M
 # Lower escape timing from 500ms to 50ms for quicker response to scroll-buffer access.
 set -s escape-time 50
-# Drag to re-order windows
-bind-key -n MouseDrag1Status swap-window -t=
-# Double click on the window list to open a new window
-bind-key -n DoubleClick1Status new-window
+# Mouse interactions disabled - using terminal native selection
+# bind-key -n MouseDrag1Status swap-window -t=
+# bind-key -n DoubleClick1Status new-window
 # Start windows and panes at 1, not 0
 set -g base-index 1
 set -g pane-base-index 1
@@ -135,6 +137,10 @@ set -g @plugin 'jimeh/tmuxifier'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'imomaliev/tmux-keyboard-layout'
 set -g @plugin 'tmux-plugins/tmux-yank'
+# tmux-yank: use system clipboard via OSC 52 (not xclip)
+set -g @yank_selection 'clipboard'
+set -g @yank_selection_mouse 'clipboard'
+set -g @yank_with_mouse on
 set -g @plugin 'laktak/extrakto'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
@@ -194,6 +200,7 @@ TMUX_FZF_OPTIONS="-w 60% -h 60% -m  --border=none --layout=reverse  --padding=1 
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 run -b '~/.tmux/plugins/tpm/tpm'
+
 # Ref: [gpakosz/.tmux: 🇫🇷 Oh my tmux! My self-contained, pretty & versatile tmux configuration made with ❤️](https://github.com/gpakosz/.tmux)
 # [My .tmux.conf for tmux 2.1 (with fixes for mouse breakage)](https://gist.github.com/subfuzion/814b3360e9f0b2d89c08)
 # [前言 — tao-of-tmux v1.0.2 文档](https://tao-of-tmux.readthedocs.io/zh_CN/latest/manuscript/00-foreword.html)
