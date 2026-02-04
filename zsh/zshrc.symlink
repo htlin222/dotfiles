@@ -419,3 +419,7 @@ alias gsync='mbsync gmail gmail-work && notmuch new'
 
 # Fix Himalaya UTF-8 truncation bug
 export PATH="$HOME/.local/bin:$PATH"
+
+# HTTP Proxy (sourced from separate config file for security)
+[[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
+

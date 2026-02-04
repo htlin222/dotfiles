@@ -5,7 +5,6 @@
 	signingkey = 5EF303FEF4BD9F0F
 
 [includeIf "hasconfig:remote.*.url:**/*kfsyscc*/**"]
-    path = ~/.gitconfig-work
 
 [gpg]
 	format = openpgp
@@ -15,7 +14,6 @@
 
 [init]
 	defaultBranch = main
-	templateDir = ~/.git-templates
 [interactive]
     diffFilter = delta --color-only
 
@@ -28,7 +26,7 @@
     # light = true
 
 [merge]
-    conflictstyle = zdiff3
+	conflictstyle = diff3
 
 [help]
     autocorrect = prompt
@@ -113,7 +111,6 @@
     pager = delta
 	autocrlf = input
 	excludesFile = ~/.gitignore_global
-	fsmonitor = true
 
 [column]
     ui = auto
@@ -159,3 +156,6 @@
 	staged = diff --cached
 	contributors = shortlog -sn --all
   backto = "!f() { git rev-list --reverse \"$1\"..HEAD | while read sha; do git revert --no-commit \"$sha\" || exit 1; done && git commit -m \"Revert back to $1\"; }; f"
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

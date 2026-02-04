@@ -36,6 +36,9 @@ autocmd("TextYankPost", {
 autocmd("BufWritePre", {
   pattern = "",
   callback = function()
+    if not vim.bo.modifiable then
+      return
+    end
     local file_size = vim.fn.getfsize(vim.fn.expand "%")
     if file_size < 1024 * 1024 * 10 then -- 只處理小於 10MB 的文件
       vim.cmd ":%s/\\s\\+$//e"
@@ -47,6 +50,9 @@ autocmd("BufWritePre", {
 autocmd("BufWritePre", {
   pattern = { "*.txt", "*.md" },
   callback = function()
+    if vim.fn.exists(":PanguAll") ~= 2 then
+      return
+    end
     local file_size = vim.fn.getfsize(vim.fn.expand "%")
     if file_size < 1024 * 1024 * 5 then -- 只處理小於 5MB 的文件
       vim.cmd "PanguAll"

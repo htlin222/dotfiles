@@ -66,6 +66,7 @@ claude.symlink/context-snapshots/
 claude.symlink/transcripts/
 claude.symlink/*cache*/
 claude.symlink/telemetry/
+claude.symlink/.credentials.json
 
 **/logs/
 **/codebase-maps/
