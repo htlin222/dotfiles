@@ -229,11 +229,12 @@ fi
 [[ -x "/home/htlin222/.better-rm/better-rm" ]] && alias rm='/home/htlin222/.better-rm/better-rm'
 
 # Fallback clipboard helpers if none are available
-if ! command -v pbcopy &>/dev/null; then
-  unalias pbcopy 2>/dev/null
-  pbcopy() { echo "pbcopy not available" >&2; return 127; }
+_pbcopy_fallback() { echo "pbcopy not available" >&2; return 127; }
+_pbpaste_fallback() { echo "pbpaste not available" >&2; return 127; }
+
+if ! whence -p pbcopy >/dev/null 2>&1 && ! alias pbcopy >/dev/null 2>&1 && (( ! $+functions[pbcopy] )); then
+  alias pbcopy='_pbcopy_fallback'
 fi
-if ! command -v pbpaste &>/dev/null; then
-  unalias pbpaste 2>/dev/null
-  pbpaste() { echo "pbpaste not available" >&2; return 127; }
+if ! whence -p pbpaste >/dev/null 2>&1 && ! alias pbpaste >/dev/null 2>&1 && (( ! $+functions[pbpaste] )); then
+  alias pbpaste='_pbpaste_fallback'
 fi

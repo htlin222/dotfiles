@@ -426,8 +426,6 @@ _init_direnv() {
     if command -v direnv &>/dev/null; then
       if direnv hook zsh >/dev/null 2>&1; then
         eval "$(direnv hook zsh)"
-      elif direnv hook --zsh >/dev/null 2>&1; then
-        eval "$(direnv hook --zsh)"
       fi
     fi
   fi

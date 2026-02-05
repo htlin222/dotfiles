@@ -2,6 +2,7 @@ package statusline
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -49,6 +50,7 @@ const (
 	IconSepRight   = "\ue0bc"
 	IconCompact    = "\uea6c"
 	IconTimerSand  = "\ueb7c"
+	IconLastCmd    = "\uf4a4 " // nf-md-message_text
 
 	// Synchronized Update
 	SyncStart = "\033[?2026h"
@@ -157,6 +159,9 @@ func Render(data *protocol.StatuslineInput) {
 	// Get dad joke
 	dadJoke := GetDadJoke()
 
+	// Get last user command
+	lastCmd := getLastUserCommand(data.TranscriptPath, 80)
+
 	// Git status
 	gitStatus := GetGitStatus(data.Workspace.CurrentDir)
 
@@ -179,12 +184,7 @@ func Render(data *protocol.StatuslineInput) {
 	fmt.Printf("%s%s%s%s", ClearLine, contextColor, IconContext, Reset)
 	fmt.Printf("%s ", contextBar)
 	fmt.Printf("%s%s%s/%s ", contextColor, currentDisplay, Reset, windowDisplay)
-	fmt.Printf("%s%d%%%s", contextColor, contextPct, Reset)
-	if contextPct > 80 {
-		fmt.Printf(" %s%s%s", Red, IconCompact, Reset)
-	} else {
-		fmt.Print(" ")
-	}
+	fmt.Printf("%s%d%%%s ", contextColor, contextPct, Reset)
 
 	// 5-hour segment
 	fmt.Printf("%s%s %s %s", fiveHourBg, Black, IconUsage, Reset)
@@ -201,7 +201,12 @@ func Render(data *protocol.StatuslineInput) {
 	// Line 3: Dad joke
 	fmt.Printf("%s%s%s%s", ClearLine, Dim, dadJoke, Reset)
 
-	// Line 4: Git branch
+	// Line 4: Last user command
+	if lastCmd != "" {
+		fmt.Printf("\n%s%s%s%s%s%s", ClearLine, LightGreen, IconLastCmd, lastCmd, Reset, "\033[K")
+	}
+
+	// Line 5: Git branch
 	if gitStatus.BranchLine != "" {
 		fmt.Printf("\n%s", ClearLine)
 		renderBranchLine(gitStatus)
@@ -288,6 +293,86 @@ func countConversationDepth(transcriptPath string) int {
 		}
 	}
 	return count
+}
+
+// transcriptMessage represents a message in the transcript
+type transcriptMessage struct {
+	Type    string `json:"type"`
+	Message struct {
+		Content interface{} `json:"content"`
+	} `json:"message"`
+}
+
+func getLastUserCommand(transcriptPath string, maxLen int) string {
+	if transcriptPath == "" {
+		return ""
+	}
+
+	f, err := os.Open(transcriptPath)
+	if err != nil {
+		return ""
+	}
+	defer f.Close()
+
+	var lastUserMsg string
+	scanner := bufio.NewScanner(f)
+	// Increase buffer size for large lines
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if !strings.Contains(line, `"type":"user"`) {
+			continue
+		}
+
+		var msg transcriptMessage
+		if err := json.Unmarshal([]byte(line), &msg); err != nil {
+			continue
+		}
+
+		// Extract text from content
+		text := extractTextFromContent(msg.Message.Content)
+		if text != "" {
+			lastUserMsg = text
+		}
+	}
+
+	// Clean and truncate
+	lastUserMsg = strings.TrimSpace(lastUserMsg)
+	lastUserMsg = strings.ReplaceAll(lastUserMsg, "\n", " ")
+	lastUserMsg = strings.ReplaceAll(lastUserMsg, "\t", " ")
+
+	// Collapse multiple spaces
+	for strings.Contains(lastUserMsg, "  ") {
+		lastUserMsg = strings.ReplaceAll(lastUserMsg, "  ", " ")
+	}
+
+	if len(lastUserMsg) > maxLen {
+		lastUserMsg = lastUserMsg[:maxLen-3] + "..."
+	}
+
+	return lastUserMsg
+}
+
+func extractTextFromContent(content interface{}) string {
+	switch c := content.(type) {
+	case string:
+		return c
+	case []interface{}:
+		var parts []string
+		for _, item := range c {
+			if m, ok := item.(map[string]interface{}); ok {
+				if m["type"] == "text" {
+					if text, ok := m["text"].(string); ok {
+						parts = append(parts, text)
+					}
+				}
+			}
+		}
+		return strings.Join(parts, " ")
+	}
+	return ""
 }
 
 func getSessionDuration() int {
