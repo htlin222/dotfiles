@@ -5,6 +5,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 echo "== self_test: lib helpers =="

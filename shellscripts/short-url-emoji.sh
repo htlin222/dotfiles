@@ -15,6 +15,7 @@
 # @raycast.description Transform the clipboard contents to a short Emoji URL
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'

@@ -6,6 +6,7 @@
 # Path to the CSS file
 # Define the path to the CSS file
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 FILE_PATH="$HOME/Dropbox/slides/contents/themes/main.css"

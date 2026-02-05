@@ -4,6 +4,7 @@
 # date created: "2023-12-18"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 # 檢查是否提供了標題

@@ -6,6 +6,7 @@
 # description: "pomodoro, need pipx install termdown"
 # 默認參數設置
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 focus_min=${1:-25}

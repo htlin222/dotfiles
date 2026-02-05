@@ -5,6 +5,7 @@
 
 # Note: Make sure Anki is running in the background
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 if ! is_mac; then

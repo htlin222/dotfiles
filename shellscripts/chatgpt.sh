@@ -3,6 +3,7 @@
 # date created: "2023-08-20"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 text=$(pbpaste_cmd | tr -d '\n')

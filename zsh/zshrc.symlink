@@ -358,7 +358,13 @@ fi
 # Lazy load zoxide (saves ~50ms)
 _init_zoxide() {
   unfunction _init_zoxide z zi 2>/dev/null
-  eval "$(zoxide init zsh)"
+  if command -v zoxide >/dev/null 2>&1; then
+    if zoxide init zsh >/dev/null 2>&1; then
+      eval "$(zoxide init zsh)"
+    elif zoxide init --shell zsh >/dev/null 2>&1; then
+      eval "$(zoxide init --shell zsh)"
+    fi
+  fi
 }
 z()  { _init_zoxide; z "$@" }
 zi() { _init_zoxide; zi "$@" }
@@ -370,7 +376,11 @@ _init_atuin_and_up() {
     _atuin_loaded=1
     if [[ -f "$HOME/.atuin/bin/env" ]]; then
       . "$HOME/.atuin/bin/env"
-      eval "$(atuin init zsh)"
+      if atuin init zsh >/dev/null 2>&1; then
+        eval "$(atuin init zsh)"
+      elif atuin init --shell zsh >/dev/null 2>&1; then
+        eval "$(atuin init --shell zsh)"
+      fi
     fi
   fi
   # Call the real up-line-or-history or atuin widget
@@ -387,7 +397,11 @@ _init_atuin_and_search() {
     _atuin_loaded=1
     if [[ -f "$HOME/.atuin/bin/env" ]]; then
       . "$HOME/.atuin/bin/env"
-      eval "$(atuin init zsh)"
+      if atuin init zsh >/dev/null 2>&1; then
+        eval "$(atuin init zsh)"
+      elif atuin init --shell zsh >/dev/null 2>&1; then
+        eval "$(atuin init --shell zsh)"
+      fi
     fi
   fi
   if (( $+functions[_atuin_search_widget] )); then
@@ -410,7 +424,11 @@ _init_direnv() {
   if (( ! _direnv_loaded )); then
     _direnv_loaded=1
     if command -v direnv &>/dev/null; then
-      eval "$(direnv hook zsh)"
+      if direnv hook zsh >/dev/null 2>&1; then
+        eval "$(direnv hook zsh)"
+      elif direnv hook --zsh >/dev/null 2>&1; then
+        eval "$(direnv hook --zsh)"
+      fi
     fi
   fi
 }

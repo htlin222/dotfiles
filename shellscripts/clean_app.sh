@@ -10,6 +10,7 @@ set -o pipefail
 trap "echo 'END'" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 if ! is_mac || ! command -v osascript >/dev/null 2>&1; then

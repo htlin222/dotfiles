@@ -230,8 +230,10 @@ fi
 
 # Fallback clipboard helpers if none are available
 if ! command -v pbcopy &>/dev/null; then
+  unalias pbcopy 2>/dev/null
   pbcopy() { echo "pbcopy not available" >&2; return 127; }
 fi
 if ! command -v pbpaste &>/dev/null; then
+  unalias pbpaste 2>/dev/null
   pbpaste() { echo "pbpaste not available" >&2; return 127; }
 fi

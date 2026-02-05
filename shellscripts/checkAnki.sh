@@ -5,6 +5,7 @@
 # 首先檢查是否有一個進程包含 "/Applications/Anki.app/Contents/Frameworks"，
 # 這個路徑是 Anki 應用程序的典型位置。`grep -v grep` 是用來排除搜尋 `grep` 命令本身的結果。
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 if ! is_mac; then

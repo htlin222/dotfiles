@@ -3,6 +3,7 @@
 # date created: "2023-10-13"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./shellscripts/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 marp --theme $HOME/Dropbox/slides/themes/a4.css "$1" --engine $HOME/Dropbox/slides/engine.js --html -o "$HOME/Dropbox/tmp/${1%.*}.pdf" --allow-local-files --pdf-outlines --pdf-outlines.pages=false --pdf-notes
