@@ -60,7 +60,7 @@ export PATH="/usr/local/sbin:$PATH"
 [[ -d "$HOME/.spicetify" ]] && export PATH="$PATH:$HOME/.spicetify"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
-export PATH="Users/htlin/edirect:${PATH}"
+export PATH="$HOME/edirect:${PATH}"
 export NODE_OPTIONS='--disable-warning=ExperimentalWarning'
 export AIDER_YES_ALWAYS=true
 export AIDER_AUTO_TEST=true
@@ -78,7 +78,11 @@ export AIDER_WATCH_FILES=true
 ## bioSyntax pipe capability on your command line
 ##
 #export HIGHLIGHT="/usr/local/opt/source-highlight/share/source-highlight"
-export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
+if [[ -x "/usr/local/bin/src-hilite-lesspipe.sh" ]]; then
+  export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
+elif [[ -x "/opt/homebrew/bin/src-hilite-lesspipe.sh" ]]; then
+  export LESSOPEN="| /opt/homebrew/bin/src-hilite-lesspipe.sh %s"
+fi
 export LESS=" -R "
 
 alias less='less -NSi -# 10'

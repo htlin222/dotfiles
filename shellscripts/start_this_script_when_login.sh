@@ -2,6 +2,14 @@
 # title: start_this_script_when_login
 # date created: "2023-06-13"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
+if ! is_mac; then
+    echo "This script is macOS-only." >&2
+    exit 1
+fi
+
 # Check if the shell script name is provided as an argument
 if [ -z "$1" ]; then
     echo "Please provide the path to the shell script as an argument."

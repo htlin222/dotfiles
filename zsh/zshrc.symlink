@@ -25,6 +25,9 @@ setopt long_list_jobs
 setopt notify
 unsetopt nomatch
 
+# Ensure DOTFILES is set even in non-login shells
+export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+
 # Initialize Powerlevel10k instant prompt for faster startup
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
@@ -142,7 +145,11 @@ ZSH_WEB_SEARCH_ENGINES=(
 )
 
 # Load oh-my-zsh
-source "$ZSH/oh-my-zsh.sh"
+if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
+  source "$ZSH/oh-my-zsh.sh"
+else
+  echo "Warning: oh-my-zsh not found at $ZSH" >&2
+fi
 
 ##############################
 ### Plugin Lazy Loading    ###
@@ -248,7 +255,7 @@ source "$DOTFILES/zsh/modules/fn_media.zsh"
 source "$DOTFILES/zsh/modules/fn_secrets.zsh"
 [[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
 
-source "$HOME/.uvv"
+[[ -f "$HOME/.uvv" ]] && source "$HOME/.uvv"
 
 # Lazy load external tools
 # Lazy load fnm (Node version manager)
@@ -325,7 +332,11 @@ if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
   # Notification (OS-specific)
   if [[ -n "$IS_MAC" ]]; then
-    screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
+    if command -v screen &>/dev/null; then
+      screen -dm bash -c 'osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1'
+    else
+      osascript -e "display notification \"uv .venv is activated ✨\" with title \"Python Venv\"" >/dev/null 2>&1 &
+    fi
   elif command -v notify-send &>/dev/null; then
     notify-send "Python Venv" "uv .venv is activated ✨" 2>/dev/null &!
   fi
@@ -431,5 +442,3 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # HTTP Proxy (sourced from separate config file for security)
 [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
-
-

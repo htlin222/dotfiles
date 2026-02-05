@@ -2,12 +2,20 @@
 # title: openai
 # date created: "2023-08-20"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
 
-text=$( pbpaste | tr -d '\n')
+text=$(pbpaste_cmd | tr -d '\n')
 if [ -n "$text" ]; then
     title="即將繁中解釋的文字如下"
-    osascript -e "display notification \"$text\" with title \"$title\" sound name \"default\""
-    $OPENAI_API_KEY=$(op read op://Dev/chat_GPT/api\ key)
+    notify "$title" "$text"
+    if command -v op >/dev/null 2>&1; then
+        OPENAI_API_KEY="$(op read op://Dev/chat_GPT/api\ key)"
+    fi
+    if [ -z "$OPENAI_API_KEY" ]; then
+        echo "OPENAI_API_KEY not set" >&2
+        exit 1
+    fi
     response=$( curl https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -20,12 +28,12 @@ if [ -n "$text" ]; then
     content=$(echo "$response" | jq -r '.choices[0].message.content')
     # echo "$content" > response.txt
     title="完成"
-    osascript -e "display notification \"$content\" with title \"$title\" sound name \"default\""
-    echo "$content" | pbcopy
+    notify "$title" "$content"
+    echo "$content" | pbcopy_cmd
     echo "done"
 else
     echo "The clipboard is empty."
     title="剪貼版裡面沒有東西"
     text="你確定你有文字要處理嗎？"
-    osascript -e "display notification \"$text\" with title \"$title\" sound name \"default\""
+    notify "$title" "$text"
 fi

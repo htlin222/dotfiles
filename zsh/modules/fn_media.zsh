@@ -10,7 +10,11 @@ function yt-mp3() {
 # YouTube playlist to MP3
 function yt-mp3-list() {
   folder_name=$(basename "$(pwd)")
-  yt-dlp --extract-audio --audio-format mp3 $(pbpaste) -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"
+  if ! command -v pbpaste &>/dev/null; then
+    echo "pbpaste not available" >&2
+    return 127
+  fi
+  yt-dlp --extract-audio --audio-format mp3 "$(pbpaste)" -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"
 }
 
 # YouTube playlist download
@@ -76,7 +80,9 @@ transcribe_audio() {
     --header "Content-Type: multipart/form-data" \
     --form file=@${file_path} \
     --form model=whisper-1 | jq -r '.text' >"${output_file}"
-  cat $output_file | pbcopy
+  if command -v pbcopy &>/dev/null; then
+    cat "$output_file" | pbcopy
+  fi
   bat $output_file
 }
 

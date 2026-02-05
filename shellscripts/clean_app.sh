@@ -9,6 +9,14 @@ set -ue
 set -o pipefail
 trap "echo 'END'" EXIT
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
+if ! is_mac || ! command -v osascript >/dev/null 2>&1; then
+  echo "This script is macOS-only (requires osascript)." >&2
+  exit 1
+fi
+
 # 設定閒置時間 (秒) ，這裡設定為 1800 秒 (30 分鐘)
 IDLE_TIME=18
 

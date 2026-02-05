@@ -4,11 +4,18 @@
 # date: "2023-12-20"
 
 # Note: Make sure Anki is running in the background
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
+if ! is_mac; then
+	echo "This script is macOS-only." >&2
+	exit 1
+fi
 
 if ! ps aux | grep "/Applications/Anki.app/Contents/Frameworks" | grep -v grep >/dev/null; then
 	echo "Anki is not running. Starting Anki..."
 	# 開啟 Anki
-	open -g /Applications/Anki.app
+	open_cmd -g /Applications/Anki.app
 	# 等待 3 秒，讓 Anki 有時間啟動
 	sleep 3
 
@@ -30,7 +37,7 @@ today=$(date +%y-%m-%d)
 dest_dir="$base_dest_dir/$today"
 # Ensure the destination directory exists, create if it doesn't.
 mkdir -p "$dest_dir"
-open -g /Applications/Anki.app
+open_cmd -g /Applications/Anki.app
 # Set the Internal Field Separator to newline for handling filenames with spaces.
 IFS=$'\n'
 # Find all files in the source directory tagged with 'ankinew'.
@@ -38,7 +45,11 @@ files_with_ankinew=$(rg -l -- 'ankinew' "$source_dir")
 # Iterate through the list of files found.
 for file in $files_with_ankinew; do
 	# Replace 'ankinew' with 'ankicard' in each file.
-	sed -i '' 's/ankinew/ankicard/g' "$file"
+	if is_mac; then
+		sed -i '' 's/ankinew/ankicard/g' "$file"
+	else
+		sed -i 's/ankinew/ankicard/g' "$file"
+	fi
 	# Extract the filename from the full path.
 	filename=$(basename -- "$file")
 	# Remove the file extension from the filename.

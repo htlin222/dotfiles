@@ -3,6 +3,9 @@
 # title: "cliptotxt"
 # date created: "2023-12-18"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
 # 檢查是否提供了標題
 if [ -z "$1" ]; then
 	echo "請提供標題作為參數，例如：cliptotext.sh \"標題\""
@@ -19,7 +22,7 @@ if [ ! -d "$directory" ]; then
 fi
 
 # 將剪貼板中的文本保存到文件
-pbpaste >"$filename"
+pbpaste_cmd >"$filename"
 
 echo "文本已保存到 $filename"
 exit 0

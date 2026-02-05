@@ -80,7 +80,18 @@ function rga-fzf() {
       --preview-window="70%:wrap"
   )" &&
     echo "opening $file" &&
-    xdg-open "$file"
+    {
+      if command -v xdg-open &>/dev/null; then
+        xdg-open "$file"
+      elif command -v open &>/dev/null; then
+        open "$file"
+      elif command -v gio &>/dev/null; then
+        gio open "$file"
+      else
+        echo "No open command found (xdg-open/open/gio)" >&2
+        return 127
+      fi
+    }
 }
 
 # Delete line from file with fzf

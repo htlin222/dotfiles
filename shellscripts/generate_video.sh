@@ -3,6 +3,9 @@
 #  --- SETUP ---
 # Remember to Check if the command "edge-tts" exists
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
 if [ $# -lt 1 ]; then
     echo "Usage: $0 -f <input_file>"
     exit 1
@@ -41,7 +44,11 @@ process_file() {
     # marp --image png "$1" --image-scale 2
     sed 's/<!--\([^>]*\)-->/[\1]/g' "$1" >> "${base_name}_mod.md"
     # TODO: Remove ![setting](image.jpg)
-    sed -i '' '/!\[.*\](.*)/d' ${base_name}_mod.md
+    if is_mac; then
+        sed -i '' '/!\[.*\](.*)/d' "${base_name}_mod.md"
+    else
+        sed -i '/!\[.*\](.*)/d' "${base_name}_mod.md"
+    fi
     # NB: Option 1: clean up markdown by pandoc
     # pandoc -f markdown -t plain --wrap=none "${base_name}_mod.md" -o "${base_name}.txt"
     # NB: Option 2: extract comment only
@@ -53,14 +60,26 @@ process_file() {
     # Name: zh-TW-YunJheNeural Gender: Male
     edge-tts --rate=+25% --voice zh-TW-YunJheNeural -f "${base_name}.txt" --write-media "${base_name}.mp3" --write-subtitles "${base_name}.vtt"
     # TODO: fix the ugly code
-    sed -i "" 's/\([^A-Za-z]\)[[:space:]]\([^A-Za-z]\)/\1\2/g' "${base_name}.vtt"
-    sed -i "" 's/\([^A-Za-z]\)[[:space:]]\([^A-Za-z]\)/\1\2/g' "${base_name}.vtt"
+    if is_mac; then
+        sed -i "" 's/\([^A-Za-z]\)[[:space:]]\([^A-Za-z]\)/\1\2/g' "${base_name}.vtt"
+        sed -i "" 's/\([^A-Za-z]\)[[:space:]]\([^A-Za-z]\)/\1\2/g' "${base_name}.vtt"
+    else
+        sed -i 's/\([^A-Za-z]\)[[:space:]]\([^A-Za-z]\)/\1\2/g' "${base_name}.vtt"
+        sed -i 's/\([^A-Za-z]\)[[:space:]]\([^A-Za-z]\)/\1\2/g' "${base_name}.vtt"
+    fi
     perl -i -pe 's/(?<=\S)-->(?=\S)/ --> /g' "${base_name}.vtt"
     ffmpeg -y -i "${base_name}.vtt" "${base_name}.srt" -hide_banner
     # Remove white spaces
 
     input_image="${base_name}.png"
-    image_width=$(sips -g pixelWidth "$input_image" | grep pixelWidth | awk '{print $2}')
+    if command -v sips >/dev/null 2>&1; then
+        image_width=$(sips -g pixelWidth "$input_image" | grep pixelWidth | awk '{print $2}')
+    elif command -v identify >/dev/null 2>&1; then
+        image_width=$(identify -format "%w" "$input_image")
+    else
+        echo "Missing image width tool (sips or identify)" >&2
+        return 1
+    fi
     input_audio="${base_name}.mp3"
     output_video="${base_name}.mp4"
     duration=$(ffprobe -i "$input_audio" -show_entries format=duration -v quiet -of csv="p=0")
@@ -92,4 +111,4 @@ ffmpeg -y -f concat -safe 0 -i "$input_list" -c:v libx264 -c:a aac -strict exper
 echo "🟢 DONE 🟢"
 message="$output_file"
 title="影片輸出已完成"
-osascript -e "display notification \"$message\" with title \"$title\" sound name \"default\""
+notify "$title" "$message"

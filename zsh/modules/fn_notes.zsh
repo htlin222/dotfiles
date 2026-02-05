@@ -111,6 +111,10 @@ function draft() {
 # Add note from clipboard
 function note() {
   cd ~/Dropbox/Medical/
+  if ! command -v pbpaste &>/dev/null; then
+    echo "pbpaste not available" >&2
+    return 127
+  fi
   content=$(pbpaste)
   title="\n## Note: $(date +"%Y-%m-%d %H:%M")\n"
   content_with_title="$title$content"
@@ -165,7 +169,16 @@ function pdf() {
   (marp_serve >/dev/null 2>&1 &)
   FILE=$(find . -path ./node_modules -prune -o -type f -name "*.pdf" -print | sed 's|^\./||' | fzf-pre)
   if [ -n "$FILE" ]; then
-    open "$FILE"
+    if command -v open &>/dev/null; then
+      open "$FILE"
+    elif command -v xdg-open &>/dev/null; then
+      xdg-open "$FILE"
+    elif command -v gio &>/dev/null; then
+      gio open "$FILE"
+    else
+      echo "No open command found (open/xdg-open/gio)" >&2
+      return 127
+    fi
   else
     echo "溫故而知新，可以為師矣"
   fi
@@ -177,7 +190,16 @@ function slide() {
   (check_and_start_marp_serve >/dev/null 2>&1 &)
   FILE=$(find . -path ./node_modules -prune -o -type f -name "*.md" -print | sed 's|^\./||' | fzf-pre)
   if [ -n "$FILE" ]; then
-    (open "http://localhost:8080/$FILE" &)
+    if command -v open &>/dev/null; then
+      (open "http://localhost:8080/$FILE" &)
+    elif command -v xdg-open &>/dev/null; then
+      (xdg-open "http://localhost:8080/$FILE" &)
+    elif command -v gio &>/dev/null; then
+      (gio open "http://localhost:8080/$FILE" &)
+    else
+      echo "No open command found (open/xdg-open/gio)" >&2
+      return 127
+    fi
     nvim +10 "$FILE"
   else
     echo "苟日新，日日新，又日新。"

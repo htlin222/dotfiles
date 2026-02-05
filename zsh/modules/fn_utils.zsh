@@ -86,7 +86,16 @@ function rename_in_sqb() {
 
 # xdg-open in background
 function xdgopen() {
-  xdg-open "$1" &>/dev/null &
+  if command -v xdg-open &>/dev/null; then
+    xdg-open "$1" &>/dev/null &
+  elif command -v open &>/dev/null; then
+    open "$1" &>/dev/null &
+  elif command -v gio &>/dev/null; then
+    gio open "$1" &>/dev/null &
+  else
+    echo "No open command found (xdg-open/open/gio)" >&2
+    return 127
+  fi
 }
 
 # tre with aliases
@@ -94,7 +103,14 @@ function tre() { command tre "$@" -e && source "/tmp/tre_aliases_$USER" 2>/dev/n
 
 # Undelete file from trash
 function undelfile() {
-  mv -i ~/.Trash/files/$@ ./
+  if [[ -n "$IS_MAC" ]]; then
+    mv -i ~/.Trash/files/"$@" ./
+  elif command -v gio &>/dev/null; then
+    gio trash --restore "$@"
+  else
+    echo "Trash restore not supported on this OS" >&2
+    return 1
+  fi
 }
 
 # Marp slide server
@@ -136,7 +152,11 @@ function mediumog() {
 chore() {
   for file in *; do
     if [[ -f "$file" && ! -L "$file" ]]; then
-      mod_date=$(date -r "$file" +"%Y-%m-%d")
+      if [[ -n "$IS_MAC" ]]; then
+        mod_date=$(date -r "$file" +"%Y-%m-%d")
+      else
+        mod_date=$(date -d "@$(stat -c %Y "$file")" +"%Y-%m-%d")
+      fi
       if [[ ! "$file" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}_ ]]; then
         filename_no_ext="${file%.*}"
         new_folder="${mod_date}_${filename_no_ext}"
@@ -183,7 +203,14 @@ findfeed() {
 _get_lan_peer() {
   local HOST_A="192.168.0.219"
   local HOST_B="192.168.0.222"
-  local my_ip=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
+  local my_ip=""
+  if [[ -n "$IS_MAC" ]]; then
+    my_ip=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
+  elif command -v ip &>/dev/null; then
+    my_ip=$(ip -o -4 addr show scope global | awk '{print $4}' | cut -d/ -f1 | head -n1)
+  elif command -v hostname &>/dev/null; then
+    my_ip=$(hostname -I 2>/dev/null | awk '{print $1}')
+  fi
 
   if [[ "$my_ip" == "$HOST_A" ]]; then
     echo "$HOST_B"
@@ -298,9 +325,14 @@ line() {
 
   if [[ -n "$file" ]]; then
     if $yank; then
-      printf "%s:%s\n%s" "@${fullpath}" " See Line${line}:" "${content}" | pbcopy
-      echo "Copied: ${fullpath}:${line}"
-      echo "${content}"
+      if command -v pbcopy &>/dev/null; then
+        printf "%s:%s\n%s" "@${fullpath}" " See Line${line}:" "${content}" | pbcopy
+        echo "Copied: ${fullpath}:${line}"
+        echo "${content}"
+      else
+        echo "pbcopy not available; printing content instead:" >&2
+        printf "%s:%s\n%s\n" "@${fullpath}" " See Line${line}:" "${content}"
+      fi
     else
       nvim "+$line" "$file"
     fi

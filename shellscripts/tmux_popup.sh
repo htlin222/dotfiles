@@ -22,6 +22,16 @@ session_name="floating_${current_session_name}"
 
 startup_command="$1"
 
+# Fallback for tmux versions without popup (pre-3.2)
+if ! tmux -V | awk '{split($2,a,"."); exit !(a[1]>3 || (a[1]==3 && a[2]>=2))}'; then
+	if [ -z "$startup_command" ]; then
+		tmux new-window -n "$session_name" -c "$parent_session_dir"
+	else
+		tmux new-window -n "$session_name" -c "$parent_session_dir" "$startup_command"
+	fi
+	exit 0
+fi
+
 # Check if the floating popup session already exists
 if tmux has-session -t "$session_name" 2>/dev/null; then
 	tmux popup -w 90% -h 80% -E "bash -c \"tmux attach -t $session_name\""

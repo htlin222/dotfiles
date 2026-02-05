@@ -5,6 +5,9 @@
 # Version: 1.0.0
 # description: "pomodoro, need pipx install termdown"
 # 默認參數設置
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
 focus_min=${1:-25}
 break_min=${2:-5}
 long_break_min=${3:-15}
@@ -24,13 +27,13 @@ while true; do
 	# Link start
 	(ffplay -v 0 -nodisp -autoexit "$focus_audio" &>/dev/null &)
 	printf "\n\033[32m📚第%d專注時間：%d 分鐘。開始！ 現在時間：%s\033[0m\n" "$cycle_count" "$focus_min" "$(date '+%Y-%m-%d %H:%M:%S')"
-	osascript -e "display notification \"$tomato\" with title \"番茄鐘開始於$(date '+%H:%M:%S')\""
+	notify "番茄鐘開始於$(date '+%H:%M:%S')" "$tomato"
 	termdown -T "Focus📚" "$focus_min"m
 
 	if ((cycle_count % cycle_for_long_break == 0)); then
 		# Long Break
 		printf "\033[34m長休息時間：%d 分鐘。\033[0m\n" "$long_break_min"
-		osascript -e "display notification \"記得起來走走🚶\" with title \"🦦長休息到了，現在$(date '+%H:%M:%S')\""
+		notify "🦦長休息到了，現在$(date '+%H:%M:%S')" "記得起來走走🚶"
 		(ffplay -v 0 -nodisp -autoexit "$long_break_audio" &>/dev/null &)
 		termdown -T "Break🛌" "$long_break_min"m
 		cycle_count=0
@@ -38,13 +41,13 @@ while true; do
 	else
 		# Short Break
 		printf "\033[34m🕹️休息時間：%d 分鐘。在3秒後開始\033[0m\n" "$break_min"
-		osascript -e "display notification \"記得起來喝水🚰\" with title \"短休息到了$(date '+%H:%M:%S')\""
+		notify "短休息到了$(date '+%H:%M:%S')" "記得起來喝水🚰"
 		(ffplay -v 0 -nodisp -autoexit "$short_break_audio" &>/dev/null &)
 		termdown -T "Break🛌" "$break_min"m
 	fi
 
 	echo "休息時間結束。準備回到工作吧！💪"
-	osascript -e 'display notification with title "休息結束" subtitle "💪"'
+	notify "休息結束" "💪"
 	read -t 5 -p "按'q'退出，5秒內無操作將自動繼續：" user_input
 	if [ "$?" -eq 0 ] && [ "$user_input" = "q" ]; then
 		echo "🍅番茄鐘結束，後會有期。🤗"

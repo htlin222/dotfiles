@@ -1,11 +1,17 @@
 # Cross-platform aliases
 if [[ -n "$IS_MAC" ]]; then
-  curl -fsSL https://raw.githubusercontent.com/Chat2AnyLLM/code-assistant-manager/main/install.sh | bash alias open="open"
   alias xdg-open="open"
 else
-  alias open="xdg-open"
-  # Clipboard support for Linux (requires xclip or xsel)
-  if command -v xclip &>/dev/null; then
+  if command -v xdg-open &>/dev/null; then
+    alias open="xdg-open"
+  elif command -v gio &>/dev/null; then
+    alias open="gio open"
+  fi
+  # Clipboard support for Linux (prefer wl-clipboard, then xclip/xsel)
+  if command -v wl-copy &>/dev/null; then
+    alias pbcopy='wl-copy'
+    alias pbpaste='wl-paste'
+  elif command -v xclip &>/dev/null; then
     alias pbcopy='xclip -selection clipboard'
     alias pbpaste='xclip -selection clipboard -o'
   elif command -v xsel &>/dev/null; then
@@ -78,11 +84,17 @@ alias rsync_progress='rsync --archive --acls --xattrs --hard-links --verbose --p
 alias bc='bc --quiet <(echo "scale=5;print\"scale=5\n\"")'
 # Google Drive (macOS only)
 [[ -n "$IS_MAC" ]] && alias googledrive="cd $HOME/Library/CloudStorage/GoogleDrive-ppoiu87@gmail.com/我的雲端硬碟"
-alias xo='xdg-open'
+if command -v xdg-open &>/dev/null; then
+  alias xo='xdg-open'
+elif command -v open &>/dev/null; then
+  alias xo='open'
+fi
 alias lc='lolcat'
 alias asco="yazi ~/Documents/textbook/ASCO-SEP/"
 alias ash="yazi ~/Documents/textbook/8th\ ASH-SEP/"
-alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
+if command -v gio &>/dev/null; then
+  alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
+fi
 alias ses='sesh connect $(sesh list | fzf)'
 alias mv="mv -iv"
 alias rm="rm -i"
@@ -110,9 +122,15 @@ alias fdfzf="fd --type f | fzf --preview 'bat --style=numbers --color=always {}'
 alias marp-serve="marp_serve"
 alias marpimg="marp --theme-set ~/Dropbox/slides/themes --html --images png"
 alias nstart="nvim --startuptime startup.log -c exit && tail -100 startup.log"
-alias o='open'
+if command -v open &>/dev/null; then
+  alias o='open'
+fi
 alias ohmyzsh="vim ~/.oh-my-zsh"
-alias opn='xdg-open'
+if command -v xdg-open &>/dev/null; then
+  alias opn='xdg-open'
+elif command -v open &>/dev/null; then
+  alias opn='open'
+fi
 alias lsgist='gh gist list --limit 30'
 alias jj='cd ~/Dropbox/sprint/ && fcd && ls'
 alias kk='cd ~/Dropbox/slowburn/ && fcd && ls'
@@ -208,4 +226,12 @@ if command -v oco &>/dev/null; then
 fi
 
 # better-rm: 更安全的 rm 命令 / A safer rm command
-alias rm='/home/htlin222/.better-rm/better-rm'
+[[ -x "/home/htlin222/.better-rm/better-rm" ]] && alias rm='/home/htlin222/.better-rm/better-rm'
+
+# Fallback clipboard helpers if none are available
+if ! command -v pbcopy &>/dev/null; then
+  pbcopy() { echo "pbcopy not available" >&2; return 127; }
+fi
+if ! command -v pbpaste &>/dev/null; then
+  pbpaste() { echo "pbpaste not available" >&2; return 127; }
+fi
