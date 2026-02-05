@@ -1,6 +1,6 @@
 # Claude Code Go Tools Makefile
 
-.PHONY: all build install test clean fmt lint
+.PHONY: all build install setup-path test clean fmt lint
 
 # Binary names
 HOOKS_BIN = claude-hooks
@@ -49,6 +49,62 @@ install: build
 	@echo '  },'
 	@echo '  "statusline": {"enabled": true, "command": "$(STATUSLINE_BIN)"}'
 
+# Setup PATH in shell config (works on macOS and Linux)
+setup-path:
+	@SHELL_RC=""; \
+	OS=$$(uname -s); \
+	CURRENT_SHELL=$$(basename "$$SHELL"); \
+	echo "Detected: $$OS, shell: $$CURRENT_SHELL"; \
+	if [ "$$CURRENT_SHELL" = "zsh" ]; then \
+		if [ "$$OS" = "Darwin" ]; then \
+			SHELL_RC="$$HOME/.zshrc"; \
+		else \
+			if [ -f "$$HOME/.zshrc" ]; then \
+				SHELL_RC="$$HOME/.zshrc"; \
+			else \
+				SHELL_RC="$$HOME/.zprofile"; \
+			fi; \
+		fi; \
+	elif [ "$$CURRENT_SHELL" = "bash" ]; then \
+		if [ "$$OS" = "Darwin" ]; then \
+			if [ -f "$$HOME/.bash_profile" ]; then \
+				SHELL_RC="$$HOME/.bash_profile"; \
+			else \
+				SHELL_RC="$$HOME/.profile"; \
+			fi; \
+		else \
+			if [ -f "$$HOME/.bashrc" ]; then \
+				SHELL_RC="$$HOME/.bashrc"; \
+			elif [ -f "$$HOME/.bash_profile" ]; then \
+				SHELL_RC="$$HOME/.bash_profile"; \
+			else \
+				SHELL_RC="$$HOME/.profile"; \
+			fi; \
+		fi; \
+	elif [ "$$CURRENT_SHELL" = "fish" ]; then \
+		SHELL_RC="$$HOME/.config/fish/config.fish"; \
+		mkdir -p "$$HOME/.config/fish"; \
+	else \
+		SHELL_RC="$$HOME/.profile"; \
+	fi; \
+	echo "Using: $$SHELL_RC"; \
+	touch "$$SHELL_RC"; \
+	if grep -q '\.local/bin' "$$SHELL_RC" 2>/dev/null; then \
+		echo "$(INSTALL_DIR) already configured in $$SHELL_RC"; \
+	else \
+		if [ "$$CURRENT_SHELL" = "fish" ]; then \
+			echo '' >> "$$SHELL_RC"; \
+			echo '# Added by claude-tools' >> "$$SHELL_RC"; \
+			echo 'set -gx PATH $$HOME/.local/bin $$PATH' >> "$$SHELL_RC"; \
+		else \
+			echo '' >> "$$SHELL_RC"; \
+			echo '# Added by claude-tools' >> "$$SHELL_RC"; \
+			echo 'export PATH="$$HOME/.local/bin:$$PATH"' >> "$$SHELL_RC"; \
+		fi; \
+		echo "Added $(INSTALL_DIR) to $$SHELL_RC"; \
+		echo "Run: source $$SHELL_RC (or restart terminal)"; \
+	fi
+
 # Run tests
 test:
 	@go test -v ./...
@@ -78,6 +134,7 @@ help:
 	@echo "  build       - Build both binaries"
 	@echo "  build-debug - Build with debug info"
 	@echo "  install     - Build and install to ~/.local/bin"
+	@echo "  setup-path  - Add ~/.local/bin to shell PATH"
 	@echo "  test        - Run tests"
 	@echo "  fmt         - Format code"
 	@echo "  lint        - Lint code"
