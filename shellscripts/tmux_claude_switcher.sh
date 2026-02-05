@@ -2,6 +2,51 @@
 # title: "tmux_claude_switcher"
 # version: 3.4.0 - active always fresh, inactive cached
 # description: Claude pane switcher - active panes fresh, inactive sessions cached
+#
+# ============================================================================
+# TMUX SETUP TUTORIAL
+# ============================================================================
+#
+# This script provides a fuzzy-finder interface to switch between Claude
+# sessions in tmux. Active panes show with ● and inactive (resumable)
+# sessions show with ○.
+#
+# PREREQUISITES:
+#   - fzf (brew install fzf)
+#   - Claude CLI (claude)
+#
+# INSTALLATION:
+#   1. Save this script somewhere in your PATH or a known location, e.g.:
+#        ~/.dotfiles/shellscripts/tmux_claude_switcher.sh
+#
+#   2. Make it executable:
+#        chmod +x ~/.dotfiles/shellscripts/tmux_claude_switcher.sh
+#
+#   3. Add the following to your ~/.tmux.conf:
+#
+#        # Claude session switcher - fuzzy find and switch between Claude panes
+#        bind-key C-c run-shell -b "~/.dotfiles/shellscripts/tmux_claude_switcher.sh"
+#
+#      Or with popup (recommended for better UX):
+#
+#        bind-key C-c display-popup -E -w 80% -h 60% "~/.dotfiles/shellscripts/tmux_claude_switcher.sh"
+#
+#   4. Reload tmux config:
+#        tmux source-file ~/.tmux.conf
+#
+# USAGE:
+#   - Press your prefix (usually Ctrl-b) + Ctrl-c to open the switcher
+#   - Use arrow keys or type to filter sessions
+#   - Press Enter to:
+#     • Switch to an active Claude pane (● green dot)
+#     • Resume an inactive session in a new window (○ circle)
+#
+# CUSTOMIZATION:
+#   - Change ACTIVE_TTL (line ~12) to adjust cache refresh for active panes
+#   - Change INACTIVE_TTL (line ~13) to adjust cache refresh for inactive sessions
+#   - Modify the keybinding in tmux.conf to your preference (e.g., bind-key M-c)
+#
+# ============================================================================
 
 session=$(tmux display-message -p '#S')
 CLAUDE_DIR="$HOME/.claude/projects"
