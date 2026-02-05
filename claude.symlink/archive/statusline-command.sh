@@ -1,0 +1,571 @@
+#!/bin/bash
+#
+# Claude Code Statusline Script
+# A custom statusline for Claude Code CLI with real-time usage metrics
+#
+# ============================================================================
+# INSTALLATION
+# ============================================================================
+#
+# 1. Download this script:
+#    curl -o ~/.claude/statusline-command.sh https://gist.githubusercontent.com/YOUR_USERNAME/GIST_ID/raw/statusline-command.sh
+#
+# 2. Make it executable:
+#    chmod +x ~/.claude/statusline-command.sh
+#
+# 3. Add to your Claude Code settings (~/.claude/settings.json):
+#    {
+#      "statusline": {
+#        "enabled": true,
+#        "command": "~/.claude/statusline-command.sh"
+#      }
+#    }
+#
+# 4. Restart Claude Code to see the statusline
+#
+# ============================================================================
+# REQUIREMENTS
+# ============================================================================
+#
+# - Nerd Font (for icons): https://www.nerdfonts.com/
+# - jq (JSON processor): brew install jq / apt install jq
+# - curl (for dad jokes API)
+# - macOS Keychain access (for OAuth token to fetch real usage data)
+#
+# ============================================================================
+# FEATURES
+# ============================================================================
+#
+# - Vim mode indicator (INSERT=green, NORMAL=yellow, VISUAL=magenta)
+# - Model name with icon
+# - Current directory
+# - Session tokens (input + output)
+# - Session cost in USD
+# - Burn rate (cost per hour)
+# - Lines changed (+added / -removed)
+# - Conversation depth (number of turns)
+# - Context bar with current usage % (uses current_usage for accuracy)
+# - 5-hour usage % with time until reset (color-coded)
+# - 7-day usage % (color-coded)
+# - Session duration
+# - Dad joke (cached, updates every 5 minutes)
+# - Git branch status with ahead/behind indicators (color-coded)
+# - Git file status with colored status codes (max 6, overflow indicator)
+#
+# Color coding: green (<60%) -> yellow (60-74%) -> orange (75-89%) -> red (90%+)
+#
+# ============================================================================
+# ICONS USED (Nerd Font)
+# ============================================================================
+#
+# \ue7c5  - Vim mode
+# \ue20f  - Model (Claude)
+# \uf07b  - Folder
+# \U000f0b77  - Session tokens
+# \uf490  - Burn rate
+# \uf44d  - Lines changed
+# \uf075  - Conversation depth
+# \uef0c  - 5-hour usage
+# \U000f00ed  - Weekly usage
+# \ueaa4  - Context window
+# \U000f0954  - Time/clock
+# \ue725  - Git branch
+#
+# ============================================================================
+
+# Colors: green (normal) -> yellow (60%) -> orange (75%) -> red (90%)
+
+# ANSI color codes
+GREEN='\033[32m'
+YELLOW='\033[33m'
+ORANGE='\033[93m'
+RED='\033[31m'
+LIGHT_BLUE='\033[38;5;117m'
+LIGHT_GREEN='\033[38;5;119m'
+CLAUDE_ORANGE='\033[38;5;209m'
+GRAY='\033[38;5;245m'
+WHITE='\033[37m'
+BLACK='\033[30m'
+RESET='\033[0m'
+DIM='\033[2m'
+
+# Background colors for labels
+BG_GREEN='\033[42m'
+BG_YELLOW='\033[43m'
+BG_ORANGE='\033[103m'
+BG_RED='\033[41m'
+
+# Nerd Font icons
+ICON_MODEL=$'\ue20f '
+# Folder icons - Seti-UI range (safe)
+ICON_FOLDER_GIT=$'\ue5fb '   # Git folder
+ICON_FOLDER=$'\ue5ff '       # Regular folder
+ICON_SEP_LEFT=$'\ue0ba'
+ICON_SEP_RIGHT=$'\ue0bc'
+ICON_CONTEXT=$'\ueaa4 '
+# Using Codicons range (EA60-EBEB) - safe width
+ICON_USAGE=$'\ueded'   # Codicons
+ICON_WEEKLY=$'\ueebf'  # Codicons calendar
+ICON_TIME=$'\U000f0954 '
+ICON_SESSION=$'\U000f0b77 '
+ICON_VIM=$'\ue7c5 '
+ICON_LINES=$'\uf44d '
+ICON_BURN=$'\uf490 '
+ICON_DEPTH=$'\uf075 '
+
+# Vim mode colors
+CYAN='\033[36m'
+MAGENTA='\033[35m'
+
+# Color function based on percentage (foreground)
+get_color() {
+    local pct=$1
+    if [ "$pct" -ge 90 ]; then
+        echo -e "$RED"
+    elif [ "$pct" -ge 75 ]; then
+        echo -e "$ORANGE"
+    elif [ "$pct" -ge 60 ]; then
+        echo -e "$YELLOW"
+    else
+        echo -e "$GREEN"
+    fi
+}
+
+# Background color function based on percentage
+get_bg_color() {
+    local pct=$1
+    if [ "$pct" -ge 90 ]; then
+        echo -e "$BG_RED"
+    elif [ "$pct" -ge 75 ]; then
+        echo -e "$BG_ORANGE"
+    elif [ "$pct" -ge 60 ]; then
+        echo -e "$BG_YELLOW"
+    else
+        echo -e "$BG_GREEN"
+    fi
+}
+
+# Read JSON input from stdin
+input=$(cat)
+
+# Extract model display name
+model=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
+
+# Get session cost in USD
+session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
+session_cost_display=$(printf "$%.2f" "$session_cost")
+
+# Get vim mode
+vim_mode=$(echo "$input" | jq -r '.vim.mode // "NORMAL"')
+case "$vim_mode" in
+    INSERT) vim_color="$GREEN" ;;
+    NORMAL) vim_color="$YELLOW" ;;
+    VISUAL) vim_color="$MAGENTA" ;;
+    *) vim_color="$GRAY" ;;
+esac
+
+# Get lines changed
+lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
+lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
+
+# Get conversation depth (count turns from transcript)
+transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+    # Count user messages (conversation turns)
+    conv_depth=$(grep -c '"type":"user"' "$transcript_path" 2>/dev/null) || conv_depth=0
+else
+    conv_depth=0
+fi
+
+# Get current directory name (not full path)
+dir_path=$(echo "$input" | jq -r '.workspace.current_dir // "."')
+dir=$(basename "$dir_path")
+
+# Check if directory is a git repo
+if git -C "$dir_path" rev-parse --git-dir >/dev/null 2>&1; then
+    folder_icon="$ICON_FOLDER_GIT"
+else
+    folder_icon="$ICON_FOLDER"
+fi
+
+# Language detection - safe Nerd Font icons
+ICON_PYTHON=$'\ue73c'
+ICON_JS=$'\ued0d'
+ICON_RPROJECT=$'\uedc1'
+ICON_RUST=$'\ue7a8'
+ICON_LUA=$'\ue826'
+ICON_MARKDOWN=$'\ueb1d'
+
+lang_icon=""
+if [ -f "$dir_path/Cargo.toml" ]; then
+    lang_icon="$ICON_RUST"
+elif [ -f "$dir_path/package.json" ]; then
+    lang_icon="$ICON_JS"
+elif [ -f "$dir_path/pyproject.toml" ] || [ -f "$dir_path/setup.py" ] || [ -f "$dir_path/requirements.txt" ]; then
+    lang_icon="$ICON_PYTHON"
+elif ls "$dir_path"/*.Rproj >/dev/null 2>&1 || [ -f "$dir_path/DESCRIPTION" ]; then
+    lang_icon="$ICON_RPROJECT"
+elif [ -f "$dir_path/init.lua" ] || ls "$dir_path"/*.lua >/dev/null 2>&1; then
+    lang_icon="$ICON_LUA"
+elif ls "$dir_path"/*.md >/dev/null 2>&1 && ! ls "$dir_path"/*.py "$dir_path"/*.js "$dir_path"/*.ts "$dir_path"/*.rs >/dev/null 2>&1; then
+    lang_icon="$ICON_MARKDOWN"
+fi
+
+# Fetch real usage data from Anthropic OAuth API
+get_real_usage() {
+    # Get OAuth token from macOS Keychain
+    local creds=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null)
+    if [ -z "$creds" ]; then
+        echo ""
+        return
+    fi
+
+    local token=$(echo "$creds" | jq -r '.claudeAiOauth.accessToken // empty')
+    if [ -z "$token" ]; then
+        echo ""
+        return
+    fi
+
+    # Call the usage API
+    curl -s "https://api.anthropic.com/api/oauth/usage" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $token" \
+        -H "anthropic-beta: oauth-2025-04-20" \
+        2>/dev/null
+}
+
+# Get real usage data
+usage_data=$(get_real_usage)
+
+if [ -n "$usage_data" ] && [ "$usage_data" != "null" ]; then
+    # Parse real usage data
+    five_hour_pct=$(echo "$usage_data" | jq -r '.five_hour.utilization // 0' | cut -d. -f1)
+    weekly_pct=$(echo "$usage_data" | jq -r '.seven_day.utilization // 0' | cut -d. -f1)
+
+    # Get reset times
+    five_hour_reset=$(echo "$usage_data" | jq -r '.five_hour.resets_at // empty')
+    weekly_reset=$(echo "$usage_data" | jq -r '.seven_day.resets_at // empty')
+
+    # Calculate time left until reset
+    if [ -n "$five_hour_reset" ] && [ "$five_hour_reset" != "null" ]; then
+        time_left=$(python3 -c "
+from datetime import datetime, timezone
+try:
+    ts = '$five_hour_reset'
+    if '+' in ts:
+        reset_dt = datetime.fromisoformat(ts)
+    else:
+        reset_dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
+    now = datetime.now(timezone.utc)
+    diff = reset_dt - now
+    total_seconds = int(diff.total_seconds())
+    if total_seconds < 0:
+        print('0m')
+    elif total_seconds < 3600:
+        minutes = total_seconds // 60
+        print(f'{minutes}m')
+    else:
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        print(f'{hours}h{minutes:02d}m')
+except:
+    print('--')
+" 2>/dev/null || echo "--")
+    else
+        time_left="--"
+    fi
+
+    # Format weekly reset date as mm/dd
+    if [ -n "$weekly_reset" ] && [ "$weekly_reset" != "null" ]; then
+        weekly_reset_date=$(python3 -c "
+from datetime import datetime
+try:
+    ts = '$weekly_reset'
+    if '+' in ts:
+        reset_dt = datetime.fromisoformat(ts)
+    else:
+        reset_dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
+    print(reset_dt.strftime('%m/%d %H:%M'))
+except:
+    print('--')
+" 2>/dev/null || echo "--")
+    else
+        weekly_reset_date="--"
+    fi
+
+    five_hour_display="${five_hour_pct}%"
+    weekly_display="${weekly_pct}%"
+else
+    five_hour_pct=0
+    weekly_pct=0
+    time_left="--"
+    weekly_reset_date="--"
+    five_hour_display="N/A"
+    weekly_display="N/A"
+fi
+
+# Calculate session tokens (cumulative - for display only)
+total_input=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
+total_output=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
+session_tokens=$((total_input + total_output))
+
+# Format session tokens (K suffix)
+if [ $session_tokens -ge 1000000 ]; then
+    session_display_tokens="$(echo "scale=1; $session_tokens / 1000000" | bc)M"
+elif [ $session_tokens -ge 1000 ]; then
+    session_display_tokens="$(echo "scale=1; $session_tokens / 1000" | bc)K"
+else
+    session_display_tokens="${session_tokens}"
+fi
+
+# Calculate CURRENT context usage from current_usage (accurate, not cumulative)
+# See: https://code.claude.com/docs/en/statusline#context-window-usage
+window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+current_input=$(echo "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
+cache_creation=$(echo "$input" | jq -r '.context_window.current_usage.cache_creation_input_tokens // 0')
+cache_read=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
+current_tokens=$((current_input + cache_creation + cache_read))
+
+# Calculate context percentage (add 20% baseline for system overhead)
+if [ "$window_size" -gt 0 ] 2>/dev/null; then
+    context_pct=$((current_tokens * 100 / window_size + 20))
+    [ "$context_pct" -gt 100 ] && context_pct=100
+else
+    context_pct=20
+fi
+
+# Format current tokens for display
+if [ $current_tokens -ge 1000000 ]; then
+    current_display="$(echo "scale=1; $current_tokens / 1000000" | bc)M"
+elif [ $current_tokens -ge 1000 ]; then
+    current_display="$(echo "scale=1; $current_tokens / 1000" | bc)K"
+else
+    current_display="${current_tokens}"
+fi
+
+# Format window size for display
+if [ $window_size -ge 1000000 ]; then
+    window_display="$(echo "scale=0; $window_size / 1000000" | bc)M"
+elif [ $window_size -ge 1000 ]; then
+    window_display="$(echo "scale=0; $window_size / 1000" | bc)K"
+else
+    window_display="${window_size}"
+fi
+
+# Generate context bar (10 chars wide)
+bar_width=10
+filled=$((context_pct * bar_width / 100))
+[ "$filled" -gt "$bar_width" ] && filled=$bar_width
+empty=$((bar_width - filled))
+context_color=$(get_color $context_pct)
+bar_filled=$(printf '█%.0s' $(seq 1 $filled 2>/dev/null) 2>/dev/null)
+bar_empty=$(printf '░%.0s' $(seq 1 $empty 2>/dev/null) 2>/dev/null)
+context_bar="${context_color}${bar_filled}${GRAY}${bar_empty}${RESET}"
+
+# Get colors for each metric (foreground and background)
+five_hour_color=$(get_color $five_hour_pct)
+five_hour_bg=$(get_bg_color $five_hour_pct)
+weekly_color=$(get_color $weekly_pct)
+weekly_bg=$(get_bg_color $weekly_pct)
+
+# Session time tracking
+PARENT_SESSION_FILE="/tmp/claude_session_start_$PPID"
+if [ -f "$PARENT_SESSION_FILE" ]; then
+    session_start=$(cat "$PARENT_SESSION_FILE")
+else
+    session_start=$(date +%s)
+    echo "$session_start" > "$PARENT_SESSION_FILE"
+fi
+current_time=$(date +%s)
+elapsed=$((current_time - session_start))
+elapsed_min=$((elapsed / 60))
+session_display=$(printf "%dm" $elapsed_min)
+
+# Calculate burn rate (cost per hour)
+if [ $elapsed_min -gt 0 ]; then
+    burn_rate=$(echo "scale=2; $session_cost * 60 / $elapsed_min" | bc 2>/dev/null || echo "0")
+else
+    burn_rate="0"
+fi
+
+# Output the formatted statusline
+# Clear line escape: \033[2K clears entire line to prevent ghosting during rapid updates
+CLEAR_LINE='\033[2K'
+
+# Synchronized Update Mode (DEC 2026) - tells terminal to batch all updates atomically
+# Prevents flickering/ghosting during rapid re-renders
+# Supported: iTerm2, Kitty, WezTerm, Alacritty 0.13+, Ghostty, Windows Terminal, foot
+# See: https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036
+SYNC_START='\033[?2026h'
+SYNC_END='\033[?2026l'
+
+# Begin synchronized update - terminal holds visual updates until SYNC_END
+printf "${SYNC_START}"
+
+# Line 1: model, folder, tokens, cost, time, burn, lines, depth, vim
+printf "${CLEAR_LINE}${CLAUDE_ORANGE}${ICON_MODEL}%s${RESET} " "$model"
+printf "${WHITE}${folder_icon}%s${RESET}" "$dir"
+[ -n "$lang_icon" ] && printf " ${CYAN}%s${RESET}" "$lang_icon"
+printf " ${LIGHT_BLUE}%s${RESET} " "$session_display_tokens"
+printf "${LIGHT_GREEN}%s${RESET}/${GRAY}%s${RESET}=${CYAN}\$%s/h${RESET} " "$session_cost_display" "$session_display" "$burn_rate"
+printf "${GREEN}+%s${RESET}${RED}-%s${RESET} " "$lines_added" "$lines_removed"
+printf "${LIGHT_BLUE}%b%s${RESET} " "$ICON_DEPTH" "$conv_depth"
+printf "${vim_color}%b%s${RESET}\n" "$ICON_VIM" "$vim_mode"
+# Line 2: context bar, 5h usage, weekly
+# Context segment
+printf "${CLEAR_LINE}%b${ICON_CONTEXT}${RESET}" "$context_color"
+printf "%b " "$context_bar"
+printf "%b%s${RESET}/%s " "$context_color" "$current_display" "$window_display"
+printf "%b%d%%${RESET}" "$context_color" "$context_pct"
+# Compaction warning when context > 80%
+[ "$context_pct" -gt 80 ] && printf " ${RED}\uea6c${RESET}" || printf " "
+# 5-hour segment - using safe single-width icon
+printf "%b${BLACK} ${ICON_USAGE} ${RESET}" "$five_hour_bg"
+printf "%b${ICON_SEP_RIGHT}${RESET} " "$five_hour_color"
+printf "%b%s${RESET} " "$five_hour_color" "$five_hour_display"
+printf "${GRAY}\ueb7c %s${RESET} " "$time_left"
+# Weekly segment
+printf "%b${BLACK} ${ICON_WEEKLY} ${RESET}" "$weekly_bg"
+printf "%b${ICON_SEP_RIGHT}${RESET} " "$weekly_color"
+printf "%b%s${RESET} " "$weekly_color" "$weekly_display"
+printf "${GRAY}%s${RESET}\033[K\n" "$weekly_reset_date"
+
+# Dad joke with 5-minute cache
+DAD_JOKE_CACHE="/tmp/claude_dad_joke_cache"
+DAD_JOKE_LOCK="/tmp/claude_dad_joke_lock"
+# Clean up stale lock (older than 60 seconds)
+if [ -d "$DAD_JOKE_LOCK" ]; then
+    lock_age=$(($(date +%s) - $(stat -f %m "$DAD_JOKE_LOCK" 2>/dev/null || echo "0")))
+    [ "$lock_age" -gt 60 ] && rmdir "$DAD_JOKE_LOCK" 2>/dev/null
+fi
+# Use 5-minute intervals: floor(minute/5)*5
+current_5min=$(date +%Y%m%d%H)$(printf "%02d" $(($(date +%-M) / 5 * 5)))
+
+# Check if cache exists and is from current 5-min window
+if [ -f "$DAD_JOKE_CACHE" ]; then
+    cached_time=$(head -1 "$DAD_JOKE_CACHE" 2>/dev/null)
+    if [ "$cached_time" = "$current_5min" ]; then
+        dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
+    fi
+fi
+
+# If no cached joke, fetch new one (with lock to prevent concurrent requests)
+if [ -z "$dad_joke" ]; then
+    if mkdir "$DAD_JOKE_LOCK" 2>/dev/null; then
+        dad_joke=$(curl -s --connect-timeout 1 --max-time 2 -H "Accept: text/plain" "https://icanhazdadjoke.com/" 2>/dev/null)
+        if [ -n "$dad_joke" ]; then
+            echo "$current_5min" > "$DAD_JOKE_CACHE"
+            echo "$dad_joke" >> "$DAD_JOKE_CACHE"
+        fi
+        rmdir "$DAD_JOKE_LOCK" 2>/dev/null
+    else
+        # Lock held, use old cached joke regardless of age
+        if [ -f "$DAD_JOKE_CACHE" ]; then
+            dad_joke=$(tail -n +2 "$DAD_JOKE_CACHE")
+        fi
+    fi
+fi
+
+# Display joke or fallback (Line 3)
+if [ -n "$dad_joke" ]; then
+    printf "${CLEAR_LINE}${DIM}%s${RESET}" "$dad_joke"
+else
+    printf "${CLEAR_LINE}${DIM}Keep coding and stay curious!${RESET}"
+fi
+
+# Git status with colored branch and status codes
+git_dir=$(echo "$input" | jq -r '.workspace.current_dir // "."')
+
+# Branch status line
+ICON_BRANCH=$'\ue725 '
+branch_line=$(git -C "$git_dir" status -sb 2>/dev/null | head -1)
+if [ -n "$branch_line" ]; then
+    printf "\n${CLEAR_LINE}"
+    # Remove ## prefix and replace with icon
+    branch_line="${branch_line#\#\# }"
+    # Colorize [ahead X], [behind Y], or [ahead X, behind Y]
+    # Using ● (U+25CF) for both - safe single-width Unicode
+    if [[ "$branch_line" == *"ahead"* ]] && [[ "$branch_line" == *"behind"* ]]; then
+        # Both - yellow status
+        prefix="${branch_line%% \[*}"
+        status="${branch_line##*\[}"
+        status="${status%\]}"
+        ahead_num=$(echo "$status" | grep -o 'ahead [0-9]*' | grep -o '[0-9]*')
+        behind_num=$(echo "$status" | grep -o 'behind [0-9]*' | grep -o '[0-9]*')
+        ahead_dots=$(printf '●%.0s' $(seq 1 ${ahead_num:-0}))
+        behind_dots=$(printf '●%.0s' $(seq 1 ${behind_num:-0}))
+        printf "${ICON_BRANCH}%s ${YELLOW}[%s]${RESET} ${GREEN}%s${RESET} ${RED}%s${RESET}\n" "$prefix" "$status" "$ahead_dots" "$behind_dots"
+    elif [[ "$branch_line" == *"ahead"* ]]; then
+        # Ahead only - green
+        prefix="${branch_line%% \[*}"
+        status="${branch_line##*\[}"
+        status="${status%\]}"
+        ahead_num=$(echo "$status" | grep -o '[0-9]*')
+        ahead_dots=$(printf '●%.0s' $(seq 1 ${ahead_num:-0}))
+        printf "${ICON_BRANCH}%s ${GREEN}[%s] %s${RESET}\n" "$prefix" "$status" "$ahead_dots"
+    elif [[ "$branch_line" == *"behind"* ]]; then
+        # Behind only - red
+        prefix="${branch_line%% \[*}"
+        status="${branch_line##*\[}"
+        status="${status%\]}"
+        behind_num=$(echo "$status" | grep -o '[0-9]*')
+        behind_dots=$(printf '●%.0s' $(seq 1 ${behind_num:-0}))
+        printf "${ICON_BRANCH}%s ${RED}[%s] %s${RESET}\n" "$prefix" "$status" "$behind_dots"
+    else
+        # Up to date or no remote
+        printf "${ICON_BRANCH}%s\n" "$branch_line"
+    fi
+fi
+
+git_status_all=$(git -C "$git_dir" status -s 2>/dev/null | grep -v '^##')
+git_status_count=$(echo "$git_status_all" | grep -c . 2>/dev/null || echo "0")
+git_status=$(echo "$git_status_all" | head -6)
+if [ -n "$git_status" ]; then
+    while IFS= read -r line; do
+        if [ -n "$line" ]; then
+            # XY format: X=index, Y=worktree
+            x_char="${line:0:1}"
+            y_char="${line:1:1}"
+            rest="${line:2}"
+
+            # Color X (index status)
+            case "$x_char" in
+                M) x_colored="${YELLOW}M${RESET}" ;;
+                A) x_colored="${GREEN}A${RESET}" ;;
+                D) x_colored="${RED}D${RESET}" ;;
+                R) x_colored="${LIGHT_BLUE}R${RESET}" ;;
+                C) x_colored="${LIGHT_BLUE}C${RESET}" ;;
+                T) x_colored="${ORANGE}T${RESET}" ;;
+                U) x_colored="${RED}U${RESET}" ;;
+                \?) x_colored="${GRAY}?${RESET}" ;;
+                !) x_colored="${DIM}!${RESET}" ;;
+                *) x_colored="$x_char" ;;
+            esac
+
+            # Color Y (worktree status)
+            case "$y_char" in
+                M) y_colored="${YELLOW}M${RESET}" ;;
+                A) y_colored="${GREEN}A${RESET}" ;;
+                D) y_colored="${RED}D${RESET}" ;;
+                R) y_colored="${LIGHT_BLUE}R${RESET}" ;;
+                C) y_colored="${LIGHT_BLUE}C${RESET}" ;;
+                T) y_colored="${ORANGE}T${RESET}" ;;
+                U) y_colored="${RED}U${RESET}" ;;
+                \?) y_colored="${GRAY}?${RESET}" ;;
+                !) y_colored="${DIM}!${RESET}" ;;
+                *) y_colored="$y_char" ;;
+            esac
+
+            printf "${CLEAR_LINE}%b%b%s\n" "$x_colored" "$y_colored" "$rest"
+        fi
+    done <<< "$git_status"
+    # Show overflow message if more than 6 files
+    if [ "$git_status_count" -gt 6 ]; then
+        extra=$((git_status_count - 6))
+        printf "${CLEAR_LINE}${DIM}[+%d more, use git status -sb]${RESET}\n" "$extra"
+    fi
+fi
+
+# End synchronized update - terminal now renders all buffered changes atomically
+printf "${SYNC_END}"

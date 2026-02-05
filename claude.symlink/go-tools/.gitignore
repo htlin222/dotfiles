@@ -1,0 +1,15 @@
+# Compiled binaries
+claude-hooks
+claude-statusline
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Dependency directories
+vendor/

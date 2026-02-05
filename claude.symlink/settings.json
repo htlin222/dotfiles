@@ -200,7 +200,7 @@
 	},
 	"statusLine": {
 		"type": "command",
-		"command": "claude-statusline"
+		"command": "command -v claude-statusline >/dev/null && claude-statusline || echo '[!] claude-statusline not found. Run: cd ~/.dotfiles/claude.symlink/go-tools && make'"
 	},
 	"enabledPlugins": {
 		"superpowers@superpowers-dev": true
