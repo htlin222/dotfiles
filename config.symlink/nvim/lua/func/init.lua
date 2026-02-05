@@ -40,9 +40,23 @@ end
 
 function M.copy_outline_to_clipboard()
   local current_buffer_file = vim.api.nvim_buf_get_name(0) -- 獲取當前緩衝檔案的名稱
+  -- 跨平台剪貼板命令
+  local copy_cmd
+  if vim.fn.has("mac") == 1 then
+    copy_cmd = "pbcopy"
+  elseif vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 1 then
+    copy_cmd = "wl-copy"
+  elseif vim.fn.executable("xclip") == 1 then
+    copy_cmd = "xclip -selection clipboard"
+  elseif vim.fn.executable("xsel") == 1 then
+    copy_cmd = "xsel --clipboard --input"
+  else
+    vim.notify("No clipboard tool found!", vim.log.levels.ERROR)
+    return
+  end
   local command = 'sed -n \'/<!-- _header: "Outline" -->/,/<!-- _footer: "" -->/{/<!-- _header: "Outline" -->/!{/<!-- _footer: "" -->/!p;};}\' '
     .. current_buffer_file
-    .. " | pbcopy"
+    .. " | " .. copy_cmd
   os.execute(command) -- 執行命令
   print "臭蜥蜴"
 end
@@ -52,7 +66,16 @@ function M.open_with_default_app()
   local current_file = vim.fn.expand "%:p" -- 獲取當前緩衝區的檔案路徑
   local user_input = vim.fn.input("要打開📂" .. vim.fn.expand "%" .. "嗎? [Y]是 [N]否): ")
   if user_input == "y" then
-    local open_command = "open " .. vim.fn.shellescape(current_file)
+    -- 跨平台打開命令
+    local open_cmd
+    if vim.fn.has("mac") == 1 then
+      open_cmd = "open"
+    elseif vim.fn.has("unix") == 1 then
+      open_cmd = "xdg-open"
+    elseif vim.fn.has("win32") == 1 then
+      open_cmd = "start"
+    end
+    local open_command = open_cmd .. " " .. vim.fn.shellescape(current_file)
     vim.fn.system(open_command)
     print "開🔥"
   else

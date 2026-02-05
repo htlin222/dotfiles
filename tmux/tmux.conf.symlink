@@ -31,7 +31,7 @@ set -sg escape-time 0
 
 # Pass through terminal environment variables for image support (WezTerm, iTerm2, Kitty)
 set -g update-environment "TERM_PROGRAM TERM_PROGRAM_VERSION"
-
+set -g allow-passthrough on
 # This is OS/X specific and should only be enabled when the 'reattach-to-user-namespace' is installed
 # set -g default-command "reattach-to-user-namespace -l /bin/bash"
 # bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
@@ -105,7 +105,7 @@ if-shell -b 'tmux -V | awk "{split(\$2,a,\".\"); exit !(a[1]>3 || (a[1]==3 && a[
 bind -n S-Up   run-shell "$HOME/.dotfiles/shellscripts/tmux_claude_nav.sh prev"
 bind -n S-Down run-shell "$HOME/.dotfiles/shellscripts/tmux_claude_nav.sh next"
 
-set -g mouse off  # Let terminal handle selection natively (Ghostty over SSH)
+set -g mouse on  # Let terminal handle selection natively (Ghostty over SSH)
 # Mouse scroll enters copy mode automatically
 bind -n WheelUpPane if-shell -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e; send-keys -M'
 bind -n WheelDownPane send-keys -M

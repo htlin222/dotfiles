@@ -36,5 +36,87 @@ vim.g.did_load_netrw = 1 -- 禁用 Netrw 文件瀏覽器
 vim.markdown_folding = 1 -- 啟用 Markdown 文件折疊
 vim.cmd [[highlight NotifyBackground guibg=#1e1e1e]] -- 設定背景顏色
 
+-- 跨平台剪貼板配置 (cross-platform clipboard)
+-- 優先順序：
+-- 1. SSH/tmux 環境 → OSC 52（直接透過終端傳到本機）
+-- 2. macOS → pbcopy/pbpaste
+-- 3. Linux Wayland → wl-copy/wl-paste
+-- 4. Linux X11 → xclip 或 xsel
+local function setup_clipboard()
+  local is_ssh = vim.env.SSH_TTY ~= nil or vim.env.SSH_CLIENT ~= nil
+  local is_tmux = vim.env.TMUX ~= nil
+  local is_wayland = vim.env.WAYLAND_DISPLAY ~= nil
+  local is_mac = vim.fn.has("mac") == 1
+
+  -- SSH/tmux 環境優先使用 OSC 52（即使有 xclip 也用不到本機剪貼板）
+  if is_ssh or is_tmux then
+    vim.g.clipboard = {
+      name = "OSC 52",
+      copy = {
+        ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+        ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+      },
+      paste = {
+        ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+        ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+      },
+    }
+  elseif is_mac then
+    vim.g.clipboard = {
+      name = "macOS-clipboard",
+      copy = {
+        ["+"] = "pbcopy",
+        ["*"] = "pbcopy",
+      },
+      paste = {
+        ["+"] = "pbpaste",
+        ["*"] = "pbpaste",
+      },
+      cache_enabled = 0,
+    }
+  elseif is_wayland and vim.fn.executable("wl-copy") == 1 then
+    vim.g.clipboard = {
+      name = "wayland-clipboard",
+      copy = {
+        ["+"] = "wl-copy --foreground --type text/plain",
+        ["*"] = "wl-copy --foreground --type text/plain --primary",
+      },
+      paste = {
+        ["+"] = "wl-paste --no-newline",
+        ["*"] = "wl-paste --no-newline --primary",
+      },
+      cache_enabled = 0,
+    }
+  elseif vim.fn.executable("xclip") == 1 then
+    vim.g.clipboard = {
+      name = "xclip",
+      copy = {
+        ["+"] = "xclip -selection clipboard",
+        ["*"] = "xclip -selection primary",
+      },
+      paste = {
+        ["+"] = "xclip -selection clipboard -o",
+        ["*"] = "xclip -selection primary -o",
+      },
+      cache_enabled = 0,
+    }
+  elseif vim.fn.executable("xsel") == 1 then
+    vim.g.clipboard = {
+      name = "xsel",
+      copy = {
+        ["+"] = "xsel --clipboard --input",
+        ["*"] = "xsel --primary --input",
+      },
+      paste = {
+        ["+"] = "xsel --clipboard --output",
+        ["*"] = "xsel --primary --output",
+      },
+      cache_enabled = 0,
+    }
+  end
+end
+
+setup_clipboard()
+
 -- 立即加載自動命令配置，確保 BufNewFile 事件能正常觸發
 require "autocmd"
