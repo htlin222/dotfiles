@@ -1,6 +1,8 @@
 #!/bin/zsh -f
+# Suppress all stderr during cache building
+exec 2>/dev/null
 # title: "tmux_claude_switcher"
-# version: 3.4.0 - active always fresh, inactive cached
+# version: 3.6.1 - sort inactive by recency (newest first)
 # description: Claude pane switcher - active panes fresh, inactive sessions cached
 #
 # ============================================================================
@@ -52,7 +54,7 @@ session=$(tmux display-message -p '#S')
 CLAUDE_DIR="$HOME/.claude/projects"
 CACHE_DIR="/tmp/tmux_claude_cache"
 ACTIVE_CACHE="$CACHE_DIR/${session}_active_v1"
-INACTIVE_CACHE="$CACHE_DIR/${session}_inactive_v1"
+INACTIVE_CACHE="$CACHE_DIR/${session}_inactive_v2"
 TOPIC_CACHE="$CACHE_DIR/topics_v4"
 ACTIVE_TTL=10
 INACTIVE_TTL=30
@@ -66,6 +68,17 @@ C_MAGENTA=$'\033[35m'
 C_GREEN=$'\033[32m'
 C_DIM=$'\033[2m'
 C_RESET=$'\033[0m'
+
+# Format relative time (3 char): 2m, 5h, 3d, 2w, 3M
+rel_time() {
+    local secs=$1
+    (( secs < 60 )) && { printf "%2ds" $secs; return; }
+    (( secs < 3600 )) && { printf "%2dm" $((secs/60)); return; }
+    (( secs < 86400 )) && { printf "%2dh" $((secs/3600)); return; }
+    (( secs < 604800 )) && { printf "%2dd" $((secs/86400)); return; }
+    (( secs < 2592000 )) && { printf "%2dw" $((secs/604800)); return; }
+    printf "%2dM" $((secs/2592000))
+}
 
 # Get topic and branch from JSONL (cached)
 get_info() {
@@ -93,7 +106,9 @@ get_info() {
 # === ACTIVE PANES (10s cache) ===
 typeset -A active_cwds
 typeset -a active_items
-max_id=0 max_dir=0 max_branch=0
+max_id=0
+max_dir=15
+max_branch=15
 
 use_active_cache=0
 if [[ -f "$ACTIVE_CACHE" ]]; then
@@ -107,8 +122,6 @@ if (( use_active_cache )); then
         IFS='|' read -r id dir branch topic cwd <<< "$line"
         active_cwds[$cwd]=1
         (( ${#id} > max_id )) && max_id=${#id}
-        (( ${#dir} > max_dir )) && max_dir=${#dir}
-        (( ${#branch} > max_branch )) && max_branch=${#branch}
     done < "$ACTIVE_CACHE"
 else
     typeset -A claude_pids
@@ -140,8 +153,6 @@ else
             cache_content+="$item"$'\n'
 
             (( ${#pane_id} > max_id )) && max_id=${#pane_id}
-            (( ${#dir} > max_dir )) && max_dir=${#dir}
-            (( ${#branch} > max_branch )) && max_branch=${#branch}
         fi
     done < <(tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}|#{pane_current_path}')
 
@@ -162,24 +173,21 @@ fi
 
 if (( use_inactive_cache )); then
     while IFS= read -r line; do
-        # Format: short_id|dir|branch|topic|session_id|cwd
+        # Format: short_id|dir|branch|topic|session_id|cwd|mtime
         inactive_items+=("$line")
-        short_id=$(echo "$line" | cut -d'|' -f1)
-        dir=$(echo "$line" | cut -d'|' -f2)
-        branch=$(echo "$line" | cut -d'|' -f3)
         cwd=$(echo "$line" | cut -d'|' -f6)
 
         # Skip if now active
         [[ -n "${active_cwds[$cwd]}" ]] && continue
 
+        short_id=$(echo "$line" | cut -d'|' -f1)
         (( ${#short_id} > max_id )) && max_id=${#short_id}
-        (( ${#dir} > max_dir )) && max_dir=${#dir}
-        (( ${#branch} > max_branch )) && max_branch=${#branch}
         ((inactive_count++))
     done < "$INACTIVE_CACHE"
 else
-    # Rebuild inactive cache
+    # Rebuild inactive cache (suppress glob errors)
     cache_content=""
+    setopt NULL_GLOB 2>/dev/null
     for project_dir in "$CLAUDE_DIR"/*(/Nom[1,15]); do
         (( inactive_count >= 15 )) && break
         latest=$(/bin/ls -t "$project_dir"/*.jsonl 2>/dev/null | head -1)
@@ -200,26 +208,35 @@ else
         session_id="${latest:t:r}"
         dir="${cwd:t}"
         short_id="${session_id:0:8}"
+        file_mtime=$(stat -f %m "$latest" 2>/dev/null || stat -c %Y "$latest" 2>/dev/null || echo 0)
 
-        item="${short_id}|${dir}|${branch}|${topic}|${session_id}|${cwd}"
+        item="${short_id}|${dir}|${branch}|${topic}|${session_id}|${cwd}|${file_mtime}"
         inactive_items+=("$item")
         cache_content+="$item"$'\n'
 
         (( ${#short_id} > max_id )) && max_id=${#short_id}
-        (( ${#dir} > max_dir )) && max_dir=${#dir}
-        (( ${#branch} > max_branch )) && max_branch=${#branch}
         ((inactive_count++))
     done
-    # Save cache
-    echo -n "$cache_content" > "$INACTIVE_CACHE"
+    # Sort and save cache (newest first)
+    echo -n "$cache_content" | sort -t'|' -k7 -rn > "$INACTIVE_CACHE"
+    # Reload sorted
+    inactive_items=()
+    while IFS= read -r line; do
+        [[ -n "$line" ]] && inactive_items+=("$line")
+    done < "$INACTIVE_CACHE"
 fi
 
 # === BUILD OUTPUT ===
 output=""
 
+# Truncate helper: truncate string to max length
+trunc() { [[ ${#1} -gt $2 ]] && echo "${1:0:$((2-1))}…" || echo "$1"; }
+
 # Active panes
 for item in "${active_items[@]}"; do
     IFS='|' read -r id dir branch topic cwd <<< "$item"
+    dir=$(trunc "$dir" $max_dir)
+    branch=$(trunc "$branch" $max_branch)
 
     line="${C_GREEN}●${C_RESET} "
     line+="${C_CYAN}$(printf "%-${max_id}s" "$id")${C_RESET} "
@@ -243,14 +260,21 @@ if (( active_count > 0 && inactive_count > 0 )); then
 fi
 
 # Inactive sessions
+now=$(date +%s)
 for item in "${inactive_items[@]}"; do
-    IFS='|' read -r short_id dir branch topic session_id cwd <<< "$item"
+    IFS='|' read -r short_id dir branch topic session_id cwd file_mtime <<< "$item"
 
     # Skip if now active
     [[ -n "${active_cwds[$cwd]}" ]] && continue
 
+    dir=$(trunc "$dir" $max_dir)
+    branch=$(trunc "$branch" $max_branch)
+    age=$((now - file_mtime))
+    time_str=$(rel_time $age)
+
     line="${C_DIM}○${C_RESET} "
     line+="${C_CYAN}$(printf "%-${max_id}s" "$short_id")${C_RESET} "
+    line+="${C_DIM}${time_str}${C_RESET} "
     line+="${C_YELLOW}$(printf "%-${max_dir}s" "$dir")${C_RESET}"
 
     if (( max_branch > 0 )); then
