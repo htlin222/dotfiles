@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -20,6 +21,9 @@ import (
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/patterns"
 )
+
+// errStopWalk signals filepath.Walk to stop walking (Go 1.18 compatible alternative to filepath.SkipAll)
+var errStopWalk = errors.New("stop walking")
 
 // Project types for detection
 var projectTypes = map[string]struct {
@@ -180,7 +184,7 @@ func checkLargeProject(cwd string, st *state.State) string {
 		}
 		fileCount++
 		if fileCount > 100 {
-			return filepath.SkipAll
+			return errStopWalk
 		}
 		return nil
 	})

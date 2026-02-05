@@ -220,6 +220,12 @@ add-zsh-hook precmd _load_deferred_plugins
 ### Extra Configs          ###
 ##############################
 
+# SSH Agent for GitLab
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  eval "$(ssh-agent -s)" > /dev/null
+fi
+ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null
+
 export ENABLE_LSP_TOOLS=1
 
 
@@ -458,3 +464,10 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # HTTP Proxy (sourced from separate config file for security)
 [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
+
+# bun completions
+[ -s "/home/htlin222/.bun/_bun" ] && source "/home/htlin222/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

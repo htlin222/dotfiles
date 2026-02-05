@@ -1,10 +1,15 @@
+# Include platform-specific credential config
+# Symlink ~/.gitconfig-credential to the appropriate file:
+#   Linux: ln -sf ~/dotfile/git/gitconfig-credential-linux ~/.gitconfig-credential
+#   macOS: ln -sf ~/dotfile/git/gitconfig-credential-macos ~/.gitconfig-credential
+[include]
+    path = ~/.gitconfig-credential
+
 [user]
 	email = hsieh.ting.lin@gmail.com
 	name = Hsiehting Lin
 	useConfigOnly = true
 	signingkey = 5EF303FEF4BD9F0F
-
-[includeIf "hasconfig:remote.*.url:**/*kfsyscc*/**"]
 
 [gpg]
 	format = openpgp
