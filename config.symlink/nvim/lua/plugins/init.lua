@@ -6,13 +6,18 @@ return {
       require "configs.conform"
     end,
   },
-  { "echasnovski/mini.nvim", version = false },
-  { "nvim-java/nvim-java" },
+  { "echasnovski/mini.nvim", version = false, event = "VeryLazy" },
+  { "nvim-java/nvim-java", ft = "java" },
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       -- Load NvChad LSP base setup (diagnostics, base46 theme, LspAttach keymaps)
-      dofile(vim.g.base46_cache .. "lsp")
+      local uv = vim.uv or vim.loop
+      local lsp_cache = vim.g.base46_cache .. "lsp"
+      if uv.fs_stat(lsp_cache) then
+        pcall(dofile, lsp_cache)
+      end
       require("nvchad.lsp").diagnostic_config()
       -- Load custom LSP configurations using vim.lsp.config API
       require "configs.lspconfig"
@@ -20,6 +25,7 @@ return {
   },
   {
     "williamboman/mason.nvim",
+    event = "VeryLazy",
     opts = {
       ui = {
         icons = {
@@ -64,6 +70,7 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       ensure_installed = {
         "css",

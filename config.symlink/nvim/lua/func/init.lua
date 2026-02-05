@@ -68,12 +68,16 @@ function M.open_with_default_app()
   if user_input == "y" then
     -- 跨平台打開命令
     local open_cmd
-    if vim.fn.has("mac") == 1 then
+    if vim.fn.has("mac") == 1 and vim.fn.executable("open") == 1 then
       open_cmd = "open"
-    elseif vim.fn.has("unix") == 1 then
+    elseif vim.fn.has("unix") == 1 and vim.fn.executable("xdg-open") == 1 then
       open_cmd = "xdg-open"
     elseif vim.fn.has("win32") == 1 then
       open_cmd = "start"
+    end
+    if not open_cmd then
+      vim.notify("No system open command found", vim.log.levels.WARN)
+      return
     end
     local open_command = open_cmd .. " " .. vim.fn.shellescape(current_file)
     vim.fn.system(open_command)

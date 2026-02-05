@@ -1,5 +1,10 @@
 local augroup = vim.api.nvim_create_augroup -- Create/get autocommand group
 local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
+local uv = vim.uv or vim.loop
+
+if vim.fn.executable("im-select") ~= 1 then
+	return
+end
 
 -- 優化：使用異步jobstart避免阻塞，並添加防抖動機制
 local last_im_check = 0
@@ -18,7 +23,7 @@ end
 autocmd("InsertEnter", {
 	group = augroup("InsertBefore", { clear = true }),
 	callback = function()
-		local now = vim.uv.now()
+		local now = (uv and uv.now) and uv.now() or (os.time() * 1000)
 		if now - last_im_check < debounce_delay then
 			return
 		end
@@ -34,7 +39,7 @@ autocmd("InsertEnter", {
 autocmd("InsertLeavePre", {
 	group = augroup("IMswitch", { clear = true }),
 	callback = function()
-		local now = vim.uv.now()
+		local now = (uv and uv.now) and uv.now() or (os.time() * 1000)
 		if now - last_im_check < debounce_delay then
 			return
 		end

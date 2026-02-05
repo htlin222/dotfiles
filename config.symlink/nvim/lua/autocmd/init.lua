@@ -5,14 +5,15 @@ local vim = vim
 
 local augroup = vim.api.nvim_create_augroup -- Create/get autocommand group
 local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
+local portable = require "utils.portable"
 
 -----------------------------------------------------------
 -- Autocommand functions
 -----------------------------------------------------------
 
--- 優化：使用vim.uv.os_uname()代替系統調用，性能更好
-local uname = vim.uv.os_uname()
-if uname.sysname == "Linux" then
+-- 優化：使用 uv.os_uname() 或 vim.fn.has() 判斷系統
+local sysname = portable.os()
+if sysname == "Linux" then
   require "autocmd.linux"
 else
   require "autocmd.macos" -- macOS, FreeBSD, etc.
@@ -83,6 +84,9 @@ autocmd("BufWritePost", {
   group = augroup("GraphvizAutocommands", { clear = true }),
   pattern = "*.gv",
   callback = function()
+    if vim.fn.executable("dot") ~= 1 then
+      return
+    end
     local filename = vim.fn.expand "%"
     local output = vim.fn.expand "%:r" .. ".svg"
     local cmd = "dot -Tsvg " .. vim.fn.shellescape(filename) .. " -o " .. vim.fn.shellescape(output)

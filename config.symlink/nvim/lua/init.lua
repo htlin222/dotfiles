@@ -10,12 +10,14 @@ if vim.g.vscode then
   return -- 提前退出，不執行後續代碼
 end
 
+local uv = vim.uv or vim.loop
+
 -- 引導安裝 lazy.nvim 插件管理器和所有插件
 -- 定義 lazy.nvim 的安裝路徑
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 -- 檢查 lazy.nvim 是否已安裝，如果沒有則自動安裝
-if not vim.uv.fs_stat(lazypath) then
+if not uv.fs_stat(lazypath) then
   local repo = "https://github.com/folke/lazy.nvim.git"
   -- 使用 git 克隆 lazy.nvim 倉庫到指定路徑
   vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
@@ -57,11 +59,11 @@ vim.schedule(function()
   local defaults_file = vim.g.base46_cache .. "defaults"
   local statusline_file = vim.g.base46_cache .. "statusline"
   
-  if vim.uv.fs_stat(defaults_file) then
+  if uv.fs_stat(defaults_file) then
     dofile(defaults_file)
   end
   
-  if vim.uv.fs_stat(statusline_file) then
+  if uv.fs_stat(statusline_file) then
     dofile(statusline_file)
   end
 end)

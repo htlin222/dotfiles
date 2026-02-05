@@ -1,4 +1,5 @@
 local M = {}
+local portable = require "utils.portable"
 
 -- Be sure to explicitly define these LuaSnip node abbreviations!
 local ls = require("luasnip")
@@ -30,8 +31,20 @@ function M.get_buffer_last_modified_time()
 		return "緩衝區名稱為空或不存在"
 	end
 
-	-- 在 macOS 中，使用 `stat` 命令的 `-f %m` 選項來獲取檔案的最後修改時間（以秒為單位）
-	local handle = io.popen("stat -f %m " .. buffer_name)
+	if vim.fn.executable("stat") ~= 1 then
+		return "stat 命令不可用"
+	end
+
+	local stat_cmd
+	if portable.os() == "Darwin" then
+		-- macOS: `stat -f %m` 取得最後修改時間
+		stat_cmd = "stat -f %m "
+	else
+		-- Linux: `stat -c %Y` 取得最後修改時間
+		stat_cmd = "stat -c %Y "
+	end
+
+	local handle = io.popen(stat_cmd .. buffer_name)
 	local result = handle:read("*a")
 	handle:close()
 

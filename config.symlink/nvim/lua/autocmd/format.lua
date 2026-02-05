@@ -1,12 +1,27 @@
 local vim = vim
 local augroup = vim.api.nvim_create_augroup -- Create/get autocommand group
 local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
+local portable = require "utils.portable"
+
+local snippets_dir = vim.fn.stdpath("config") .. "/lua/vscode_snippets"
 
 local function add_vscode_snippet(vscode_snippets_file)
+	local python = portable.find_python()
+	if not python then
+		return
+	end
+	local script = vim.fn.expand("~/pyscripts/add_py_snippet.py")
+	if not portable.path_exists(script) then
+		return
+	end
+	local target = vim.fn.expand(vscode_snippets_file)
+	if not portable.path_exists(target) then
+		return
+	end
 	local first_lines = vim.api.nvim_buf_get_lines(0, 0, 10, false)
 	if table.concat(first_lines):match("prefix:") then
 		local filename = vim.fn.expand("%:t")
-		local command = string.format('python ~/pyscripts/add_py_snippet.py "%s" %s', filename, vscode_snippets_file)
+		local command = string.format('%s "%s" "%s" "%s"', python, script, filename, target)
 		vim.fn.system(command)
 		-- print(command)
 		print("Add Prefix 🥰")
@@ -82,16 +97,22 @@ autocmd("BufWritePost", {
 		if file_size > 1024 * 1024 * 5 then -- 5MB
 			return
 		end
-		
+
+		local rscript = portable.is_executable("Rscript") and "Rscript" or nil
+		local styler_script = vim.fn.expand("~/.dotfiles/neovim/func/styler_i_INPUT.R")
+		if not rscript or not portable.path_exists(styler_script) then
+			return
+		end
+
 		local file = vim.fn.expand("%:p")
-		local cmd = "Rscript $HOME/.dotfiles/neovim/func/styler_i_INPUT.R " .. file
+		local cmd = rscript .. " " .. vim.fn.shellescape(styler_script) .. " " .. vim.fn.shellescape(file)
 		-- 使用 jobstart 異步執行，避免阻塞編輯器
 		vim.fn.jobstart(cmd, {
 			on_exit = function(_, exit_code)
 				if exit_code == 0 then
 					vim.cmd("checktime") -- 重新加載文件
 					align_comments()
-					add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/r.json")
+					add_vscode_snippet(snippets_dir .. "/r.json")
 				end
 			end,
 		})
@@ -103,7 +124,7 @@ autocmd("BufWritePost", {
 	group = augroup("snippets", { clear = true }),
 	pattern = "*.R",
 	callback = function()
-		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/r.json")
+		add_vscode_snippet(snippets_dir .. "/r.json")
 	end,
 })
 
@@ -113,7 +134,7 @@ autocmd("BufWritePost", {
 	pattern = "*.sh",
 	callback = function()
 		print("Why")
-		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/shell.json")
+		add_vscode_snippet(snippets_dir .. "/shell.json")
 	end,
 })
 
@@ -121,7 +142,7 @@ autocmd("BufWritePost", {
 	group = augroup("snippets", { clear = true }),
 	pattern = { "*.py" },
 	callback = function()
-		add_vscode_snippet("~/.dotfiles/neovim/vscode_snippets/python.json")
+		add_vscode_snippet(snippets_dir .. "/python.json")
 	end,
 })
 
@@ -132,6 +153,12 @@ autocmd("BufWritePost", {
 		if vim.fn.expand("%:t") == "todo_list.md" then
 			local path = vim.fn.expand("%:p") -- 獲取當前檔案的完整路徑
 			local archive_path = vim.fn.expand("~/Dropbox/inbox/archieved.md") -- 處理~符號，指定存檔目錄和檔案名稱
+			if not portable.path_exists(vim.fn.expand("~/Dropbox/inbox")) then
+				return
+			end
+			if not portable.path_exists(archive_path) then
+				return
+			end
 			local lines = vim.fn.readfile(path) -- 讀取當前檔案的所有行
 			local archive_index = nil
 			for i, line in ipairs(lines) do
@@ -150,6 +177,9 @@ autocmd("BufWritePost", {
 					content_to_archive = content_to_archive .. "\n"
 					-- 附加到存檔檔案
 					local f = io.open(archive_path, "a")
+					if not f then
+						return
+					end
 					f:write(content_to_archive)
 					f:close()
 					-- 從原檔案中移除已存檔的內容

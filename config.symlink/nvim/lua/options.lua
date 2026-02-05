@@ -4,6 +4,7 @@ end
 local vim = vim
 local opt = vim.opt
 local wo = vim.wo
+local portable = require "utils.portable"
 
 -- 開始設定選項 (start option)
 opt.cursorlineopt = "both" -- 設定游標行的突出顯示方式，包括行號和文本
@@ -37,31 +38,12 @@ vim.markdown_folding = 1 -- 啟用 Markdown 文件折疊
 vim.cmd [[highlight NotifyBackground guibg=#1e1e1e]] -- 設定背景顏色
 
 -- 跨平台剪貼板配置 (cross-platform clipboard)
--- 優先順序：
--- 1. SSH/tmux 環境 → OSC 52（直接透過終端傳到本機）
--- 2. macOS → pbcopy/pbpaste
--- 3. Linux Wayland → wl-copy/wl-paste
--- 4. Linux X11 → xclip 或 xsel
+-- 優先順序：macOS → pbcopy/pbpaste, Wayland → wl-copy, X11 → xclip/xsel
 local function setup_clipboard()
-  local is_ssh = vim.env.SSH_TTY ~= nil or vim.env.SSH_CLIENT ~= nil
-  local is_tmux = vim.env.TMUX ~= nil
   local is_wayland = vim.env.WAYLAND_DISPLAY ~= nil
   local is_mac = vim.fn.has("mac") == 1
 
-  -- SSH/tmux 環境優先使用 OSC 52（即使有 xclip 也用不到本機剪貼板）
-  if is_ssh or is_tmux then
-    vim.g.clipboard = {
-      name = "OSC 52",
-      copy = {
-        ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-        ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-      },
-      paste = {
-        ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-        ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-      },
-    }
-  elseif is_mac then
+  if is_mac and portable.is_executable("pbcopy") and portable.is_executable("pbpaste") then
     vim.g.clipboard = {
       name = "macOS-clipboard",
       copy = {
@@ -74,7 +56,7 @@ local function setup_clipboard()
       },
       cache_enabled = 0,
     }
-  elseif is_wayland and vim.fn.executable("wl-copy") == 1 then
+  elseif is_wayland and portable.is_executable("wl-copy") and portable.is_executable("wl-paste") then
     vim.g.clipboard = {
       name = "wayland-clipboard",
       copy = {
@@ -87,7 +69,7 @@ local function setup_clipboard()
       },
       cache_enabled = 0,
     }
-  elseif vim.fn.executable("xclip") == 1 then
+  elseif portable.is_executable("xclip") then
     vim.g.clipboard = {
       name = "xclip",
       copy = {
@@ -100,7 +82,7 @@ local function setup_clipboard()
       },
       cache_enabled = 0,
     }
-  elseif vim.fn.executable("xsel") == 1 then
+  elseif portable.is_executable("xsel") then
     vim.g.clipboard = {
       name = "xsel",
       copy = {
