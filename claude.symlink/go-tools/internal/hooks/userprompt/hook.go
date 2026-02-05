@@ -18,6 +18,7 @@ import (
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/state"
 	"github.com/htlin/claude-tools/pkg/ansi"
+	"github.com/htlin/claude-tools/pkg/context"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/patterns"
 )
@@ -125,6 +126,14 @@ func Run() {
 	// Feature 11: Model efficiency hint (every 20 prompts)
 	if st.PromptCount%20 == 0 {
 		messages = append(messages, "💡 Tip: delegate Edit-heavy tasks to Task(model:haiku) to save context")
+	}
+
+	// Feature 13: Context pressure monitor (every 5 prompts)
+	if st.PromptCount-st.LastPressureCheck >= 5 {
+		if pressureMsg := checkContextPressure(st); pressureMsg != "" {
+			messages = append(messages, pressureMsg)
+			st.LastPressureCheck = st.PromptCount
+		}
 	}
 
 	// Save state
@@ -301,4 +310,16 @@ func truncate(s string, maxLen int) string {
 		return s
 	}
 	return s[:maxLen]
+}
+
+func checkContextPressure(st *state.State) string {
+	metrics := &context.SessionMetrics{
+		PromptCount:  st.PromptCount,
+		FileReads:    st.FileReads,
+		FileWrites:   st.FileWrites,
+		BashCommands: st.BashCommands,
+		TaskAgents:   st.TaskAgents,
+	}
+
+	return context.CheckPressure(metrics)
 }

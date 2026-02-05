@@ -16,6 +16,13 @@ type State struct {
 	PromptHashes          []string `json:"prompt_hashes,omitempty"`
 	LastGitCheck          int      `json:"last_git_check,omitempty"`
 	LastContextSuggestion int      `json:"last_context_suggestion,omitempty"`
+	LastPressureCheck     int      `json:"last_pressure_check,omitempty"`
+
+	// Context pressure tracking
+	FileReads    int `json:"file_reads,omitempty"`
+	FileWrites   int `json:"file_writes,omitempty"`
+	BashCommands int `json:"bash_commands,omitempty"`
+	TaskAgents   int `json:"task_agents,omitempty"`
 }
 
 var (
