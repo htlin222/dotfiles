@@ -844,46 +844,53 @@ func truncateString(s string, maxLen int) string {
 	return s
 }
 
-// getClaudeProcessStats returns total RAM (MB), CPU (%), and process count for all claude processes.
+// getClaudeProcessStats returns RAM (MB), CPU (%), and PID for THIS session's claude process.
 func getClaudeProcessStats() (int, float64, int) {
-	// Find all claude processes
-	cmd := exec.Command("pgrep", "-i", "claude")
-	output, err := cmd.Output()
-	if err != nil {
-		return 0, 0, 0
-	}
-
-	pids := strings.Fields(strings.TrimSpace(string(output)))
-	if len(pids) == 0 {
-		return 0, 0, 0
-	}
-
-	// Sum stats for each PID
-	totalRssKB := 0
-	totalCpu := 0.0
-	for _, pid := range pids {
-		cmd = exec.Command("ps", "-o", "rss=,pcpu=", "-p", pid)
+	// Walk up process tree to find the claude process for this session
+	pid := os.Getpid()
+	for i := 0; i < 10; i++ { // Max 10 levels up
+		// Get parent PID and command name
+		cmd := exec.Command("ps", "-o", "ppid=,comm=", "-p", fmt.Sprintf("%d", pid))
 		out, err := cmd.Output()
 		if err != nil {
-			continue
+			break
 		}
 		fields := strings.Fields(strings.TrimSpace(string(out)))
 		if len(fields) < 2 {
-			continue
+			break
 		}
-		rss := 0
-		for _, c := range fields[0] {
-			if c >= '0' && c <= '9' {
-				rss = rss*10 + int(c-'0')
-			}
-		}
-		totalRssKB += rss
-		cpu := 0.0
-		fmt.Sscanf(fields[1], "%f", &cpu)
-		totalCpu += cpu
-	}
+		ppid := 0
+		fmt.Sscanf(fields[0], "%d", &ppid)
+		comm := fields[1]
 
-	return totalRssKB / 1024, totalCpu, len(pids)
+		// Check if this is claude
+		if strings.Contains(strings.ToLower(comm), "claude") {
+			// Get stats for this process
+			cmd = exec.Command("ps", "-o", "rss=,pcpu=", "-p", fmt.Sprintf("%d", pid))
+			out, err = cmd.Output()
+			if err != nil {
+				return 0, 0, pid
+			}
+			stats := strings.Fields(strings.TrimSpace(string(out)))
+			if len(stats) < 2 {
+				return 0, 0, pid
+			}
+			rss := 0
+			for _, c := range stats[0] {
+				if c >= '0' && c <= '9' {
+					rss = rss*10 + int(c-'0')
+				}
+			}
+			cpu := 0.0
+			fmt.Sscanf(stats[1], "%f", &cpu)
+			return rss / 1024, cpu, pid
+		}
+		pid = ppid
+		if ppid <= 1 {
+			break
+		}
+	}
+	return 0, 0, 0
 }
 
 // getUserHost returns user@hostname string.
