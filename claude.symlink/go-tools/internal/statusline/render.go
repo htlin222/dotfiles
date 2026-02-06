@@ -846,19 +846,31 @@ func truncateString(s string, maxLen int) string {
 
 // getClaudeProcessStats returns RAM (MB), CPU (%), and PID of the claude process.
 func getClaudeProcessStats() (int, float64, int) {
-	// Find claude process (parent of statusline)
-	ppid := os.Getppid()
-
-	// Use ps to get stats
-	cmd := exec.Command("ps", "-o", "rss=,pcpu=", "-p", fmt.Sprintf("%d", ppid))
+	// Find claude process by name (not ppid, which varies)
+	cmd := exec.Command("pgrep", "-x", "claude")
 	output, err := cmd.Output()
 	if err != nil {
-		return 0, 0, ppid
+		return 0, 0, 0
+	}
+
+	// Get first matching PID
+	pids := strings.Fields(strings.TrimSpace(string(output)))
+	if len(pids) == 0 {
+		return 0, 0, 0
+	}
+	pid := 0
+	fmt.Sscanf(pids[0], "%d", &pid)
+
+	// Use ps to get stats
+	cmd = exec.Command("ps", "-o", "rss=,pcpu=", "-p", fmt.Sprintf("%d", pid))
+	output, err = cmd.Output()
+	if err != nil {
+		return 0, 0, pid
 	}
 
 	fields := strings.Fields(strings.TrimSpace(string(output)))
 	if len(fields) < 2 {
-		return 0, 0, ppid
+		return 0, 0, pid
 	}
 
 	// RSS is in KB, convert to MB
@@ -874,7 +886,7 @@ func getClaudeProcessStats() (int, float64, int) {
 	cpuPct := 0.0
 	fmt.Sscanf(fields[1], "%f", &cpuPct)
 
-	return ramMB, cpuPct, ppid
+	return ramMB, cpuPct, pid
 }
 
 // getUserHost returns user@hostname string.
