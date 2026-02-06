@@ -98,8 +98,8 @@ func Render(data *protocol.StatuslineInput) {
 		vimColor = Magenta
 	}
 
-	// Switch input method to ABC when entering NORMAL mode
-	handleVimModeIMSwitch(vimMode, data.TranscriptPath)
+	// Switch input method and get saved IM for display
+	savedIMShort := handleVimModeIMSwitch(vimMode, data.TranscriptPath)
 
 	// Session tokens
 	sessionTokens := data.ContextWindow.TotalInputTokens + data.ContextWindow.TotalOutputTokens
@@ -181,7 +181,12 @@ func Render(data *protocol.StatuslineInput) {
 	fmt.Printf("%s%s%s/%s%s%s=%s$%s/h%s ", LightGreen, sessionCost, Reset, Gray, sessionDuration2String(sessionDuration), Reset, Cyan, burnRate, Reset)
 	fmt.Printf("%s+%d%s%s-%d%s ", Green, linesAdded, Reset, Red, linesRemoved, Reset)
 	fmt.Printf("%s%s%d%s ", LightBlue, IconDepth, convDepth, Reset)
-	fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
+	// Show vim mode with saved IM indicator
+	if savedIMShort != "" && vimMode != "INSERT" {
+		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
+	} else {
+		fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
+	}
 
 	// Line 2: context bar, 5h usage, weekly
 	fmt.Printf("%s%s%s%s", ClearLine, contextColor, IconContext, Reset)
@@ -474,10 +479,12 @@ func colorStatus(status rune) string {
 // handleVimModeIMSwitch manages input method based on vim mode.
 // - NORMAL mode: save current IM, switch to ABC
 // - INSERT mode: restore saved IM
-func handleVimModeIMSwitch(currentMode, transcriptPath string) {
-	imSelect := "/opt/homebrew/bin/im-select"
-	if _, err := os.Stat(imSelect); os.IsNotExist(err) {
-		return
+// Returns short name of saved IM for display (empty if none or not on macOS).
+func handleVimModeIMSwitch(currentMode, transcriptPath string) string {
+	// Find im-select (macOS only, gracefully skip on Linux)
+	imSelect := findIMSelect()
+	if imSelect == "" {
+		return ""
 	}
 
 	// State file for this session
@@ -489,13 +496,16 @@ func handleVimModeIMSwitch(currentMode, transcriptPath string) {
 	imStateFile := fmt.Sprintf("/tmp/claude_im_state_%s", sessionID)
 	modeStateFile := fmt.Sprintf("/tmp/claude_vim_mode_%s", sessionID)
 
+	// Cleanup old state files periodically (every ~100 calls)
+	cleanupOldStateFiles()
+
 	abc := "com.apple.keylayout.ABC"
 
 	// Get current IM
 	cmd := exec.Command(imSelect)
 	output, err := cmd.Output()
 	if err != nil {
-		return
+		return ""
 	}
 	currentIM := strings.TrimSpace(string(output))
 
@@ -506,11 +516,16 @@ func handleVimModeIMSwitch(currentMode, transcriptPath string) {
 	// Save current vim mode
 	os.WriteFile(modeStateFile, []byte(currentMode), 0644)
 
+	// Read saved IM for display
+	savedIMData, _ := os.ReadFile(imStateFile)
+	savedIM := strings.TrimSpace(string(savedIMData))
+
 	switch currentMode {
 	case "NORMAL":
 		// Entering NORMAL: save current IM (if not ABC), then switch to ABC
 		if prevMode != "NORMAL" && currentIM != abc {
 			os.WriteFile(imStateFile, []byte(currentIM), 0644)
+			savedIM = currentIM
 		}
 		if currentIM != abc {
 			exec.Command(imSelect, abc).Run()
@@ -518,14 +533,83 @@ func handleVimModeIMSwitch(currentMode, transcriptPath string) {
 
 	case "INSERT":
 		// Entering INSERT: restore saved IM if we have one
-		if prevMode == "NORMAL" {
-			savedIM, err := os.ReadFile(imStateFile)
-			if err == nil && len(savedIM) > 0 {
-				savedIMStr := strings.TrimSpace(string(savedIM))
-				if savedIMStr != "" && savedIMStr != currentIM {
-					exec.Command(imSelect, savedIMStr).Run()
-				}
+		if prevMode == "NORMAL" && savedIM != "" && savedIM != currentIM {
+			exec.Command(imSelect, savedIM).Run()
+		}
+	}
+
+	return imShortName(savedIM)
+}
+
+// findIMSelect returns path to im-select if available, empty string otherwise.
+func findIMSelect() string {
+	paths := []string{
+		"/opt/homebrew/bin/im-select", // macOS ARM
+		"/usr/local/bin/im-select",    // macOS Intel
+	}
+	for _, p := range paths {
+		if _, err := os.Stat(p); err == nil {
+			return p
+		}
+	}
+	return ""
+}
+
+// imShortName converts full IM identifier to short display name.
+func imShortName(im string) string {
+	if im == "" {
+		return ""
+	}
+	// Known input methods
+	switch {
+	case strings.Contains(im, "Boshiamy"):
+		return "嘸"
+	case strings.Contains(im, "Zhuyin"), strings.Contains(im, "Bopomofo"):
+		return "注"
+	case strings.Contains(im, "Pinyin"):
+		return "拼"
+	case strings.Contains(im, "Cangjie"):
+		return "倉"
+	case strings.Contains(im, "ABC"):
+		return ""
+	case strings.Contains(im, "US"):
+		return ""
+	default:
+		// Return last part of identifier
+		parts := strings.Split(im, ".")
+		if len(parts) > 0 {
+			last := parts[len(parts)-1]
+			if len(last) > 4 {
+				return last[:4]
 			}
+			return last
+		}
+		return ""
+	}
+}
+
+// cleanupOldStateFiles removes state files older than 24 hours.
+func cleanupOldStateFiles() {
+	// Only run cleanup ~1% of the time to avoid overhead
+	if os.Getpid()%100 != 0 {
+		return
+	}
+
+	files, err := filepath.Glob("/tmp/claude_im_state_*")
+	if err != nil {
+		return
+	}
+	files2, _ := filepath.Glob("/tmp/claude_vim_mode_*")
+	files = append(files, files2...)
+
+	cutoff := getUnixTime() - 86400 // 24 hours ago
+	for _, f := range files {
+		info, err := os.Stat(f)
+		if err != nil {
+			continue
+		}
+		if info.ModTime().Unix() < cutoff {
+			os.Remove(f)
 		}
 	}
 }
