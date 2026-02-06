@@ -4,6 +4,7 @@
 
 - **pkg**: node=pnpm, python=uv+venv
 - **rm**: use `rip` not `rm`
+- **alias**: use `command <tool>` for cp, mv, ln to bypass shell aliases
 
 ## Essential Files
 

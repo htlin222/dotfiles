@@ -98,6 +98,9 @@ func Render(data *protocol.StatuslineInput) {
 		vimColor = Magenta
 	}
 
+	// Switch input method to ABC when entering NORMAL mode
+	handleVimModeIMSwitch(vimMode, data.TranscriptPath)
+
 	// Session tokens
 	sessionTokens := data.ContextWindow.TotalInputTokens + data.ContextWindow.TotalOutputTokens
 	sessionDisplay := formatTokens(sessionTokens)
@@ -467,3 +470,63 @@ func colorStatus(status rune) string {
 		return string(status)
 	}
 }
+
+// handleVimModeIMSwitch manages input method based on vim mode.
+// - NORMAL mode: save current IM, switch to ABC
+// - INSERT mode: restore saved IM
+func handleVimModeIMSwitch(currentMode, transcriptPath string) {
+	imSelect := "/opt/homebrew/bin/im-select"
+	if _, err := os.Stat(imSelect); os.IsNotExist(err) {
+		return
+	}
+
+	// State file for this session
+	sessionID := "default"
+	if transcriptPath != "" {
+		sessionID = filepath.Base(transcriptPath)
+		sessionID = strings.TrimSuffix(sessionID, ".jsonl")
+	}
+	imStateFile := fmt.Sprintf("/tmp/claude_im_state_%s", sessionID)
+	modeStateFile := fmt.Sprintf("/tmp/claude_vim_mode_%s", sessionID)
+
+	abc := "com.apple.keylayout.ABC"
+
+	// Get current IM
+	cmd := exec.Command(imSelect)
+	output, err := cmd.Output()
+	if err != nil {
+		return
+	}
+	currentIM := strings.TrimSpace(string(output))
+
+	// Read previous vim mode
+	prevModeData, _ := os.ReadFile(modeStateFile)
+	prevMode := strings.TrimSpace(string(prevModeData))
+
+	// Save current vim mode
+	os.WriteFile(modeStateFile, []byte(currentMode), 0644)
+
+	switch currentMode {
+	case "NORMAL":
+		// Entering NORMAL: save current IM (if not ABC), then switch to ABC
+		if prevMode != "NORMAL" && currentIM != abc {
+			os.WriteFile(imStateFile, []byte(currentIM), 0644)
+		}
+		if currentIM != abc {
+			exec.Command(imSelect, abc).Run()
+		}
+
+	case "INSERT":
+		// Entering INSERT: restore saved IM if we have one
+		if prevMode == "NORMAL" {
+			savedIM, err := os.ReadFile(imStateFile)
+			if err == nil && len(savedIM) > 0 {
+				savedIMStr := strings.TrimSpace(string(savedIM))
+				if savedIMStr != "" && savedIMStr != currentIM {
+					exec.Command(imSelect, savedIMStr).Run()
+				}
+			}
+		}
+	}
+}
+

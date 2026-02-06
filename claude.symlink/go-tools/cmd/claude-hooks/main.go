@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/htlin/claude-tools/internal/hooks/checkfileexists"
+	"github.com/htlin/claude-tools/internal/hooks/checkreadexists"
 	"github.com/htlin/claude-tools/internal/hooks/checkrm"
 	"github.com/htlin/claude-tools/internal/hooks/fileguard"
 	"github.com/htlin/claude-tools/internal/hooks/posttooluse"
@@ -27,6 +29,10 @@ func main() {
 		fileguard.Run()
 	case "check-rm":
 		checkrm.Run()
+	case "check-file-exists":
+		checkfileexists.Run()
+	case "check-read-exists":
+		checkreadexists.Run()
 	case "stop":
 		stop.Run()
 	case "help", "-h", "--help":
@@ -47,13 +53,15 @@ Usage:
   claude-hooks <command>
 
 Commands:
-  user-prompt     Handle UserPromptSubmit events
-  post-tool-use   Handle PostToolUse events
-  file-guard      Block access to sensitive files (PreToolUse)
-  check-rm        Block rm commands (PreToolUse)
-  stop            Handle Stop events (format, backup, notify)
-  version         Show version
-  help            Show this help
+  user-prompt        Handle UserPromptSubmit events
+  post-tool-use      Handle PostToolUse events
+  file-guard         Block access to sensitive files (PreToolUse)
+  check-rm           Block rm commands (PreToolUse)
+  check-file-exists  Block cat/bat if file not found (PreToolUse)
+  check-read-exists  Block Read if file not found (PreToolUse)
+  stop               Handle Stop events (format, backup, notify)
+  version            Show version
+  help               Show this help
 
 Examples:
   echo '{"prompt":"test"}' | claude-hooks user-prompt

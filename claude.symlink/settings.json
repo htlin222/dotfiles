@@ -87,7 +87,7 @@
 					},
 					{
 						"type": "command",
-						"command": "python3 ~/.claude/hooks/check_file_exists.py"
+						"command": "claude-hooks check-file-exists"
 					}
 				]
 			},
@@ -109,7 +109,7 @@
 					},
 					{
 						"type": "command",
-						"command": "python3 ~/.claude/hooks/check_read_exists.py"
+						"command": "claude-hooks check-read-exists"
 					}
 				]
 			},
