@@ -237,15 +237,19 @@ func Render(data *protocol.StatuslineInput) {
 			fmt.Print(ClearLine)
 			renderFileStatus(file)
 		}
+		fmt.Print(ClearLine)
 		if gitStatus.TotalFiles > 6 {
 			extra := gitStatus.TotalFiles - 6
-			fmt.Printf("%s%s[+%d more, use git status -sb]%s\n", ClearLine, Dim, extra, Reset)
+			fmt.Printf("%s[+%d more]%s ", Dim, extra, Reset)
 		}
+		// Session stats: lines, depth (same line)
+		fmt.Printf("%s+%d%s%s-%d%s ", Green, linesAdded, Reset, Red, linesRemoved, Reset)
+		fmt.Printf("%s%s%d%s\n", LightBlue, IconDepth, convDepth, Reset)
+	} else {
+		// No git files, still show stats
+		fmt.Printf("%s%s+%d%s%s-%d%s ", ClearLine, Green, linesAdded, Reset, Red, linesRemoved, Reset)
+		fmt.Printf("%s%s%d%s\n", LightBlue, IconDepth, convDepth, Reset)
 	}
-
-	// Session stats: lines, depth (after git file list)
-	fmt.Printf("%s%s+%d%s%s-%d%s ", ClearLine, Green, linesAdded, Reset, Red, linesRemoved, Reset)
-	fmt.Printf("%s%s%d%s\n", LightBlue, IconDepth, convDepth, Reset)
 
 	// Dad joke (at the bottom)
 	fmt.Printf("%s%s%s%s\n", ClearLine, Dim, dadJoke, Reset)
