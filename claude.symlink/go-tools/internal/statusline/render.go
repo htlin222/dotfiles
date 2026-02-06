@@ -51,6 +51,7 @@ const (
 	IconCompact    = "\uea6c"
 	IconTimerSand  = "\ueb7c"
 	IconLastCmd    = "\uf4a4 " // nf-md-message_text
+	IconUser       = "\ued35 "
 
 	// Synchronized Update
 	SyncStart = "\033[?2026h"
@@ -101,12 +102,9 @@ func Render(data *protocol.StatuslineInput) {
 	// Switch input method and get saved IM for display
 	savedIMShort := handleVimModeIMSwitch(vimMode, data.TranscriptPath)
 
-	// Session tokens
-	sessionTokens := data.ContextWindow.TotalInputTokens + data.ContextWindow.TotalOutputTokens
-	sessionDisplay := formatTokens(sessionTokens)
-
-	// Cost
-	sessionCost := fmt.Sprintf("$%.2f", data.Cost.TotalCostUSD)
+	// Session tokens (commented out)
+	// sessionTokens := data.ContextWindow.TotalInputTokens + data.ContextWindow.TotalOutputTokens
+	// sessionDisplay := formatTokens(sessionTokens)
 
 	// Lines
 	linesAdded := data.Cost.TotalLinesAdded
@@ -131,15 +129,8 @@ func Render(data *protocol.StatuslineInput) {
 	currentDisplay := formatTokens(currentTokens)
 	windowDisplay := formatTokensShort(windowSize)
 
-	// Session time
-	sessionDuration := getSessionDuration()
-
-	// Burn rate
-	burnRate := "0"
-	if sessionDuration > 0 {
-		rate := data.Cost.TotalCostUSD * 60.0 / float64(sessionDuration)
-		burnRate = fmt.Sprintf("%.2f", rate)
-	}
+	// Session time (commented out)
+	// sessionDuration := getSessionDuration()
 
 	// Context bar
 	barWidth := 10
@@ -171,14 +162,16 @@ func Render(data *protocol.StatuslineInput) {
 	// Begin output with synchronized update
 	fmt.Print(SyncStart)
 
-	// Line 1: model, folder, tokens, cost, time, burn, lines, depth, vim
-	fmt.Printf("%s%s%s%s%s ", ClearLine, ClaudeOrange, IconModel, model, Reset)
-	fmt.Printf("%s%s%s%s", White, folderIcon, dir, Reset)
-	if langIcon != "" {
-		fmt.Printf(" %s%s%s", Cyan, langIcon, Reset)
+	// Line 1: Last user command
+	if lastCmd != "" {
+		fmt.Printf("%s%s%s%s%s%s\n", ClearLine, LightGreen, IconLastCmd, lastCmd, Reset, "\033[K")
 	}
-	fmt.Printf(" %s%s%s ", LightBlue, sessionDisplay, Reset)
-	fmt.Printf("%s%s%s/%s%s%s=%s$%s/h%s ", LightGreen, sessionCost, Reset, Gray, sessionDuration2String(sessionDuration), Reset, Cyan, burnRate, Reset)
+
+	// Line 2: user@host, model, lines, depth, vim
+	userHost := getUserHost()
+	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
+	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
+	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
 	fmt.Printf("%s+%d%s%s-%d%s ", Green, linesAdded, Reset, Red, linesRemoved, Reset)
 	fmt.Printf("%s%s%d%s ", LightBlue, IconDepth, convDepth, Reset)
 	// Show vim mode with saved IM indicator
@@ -206,17 +199,15 @@ func Render(data *protocol.StatuslineInput) {
 	fmt.Printf("%s%s%s ", weeklyColor, weeklyDisplay, Reset)
 	fmt.Printf("%s%s%s\033[K\n", Gray, usage.WeeklyResetDate, Reset)
 
-	// Line 3: Dad joke
-	fmt.Printf("%s%s%s%s", ClearLine, Dim, dadJoke, Reset)
-
-	// Line 4: Last user command
-	if lastCmd != "" {
-		fmt.Printf("\n%s%s%s%s%s%s", ClearLine, LightGreen, IconLastCmd, lastCmd, Reset, "\033[K")
-	}
-
-	// Line 5: Git branch
+	// Folder + Git branch
 	if gitStatus.BranchLine != "" {
 		fmt.Printf("\n%s", ClearLine)
+		// Folder before branch (inverted colors for visibility)
+		fmt.Printf("\033[7m %s%s %s\033[27m", folderIcon, dir, Reset)
+		if langIcon != "" {
+			fmt.Printf(" %s%s%s", Cyan, langIcon, Reset)
+		}
+		fmt.Print(" ")
 		renderBranchLine(gitStatus)
 	}
 
@@ -231,6 +222,9 @@ func Render(data *protocol.StatuslineInput) {
 			fmt.Printf("%s%s[+%d more, use git status -sb]%s\n", ClearLine, Dim, extra, Reset)
 		}
 	}
+
+	// Dad joke (at the bottom)
+	fmt.Printf("%s%s%s%s\n", ClearLine, Dim, dadJoke, Reset)
 
 	// End synchronized update
 	fmt.Print(SyncEnd)
@@ -426,16 +420,16 @@ func renderBranchLine(status *GitStatus) {
 
 	fmt.Printf("%s%s", IconBranch, displayLine)
 
-	// Show ahead/behind with dots
+	// Show ahead/behind with dots (spaced)
 	if status.AheadCount > 0 && status.BehindCount > 0 {
 		fmt.Printf(" %s[ahead %d, behind %d]%s ", Yellow, status.AheadCount, status.BehindCount, Reset)
 		fmt.Printf("%s%s%s %s%s%s",
-			Green, strings.Repeat("●", status.AheadCount), Reset,
-			Red, strings.Repeat("●", status.BehindCount), Reset)
+			Green, spacedDots(status.AheadCount), Reset,
+			Red, spacedDots(status.BehindCount), Reset)
 	} else if status.AheadCount > 0 {
-		fmt.Printf(" %s[ahead %d] %s%s", Green, status.AheadCount, strings.Repeat("●", status.AheadCount), Reset)
+		fmt.Printf(" %s[ahead %d] %s%s", Green, status.AheadCount, spacedDots(status.AheadCount), Reset)
 	} else if status.BehindCount > 0 {
-		fmt.Printf(" %s[behind %d] %s%s", Red, status.BehindCount, strings.Repeat("●", status.BehindCount), Reset)
+		fmt.Printf(" %s[behind %d] %s%s", Red, status.BehindCount, spacedDots(status.BehindCount), Reset)
 	}
 	fmt.Println()
 }
@@ -612,5 +606,37 @@ func cleanupOldStateFiles() {
 			os.Remove(f)
 		}
 	}
+}
+
+// spacedDots returns n dots separated by spaces.
+func spacedDots(n int) string {
+	if n <= 0 {
+		return ""
+	}
+	dots := make([]string, n)
+	for i := range dots {
+		dots[i] = "●"
+	}
+	return strings.Join(dots, " ")
+}
+
+// getUserHost returns user@hostname string.
+func getUserHost() string {
+	user := os.Getenv("USER")
+	if user == "" {
+		user = "unknown"
+	}
+
+	// Get short hostname (uname -n equivalent)
+	cmd := exec.Command("uname", "-n")
+	output, err := cmd.Output()
+	host := "localhost"
+	if err == nil {
+		host = strings.TrimSpace(string(output))
+		// Remove .local suffix if present
+		host = strings.TrimSuffix(host, ".local")
+	}
+
+	return user + "@" + host
 }
 
