@@ -16,6 +16,7 @@ config.symlink/gh/
 config.symlink/yai.json
 config.symlink/joplin-desktop/
 config.symlink/gspread/service_account.json
+config.symlink/biopython/
 config.symlink/raycast/
 config.symlink/epy/states.db
 config.symlink/thefuck/*
