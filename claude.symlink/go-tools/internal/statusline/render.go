@@ -847,25 +847,19 @@ func truncateString(s string, maxLen int) string {
 // getClaudeProcessStats returns RAM (MB), CPU (%), and PID for THIS session's claude process.
 func getClaudeProcessStats() (int, float64, int) {
 	// Walk up process tree to find the claude process for this session
-	pid := os.Getpid()
+	pid := os.Getppid() // Start with parent
 	for i := 0; i < 10; i++ { // Max 10 levels up
-		// Get parent PID and command name
-		cmd := exec.Command("ps", "-o", "ppid=,comm=", "-p", fmt.Sprintf("%d", pid))
+		// Get command name for this pid
+		cmd := exec.Command("ps", "-o", "comm=", "-p", fmt.Sprintf("%d", pid))
 		out, err := cmd.Output()
 		if err != nil {
 			break
 		}
-		fields := strings.Fields(strings.TrimSpace(string(out)))
-		if len(fields) < 2 {
-			break
-		}
-		ppid := 0
-		fmt.Sscanf(fields[0], "%d", &ppid)
-		comm := fields[1]
+		comm := strings.TrimSpace(string(out))
 
 		// Check if this is claude
 		if strings.Contains(strings.ToLower(comm), "claude") {
-			// Get stats for this process
+			// Get stats for THIS claude process
 			cmd = exec.Command("ps", "-o", "rss=,pcpu=", "-p", fmt.Sprintf("%d", pid))
 			out, err = cmd.Output()
 			if err != nil {
@@ -885,10 +879,19 @@ func getClaudeProcessStats() (int, float64, int) {
 			fmt.Sscanf(stats[1], "%f", &cpu)
 			return rss / 1024, cpu, pid
 		}
-		pid = ppid
+
+		// Get parent of current pid
+		cmd = exec.Command("ps", "-o", "ppid=", "-p", fmt.Sprintf("%d", pid))
+		out, err = cmd.Output()
+		if err != nil {
+			break
+		}
+		ppid := 0
+		fmt.Sscanf(strings.TrimSpace(string(out)), "%d", &ppid)
 		if ppid <= 1 {
 			break
 		}
+		pid = ppid
 	}
 	return 0, 0, 0
 }
