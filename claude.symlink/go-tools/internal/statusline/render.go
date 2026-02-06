@@ -53,6 +53,7 @@ const (
 	IconTimerSand  = "\ueb7c"
 	IconLastCmd    = "\uf4a4 " // nf-md-message_text
 	IconUser       = "\ued35 "
+	IconFirstPrompt = "\uf041 " // nf-fa-map_marker
 
 	// Synchronized Update
 	SyncStart = "\033[?2026h"
@@ -157,6 +158,9 @@ func Render(data *protocol.StatuslineInput) {
 	// Get last user command
 	lastCmd, lastCmdTime := getLastUserCommand(data.TranscriptPath, 60)
 
+	// Get first prompt (saved persistently)
+	firstPrompt := getFirstPrompt(data.TranscriptPath, 50)
+
 	// Git status
 	gitStatus := GetGitStatus(data.Workspace.CurrentDir)
 
@@ -172,7 +176,12 @@ func Render(data *protocol.StatuslineInput) {
 		fmt.Printf("%s\n", "\033[K")
 	}
 
-	// Line 2: user@host, model, lines, depth, vim
+	// Line 2: First prompt of session (persists across compacts)
+	if firstPrompt != "" {
+		fmt.Printf("%s%s%s%s%s%s\n", ClearLine, Gray, IconFirstPrompt, firstPrompt, Reset, "\033[K")
+	}
+
+	// Line 3: user@host, model, lines, depth, vim
 	userHost := getUserHost()
 	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
 	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
@@ -711,6 +720,85 @@ func cleanLastCommand(cmd string) string {
 	}
 
 	return strings.TrimSpace(cmd)
+}
+
+// getFirstPrompt returns the first prompt of the session, saving it if needed.
+func getFirstPrompt(transcriptPath string, maxLen int) string {
+	if transcriptPath == "" {
+		return ""
+	}
+
+	// Session state file
+	sessionID := filepath.Base(transcriptPath)
+	sessionID = strings.TrimSuffix(sessionID, ".jsonl")
+	stateFile := fmt.Sprintf("/tmp/claude_first_prompt_%s", sessionID)
+
+	// Check if we already have it saved
+	if data, err := os.ReadFile(stateFile); err == nil {
+		saved := strings.TrimSpace(string(data))
+		if saved != "" {
+			return truncateString(saved, maxLen)
+		}
+	}
+
+	// Get first prompt from transcript
+	firstPrompt := extractFirstPrompt(transcriptPath)
+	if firstPrompt == "" {
+		return ""
+	}
+
+	// Save it for future (persists across compacts)
+	os.WriteFile(stateFile, []byte(firstPrompt), 0644)
+
+	return truncateString(firstPrompt, maxLen)
+}
+
+// extractFirstPrompt gets the first user message from the transcript.
+func extractFirstPrompt(transcriptPath string) string {
+	f, err := os.Open(transcriptPath)
+	if err != nil {
+		return ""
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if !strings.Contains(line, `"type":"user"`) {
+			continue
+		}
+
+		var msg transcriptMessage
+		if err := json.Unmarshal([]byte(line), &msg); err != nil {
+			continue
+		}
+
+		text := extractTextFromContent(msg.Message.Content)
+		if text != "" {
+			// Clean it up
+			text = strings.TrimSpace(text)
+			text = strings.ReplaceAll(text, "\n", " ")
+			text = strings.ReplaceAll(text, "\t", " ")
+			text = cleanLastCommand(text)
+			// Collapse multiple spaces
+			for strings.Contains(text, "  ") {
+				text = strings.ReplaceAll(text, "  ", " ")
+			}
+			return text
+		}
+	}
+	return ""
+}
+
+// truncateString truncates a string to maxLen with ellipsis.
+func truncateString(s string, maxLen int) string {
+	if len(s) > maxLen {
+		return s[:maxLen-3] + "..."
+	}
+	return s
 }
 
 // getUserHost returns user@hostname string.
