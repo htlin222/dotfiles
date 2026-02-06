@@ -453,7 +453,19 @@ func renderFileStatus(file GitFileStatus) {
 	// Color Y (worktree status)
 	yColored := colorStatus(file.WorktreeStatus)
 
-	fmt.Printf("%s%s%s\n", xColored, yColored, file.Path)
+	fmt.Printf("%s%s %s", xColored, yColored, file.Path)
+
+	// Show line changes if available
+	if file.LinesAdded > 0 || file.LinesRemoved > 0 {
+		fmt.Print("  ")
+		if file.LinesAdded > 0 {
+			fmt.Printf("%s+%d%s", Green, file.LinesAdded, Reset)
+		}
+		if file.LinesRemoved > 0 {
+			fmt.Printf("%s-%d%s", Red, file.LinesRemoved, Reset)
+		}
+	}
+	fmt.Println()
 }
 
 func colorStatus(status rune) string {
