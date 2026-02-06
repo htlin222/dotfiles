@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/htlin/claude-tools/internal/protocol"
 )
@@ -645,25 +646,35 @@ func spacedDots(n int) string {
 	return strings.Join(dots, " ")
 }
 
-// formatTimestamp converts ISO 8601 timestamp to HH:MM:SS format.
+// formatTimestamp converts ISO 8601 timestamp to HH:MM:SS in local time.
 func formatTimestamp(ts string) string {
 	if ts == "" {
 		return ""
 	}
 	// Parse ISO 8601: 2026-02-06T18:18:36.335Z
-	// Extract time part (after T, before .)
-	tIdx := strings.Index(ts, "T")
-	if tIdx == -1 {
+	// Try to parse and convert to local time
+	t, err := parseISO8601(ts)
+	if err != nil {
 		return ""
 	}
-	timePart := ts[tIdx+1:]
-	// Remove milliseconds and Z
-	if dotIdx := strings.Index(timePart, "."); dotIdx != -1 {
-		timePart = timePart[:dotIdx]
-	} else if zIdx := strings.Index(timePart, "Z"); zIdx != -1 {
-		timePart = timePart[:zIdx]
+	return t.Local().Format("15:04:05")
+}
+
+// parseISO8601 parses an ISO 8601 timestamp string.
+func parseISO8601(ts string) (time.Time, error) {
+	// Try common formats
+	formats := []string{
+		"2006-01-02T15:04:05.999Z",
+		"2006-01-02T15:04:05Z",
+		"2006-01-02T15:04:05.999-07:00",
+		"2006-01-02T15:04:05-07:00",
 	}
-	return timePart
+	for _, format := range formats {
+		if t, err := time.Parse(format, ts); err == nil {
+			return t, nil
+		}
+	}
+	return time.Time{}, fmt.Errorf("unable to parse timestamp")
 }
 
 // cleanLastCommand filters out system-generated content from the last command.
