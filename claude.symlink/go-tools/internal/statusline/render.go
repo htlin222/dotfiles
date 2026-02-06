@@ -187,11 +187,13 @@ func Render(data *protocol.StatuslineInput) {
 		fmt.Printf("%s\n", "\033[K")
 	}
 
-	// Line 3: user@host, model, vim
+	// Line 3: user@host, model, RAM/CPU, vim
 	userHost := getUserHost()
+	ramMB, cpuPct, pid := getClaudeProcessStats()
 	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
 	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
 	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
+	fmt.Printf("%s\ue266 %dMB \uec19 %.1f%% on %d%s ", Gray, ramMB, cpuPct, pid, Reset)
 	// Show vim mode with saved IM indicator
 	if savedIMShort != "" && vimMode != "INSERT" {
 		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
@@ -241,11 +243,9 @@ func Render(data *protocol.StatuslineInput) {
 		}
 	}
 
-	// Session stats: lines, depth, RAM/CPU
-	ramMB, cpuPct, pid := getClaudeProcessStats()
+	// Session stats: lines, depth (after git file list)
 	fmt.Printf("%s%s+%d%s%s-%d%s ", ClearLine, Green, linesAdded, Reset, Red, linesRemoved, Reset)
-	fmt.Printf("%s%s%d%s ", LightBlue, IconDepth, convDepth, Reset)
-	fmt.Printf("%s\ue266 %dMB \uec19 %.1f%% on %d%s\n", Gray, ramMB, cpuPct, pid, Reset)
+	fmt.Printf("%s%s%d%s\n", LightBlue, IconDepth, convDepth, Reset)
 
 	// Dad joke (at the bottom)
 	fmt.Printf("%s%s%s%s\n", ClearLine, Dim, dadJoke, Reset)
