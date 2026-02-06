@@ -154,7 +154,7 @@ func Render(data *protocol.StatuslineInput) {
 	dadJoke := GetDadJoke()
 
 	// Get last user command
-	lastCmd := getLastUserCommand(data.TranscriptPath, 80)
+	lastCmd, lastCmdTime := getLastUserCommand(data.TranscriptPath, 60)
 
 	// Git status
 	gitStatus := GetGitStatus(data.Workspace.CurrentDir)
@@ -162,9 +162,13 @@ func Render(data *protocol.StatuslineInput) {
 	// Begin output with synchronized update
 	fmt.Print(SyncStart)
 
-	// Line 1: Last user command
+	// Line 1: Last user command with timestamp
 	if lastCmd != "" {
-		fmt.Printf("%s%s%s%s%s%s\n", ClearLine, LightGreen, IconLastCmd, lastCmd, Reset, "\033[K")
+		fmt.Printf("%s%s%s%s%s", ClearLine, LightGreen, IconLastCmd, lastCmd, Reset)
+		if lastCmdTime != "" {
+			fmt.Printf(" %sat %s%s", Gray, lastCmdTime, Reset)
+		}
+		fmt.Printf("%s\n", "\033[K")
 	}
 
 	// Line 2: user@host, model, lines, depth, vim
@@ -299,24 +303,26 @@ func countConversationDepth(transcriptPath string) int {
 
 // transcriptMessage represents a message in the transcript
 type transcriptMessage struct {
-	Type    string `json:"type"`
-	Message struct {
+	Type      string `json:"type"`
+	Timestamp string `json:"timestamp"`
+	Message   struct {
 		Content interface{} `json:"content"`
 	} `json:"message"`
 }
 
-func getLastUserCommand(transcriptPath string, maxLen int) string {
+func getLastUserCommand(transcriptPath string, maxLen int) (string, string) {
 	if transcriptPath == "" {
-		return ""
+		return "", ""
 	}
 
 	f, err := os.Open(transcriptPath)
 	if err != nil {
-		return ""
+		return "", ""
 	}
 	defer f.Close()
 
 	var lastUserMsg string
+	var lastTimestamp string
 	scanner := bufio.NewScanner(f)
 	// Increase buffer size for large lines
 	buf := make([]byte, 0, 64*1024)
@@ -337,6 +343,7 @@ func getLastUserCommand(transcriptPath string, maxLen int) string {
 		text := extractTextFromContent(msg.Message.Content)
 		if text != "" {
 			lastUserMsg = text
+			lastTimestamp = msg.Timestamp
 		}
 	}
 
@@ -357,7 +364,10 @@ func getLastUserCommand(transcriptPath string, maxLen int) string {
 		lastUserMsg = lastUserMsg[:maxLen-3] + "..."
 	}
 
-	return lastUserMsg
+	// Format timestamp as HH:MM:SS
+	timeStr := formatTimestamp(lastTimestamp)
+
+	return lastUserMsg, timeStr
 }
 
 func extractTextFromContent(content interface{}) string {
@@ -621,6 +631,27 @@ func spacedDots(n int) string {
 		dots[i] = "●"
 	}
 	return strings.Join(dots, " ")
+}
+
+// formatTimestamp converts ISO 8601 timestamp to HH:MM:SS format.
+func formatTimestamp(ts string) string {
+	if ts == "" {
+		return ""
+	}
+	// Parse ISO 8601: 2026-02-06T18:18:36.335Z
+	// Extract time part (after T, before .)
+	tIdx := strings.Index(ts, "T")
+	if tIdx == -1 {
+		return ""
+	}
+	timePart := ts[tIdx+1:]
+	// Remove milliseconds and Z
+	if dotIdx := strings.Index(timePart, "."); dotIdx != -1 {
+		timePart = timePart[:dotIdx]
+	} else if zIdx := strings.Index(timePart, "Z"); zIdx != -1 {
+		timePart = timePart[:zIdx]
+	}
+	return timePart
 }
 
 // cleanLastCommand filters out system-generated content from the last command.
