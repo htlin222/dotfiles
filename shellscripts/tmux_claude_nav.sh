@@ -1,13 +1,13 @@
 #!/bin/zsh -f
-# title: "tmux_claude_nav"
-# author: Hsieh-Ting Lin
-# date: "2025-02-03"
-# version: 1.0.0
-# description: Navigate between Claude panes with caching (Shift+Up/Down)
-# Usage: tmux_claude_nav.sh [next|prev|refresh]
+# tmux_claude_nav v2 - Optimized version
+zmodload zsh/stat 2>/dev/null  # for zstat
+# Changes:
+# 1. Single ps call for all process info (no N×ps for grandparents)
+# 2. Simpler parsing with awk instead of zsh loops
+# 3. Combine stat+date into single zsh test
 
 CACHE_DIR="/tmp/tmux_claude_cache"
-CACHE_TTL=60  # seconds before refresh (was 10)
+CACHE_TTL=60
 
 session=$(tmux display-message -p '#S')
 cache_file="$CACHE_DIR/${session}_panes"
@@ -16,41 +16,52 @@ index_file="$CACHE_DIR/${session}_index"
 mkdir -p "$CACHE_DIR"
 
 refresh_cache() {
-    typeset -A claude_parents valid_pids
+    # Single ps call: get all ppid,pid,comm in one shot
+    # Then use awk to find Claude processes and their ancestors
+    local valid_pids
+    valid_pids=$(ps -eo ppid=,pid=,comm= 2>/dev/null | awk '
+    {
+        ppid=$1; pid=$2; comm=$3
+        parent[pid] = ppid
+        if (tolower(comm) ~ /claude/) {
+            claude_parents[ppid] = 1
+        }
+    }
+    END {
+        for (p in claude_parents) {
+            print p
+            if (p in parent) print parent[p]  # grandparent
+        }
+    }' | sort -u | tr '\n' '|' | sed 's/|$//')
 
-    while read -r ppid pid comm; do
-        [[ "$comm" == *[Cc]laude* ]] && claude_parents[$ppid]=1
-    done < <(ps -eo ppid=,pid=,comm= 2>/dev/null)
+    # Get Claude panes in one tmux call
+    tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}' | \
+        awk -F'|' -v pids="$valid_pids" '
+        BEGIN { split(pids, arr, "|"); for (i in arr) valid[arr[i]] = 1 }
+        valid[$1] { print $2 }
+        ' > "$cache_file"
 
-    for ppid in ${(k)claude_parents}; do
-        valid_pids[$ppid]=1
-        grandparent=$(ps -o ppid= -p $ppid 2>/dev/null | tr -d ' ')
-        [[ -n "$grandparent" ]] && valid_pids[$grandparent]=1
-    done
-
-    local panes=()
-    while IFS='|' read -r pane_pid pane_id rest; do
-        [[ -n "${valid_pids[$pane_pid]}" ]] && panes+=("$pane_id")
-    done < <(tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}')
-
-    printf '%s\n' "${panes[@]}" > "$cache_file"
-
-    # Reset index if current pane not in list
+    # Reset index
     local current=$(tmux display-message -p '#{window_index}:#{pane_index}')
-    local idx=0
-    for i in {1..${#panes[@]}}; do
-        [[ "${panes[$i]}" == "$current" ]] && { idx=$i; break; }
-    done
-    echo "$idx" > "$index_file"
+    local idx=0 i=0
+    while read -r line; do
+        ((i++))
+        [[ "$line" == "$current" ]] && idx=$i
+    done < "$cache_file"
+    echo "${idx:-1}" > "$index_file"
 }
 
 needs_refresh() {
     [[ ! -f "$cache_file" ]] && return 0
-    # Linux: stat -c %Y, macOS: stat -f %m
+    # Use zsh stat module (faster than forking stat command)
     local mtime
-    mtime=$(stat -c %Y "$cache_file" 2>/dev/null || stat -f %m "$cache_file" 2>/dev/null || echo 0)
-    local age=$(( $(date +%s) - mtime ))
-    (( age > CACHE_TTL )) && return 0
+    if (( $+functions[zstat] )) || [[ -n "${modules[zsh/stat]}" ]]; then
+        zstat -A mtime +mtime "$cache_file" 2>/dev/null || return 0
+    else
+        # Fallback: single stat call (macOS compatible)
+        mtime=$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file" 2>/dev/null) || return 0
+    fi
+    (( EPOCHSECONDS - mtime > CACHE_TTL )) && return 0
     return 1
 }
 
@@ -81,21 +92,16 @@ navigate() {
     local win="${target%%:*}"
     local pane="${target##*:}"
 
-    # Get target pane path before switching
+    # Combine display + switch
     local pane_path=$(tmux display-message -p -t "$session:$win.$pane" '#{pane_current_path}')
     local dir_name="${pane_path:t}"
 
-    # Build progress indicator: □■□□□
+    # Progress indicator
     local progress=""
     for ((i=1; i<=count; i++)); do
-        if (( i == idx )); then
-            progress+="■"
-        else
-            progress+="□"
-        fi
+        (( i == idx )) && progress+="■" || progress+="□"
     done
 
-    # Show message FIRST, then switch (avoids flash)
     tmux display-message -d 1500 "#[bg=colour208,fg=colour16,bold] Claude $progress #[default] #[fg=colour51,bold]$win#[default].$pane #[fg=colour245]$dir_name#[default]"
     tmux select-window -t "$session:$win"
     tmux select-pane -t "$session:$win.$pane"
