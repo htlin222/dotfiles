@@ -178,7 +178,12 @@ func Render(data *protocol.StatuslineInput) {
 
 	// Line 2: First prompt of session (persists across compacts)
 	if firstPrompt != "" {
-		fmt.Printf("%s%s%s%s%s%s\n", ClearLine, Gray, IconFirstPrompt, firstPrompt, Reset, "\033[K")
+		firstPromptTime := getFirstPromptTime(data.TranscriptPath)
+		fmt.Printf("%s%s%s%s%s", ClearLine, Green, IconFirstPrompt, firstPrompt, Reset)
+		if firstPromptTime != "" {
+			fmt.Printf(" %sat %s%s", Gray, firstPromptTime, Reset)
+		}
+		fmt.Printf("%s\n", "\033[K")
 	}
 
 	// Line 3: user@host, model, lines, depth, vim
@@ -733,31 +738,54 @@ func getFirstPrompt(transcriptPath string, maxLen int) string {
 	sessionID = strings.TrimSuffix(sessionID, ".jsonl")
 	stateFile := fmt.Sprintf("/tmp/claude_first_prompt_%s", sessionID)
 
-	// Check if we already have it saved
+	// Check if we already have it saved (format: prompt\nTIMESTAMP)
 	if data, err := os.ReadFile(stateFile); err == nil {
-		saved := strings.TrimSpace(string(data))
-		if saved != "" {
-			return truncateString(saved, maxLen)
+		lines := strings.SplitN(string(data), "\n", 2)
+		if len(lines) > 0 && strings.TrimSpace(lines[0]) != "" {
+			return truncateString(strings.TrimSpace(lines[0]), maxLen)
 		}
 	}
 
 	// Get first prompt from transcript
-	firstPrompt := extractFirstPrompt(transcriptPath)
+	firstPrompt, firstTime := extractFirstPrompt(transcriptPath)
 	if firstPrompt == "" {
 		return ""
 	}
 
 	// Save it for future (persists across compacts)
-	os.WriteFile(stateFile, []byte(firstPrompt), 0644)
+	os.WriteFile(stateFile, []byte(firstPrompt+"\n"+firstTime), 0644)
 
 	return truncateString(firstPrompt, maxLen)
 }
 
-// extractFirstPrompt gets the first user message from the transcript.
-func extractFirstPrompt(transcriptPath string) string {
+// getFirstPromptTime returns the timestamp of the first prompt.
+func getFirstPromptTime(transcriptPath string) string {
+	if transcriptPath == "" {
+		return ""
+	}
+
+	sessionID := filepath.Base(transcriptPath)
+	sessionID = strings.TrimSuffix(sessionID, ".jsonl")
+	stateFile := fmt.Sprintf("/tmp/claude_first_prompt_%s", sessionID)
+
+	// Read saved timestamp (format: prompt\nTIMESTAMP)
+	if data, err := os.ReadFile(stateFile); err == nil {
+		lines := strings.SplitN(string(data), "\n", 2)
+		if len(lines) > 1 {
+			return formatTimestamp(strings.TrimSpace(lines[1]))
+		}
+	}
+
+	// Fallback: get from transcript
+	_, firstTime := extractFirstPrompt(transcriptPath)
+	return formatTimestamp(firstTime)
+}
+
+// extractFirstPrompt gets the first user message and timestamp from the transcript.
+func extractFirstPrompt(transcriptPath string) (string, string) {
 	f, err := os.Open(transcriptPath)
 	if err != nil {
-		return ""
+		return "", ""
 	}
 	defer f.Close()
 
@@ -787,10 +815,10 @@ func extractFirstPrompt(transcriptPath string) string {
 			for strings.Contains(text, "  ") {
 				text = strings.ReplaceAll(text, "  ", " ")
 			}
-			return text
+			return text, msg.Timestamp
 		}
 	}
-	return ""
+	return "", ""
 }
 
 // truncateString truncates a string to maxLen with ellipsis.
