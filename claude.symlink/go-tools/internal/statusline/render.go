@@ -187,13 +187,11 @@ func Render(data *protocol.StatuslineInput) {
 		fmt.Printf("%s\n", "\033[K")
 	}
 
-	// Line 3: user@host, model, lines, depth, vim
+	// Line 3: user@host, model, vim
 	userHost := getUserHost()
 	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
 	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
 	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
-	fmt.Printf("%s+%d%s%s-%d%s ", Green, linesAdded, Reset, Red, linesRemoved, Reset)
-	fmt.Printf("%s%s%d%s ", LightBlue, IconDepth, convDepth, Reset)
 	// Show vim mode with saved IM indicator
 	if savedIMShort != "" && vimMode != "INSERT" {
 		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
@@ -242,6 +240,12 @@ func Render(data *protocol.StatuslineInput) {
 			fmt.Printf("%s%s[+%d more, use git status -sb]%s\n", ClearLine, Dim, extra, Reset)
 		}
 	}
+
+	// Session stats: lines, depth, RAM/CPU
+	ramMB, cpuPct, pid := getClaudeProcessStats()
+	fmt.Printf("%s%s+%d%s%s-%d%s ", ClearLine, Green, linesAdded, Reset, Red, linesRemoved, Reset)
+	fmt.Printf("%s%s%d%s ", LightBlue, IconDepth, convDepth, Reset)
+	fmt.Printf("%s\ue266 %dMB \uec19 %.1f%% on %d%s\n", Gray, ramMB, cpuPct, pid, Reset)
 
 	// Dad joke (at the bottom)
 	fmt.Printf("%s%s%s%s\n", ClearLine, Dim, dadJoke, Reset)
@@ -834,6 +838,39 @@ func truncateString(s string, maxLen int) string {
 		return s[:maxLen-3] + "..."
 	}
 	return s
+}
+
+// getClaudeProcessStats returns RAM (MB), CPU (%), and PID of the claude process.
+func getClaudeProcessStats() (int, float64, int) {
+	// Find claude process (parent of statusline)
+	ppid := os.Getppid()
+
+	// Use ps to get stats
+	cmd := exec.Command("ps", "-o", "rss=,pcpu=", "-p", fmt.Sprintf("%d", ppid))
+	output, err := cmd.Output()
+	if err != nil {
+		return 0, 0, ppid
+	}
+
+	fields := strings.Fields(strings.TrimSpace(string(output)))
+	if len(fields) < 2 {
+		return 0, 0, ppid
+	}
+
+	// RSS is in KB, convert to MB
+	rssKB := 0
+	for _, c := range fields[0] {
+		if c >= '0' && c <= '9' {
+			rssKB = rssKB*10 + int(c-'0')
+		}
+	}
+	ramMB := rssKB / 1024
+
+	// CPU percentage
+	cpuPct := 0.0
+	fmt.Sscanf(fields[1], "%f", &cpuPct)
+
+	return ramMB, cpuPct, ppid
 }
 
 // getUserHost returns user@hostname string.
