@@ -24,6 +24,7 @@ const (
 	LightGreen  = "\033[38;5;119m"
 	ClaudeOrange = "\033[38;5;209m"
 	Gray        = "\033[38;5;245m"
+	DarkGreen   = "\033[38;5;65m"  // Desaturated dark green
 	White       = "\033[37m"
 	Black       = "\033[30m"
 	Reset       = "\033[0m"
@@ -179,7 +180,7 @@ func Render(data *protocol.StatuslineInput) {
 	// Line 2: First prompt of session (persists across compacts)
 	if firstPrompt != "" {
 		firstPromptTime := getFirstPromptTime(data.TranscriptPath)
-		fmt.Printf("%s%s%s%s%s", ClearLine, Green, IconFirstPrompt, firstPrompt, Reset)
+		fmt.Printf("%s%s%s%s%s", ClearLine, DarkGreen, IconFirstPrompt, firstPrompt, Reset)
 		if firstPromptTime != "" {
 			fmt.Printf(" %sat %s%s", Gray, firstPromptTime, Reset)
 		}
@@ -468,7 +469,13 @@ func renderFileStatus(file GitFileStatus) {
 	// Color Y (worktree status)
 	yColored := colorStatus(file.WorktreeStatus)
 
-	fmt.Printf("%s%s %s", xColored, yColored, file.Path)
+	// Use white for files in current folder (no ../), gray for parent folders
+	pathColor := Gray
+	if !strings.HasPrefix(file.Path, "../") {
+		pathColor = White
+	}
+
+	fmt.Printf("%s%s %s%s%s", xColored, yColored, pathColor, file.Path, Reset)
 
 	// Show line changes if available
 	if file.LinesAdded > 0 || file.LinesRemoved > 0 {
