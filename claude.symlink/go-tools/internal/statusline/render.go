@@ -844,49 +844,46 @@ func truncateString(s string, maxLen int) string {
 	return s
 }
 
-// getClaudeProcessStats returns RAM (MB), CPU (%), and PID of the claude process.
+// getClaudeProcessStats returns total RAM (MB), CPU (%), and process count for all claude processes.
 func getClaudeProcessStats() (int, float64, int) {
-	// Find claude process by name (not ppid, which varies)
-	cmd := exec.Command("pgrep", "-x", "claude")
+	// Find all claude processes
+	cmd := exec.Command("pgrep", "-i", "claude")
 	output, err := cmd.Output()
 	if err != nil {
 		return 0, 0, 0
 	}
 
-	// Get first matching PID
 	pids := strings.Fields(strings.TrimSpace(string(output)))
 	if len(pids) == 0 {
 		return 0, 0, 0
 	}
-	pid := 0
-	fmt.Sscanf(pids[0], "%d", &pid)
 
-	// Use ps to get stats
-	cmd = exec.Command("ps", "-o", "rss=,pcpu=", "-p", fmt.Sprintf("%d", pid))
-	output, err = cmd.Output()
-	if err != nil {
-		return 0, 0, pid
-	}
-
-	fields := strings.Fields(strings.TrimSpace(string(output)))
-	if len(fields) < 2 {
-		return 0, 0, pid
-	}
-
-	// RSS is in KB, convert to MB
-	rssKB := 0
-	for _, c := range fields[0] {
-		if c >= '0' && c <= '9' {
-			rssKB = rssKB*10 + int(c-'0')
+	// Sum stats for each PID
+	totalRssKB := 0
+	totalCpu := 0.0
+	for _, pid := range pids {
+		cmd = exec.Command("ps", "-o", "rss=,pcpu=", "-p", pid)
+		out, err := cmd.Output()
+		if err != nil {
+			continue
 		}
+		fields := strings.Fields(strings.TrimSpace(string(out)))
+		if len(fields) < 2 {
+			continue
+		}
+		rss := 0
+		for _, c := range fields[0] {
+			if c >= '0' && c <= '9' {
+				rss = rss*10 + int(c-'0')
+			}
+		}
+		totalRssKB += rss
+		cpu := 0.0
+		fmt.Sscanf(fields[1], "%f", &cpu)
+		totalCpu += cpu
 	}
-	ramMB := rssKB / 1024
 
-	// CPU percentage
-	cpuPct := 0.0
-	fmt.Sscanf(fields[1], "%f", &cpuPct)
-
-	return ramMB, cpuPct, pid
+	return totalRssKB / 1024, totalCpu, len(pids)
 }
 
 // getUserHost returns user@hostname string.
