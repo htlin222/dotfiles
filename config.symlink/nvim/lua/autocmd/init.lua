@@ -5,19 +5,7 @@ local vim = vim
 
 local augroup = vim.api.nvim_create_augroup -- Create/get autocommand group
 local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
-local portable = require "utils.portable"
 
------------------------------------------------------------
--- Autocommand functions
------------------------------------------------------------
-
--- 優化：使用 uv.os_uname() 或 vim.fn.has() 判斷系統
-local sysname = portable.os()
-if sysname == "Linux" then
-  require "autocmd.linux"
-else
-  require "autocmd.macos" -- macOS, FreeBSD, etc.
-end
 -----------------------------------------------------------
 
 require "autocmd.ftkeymap"
