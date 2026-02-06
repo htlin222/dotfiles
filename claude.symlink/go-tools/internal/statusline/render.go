@@ -207,8 +207,8 @@ func Render(data *protocol.StatuslineInput) {
 	// Folder + Git branch
 	if gitStatus.BranchLine != "" {
 		fmt.Printf("\n%s", ClearLine)
-		// Folder before branch (inverted colors for visibility)
-		fmt.Printf("\033[7m %s%s %s\033[27m", folderIcon, dir, Reset)
+		// Folder before branch (light blue with padding)
+		fmt.Printf("%s %s%s %s", LightBlue, folderIcon, dir, Reset)
 		if langIcon != "" {
 			fmt.Printf(" %s%s%s", Cyan, langIcon, Reset)
 		}
