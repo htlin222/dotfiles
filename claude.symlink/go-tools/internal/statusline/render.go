@@ -345,6 +345,9 @@ func getLastUserCommand(transcriptPath string, maxLen int) string {
 	lastUserMsg = strings.ReplaceAll(lastUserMsg, "\n", " ")
 	lastUserMsg = strings.ReplaceAll(lastUserMsg, "\t", " ")
 
+	// Filter out system-generated content (local-command tags, etc.)
+	lastUserMsg = cleanLastCommand(lastUserMsg)
+
 	// Collapse multiple spaces
 	for strings.Contains(lastUserMsg, "  ") {
 		lastUserMsg = strings.ReplaceAll(lastUserMsg, "  ", " ")
@@ -618,6 +621,42 @@ func spacedDots(n int) string {
 		dots[i] = "●"
 	}
 	return strings.Join(dots, " ")
+}
+
+// cleanLastCommand filters out system-generated content from the last command.
+func cleanLastCommand(cmd string) string {
+	// Tags to remove with their content
+	tagsToRemove := []string{
+		"local-command-stdout",
+		"local-command-caveat",
+		"local-command-stderr",
+		"command-name",
+		"command-message",
+		"command-args",
+		"system-reminder",
+	}
+
+	for _, tag := range tagsToRemove {
+		for {
+			openTag := "<" + tag + ">"
+			closeTag := "</" + tag + ">"
+
+			startIdx := strings.Index(cmd, openTag)
+			if startIdx == -1 {
+				break
+			}
+			endIdx := strings.Index(cmd[startIdx:], closeTag)
+			if endIdx == -1 {
+				// Remove just the opening tag if no close
+				cmd = cmd[:startIdx] + cmd[startIdx+len(openTag):]
+				break
+			}
+			// Remove entire tag with content
+			cmd = cmd[:startIdx] + cmd[startIdx+endIdx+len(closeTag):]
+		}
+	}
+
+	return strings.TrimSpace(cmd)
 }
 
 // getUserHost returns user@hostname string.
