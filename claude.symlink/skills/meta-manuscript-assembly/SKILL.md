@@ -20,6 +20,7 @@ Complete systematic review and meta-analysis manuscripts for journal submission 
 ## Prerequisites
 
 Before using this skill, ensure you have:
+
 - Completed meta-analyses with results tables (CSV format)
 - Generated individual figures (PNG at 300 DPI)
 - Manuscript text sections written (Abstract, Introduction, Methods, Results, Discussion)
@@ -32,6 +33,7 @@ Before using this skill, ensure you have:
 Create comprehensive tables from analysis results:
 
 #### Main Text Tables
+
 1. **Table 1: Trial Characteristics**
    - Extract from extraction.csv or similar
    - Include: NCT number, first author, year, design, sample sizes, intervention details, follow-up
@@ -48,6 +50,7 @@ Create comprehensive tables from analysis results:
    - Add clinical management guidance
 
 #### Supplementary Tables
+
 4. **Risk of Bias Assessment**
    - Use RoB 2 or ROBINS-I tool format
    - Domain-by-domain assessment for each trial
@@ -126,11 +129,13 @@ def create_multi_panel_figure(images_list, output_path, labels=['A', 'B', 'C'], 
 #### Typical Figure Structure
 
 **Main Text:**
+
 - Figure 1: Multi-panel efficacy (pCR, EFS, OS forest plots)
 - Figure 2: Subgroup analysis (e.g., by biomarker status)
 - Figure 3: Safety + Publication bias (SAE forest plot, funnel plot)
 
 **Supplementary:**
+
 - Supp Figure 1: Sensitivity analyses (leave-one-out plots)
 - Supp Figure 2: Publication bias (funnel plots for all outcomes)
 
@@ -139,7 +144,9 @@ def create_multi_panel_figure(images_list, output_path, labels=['A', 'B', 'C'], 
 Create comprehensive BibTeX file:
 
 #### Steps:
+
 1. **Extract all citations** from manuscript using grep
+
    ```bash
    grep -E "¹|²|³|⁴|⁵|⁶|⁷|⁸|⁹|⁰|\[\d+\]" manuscript_sections.md
    ```
@@ -163,6 +170,7 @@ Create comprehensive BibTeX file:
 Write comprehensive legends for all figures:
 
 #### Legend Structure:
+
 ```markdown
 **Panel A. Outcome Name**
 Description of what the panel shows. Forest plot showing [effect measure] for [outcome]
@@ -174,6 +182,7 @@ Vertical line at [null value] indicates no treatment effect.
 ```
 
 Include:
+
 - Statistical methods (random-effects, Hartung-Knapp adjustment)
 - Heterogeneity measures (I², Cochran's Q)
 - Clinical interpretations
@@ -184,6 +193,7 @@ Include:
 Before submission, verify:
 
 #### Tables
+
 - [ ] All data matches analysis results exactly
 - [ ] Abbreviations defined
 - [ ] Footnotes explain all symbols
@@ -191,6 +201,7 @@ Before submission, verify:
 - [ ] Statistical notation consistent
 
 #### Figures
+
 - [ ] All figures at 300 DPI minimum
 - [ ] Panel labels (A, B, C) visible and not obscuring data
 - [ ] Legends match figures exactly
@@ -198,6 +209,7 @@ Before submission, verify:
 - [ ] Color schemes work in grayscale
 
 #### References
+
 - [ ] All citations have corresponding references
 - [ ] Reference numbers sequential
 - [ ] DOIs correct and working
@@ -239,6 +251,7 @@ Before submission, verify:
 ## Journal-Specific Formatting
 
 ### Lancet Oncology
+
 - Word limit: 4000-5000 words
 - Tables: 3-4 main text, unlimited supplementary
 - Figures: 3-4 main text, unlimited supplementary
@@ -246,6 +259,7 @@ Before submission, verify:
 - Resolution: 300 DPI minimum
 
 ### JAMA
+
 - Word limit: 3500 words
 - Tables: 4 max
 - Figures: 4 max
@@ -253,6 +267,7 @@ Before submission, verify:
 - Resolution: 300-600 DPI
 
 ### New England Journal of Medicine
+
 - Word limit: 3000 words
 - Tables: 3 max
 - Figures: 3 max
@@ -281,6 +296,7 @@ Before submission, verify:
 ```
 
 Or with specific phase:
+
 ```
 /meta-manuscript-assembly tables
 /meta-manuscript-assembly figures

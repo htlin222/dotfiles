@@ -4,12 +4,13 @@ if-shell -b 'command -v zsh >/dev/null 2>&1' \
   "set-option -g default-command 'bash -l'"
 unbind C-b
 # Setting two prefix: 'Ctrl+b' to 'Ctrl+A'
-set-option -g prefix C-a
-# Ensure that we can send Ctrl-A to other apps
-bind C-a send-prefix
+# Use manual prefix to auto-switch input method to ABC on prefix press
+set-option -g prefix None
+bind -n C-a run-shell -b "command -v im-select >/dev/null 2>&1 && im-select com.apple.keylayout.ABC" \; switch-client -T prefix
+bind -T prefix C-a send-keys C-a
 # Setting up the colors and copy/paste
 # highlight (change color) on control key (send-prefix) event?
-set -g status-left '#{?client_prefix,#[bg=colour212]PFX.#[bg=colour202]#S,#[fg=white,bg=colour203,bold]#S}'
+set -g status-left '#{?#{==:#{client_key_table},prefix},#[bg=colour212]PFX.#[bg=colour202]#S,#[fg=white,bg=colour203,bold]#S}'
 # ─── Active Pane 視覺辨識 ───────────────────────────
 # 內容區差異：inactive 背景微暗（整片視覺差異，不被內容干擾）
 set -g window-style        'fg=colour245,bg=terminal'

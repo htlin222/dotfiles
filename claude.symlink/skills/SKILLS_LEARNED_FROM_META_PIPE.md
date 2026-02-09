@@ -19,6 +19,7 @@ This document records the skills generalized from the successful completion of a
 **Trigger**: "complete meta-analysis manuscript", "prepare for journal submission"
 
 **What it does**:
+
 - Creates publication-ready tables (Trial Characteristics, Efficacy, Safety, RoB 2, GRADE)
 - Assembles multi-panel figures from forest/funnel plots
 - Generates BibTeX references with citation mapping
@@ -26,6 +27,7 @@ This document records the skills generalized from the successful completion of a
 - Provides QA checklist for submission
 
 **Workflow phases**:
+
 1. Tables Creation (Main + Supplementary)
 2. Figure Assembly (Multi-panel with labels)
 3. References Management (BibTeX + mapping)
@@ -35,6 +37,7 @@ This document records the skills generalized from the successful completion of a
 **Time savings**: Codifies 6-9 hours of manuscript assembly work into reproducible workflow
 
 **Key features**:
+
 - Journal-specific formatting (Lancet, JAMA, NEJM)
 - Comprehensive QA checklists
 - Common pitfalls documented
@@ -49,6 +52,7 @@ This document records the skills generalized from the successful completion of a
 **Trigger**: "combine plots", "create multi-panel figure", "add panel labels"
 
 **What it does**:
+
 - Combines individual PNG/JPG files into multi-panel figures
 - Adds professional panel labels (A, B, C, D)
 - Maintains 300+ DPI resolution for publication
@@ -57,17 +61,20 @@ This document records the skills generalized from the successful completion of a
 **Python script**: Included working implementation in `scripts/assemble_figures.py`
 
 **Layouts supported**:
+
 - **Vertical**: Stack plots (e.g., pCR + EFS + OS forest plots)
 - **Horizontal**: Side-by-side (e.g., two funnel plots)
 - **Grid**: 2x2, 2x3, etc. (e.g., subgroup analyses)
 
 **Customization options**:
+
 - Font size adjustment for different image sizes
 - Label position (4 corners)
 - Spacing between panels
 - Label styling (background, border, colors)
 
 **Quality features**:
+
 - Maintains original image quality
 - Preserves 300 DPI resolution
 - Professional white-boxed labels with black borders
@@ -82,6 +89,7 @@ This document records the skills generalized from the successful completion of a
 ### The Problem Solved
 
 Meta-analysis manuscripts require:
+
 1. **7+ tables** with complex data from multiple analyses
 2. **5+ multi-panel figures** at publication quality (300 DPI)
 3. **30-40 references** properly formatted for journal style
@@ -94,17 +102,18 @@ Traditional approach: 10-15 hours of manual work, error-prone, not reproducible.
 
 These skills codify the workflow used to complete a meta-analysis manuscript to 99% in ~14 hours:
 
-| Component | Traditional | With Skills | Savings |
-|-----------|------------|-------------|---------|
-| Tables | 4-5 hours | 2-3 hours | 40% |
-| Figures | 3-4 hours | 1-2 hours | 50% |
-| References | 3-4 hours | 1-2 hours | 50% |
-| QA | 2-3 hours | 1 hour | 60% |
-| **Total** | **12-16 hours** | **5-8 hours** | **50%** |
+| Component  | Traditional     | With Skills   | Savings |
+| ---------- | --------------- | ------------- | ------- |
+| Tables     | 4-5 hours       | 2-3 hours     | 40%     |
+| Figures    | 3-4 hours       | 1-2 hours     | 50%     |
+| References | 3-4 hours       | 1-2 hours     | 50%     |
+| QA         | 2-3 hours       | 1 hour        | 60%     |
+| **Total**  | **12-16 hours** | **5-8 hours** | **50%** |
 
 ### Evidence of Effectiveness
 
 **Project completion metrics**:
+
 - **Manuscript**: 4,921 words across 5 sections ✅
 - **Tables**: 7 publication-ready tables ✅
 - **Figures**: 5 multi-panel figures at 300 DPI ✅
@@ -113,6 +122,7 @@ These skills codify the workflow used to complete a meta-analysis manuscript to 
 - **Quality**: Ready for Lancet Oncology submission
 
 **Key findings from project**:
+
 - pCR: RR 1.26 (95% CI 1.16–1.37, p=0.0015, I²=0%) - HIGH GRADE
 - EFS: HR 0.66 (95% CI 0.51–0.86, p=0.021, I²=0%) - MODERATE GRADE
 - OS: Both trials p<0.01, validating pCR as surrogate endpoint
@@ -161,6 +171,7 @@ These skills codify the workflow used to complete a meta-analysis manuscript to 
 ### Python Dependencies
 
 Both skills use minimal dependencies:
+
 ```bash
 # Required
 uv add Pillow  # For image manipulation
@@ -223,11 +234,13 @@ uv add Pillow  # For image manipulation
 ### Enhancements to Existing Skills
 
 **meta-manuscript-assembly**:
+
 - Add support for more meta-analysis types (individual patient data, network meta-analysis)
 - Include template library for different journal formats
 - Auto-generate submission checklists per journal
 
 **scientific-figure-assembly**:
+
 - Support for more image formats (TIFF, EPS, PDF)
 - Auto-optimization for file size vs quality
 - Batch processing for multiple figures
@@ -303,6 +316,7 @@ Output: Figure1_Efficacy.png
 ### Reusability
 
 These skills are applicable to:
+
 - ✅ Meta-analyses (systematic reviews)
 - ✅ Clinical trial reports
 - ✅ Observational study manuscripts
@@ -314,17 +328,20 @@ These skills are applicable to:
 ## Acknowledgments
 
 **Project**: TNBC Neoadjuvant Immunotherapy Meta-Analysis
+
 - 5 RCTs analyzed (N=2402 patients)
 - 5 meta-analyses completed (pCR, EFS, OS, PD-L1, Safety)
 - 4,921-word manuscript (publication-ready)
 - Target: Lancet Oncology or similar high-impact journal
 
 **Key learnings came from**:
+
 - Successfully completing tables phase (7 tables in 2.5 hours)
 - Figure assembly automation (5 figures in 1.5 hours)
 - Reference management workflow (31 citations in 1 hour)
 
 **Skills validated by**:
+
 - Completing manuscript to 99% in ~14 hours
 - Meeting all Lancet Oncology submission requirements
 - Achieving HIGH GRADE evidence rating for primary outcome
@@ -348,12 +365,14 @@ These skills are applicable to:
 **Skills location**: `~/.claude/skills/`
 
 **To update**:
+
 1. Edit SKILL.md files as needed
 2. Test changes on real project
 3. Update this documentation
 4. Commit to version control
 
 **To report issues**:
+
 - Document specific failure case
 - Include example inputs/outputs
 - Suggest improvement
