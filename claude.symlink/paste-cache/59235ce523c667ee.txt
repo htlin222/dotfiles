@@ -1,8 +1,0 @@
-  /tmp/gittest on   main ❯ touch helo.txt                                                                                                                                                                             at  18:37:20
-  /tmp/gittest on   main ?1 ❯ git add .                                                                                                                                                                               at  18:37:22
-  /tmp/gittest on   main ?1 ❯ git status                                                                                                                                                                              at  18:37:24
-## No commits yet on main
-A  helo.txt
-  /tmp/gittest on   main ?1 ❯ git add .                                                                                                                                                                               at  18:37:29
-  /tmp/gittest on   main ?1 ❯ re                                                                                                                                                                                      at  18:37:36
-  /tmp/gittest on   main +1 ❯                                                       

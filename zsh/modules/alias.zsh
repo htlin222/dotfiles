@@ -169,6 +169,7 @@ alias gha-last-fail='gh run view --log-failed'
 alias gha-watch='gh run watch --compact --exit-status'
 # 查看最近幾個失敗 run 的列表
 alias gha-failed-list='gh run list --status failure'
+alias closewin="$DOTFILES/shellscripts/close-app-windows.sh"
 
 # ========================================
 # Community-inspired aliases (Reddit/Lobsters)
