@@ -10,6 +10,7 @@ import (
 	"github.com/htlin/claude-tools/internal/hooks/checkrm"
 	"github.com/htlin/claude-tools/internal/hooks/fileguard"
 	"github.com/htlin/claude-tools/internal/hooks/posttooluse"
+	"github.com/htlin/claude-tools/internal/hooks/sessionhint"
 	"github.com/htlin/claude-tools/internal/hooks/stop"
 	"github.com/htlin/claude-tools/internal/hooks/userprompt"
 )
@@ -35,6 +36,8 @@ func main() {
 		checkreadexists.Run()
 	case "stop":
 		stop.Run()
+	case "session-hint":
+		sessionhint.Run()
 	case "help", "-h", "--help":
 		printUsage()
 	case "version", "-v", "--version":
@@ -60,6 +63,7 @@ Commands:
   check-file-exists  Block cat/bat if file not found (PreToolUse)
   check-read-exists  Block Read if file not found (PreToolUse)
   stop               Handle Stop events (format, backup, notify)
+  session-hint       Hint @LAST snapshot availability on SessionStart
   version            Show version
   help               Show this help
 

@@ -7,6 +7,7 @@ type HookInput struct {
 	CWD            string    `json:"cwd,omitempty"`
 	TranscriptPath string    `json:"transcript_path,omitempty"`
 	Prompt         string    `json:"prompt,omitempty"`
+	Source         string    `json:"source,omitempty"` // SessionStart: "startup", "clear", "resume", "compact"
 	ToolName       string    `json:"tool_name,omitempty"`
 	ToolInput      ToolInput `json:"tool_input,omitempty"`
 	ToolResult     any       `json:"tool_result,omitempty"`

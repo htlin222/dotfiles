@@ -14,6 +14,7 @@ import (
 
 	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/protocol"
+	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/notify"
@@ -73,6 +74,11 @@ func Run() {
 
 	// Feature 2: Git status & notification
 	gitStatusAndNotify(cwd, folderName)
+
+	// Feature 2.5: Save context snapshot for @LAST
+	if data.TranscriptPath != "" {
+		snapshot.Generate(data.TranscriptPath, cwd)
+	}
 
 	// Feature 3: TTS notification
 	tts.NotifySessionComplete(folderName, formattedCount, 0, false)
