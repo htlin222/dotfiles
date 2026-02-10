@@ -21,6 +21,7 @@ type GitFileStatus struct {
 	Path           string
 	LinesAdded     int
 	LinesRemoved   int
+	TotalLines     int
 }
 
 // GetGitStatus returns the current git status for a directory.
@@ -127,7 +128,40 @@ func GetGitStatus(dir string) *GitStatus {
 		}
 	}
 
+	// Get total line counts for each file
+	for i := range status.Files {
+		status.Files[i].TotalLines = countFileLines(dir, status.Files[i].Path)
+	}
+
 	return status
+}
+
+// countFileLines counts total lines in a file, resolving relative paths from dir.
+func countFileLines(dir, path string) int {
+	// Resolve path: could be relative (../foo) or just filename
+	var fullPath string
+	if strings.HasPrefix(path, "/") {
+		fullPath = path
+	} else {
+		fullPath = dir + "/" + path
+	}
+
+	cmd := exec.Command("wc", "-l", fullPath)
+	output, err := cmd.Output()
+	if err != nil {
+		return 0
+	}
+	// wc -l output: "  123 /path/to/file"
+	s := strings.TrimSpace(string(output))
+	n := 0
+	for _, c := range s {
+		if c >= '0' && c <= '9' {
+			n = n*10 + int(c-'0')
+		} else {
+			break
+		}
+	}
+	return n
 }
 
 type lineStats struct {
