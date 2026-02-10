@@ -64,7 +64,6 @@ func Run() {
 
 	cwd := data.CWD
 	sessionID := data.SessionID
-	transcriptPath := data.TranscriptPath
 	folderName := filepath.Base(cwd)
 
 	// Feature 1: Format edited files
@@ -74,47 +73,28 @@ func Run() {
 		formattedCount = formatEditedFiles(editedFiles)
 	}
 
-	// Feature 2: Backup transcript
-	transcriptBackup := backupTranscript(transcriptPath, folderName, sessionID)
-
-	// Feature 3: Log session summary
-	stats := getSessionStats()
-	metrics.LogSession(sessionID, cwd, folderName, stats, transcriptBackup)
-
-	// Feature 4: Git status & notification
+	// Feature 2: Git status & notification
 	gitStatusAndNotify(cwd, folderName)
 
-	// Feature 5: TTS notification
-	tts.NotifySessionComplete(folderName, formattedCount, stats["unique_files"], transcriptBackup != "")
+	// Feature 3: TTS notification
+	tts.NotifySessionComplete(folderName, formattedCount, 0, false)
 
 	// Log metrics
 	executionTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0
 	metrics.LogMetrics("stop", "Stop", executionTimeMS, true, map[string]any{
-		"session_id":          sessionID,
-		"files_formatted":     formattedCount,
-		"files_edited":        stats["unique_files"],
-		"bash_commands":       stats["bash_commands"],
-		"transcript_backed_up": transcriptBackup != "",
+		"session_id":      sessionID,
+		"files_formatted": formattedCount,
 	})
 
 	metrics.LogEvent("Stop", "stop", sessionID, cwd, map[string]any{
 		"project": folderName,
-		"stats":   stats,
 	})
 
 	// Print summary to stderr
-	if formattedCount > 0 || transcriptBackup != "" {
-		var summaryParts []string
-		if formattedCount > 0 {
-			summaryParts = append(summaryParts, fmt.Sprintf("%s%s%s %s%d%s files formatted",
-				ansi.BrightGreen, ansi.IconCheck, ansi.Reset,
-				ansi.BrightWhite, formattedCount, ansi.Reset))
-		}
-		if transcriptBackup != "" {
-			summaryParts = append(summaryParts, fmt.Sprintf("%s%s%s Transcript backed up",
-				ansi.BrightCyan, ansi.IconSave, ansi.Reset))
-		}
-		fmt.Fprintln(os.Stderr, strings.Join(summaryParts, fmt.Sprintf(" %s│%s ", ansi.Dim, ansi.Reset)))
+	if formattedCount > 0 {
+		fmt.Fprintf(os.Stderr, "%s%s%s %s%d%s files formatted\n",
+			ansi.BrightGreen, ansi.IconCheck, ansi.Reset,
+			ansi.BrightWhite, formattedCount, ansi.Reset)
 	}
 
 	fmt.Println(protocol.ContinueResponse())
@@ -187,119 +167,6 @@ func formatEditedFiles(files map[string]bool) int {
 	}
 
 	return formattedCount
-}
-
-func backupTranscript(transcriptPath, projectName, sessionID string) string {
-	if transcriptPath == "" {
-		return ""
-	}
-
-	if _, err := os.Stat(transcriptPath); os.IsNotExist(err) {
-		return ""
-	}
-
-	if err := config.EnsureTranscriptDir(); err != nil {
-		return ""
-	}
-
-	timestamp := time.Now().Format("20060102_150405")
-	safeSessionID := sessionID
-	if len(safeSessionID) > 8 {
-		safeSessionID = safeSessionID[:8]
-	}
-	if safeSessionID == "" {
-		safeSessionID = "unknown"
-	}
-
-	backupName := fmt.Sprintf("%s_%s_%s.jsonl", projectName, timestamp, safeSessionID)
-	backupPath := filepath.Join(config.TranscriptDir, backupName)
-
-	// Copy file
-	src, err := os.ReadFile(transcriptPath)
-	if err != nil {
-		return ""
-	}
-
-	if err := os.WriteFile(backupPath, src, 0644); err != nil {
-		return ""
-	}
-
-	cleanupOldBackups()
-	return backupPath
-}
-
-func cleanupOldBackups() {
-	entries, err := os.ReadDir(config.TranscriptDir)
-	if err != nil {
-		return
-	}
-
-	var backups []string
-	for _, entry := range entries {
-		if strings.HasSuffix(entry.Name(), ".jsonl") {
-			backups = append(backups, entry.Name())
-		}
-	}
-
-	// Sort by modification time (newest first)
-	// Simple approach: keep only the last N
-	if len(backups) > config.MaxTranscriptBackups {
-		for i := config.MaxTranscriptBackups; i < len(backups); i++ {
-			os.Remove(filepath.Join(config.TranscriptDir, backups[i]))
-		}
-	}
-}
-
-func getSessionStats() map[string]int {
-	stats := map[string]int{
-		"files_edited":  0,
-		"unique_files":  0,
-		"bash_commands": 0,
-	}
-
-	cutoff := time.Now().Add(-time.Duration(config.SessionTimeoutMinutes) * time.Minute)
-	uniqueFiles := make(map[string]bool)
-
-	// Count edited files
-	if f, err := os.Open(config.EditsLogFile()); err == nil {
-		defer f.Close()
-		scanner := bufio.NewScanner(f)
-		for scanner.Scan() {
-			var entry map[string]any
-			if err := json.Unmarshal(scanner.Bytes(), &entry); err != nil {
-				continue
-			}
-			if ts, ok := entry["timestamp"].(string); ok {
-				if timestamp, err := time.Parse(time.RFC3339, ts); err == nil && timestamp.After(cutoff) {
-					stats["files_edited"]++
-					if file, ok := entry["file"].(string); ok {
-						uniqueFiles[file] = true
-					}
-				}
-			}
-		}
-	}
-
-	stats["unique_files"] = len(uniqueFiles)
-
-	// Count bash commands
-	if f, err := os.Open(config.BashLogFile()); err == nil {
-		defer f.Close()
-		scanner := bufio.NewScanner(f)
-		for scanner.Scan() {
-			var entry map[string]any
-			if err := json.Unmarshal(scanner.Bytes(), &entry); err != nil {
-				continue
-			}
-			if ts, ok := entry["timestamp"].(string); ok {
-				if timestamp, err := time.Parse(time.RFC3339, ts); err == nil && timestamp.After(cutoff) {
-					stats["bash_commands"]++
-				}
-			}
-		}
-	}
-
-	return stats
 }
 
 func gitStatusAndNotify(cwd, folderName string) {

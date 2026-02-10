@@ -109,7 +109,8 @@ func formatResetDate(resetTime string) string {
 	if err != nil {
 		return "--"
 	}
-	return t.Format("01/02 15:04")
+	gmt8 := time.FixedZone("GMT+8", 8*60*60)
+	return t.In(gmt8).Format("01/02 15:04") + " GMT+8"
 }
 
 func formatInt(n int) string {
