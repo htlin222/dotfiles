@@ -3,7 +3,6 @@ package statusline
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -11,11 +10,9 @@ import (
 // handleVimModeIMSwitch manages input method based on vim mode.
 // - NORMAL mode: save current IM, switch to ABC
 // - INSERT mode: restore saved IM
-// Returns short name of saved IM for display (empty if none or not on macOS).
+// Returns short name of saved IM for display (empty if none).
 func handleVimModeIMSwitch(currentMode, transcriptPath string) string {
-	// Find im-select (macOS only, gracefully skip on Linux)
-	imSelect := findIMSelect()
-	if imSelect == "" {
+	if !nativeIMAvailable() {
 		return ""
 	}
 
@@ -33,13 +30,11 @@ func handleVimModeIMSwitch(currentMode, transcriptPath string) string {
 
 	abc := "com.apple.keylayout.ABC"
 
-	// Get current IM
-	cmd := exec.Command(imSelect)
-	output, err := cmd.Output()
-	if err != nil {
+	// Get current IM via native API (no process spawn)
+	currentIM := nativeGetCurrentIM()
+	if currentIM == "" {
 		return ""
 	}
-	currentIM := strings.TrimSpace(string(output))
 
 	// Read previous vim mode
 	prevModeData, _ := os.ReadFile(modeStateFile)
@@ -60,13 +55,13 @@ func handleVimModeIMSwitch(currentMode, transcriptPath string) string {
 			savedIM = currentIM
 		}
 		if currentIM != abc {
-			exec.Command(imSelect, abc).Run()
+			nativeSetIM(abc)
 		}
 
 	case "INSERT":
 		// Entering INSERT: restore saved IM if we have one
 		if prevMode == "NORMAL" && savedIM != "" && savedIM != currentIM {
-			exec.Command(imSelect, savedIM).Run()
+			nativeSetIM(savedIM)
 		}
 	}
 
@@ -74,6 +69,7 @@ func handleVimModeIMSwitch(currentMode, transcriptPath string) string {
 }
 
 // findIMSelect returns path to im-select if available, empty string otherwise.
+// Used as fallback on non-macOS platforms.
 func findIMSelect() string {
 	paths := []string{
 		"/opt/homebrew/bin/im-select", // macOS ARM

@@ -51,14 +51,12 @@ func Run() {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
 		notify.SendSimple("Claude Code 對話結束")
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
 		notify.SendSimple("Claude Code 對話結束")
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
@@ -90,14 +88,15 @@ func Run() {
 		"project": folderName,
 	})
 
-	// Print summary to stderr
+	// Print summary to stderr (visible in verbose mode)
 	if formattedCount > 0 {
 		fmt.Fprintf(os.Stderr, "%s%s%s %s%d%s files formatted\n",
 			ansi.BrightGreen, ansi.IconCheck, ansi.Reset,
 			ansi.BrightWhite, formattedCount, ansi.Reset)
 	}
 
-	fmt.Println(protocol.ContinueResponse())
+	// Stop hook: exit 0 with no stdout = allow Claude to stop normally
+	// Do NOT output JSON here - "continue":true can be misinterpreted as "keep working"
 }
 
 func getRecentEditedFiles() map[string]bool {
