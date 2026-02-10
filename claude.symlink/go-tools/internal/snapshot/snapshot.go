@@ -3,6 +3,8 @@ package snapshot
 
 import (
 	"bufio"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -15,17 +17,33 @@ import (
 )
 
 const (
-	// SnapshotPath is the default path for the context snapshot file.
-	SnapshotPath = "/tmp/claude_last_context.md"
-	// ConsumedPath is the path after snapshot has been consumed.
-	ConsumedPath = "/tmp/claude_last_context.md.consumed"
+	// SnapshotPrefix is the filename prefix for per-CWD snapshots.
+	SnapshotPrefix = "claude_last_context_"
+	// SnapshotSuffix is the filename suffix for snapshots.
+	SnapshotSuffix = ".md"
 	// MaxTurns is the maximum number of conversation turns to keep.
-	MaxTurns = 5
+	MaxTurns = 6
 	// MaxTextLen is the maximum text length per turn.
-	MaxTextLen = 2000
+	MaxTextLen = 4000
+	// MaxTotalLen is the maximum total text length for all turns combined.
+	MaxTotalLen = 20000
 	// MaxAge is the maximum age of a snapshot before it's considered stale.
 	MaxAge = 24 * time.Hour
 )
+
+// snapshotDir is the directory for snapshot files. Tests can override this.
+var snapshotDir = "/tmp"
+
+// cwdHash returns a deterministic 8-hex-char hash of the CWD path.
+func cwdHash(cwd string) string {
+	h := sha256.Sum256([]byte(cwd))
+	return hex.EncodeToString(h[:4])
+}
+
+// snapshotPathForCWD returns the snapshot file path for a given CWD.
+func snapshotPathForCWD(cwd string) string {
+	return filepath.Join(snapshotDir, SnapshotPrefix+cwdHash(cwd)+SnapshotSuffix)
+}
 
 // transcriptEntry represents a line in the transcript JSONL.
 type transcriptEntry struct {
@@ -43,7 +61,7 @@ type conversationTurn struct {
 }
 
 // Generate creates a context snapshot from the transcript and project state.
-func Generate(transcriptPath, cwd string) error {
+func Generate(transcriptPath, cwd, sessionID string) error {
 	turns := extractConversation(transcriptPath)
 	editedFiles := getEditedFilesList()
 	gitStatus := getGitStatusString(cwd)
@@ -84,28 +102,35 @@ func Generate(transcriptPath, cwd string) error {
 		sb.WriteString("\n```\n")
 	}
 
-	return os.WriteFile(SnapshotPath, []byte(sb.String()), 0644)
+	return os.WriteFile(snapshotPathForCWD(cwd), []byte(sb.String()), 0644)
 }
 
-// IsAvailable checks if a snapshot exists and is younger than MaxAge.
-func IsAvailable() bool {
-	info, err := os.Stat(SnapshotPath)
+// IsAvailable checks if a snapshot for the given CWD exists and is younger than MaxAge.
+func IsAvailable(cwd string) bool {
+	path := snapshotPathForCWD(cwd)
+	info, err := os.Stat(path)
 	if err != nil {
 		return false
 	}
 	return time.Since(info.ModTime()) < MaxAge
 }
 
-// Consume reads the snapshot content and renames it to prevent reuse.
-func Consume() (string, error) {
-	data, err := os.ReadFile(SnapshotPath)
+// Consume reads the snapshot for the given CWD and renames it to prevent reuse.
+func Consume(cwd string) (string, error) {
+	path := snapshotPathForCWD(cwd)
+	data, err := os.ReadFile(path)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("no snapshot available")
+	}
+	// Check staleness
+	info, err := os.Stat(path)
+	if err != nil || time.Since(info.ModTime()) >= MaxAge {
+		return "", fmt.Errorf("no snapshot available")
 	}
 	// Rename to .consumed to prevent duplicate injection
-	if err := os.Rename(SnapshotPath, ConsumedPath); err != nil {
-		// If rename fails, still return the content
-		_ = os.Remove(SnapshotPath)
+	consumed := strings.TrimSuffix(path, SnapshotSuffix) + ".consumed"
+	if err := os.Rename(path, consumed); err != nil {
+		_ = os.Remove(path)
 	}
 	return string(data), nil
 }
@@ -164,6 +189,16 @@ func extractConversation(transcriptPath string) []conversationTurn {
 	// Keep only last MaxTurns turns
 	if len(turns) > MaxTurns {
 		turns = turns[len(turns)-MaxTurns:]
+	}
+
+	// Enforce MaxTotalLen: drop oldest turns until total fits
+	totalLen := 0
+	for _, t := range turns {
+		totalLen += len(t.Text)
+	}
+	for len(turns) > 0 && totalLen > MaxTotalLen {
+		totalLen -= len(turns[0].Text)
+		turns = turns[1:]
 	}
 
 	return turns

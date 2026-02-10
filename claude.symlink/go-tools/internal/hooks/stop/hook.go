@@ -77,7 +77,7 @@ func Run() {
 
 	// Feature 2.5: Save context snapshot for @LAST
 	if data.TranscriptPath != "" {
-		snapshot.Generate(data.TranscriptPath, cwd)
+		snapshot.Generate(data.TranscriptPath, cwd, sessionID)
 	}
 
 	// Feature 3: TTS notification

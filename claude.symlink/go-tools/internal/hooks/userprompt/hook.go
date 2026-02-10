@@ -73,7 +73,7 @@ func Run() {
 	// Feature 0: @LAST context injection
 	var snapshotContent string
 	if strings.Contains(strings.ToUpper(prompt), "@LAST") {
-		if content, err := snapshot.Consume(); err == nil && content != "" {
+		if content, err := snapshot.Consume(cwd); err == nil && content != "" {
 			snapshotContent = content
 			messages = append(messages, "✅ 前次上下文已載入")
 		} else {
@@ -140,9 +140,9 @@ func Run() {
 		messages = append(messages, "💡 Tip: delegate Edit-heavy tasks to Task(model:haiku) to save context")
 	}
 
-	// Feature 13: Context pressure monitor (every 5 prompts)
+	// Feature 13: Context pressure monitor (every 5 prompts, uses real data from statusline)
 	if st.PromptCount-st.LastPressureCheck >= 5 {
-		if pressureMsg := checkContextPressure(st); pressureMsg != "" {
+		if pressureMsg := context.CheckPressure(); pressureMsg != "" {
 			messages = append(messages, pressureMsg)
 			st.LastPressureCheck = st.PromptCount
 		}
@@ -327,14 +327,3 @@ func truncate(s string, maxLen int) string {
 	return s[:maxLen]
 }
 
-func checkContextPressure(st *state.State) string {
-	metrics := &context.SessionMetrics{
-		PromptCount:  st.PromptCount,
-		FileReads:    st.FileReads,
-		FileWrites:   st.FileWrites,
-		BashCommands: st.BashCommands,
-		TaskAgents:   st.TaskAgents,
-	}
-
-	return context.CheckPressure(metrics)
-}

@@ -14,7 +14,6 @@ import (
 
 	"github.com/htlin/claude-tools/internal/processors"
 	"github.com/htlin/claude-tools/internal/protocol"
-	"github.com/htlin/claude-tools/internal/state"
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/patterns"
@@ -46,11 +45,6 @@ func Run() {
 	toolName := data.ToolName
 	cwd := data.CWD
 	sessionID := data.SessionID
-
-	// Track context pressure metrics
-	st, _ := state.Load()
-	trackContextMetrics(st, toolName)
-	state.Save(st)
 
 	// Handle Bash commands
 	if toolName == "Bash" {
@@ -251,16 +245,3 @@ func truncateSlice(slice []string, maxLen int) []string {
 	return slice[:maxLen]
 }
 
-// trackContextMetrics updates state with tool usage for context pressure monitoring.
-func trackContextMetrics(st *state.State, toolName string) {
-	switch toolName {
-	case "Read", "Glob", "Grep":
-		st.FileReads++
-	case "Write", "Edit", "MultiEdit":
-		st.FileWrites++
-	case "Bash":
-		st.BashCommands++
-	case "Task":
-		st.TaskAgents++
-	}
-}

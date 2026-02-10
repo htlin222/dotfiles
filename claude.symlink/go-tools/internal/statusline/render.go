@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/htlin/claude-tools/internal/protocol"
+	"github.com/htlin/claude-tools/pkg/context"
 )
 
 // ANSI constants
@@ -115,10 +116,14 @@ func Render(data *protocol.StatuslineInput) {
 	currentTokens := data.ContextWindow.CurrentUsage.InputTokens +
 		data.ContextWindow.CurrentUsage.CacheCreationInputTokens +
 		data.ContextWindow.CurrentUsage.CacheReadInputTokens
-	contextPct := (currentTokens * 100 / windowSize) + 20 // Add 20% baseline
+	rawContextPct := currentTokens * 100 / windowSize
+	contextPct := rawContextPct + 20 // Add 20% baseline for display
 	if contextPct > 100 {
 		contextPct = 100
 	}
+
+	// Persist real context pressure for userprompt hook
+	context.WritePressure(rawContextPct, currentTokens, windowSize)
 
 	currentDisplay := formatTokens(currentTokens)
 	windowDisplay := formatTokensShort(windowSize)
