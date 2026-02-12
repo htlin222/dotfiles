@@ -56,10 +56,6 @@ func StateFile() string {
 	return filepath.Join(LogDir, "hook_state.json")
 }
 
-func TTSLockFile() string {
-	return filepath.Join(ClaudeDir, ".tts.lock")
-}
-
 // EnsureLogDir creates the log directory if it doesn't exist.
 func EnsureLogDir() error {
 	return os.MkdirAll(LogDir, 0755)

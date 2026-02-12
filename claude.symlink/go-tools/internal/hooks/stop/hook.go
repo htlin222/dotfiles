@@ -18,7 +18,6 @@ import (
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/notify"
-	"github.com/htlin/claude-tools/pkg/tts"
 )
 
 // File extension to formatter mapping
@@ -79,9 +78,6 @@ func Run() {
 	if data.TranscriptPath != "" {
 		snapshot.Generate(data.TranscriptPath, cwd, sessionID)
 	}
-
-	// Feature 3: TTS notification
-	tts.NotifySessionComplete(folderName, formattedCount, 0, false)
 
 	// Log metrics
 	executionTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0

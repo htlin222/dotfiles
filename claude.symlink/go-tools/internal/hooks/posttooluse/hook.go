@@ -17,7 +17,6 @@ import (
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/patterns"
-	"github.com/htlin/claude-tools/pkg/tts"
 )
 
 // Skip directories for linting
@@ -57,7 +56,6 @@ func Run() {
 				}
 			}
 			metrics.LogBashCommand(command, cwd, exitCode)
-			tts.NotifyBashComplete(command, exitCode, cwd)
 
 			// Skip further processing for git commands
 			if strings.HasPrefix(strings.TrimSpace(command), "git ") || strings.Contains(command, "git ") {
@@ -91,11 +89,6 @@ func Run() {
 
 		// Log the edit
 		metrics.LogEdit(filePath, toolName, cwd)
-
-		// TTS notification for file edits
-		if toolName == "Write" || toolName == "Edit" || toolName == "MultiEdit" {
-			tts.NotifyFileSaved(filePath, toolName)
-		}
 
 		// Skip gitignored files
 		if isGitignored(filePath, cwd) {
