@@ -20,7 +20,7 @@ setopt hist_ignore_all_dups
 setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt share_history
-setopt hup
+unsetopt hup
 setopt long_list_jobs
 setopt notify
 unsetopt nomatch
@@ -29,7 +29,8 @@ unsetopt nomatch
 export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
 # Initialize Powerlevel10k instant prompt for faster startup
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+# Disable in mosh to prevent exit hang (p10k worker issue)
+if [[ -z "$MOSH_CONNECTION" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -471,3 +472,11 @@ export PATH="$HOME/.local/bin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Fix mosh + p10k exit hang - kill orphaned p10k workers
+zshexit() {
+  # Kill p10k worker processes spawned by this shell
+  pkill -P $$ 2>/dev/null
+  # Also kill by FIFO pattern if any remain
+  pkill -f "p10k.worker.*$$" 2>/dev/null
+}
