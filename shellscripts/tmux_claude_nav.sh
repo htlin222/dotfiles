@@ -1,48 +1,51 @@
 #!/bin/zsh -f
-# tmux_claude_nav v2 - Optimized version
-zmodload zsh/stat 2>/dev/null  # for zstat
-# Changes:
-# 1. Single ps call for all process info (no N×ps for grandparents)
-# 2. Simpler parsing with awk instead of zsh loops
-# 3. Combine stat+date into single zsh test
+# tmux_claude_nav v3 - Robust version
+zmodload zsh/stat 2>/dev/null     # for zstat
+zmodload zsh/datetime 2>/dev/null  # for EPOCHSECONDS
 
 CACHE_DIR="/tmp/tmux_claude_cache"
 CACHE_TTL=60
 
-session=$(tmux display-message -p '#S')
+session=$(tmux display-message -p '#S' 2>/dev/null) || exit 1
 cache_file="$CACHE_DIR/${session}_panes"
 index_file="$CACHE_DIR/${session}_index"
 
 mkdir -p "$CACHE_DIR"
 
 refresh_cache() {
-    # Single ps call: get all ppid,pid,comm in one shot
-    # Then use awk to find Claude processes and their ancestors
+    # Match only the claude CLI binary, not Claude.app desktop processes
+    # ps comm= shows full path on macOS; match basename "claude" exactly
     local valid_pids
     valid_pids=$(ps -eo ppid=,pid=,comm= 2>/dev/null | awk '
     {
         ppid=$1; pid=$2; comm=$3
         parent[pid] = ppid
-        if (tolower(comm) ~ /claude/) {
+        # Match basename: strip path, check exact "claude" (not claude-hooks, Claude.app, etc.)
+        n = split(comm, parts, "/")
+        base = parts[n]
+        if (base == "claude") {
             claude_parents[ppid] = 1
         }
     }
     END {
         for (p in claude_parents) {
+            if (p == 0 || p == 1) continue  # skip init/launchd
             print p
-            if (p in parent) print parent[p]  # grandparent
+            if (p in parent && parent[p] != 0 && parent[p] != 1) print parent[p]
         }
     }' | sort -u | tr '\n' '|' | sed 's/|$//')
 
+    [[ -z "$valid_pids" ]] && { : > "$cache_file"; return; }
+
     # Get Claude panes in one tmux call
-    tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}' | \
+    tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}' 2>/dev/null | \
         awk -F'|' -v pids="$valid_pids" '
         BEGIN { split(pids, arr, "|"); for (i in arr) valid[arr[i]] = 1 }
         valid[$1] { print $2 }
         ' > "$cache_file"
 
-    # Reset index
-    local current=$(tmux display-message -p '#{window_index}:#{pane_index}')
+    # Reset index to current pane position
+    local current=$(tmux display-message -p '#{window_index}:#{pane_index}' 2>/dev/null)
     local idx=0 i=0
     while read -r line; do
         ((i++))
@@ -53,16 +56,26 @@ refresh_cache() {
 
 needs_refresh() {
     [[ ! -f "$cache_file" ]] && return 0
-    # Use zsh stat module (faster than forking stat command)
-    local mtime
-    if (( $+functions[zstat] )) || [[ -n "${modules[zsh/stat]}" ]]; then
+    local mtime now
+    # Get mtime
+    if [[ -n "${modules[zsh/stat]}" ]]; then
         zstat -A mtime +mtime "$cache_file" 2>/dev/null || return 0
     else
-        # Fallback: single stat call (macOS compatible)
         mtime=$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file" 2>/dev/null) || return 0
     fi
-    (( EPOCHSECONDS - mtime > CACHE_TTL )) && return 0
+    # Get current time (prefer EPOCHSECONDS, fallback to date)
+    if [[ -n "$EPOCHSECONDS" ]]; then
+        now=$EPOCHSECONDS
+    else
+        now=$(date +%s)
+    fi
+    (( now - mtime > CACHE_TTL )) && return 0
     return 1
+}
+
+# Check if a target pane actually exists
+pane_exists() {
+    tmux display-message -p -t "$session:$1" '#{pane_id}' &>/dev/null
 }
 
 navigate() {
@@ -78,6 +91,9 @@ navigate() {
     (( count == 0 )) && { tmux display-message "No Claude panes"; return; }
 
     local idx=$(< "$index_file" 2>/dev/null || echo 1)
+    # Clamp index to valid range (handles stale index files)
+    (( idx > count )) && idx=$count
+    (( idx < 1 )) && idx=1
 
     if [[ "$direction" == "next" ]]; then
         idx=$(( (idx % count) + 1 ))
@@ -86,14 +102,28 @@ navigate() {
         (( idx < 1 )) && idx=$count
     fi
 
+    local target="${panes[$idx]}"
+
+    # Validate target exists; if stale, force refresh and retry once
+    if ! pane_exists "$target"; then
+        refresh_cache
+        panes=("${(@f)$(< "$cache_file")}")
+        count=${#panes[@]}
+        (( count == 0 )) && { tmux display-message "No Claude panes"; return; }
+        (( idx > count )) && idx=1
+        target="${panes[$idx]}"
+        if ! pane_exists "$target"; then
+            tmux display-message "No Claude panes"
+            return
+        fi
+    fi
+
     echo "$idx" > "$index_file"
 
-    local target="${panes[$idx]}"
     local win="${target%%:*}"
     local pane="${target##*:}"
 
-    # Combine display + switch
-    local pane_path=$(tmux display-message -p -t "$session:$win.$pane" '#{pane_current_path}')
+    local pane_path=$(tmux display-message -p -t "$session:$win.$pane" '#{pane_current_path}' 2>/dev/null)
     local dir_name="${pane_path:t}"
 
     # Progress indicator
