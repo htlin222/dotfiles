@@ -93,6 +93,10 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
+# Claude Code
+#
+export CLAUDE_CODE_ENABLE_TASKS=true
+
 # you-should-use settings
 export YSU_MESSAGE_POSITION="after"
 export YSU_MODE=ALL
