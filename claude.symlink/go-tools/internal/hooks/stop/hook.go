@@ -14,6 +14,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/htlin/claude-tools/internal/hooks/busy"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/pkg/ansi"
@@ -54,6 +55,10 @@ var formatters = map[string][]string{
 
 // Run executes the stop hook.
 func Run() {
+	if pane := busy.GetTmuxPane(); pane != "" {
+		busy.SetIdle(pane)
+	}
+
 	startTime := time.Now()
 
 	input, err := io.ReadAll(os.Stdin)

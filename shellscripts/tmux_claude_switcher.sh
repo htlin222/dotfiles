@@ -119,7 +119,7 @@ fi
 if (( use_active_cache )); then
     while IFS= read -r line; do
         active_items+=("$line")
-        IFS='|' read -r id dir branch topic cwd <<< "$line"
+        IFS='|' read -r id dir branch topic cwd tmux_pane_id <<< "$line"
         active_cwds[$cwd]=1
         (( ${#id} > max_id )) && max_id=${#id}
     done < "$ACTIVE_CACHE"
@@ -133,7 +133,7 @@ else
     done < <(pgrep -f '[c]laude' 2>/dev/null)
 
     cache_content=""
-    while IFS='|' read -r pane_pid pane_id pane_path; do
+    while IFS='|' read -r pane_pid pane_id pane_path tmux_pane_id; do
         if [[ -n "${claude_pids[$pane_pid]}" ]]; then
             active_cwds[$pane_path]=1
             dir="${pane_path:t}"
@@ -148,13 +148,13 @@ else
                 branch=$(echo "$info" | cut -f2)
             fi
 
-            item="${pane_id}|${dir}|${branch}|${topic}|${pane_path}"
+            item="${pane_id}|${dir}|${branch}|${topic}|${pane_path}|${tmux_pane_id}"
             active_items+=("$item")
             cache_content+="$item"$'\n'
 
             (( ${#pane_id} > max_id )) && max_id=${#pane_id}
         fi
-    done < <(tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}|#{pane_current_path}')
+    done < <(tmux list-panes -s -t "$session" -F '#{pane_pid}|#{window_index}:#{pane_index}|#{pane_current_path}|#{pane_id}')
 
     echo -n "$cache_content" > "$ACTIVE_CACHE"
 fi
@@ -233,12 +233,28 @@ output=""
 trunc() { [[ ${#1} -gt $2 ]] && echo "${1:0:$((2-1))}…" || echo "$1"; }
 
 # Active panes
+C_ORANGE=$'\033[38;5;208m'
+status_dir="/tmp/tmux_claude_cache/pane_status"
+now_ts=$(date +%s)
 for item in "${active_items[@]}"; do
-    IFS='|' read -r id dir branch topic cwd <<< "$item"
+    IFS='|' read -r id dir branch topic cwd tmux_pane_id <<< "$item"
     dir=$(trunc "$dir" $max_dir)
     branch=$(trunc "$branch" $max_branch)
 
-    line="${C_GREEN}●${C_RESET} "
+    # Check busy status
+    local stripped="${tmux_pane_id#%}"
+    local pane_busy=0
+    if [[ -n "$stripped" && -f "$status_dir/$stripped" ]]; then
+        local fmtime
+        fmtime=$(stat -f %m "$status_dir/$stripped" 2>/dev/null || stat -c %Y "$status_dir/$stripped" 2>/dev/null || echo 0)
+        (( now_ts - fmtime < 300 )) && pane_busy=1
+    fi
+
+    if (( pane_busy )); then
+        line="${C_ORANGE}●${C_RESET} "
+    else
+        line="${C_GREEN}●${C_RESET} "
+    fi
     line+="${C_CYAN}$(printf "%-${max_id}s" "$id")${C_RESET} "
     line+="${C_YELLOW}$(printf "%-${max_dir}s" "$dir")${C_RESET}"
 

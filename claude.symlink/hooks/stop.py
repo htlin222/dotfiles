@@ -240,64 +240,6 @@ def log_session_summary(
 
 
 # =============================================================================
-# Feature 3.5: Extract Summary from Transcript
-# =============================================================================
-
-
-def extract_last_summary(transcript_path: str) -> str | None:
-    """Extract the last <summary>...</summary> text from the transcript JSONL.
-
-    Uses rfind to locate the LAST </summary> and its matching <summary> tag,
-    avoiding false positives from inline mentions of the tag in prose.
-    """
-    if not transcript_path or not os.path.exists(transcript_path):
-        return None
-
-    last_summary = None
-
-    try:
-        with open(transcript_path, encoding="utf-8") as f:
-            for line in f:
-                try:
-                    obj = json.loads(line.strip())
-                except (json.JSONDecodeError, ValueError):
-                    continue
-
-                if obj.get("message", {}).get("role") != "assistant":
-                    continue
-
-                content = obj.get("message", {}).get("content", "")
-                full_text = ""
-                if isinstance(content, str):
-                    full_text = content
-                elif isinstance(content, list):
-                    for item in content:
-                        if isinstance(item, dict) and item.get("type") == "text":
-                            full_text += item.get("text", "")
-
-                # Find the last </summary>, then find <summary> on its own line
-                end_idx = full_text.rfind("</summary>")
-                if end_idx == -1:
-                    continue
-                # Look for <summary> at the start of a line (not inline mentions)
-                start_idx = full_text.rfind("\n<summary>", 0, end_idx)
-                if start_idx != -1:
-                    start_idx += 1  # skip the newline
-                elif full_text.startswith("<summary>"):
-                    start_idx = 0
-                else:
-                    continue
-
-                summary = full_text[start_idx + len("<summary>") : end_idx].strip()
-                if summary:
-                    last_summary = summary
-    except Exception:
-        pass
-
-    return last_summary
-
-
-# =============================================================================
 # Feature 4: Git Status & Notification
 # =============================================================================
 
@@ -315,10 +257,8 @@ def format_status_line(line: str) -> str:
     return f"{emoji} {display_name}"
 
 
-def get_git_status_and_notify(
-    cwd: str, folder_name: str, summary: str | None = None
-) -> None:
-    """Get git status and send ntfy notification with optional summary."""
+def get_git_status_and_notify(cwd: str, folder_name: str) -> None:
+    """Get git status and send ntfy notification."""
     title = f"Claude Code 📁 {folder_name}" if folder_name else "Claude Code"
 
     try:
@@ -331,20 +271,12 @@ def get_git_status_and_notify(
         )
         git_status = git_result.stdout.strip()
 
-        parts = []
-
-        # Add summary first if available
-        if summary:
-            parts.append(summary)
-
         if git_status:
             lines = git_status.split("\n")
             formatted = [format_status_line(line) for line in lines]
-            parts.append("\n".join(formatted))
-        elif not summary:
-            parts.append("無 Git 變動")
-
-        body = "\n\n".join(parts) if parts else "對話已完成"
+            body = "\n".join(formatted)
+        else:
+            body = "無 Git 變動"
 
         subprocess.run(
             ["ntfy", "publish", "--title", title, "lizard", body],
@@ -398,11 +330,8 @@ def main():
         stats = get_session_stats()
         log_session_summary(session_id, cwd, folder_name, stats, transcript_backup)
 
-        # Feature 3.5: Extract summary from transcript
-        summary = extract_last_summary(transcript_path)
-
         # Feature 4: Git status & notification
-        get_git_status_and_notify(cwd, folder_name, summary=summary)
+        get_git_status_and_notify(cwd, folder_name)
 
         # Feature 5: TTS notification with rich summary
         notify_session_complete(

@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/htlin/claude-tools/internal/hooks/busy"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/internal/state"
@@ -16,6 +17,11 @@ import (
 
 // Run executes the session-hint hook.
 func Run() {
+	if pane := busy.GetTmuxPane(); pane != "" {
+		busy.SetIdle(pane)
+	}
+	busy.CleanupStale()
+
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
 		fmt.Println(protocol.ContinueResponse())

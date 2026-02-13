@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
@@ -153,18 +152,7 @@ func cleanLastCommand(cmd string) string {
 		}
 	}
 
-	// Strip any remaining XML-like tags: <tag>content</tag> and standalone <tag> or </tag>
-	cmd = stripXMLTags(cmd)
-
 	return strings.TrimSpace(cmd)
-}
-
-// xmlTagRe matches any XML/HTML-like tag: <tag>, </tag>, <tag attr="val">, <tag/>.
-var xmlTagRe = regexp.MustCompile(`</?[a-zA-Z][a-zA-Z0-9_-]*(?:\s[^>]*)?\s*/?>`)
-
-// stripXMLTags removes all XML/HTML-like tags from text.
-func stripXMLTags(s string) string {
-	return xmlTagRe.ReplaceAllString(s, "")
 }
 
 // getFirstPrompt returns the first prompt of the session, saving it if needed.

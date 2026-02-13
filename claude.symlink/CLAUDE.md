@@ -18,5 +18,3 @@
 - MCP.md - MCP server details
 - MODES.md - Mode details
 - PRINCIPLES.md - Design principles
-
-每次回應結束前，用 <summary> 標籤寫下目前的進度摘要和下一步該做什麼。

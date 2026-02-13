@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/htlin/claude-tools/internal/hooks/busy"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/internal/state"
@@ -42,6 +43,10 @@ var projectTypes = map[string]struct {
 
 // Run executes the user prompt hook.
 func Run() {
+	if pane := busy.GetTmuxPane(); pane != "" {
+		busy.SetBusy(pane)
+	}
+
 	startTime := time.Now()
 
 	input, err := io.ReadAll(os.Stdin)
