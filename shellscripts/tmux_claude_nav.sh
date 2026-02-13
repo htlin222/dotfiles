@@ -73,9 +73,23 @@ needs_refresh() {
     return 1
 }
 
-# Check if a target pane actually exists
-pane_exists() {
-    tmux display-message -p -t "$session:$1" '#{pane_id}' &>/dev/null
+# Check if a target pane exists AND has a running Claude process
+pane_has_claude() {
+    local target="$1"
+    local pane_pid
+    pane_pid=$(tmux display-message -p -t "$session:$target" '#{pane_pid}' 2>/dev/null) || return 1
+    # Check if any claude process has pane_pid as parent or grandparent
+    ps -eo pid=,ppid=,comm= 2>/dev/null | awk -v pane_pid="$pane_pid" '
+    {
+        pid=$1; ppid=$2; comm=$3
+        parent[pid] = ppid
+        n = split(comm, parts, "/")
+        if (parts[n] == "claude") {
+            if (ppid == pane_pid) { found=1; exit }
+            if (ppid in parent && parent[ppid] == pane_pid) { found=1; exit }
+        }
+    }
+    END { exit(found ? 0 : 1) }'
 }
 
 navigate() {
@@ -105,14 +119,14 @@ navigate() {
     local target="${panes[$idx]}"
 
     # Validate target exists; if stale, force refresh and retry once
-    if ! pane_exists "$target"; then
+    if ! pane_has_claude "$target"; then
         refresh_cache
         panes=("${(@f)$(< "$cache_file")}")
         count=${#panes[@]}
         (( count == 0 )) && { tmux display-message "No Claude panes"; return; }
         (( idx > count )) && idx=1
         target="${panes[$idx]}"
-        if ! pane_exists "$target"; then
+        if ! pane_has_claude "$target"; then
             tmux display-message "No Claude panes"
             return
         fi
