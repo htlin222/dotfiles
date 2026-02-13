@@ -1,0 +1,20 @@
+{
+  ".js": ["biome", "format", "--write"],
+  ".jsx": ["biome", "format", "--write"],
+  ".ts": ["biome", "format", "--write"],
+  ".tsx": ["biome", "format", "--write"],
+  ".json": ["biome", "format", "--write"],
+  ".css": ["biome", "format", "--write"],
+  ".html": ["prettier", "--write"],
+  ".md": ["prettier", "--write"],
+  ".qmd": ["prettier", "--write"],
+  ".mdx": ["prettier", "--write"],
+  ".yaml": ["prettier", "--write"],
+  ".yml": ["prettier", "--write"],
+  ".scss": ["prettier", "--write"],
+  ".less": ["prettier", "--write"],
+  ".vue": ["prettier", "--write"],
+  ".py": ["ruff", "format"],
+  ".pyi": ["ruff", "format"],
+  ".R": ["air", "format"]
+}

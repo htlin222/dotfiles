@@ -14,7 +14,9 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/hooks/busy"
+	"github.com/htlin/claude-tools/internal/hooks/sessiontimer"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/pkg/ansi"
@@ -29,29 +31,8 @@ const (
 	formatWorkers = 8
 )
 
-// File extension to formatter mapping
-var formatters = map[string][]string{
-	// Biome
-	".js":   {"biome", "format", "--write"},
-	".jsx":  {"biome", "format", "--write"},
-	".ts":   {"biome", "format", "--write"},
-	".tsx":  {"biome", "format", "--write"},
-	".json": {"biome", "format", "--write"},
-	".css":  {"biome", "format", "--write"},
-	// Prettier
-	".html": {"prettier", "--write"},
-	".md":   {"prettier", "--write"},
-	".qmd":  {"prettier", "--write"},
-	".mdx":  {"prettier", "--write"},
-	".yaml": {"prettier", "--write"},
-	".yml":  {"prettier", "--write"},
-	".scss": {"prettier", "--write"},
-	".less": {"prettier", "--write"},
-	".vue":  {"prettier", "--write"},
-	// Python
-	".py":  {"ruff", "format"},
-	".pyi": {"ruff", "format"},
-}
+// formatters returns the extension-to-command mapping from config.
+var formatters = config.Formatters
 
 // Run executes the stop hook.
 func Run() {
@@ -113,6 +94,9 @@ func Run() {
 			ansi.BrightGreen, ansi.IconCheck, ansi.Reset,
 			ansi.BrightWhite, formattedCount, ansi.Reset)
 	}
+
+	// Print session duration
+	sessiontimer.PrintDuration()
 
 	// Stop hook: exit 0 with no stdout = allow Claude to stop normally
 	// Do NOT output JSON here - "continue":true can be misinterpreted as "keep working"

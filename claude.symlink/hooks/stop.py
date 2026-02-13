@@ -57,6 +57,8 @@ FORMATTERS = {
     # Python
     ".py": ["ruff", "format"],
     ".pyi": ["ruff", "format"],
+    # R
+    ".R": ["air", "format"],
 }
 
 # STATUS_ICONS imported from ansi.py as GIT_STATUS_ICONS

@@ -26,6 +26,13 @@ var skipDirs = map[string]bool{
 	".git": true, "coverage": true, ".cache": true, "out": true, ".output": true,
 }
 
+// Extensions that trigger the large-file refactoring prompt
+var refactorExts = map[string]bool{
+	".js": true, ".py": true, ".go": true, ".r": true, ".jsx": true,
+}
+
+const largeFileThreshold = 500
+
 // Run executes the post-tool-use hook.
 func Run() {
 	startTime := time.Now()
@@ -117,6 +124,25 @@ func Run() {
 						ansi.BrightYellow, ansi.IconWarning, ansi.Reset,
 						ansi.BrightCyan, filename, ansi.Reset,
 						finding.Description))
+				}
+			}
+		}
+
+		// Check for large files that need refactoring (only on edit tools)
+		if toolName == "Edit" || toolName == "Write" || toolName == "MultiEdit" {
+			if refactorExts[strings.ToLower(ext)] && content != nil {
+				lineCount := strings.Count(string(content), "\n") + 1
+				if lineCount > largeFileThreshold {
+					warnings = append(warnings, fmt.Sprintf(
+						"Current File `%s` exceed %d lines (%d lines) after edit. "+
+							"Analyze this file for repeated patterns, duplicated logic, and tightly coupled sections, "+
+							"then refactor it by extracting shared utilities for all DRY violations, "+
+							"splitting the code into cohesive single-responsibility modules under 200 lines each "+
+							"with no circular dependencies, preserving the existing public API and external behavior, "+
+							"and outputting each new module with its filename, a one-line docstring, full code, and updated imports "+
+							"— work in phases: first list all duplications and natural seams, "+
+							"then propose the module structure and dependency graph, then extract one module at a time.",
+						filepath.Base(filePath), largeFileThreshold, lineCount))
 				}
 			}
 		}

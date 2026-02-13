@@ -91,12 +91,29 @@
 					},
 					{
 						"type": "command",
+						"command": "claude-hooks branch-guard"
+					},
+					{
+						"type": "command",
 						"command": "claude-hooks check-file-exists"
 					}
 				]
 			},
 			{
-				"matcher": "Write|Edit|MultiEdit",
+				"matcher": "Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks file-guard"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks large-write-guard"
+					}
+				]
+			},
+			{
+				"matcher": "Edit|MultiEdit",
 				"hooks": [
 					{
 						"type": "command",
@@ -136,9 +153,36 @@
 						"command": "claude-hooks post-tool-use"
 					}
 				]
+			},
+			{
+				"matcher": "Write|Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks auto-stage"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks dep-remind"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks todo-tracker"
+					}
+				]
 			}
 		],
-		"Notification": [],
+		"Notification": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks notification"
+					}
+				]
+			}
+		],
 		"Stop": [
 			{
 				"matcher": "",
@@ -150,14 +194,24 @@
 				]
 			}
 		],
-		"SubagentStop": [],
+		"SubagentStop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks subagent-stop"
+					}
+				]
+			}
+		],
 		"PreCompact": [
 			{
 				"matcher": "",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "python3 ~/.claude/hooks/pre_compact.py"
+						"command": "claude-hooks pre-compact"
 					}
 				]
 			}
@@ -185,5 +239,6 @@
 	"enabledPlugins": {
 		"superpowers@superpowers-dev": true
 	},
-	"alwaysThinkingEnabled": true
+	"alwaysThinkingEnabled": true,
+	"skipDangerousModePermissionPrompt": true
 }
