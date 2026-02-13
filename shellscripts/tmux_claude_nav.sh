@@ -140,13 +140,6 @@ navigate() {
     local pane_path=$(tmux display-message -p -t "$session:$win.$pane" '#{pane_current_path}' 2>/dev/null)
     local dir_name="${pane_path:t}"
 
-    # Progress indicator
-    local progress=""
-    for ((i=1; i<=count; i++)); do
-        (( i == idx )) && progress+="■" || progress+="□"
-    done
-
-    tmux display-message -d 1500 "#[bg=colour208,fg=colour16,bold] Claude $progress #[default] #[fg=colour51,bold]$win#[default].$pane #[fg=colour245]$dir_name#[default]"
     tmux select-window -t "$session:$win"
     tmux select-pane -t "$session:$win.$pane"
 }

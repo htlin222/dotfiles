@@ -340,6 +340,6 @@ if [[ -n "$selected" ]]; then
     else
         session_id=$(echo "$selected" | cut -f2)
         cwd=$(echo "$selected" | cut -f3)
-        tmux new-window -c "$cwd" -n "claude" "claude --resume $session_id --dangerously-skip-permissions"
+        tmux new-window -c "$cwd" -n "claude" "claude --resume $session_id --dangerously-skip-permissions; exec ${SHELL:-zsh}"
     fi
 fi
