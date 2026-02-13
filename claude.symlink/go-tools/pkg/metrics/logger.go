@@ -97,7 +97,7 @@ func LogEvent(eventType, hookName, sessionID, cwd string, metadata map[string]an
 }
 
 // LogEdit logs a file edit to edits.jsonl.
-func LogEdit(filePath, toolName, cwd string) error {
+func LogEdit(filePath, toolName, cwd, sessionID string) error {
 	if err := config.EnsureLogDir(); err != nil {
 		return err
 	}
@@ -113,11 +113,12 @@ func LogEdit(filePath, toolName, cwd string) error {
 	}
 
 	entry := map[string]any{
-		"timestamp": time.Now().Format(time.RFC3339),
-		"file":      filePath,
-		"tool":      toolName,
-		"cwd":       cwd,
-		"project":   project,
+		"timestamp":  time.Now().Format(time.RFC3339),
+		"file":       filePath,
+		"tool":       toolName,
+		"cwd":        cwd,
+		"project":    project,
+		"session_id": sessionID,
 	}
 
 	return appendJSONL(config.EditsLogFile(), entry)

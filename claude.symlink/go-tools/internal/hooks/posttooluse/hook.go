@@ -88,7 +88,7 @@ func Run() {
 		ext := filepath.Ext(filePath)
 
 		// Log the edit
-		metrics.LogEdit(filePath, toolName, cwd)
+		metrics.LogEdit(filePath, toolName, cwd, sessionID)
 
 		// Skip gitignored files
 		if isGitignored(filePath, cwd) {

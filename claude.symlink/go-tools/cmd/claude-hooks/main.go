@@ -8,6 +8,7 @@ import (
 	"github.com/htlin/claude-tools/internal/hooks/checkfileexists"
 	"github.com/htlin/claude-tools/internal/hooks/checkreadexists"
 	"github.com/htlin/claude-tools/internal/hooks/checkrm"
+	"github.com/htlin/claude-tools/internal/hooks/envvalidation"
 	"github.com/htlin/claude-tools/internal/hooks/fileguard"
 	"github.com/htlin/claude-tools/internal/hooks/posttooluse"
 	"github.com/htlin/claude-tools/internal/hooks/sessionhint"
@@ -38,6 +39,8 @@ func main() {
 		stop.Run()
 	case "session-hint":
 		sessionhint.Run()
+	case "env-validate":
+		envvalidation.Run()
 	case "help", "-h", "--help":
 		printUsage()
 	case "version", "-v", "--version":
@@ -64,6 +67,7 @@ Commands:
   check-read-exists  Block Read if file not found (PreToolUse)
   stop               Handle Stop events (format, backup, notify)
   session-hint       Hint @LAST snapshot availability on SessionStart
+  env-validate       Validate dev environment on SessionStart
   version            Show version
   help               Show this help
 

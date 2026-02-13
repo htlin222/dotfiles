@@ -16,8 +16,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-# Import TTS utility
-from tts import notify_compact
 from metrics import log_hook_metrics, log_hook_event
 
 # =============================================================================
@@ -155,9 +153,6 @@ def main():
         # Save context snapshot
         snapshot_file = save_context_snapshot(cwd, transcript_path, session_id)
         project_name = os.path.basename(cwd) if cwd else ""
-
-        # TTS notification
-        notify_compact(project_name)
 
         # Log the compaction event
         os.makedirs(LOG_DIR, exist_ok=True)

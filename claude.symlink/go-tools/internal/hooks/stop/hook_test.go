@@ -1,79 +1,100 @@
 package stop
 
 import (
-	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
-	"time"
-
-	"github.com/htlin/claude-tools/internal/config"
 )
 
-// --- getRecentEditedFiles ---
+// --- getGitDirtyFiles ---
 
-func TestGetRecentEditedFiles_NoFile(t *testing.T) {
-	origLogDir := config.LogDir
-	config.LogDir = filepath.Join(t.TempDir(), "nope")
-	defer func() { config.LogDir = origLogDir }()
-
-	files := getRecentEditedFiles()
+func TestGetGitDirtyFiles_NoGitRepo(t *testing.T) {
+	tmpDir := t.TempDir()
+	files := getGitDirtyFiles(tmpDir)
 	if len(files) != 0 {
-		t.Errorf("expected 0 files, got %d", len(files))
+		t.Errorf("expected 0 files for non-git dir, got %d", len(files))
 	}
 }
 
-func TestGetRecentEditedFiles_ValidEntries(t *testing.T) {
+func TestGetGitDirtyFiles_EmptyCwd(t *testing.T) {
+	files := getGitDirtyFiles("")
+	if len(files) != 0 {
+		t.Errorf("expected 0 files for empty cwd, got %d", len(files))
+	}
+}
+
+func TestGetGitDirtyFiles_CleanRepo(t *testing.T) {
 	tmpDir := t.TempDir()
-	origLogDir := config.LogDir
-	config.LogDir = tmpDir
-	defer func() { config.LogDir = origLogDir }()
-
-	realFile := filepath.Join(tmpDir, "existing.go")
-	os.WriteFile(realFile, []byte("package main"), 0644)
-
-	now := time.Now()
-	recent := map[string]any{
-		"timestamp": now.Add(-5 * time.Minute).Format(time.RFC3339),
-		"file":      realFile,
+	run := func(args ...string) {
+		cmd := exec.Command(args[0], args[1:]...)
+		cmd.Dir = tmpDir
+		cmd.Run()
 	}
-	old := map[string]any{
-		"timestamp": now.Add(-120 * time.Minute).Format(time.RFC3339),
-		"file":      realFile,
-	}
-	ghost := map[string]any{
-		"timestamp": now.Format(time.RFC3339),
-		"file":      filepath.Join(tmpDir, "ghost.go"),
-	}
+	run("git", "init")
+	run("git", "config", "user.email", "test@test.com")
+	run("git", "config", "user.name", "Test")
+	os.WriteFile(filepath.Join(tmpDir, "file.go"), []byte("package main"), 0644)
+	run("git", "add", ".")
+	run("git", "commit", "-m", "init")
 
-	var lines []byte
-	for _, entry := range []map[string]any{recent, old, ghost} {
-		b, _ := json.Marshal(entry)
-		lines = append(lines, b...)
-		lines = append(lines, '\n')
+	files := getGitDirtyFiles(tmpDir)
+	if len(files) != 0 {
+		t.Errorf("expected 0 files for clean repo, got %d", len(files))
 	}
-	os.WriteFile(filepath.Join(tmpDir, "edits.jsonl"), lines, 0644)
+}
 
-	files := getRecentEditedFiles()
+func TestGetGitDirtyFiles_UnstagedChanges(t *testing.T) {
+	tmpDir := t.TempDir()
+	// Resolve symlinks (macOS /var -> /private/var)
+	tmpDir, _ = filepath.EvalSymlinks(tmpDir)
+	run := func(args ...string) {
+		cmd := exec.Command(args[0], args[1:]...)
+		cmd.Dir = tmpDir
+		cmd.Run()
+	}
+	run("git", "init")
+	run("git", "config", "user.email", "test@test.com")
+	run("git", "config", "user.name", "Test")
+	f := filepath.Join(tmpDir, "file.go")
+	os.WriteFile(f, []byte("package main"), 0644)
+	run("git", "add", ".")
+	run("git", "commit", "-m", "init")
+
+	// Modify but don't stage
+	os.WriteFile(f, []byte("package main\n// changed"), 0644)
+
+	files := getGitDirtyFiles(tmpDir)
 	if len(files) != 1 {
-		t.Errorf("expected 1 recent existing file, got %d", len(files))
+		t.Errorf("expected 1 unstaged file, got %d", len(files))
 	}
-	if !files[realFile] {
-		t.Errorf("expected %s in result", realFile)
+	if !files[f] {
+		t.Errorf("expected %s in result", f)
 	}
 }
 
-func TestGetRecentEditedFiles_MalformedJSON(t *testing.T) {
+func TestGetGitDirtyFiles_StagedNotReturned(t *testing.T) {
 	tmpDir := t.TempDir()
-	origLogDir := config.LogDir
-	config.LogDir = tmpDir
-	defer func() { config.LogDir = origLogDir }()
+	run := func(args ...string) {
+		cmd := exec.Command(args[0], args[1:]...)
+		cmd.Dir = tmpDir
+		cmd.Run()
+	}
+	run("git", "init")
+	run("git", "config", "user.email", "test@test.com")
+	run("git", "config", "user.name", "Test")
+	f := filepath.Join(tmpDir, "file.go")
+	os.WriteFile(f, []byte("package main"), 0644)
+	run("git", "add", ".")
+	run("git", "commit", "-m", "init")
 
-	os.WriteFile(filepath.Join(tmpDir, "edits.jsonl"), []byte("not json\n{bad\n"), 0644)
+	// Modify and stage
+	os.WriteFile(f, []byte("package main\n// staged"), 0644)
+	run("git", "add", ".")
 
-	files := getRecentEditedFiles()
+	files := getGitDirtyFiles(tmpDir)
 	if len(files) != 0 {
-		t.Errorf("expected 0 files from malformed input, got %d", len(files))
+		t.Errorf("expected 0 files (already staged), got %d", len(files))
 	}
 }
 

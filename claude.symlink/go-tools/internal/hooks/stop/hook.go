@@ -2,7 +2,7 @@
 package stop
 
 import (
-	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,9 +10,10 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
-	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/pkg/ansi"
@@ -20,15 +21,22 @@ import (
 	"github.com/htlin/claude-tools/pkg/notify"
 )
 
+const (
+	// formatTimeout is the maximum time for the entire formatting step.
+	formatTimeout = 30 * time.Second
+	// formatWorkers is the number of parallel formatter goroutines.
+	formatWorkers = 8
+)
+
 // File extension to formatter mapping
 var formatters = map[string][]string{
 	// Biome
-	".js":  {"biome", "format", "--write"},
-	".jsx": {"biome", "format", "--write"},
-	".ts":  {"biome", "format", "--write"},
-	".tsx": {"biome", "format", "--write"},
+	".js":   {"biome", "format", "--write"},
+	".jsx":  {"biome", "format", "--write"},
+	".ts":   {"biome", "format", "--write"},
+	".tsx":  {"biome", "format", "--write"},
 	".json": {"biome", "format", "--write"},
-	".css": {"biome", "format", "--write"},
+	".css":  {"biome", "format", "--write"},
 	// Prettier
 	".html": {"prettier", "--write"},
 	".md":   {"prettier", "--write"},
@@ -64,11 +72,14 @@ func Run() {
 	sessionID := data.SessionID
 	folderName := filepath.Base(cwd)
 
-	// Feature 1: Format edited files
-	editedFiles := getRecentEditedFiles()
+	// TTS: say the repo name (fire-and-forget)
+	notify.Say(folderName)
+
+	// Feature 1: Format unstaged git files (parallel, with timeout)
+	dirtyFiles := getGitDirtyFiles(cwd)
 	formattedCount := 0
-	if len(editedFiles) > 0 {
-		formattedCount = formatEditedFiles(editedFiles)
+	if len(dirtyFiles) > 0 {
+		formattedCount = formatEditedFiles(dirtyFiles)
 	}
 
 	// Feature 2: Git status & notification
@@ -84,6 +95,7 @@ func Run() {
 	metrics.LogMetrics("stop", "Stop", executionTimeMS, true, map[string]any{
 		"session_id":      sessionID,
 		"files_formatted": formattedCount,
+		"files_found":     len(dirtyFiles),
 	})
 
 	metrics.LogEvent("Stop", "stop", sessionID, cwd, map[string]any{
@@ -101,73 +113,112 @@ func Run() {
 	// Do NOT output JSON here - "continue":true can be misinterpreted as "keep working"
 }
 
-func getRecentEditedFiles() map[string]bool {
-	editedFiles := make(map[string]bool)
-	editsFile := config.EditsLogFile()
-
-	if _, err := os.Stat(editsFile); os.IsNotExist(err) {
-		return editedFiles
+// getGitDirtyFiles returns unstaged modified files from git.
+func getGitDirtyFiles(cwd string) map[string]bool {
+	files := make(map[string]bool)
+	if cwd == "" {
+		return files
 	}
 
-	cutoff := time.Now().Add(-time.Duration(config.SessionTimeoutMinutes) * time.Minute)
-
-	f, err := os.Open(editsFile)
+	// Get git repo root to resolve relative paths
+	topCmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	topCmd.Dir = cwd
+	topOut, err := topCmd.Output()
 	if err != nil {
-		return editedFiles
+		return files
 	}
-	defer f.Close()
+	gitRoot := strings.TrimSpace(string(topOut))
 
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		var entry map[string]any
-		if err := json.Unmarshal(scanner.Bytes(), &entry); err != nil {
+	// git diff --name-only: unstaged modified files (not yet added)
+	cmd := exec.Command("git", "diff", "--name-only")
+	cmd.Dir = cwd
+	output, err := cmd.Output()
+	if err != nil {
+		return files
+	}
+
+	for _, line := range strings.Split(strings.TrimSpace(string(output)), "\n") {
+		if line == "" {
 			continue
 		}
-
-		timestampStr, ok := entry["timestamp"].(string)
-		if !ok {
-			continue
-		}
-
-		timestamp, err := time.Parse(time.RFC3339, timestampStr)
-		if err != nil {
-			continue
-		}
-
-		if timestamp.After(cutoff) {
-			if filePath, ok := entry["file"].(string); ok {
-				if _, err := os.Stat(filePath); err == nil {
-					editedFiles[filePath] = true
-				}
-			}
+		// git diff paths are relative to repo root
+		absPath := filepath.Join(gitRoot, line)
+		if _, err := os.Stat(absPath); err == nil {
+			files[absPath] = true
 		}
 	}
 
-	return editedFiles
+	return files
 }
 
+// formatEditedFiles runs formatters in parallel with a timeout.
 func formatEditedFiles(files map[string]bool) int {
-	formattedCount := 0
+	ctx, cancel := context.WithTimeout(context.Background(), formatTimeout)
+	defer cancel()
 
-	for filePath := range files {
-		ext := strings.ToLower(filepath.Ext(filePath))
-		formatterCmd, ok := formatters[ext]
-		if !ok {
-			continue
-		}
+	// Build work queue: only files with a known formatter
+	type formatJob struct {
+		path string
+		cmd  []string
+	}
 
-		// Check if formatter exists
-		if _, err := exec.LookPath(formatterCmd[0]); err != nil {
-			continue
-		}
-
-		cmd := exec.Command(formatterCmd[0], append(formatterCmd[1:], filePath)...)
-		if err := cmd.Run(); err == nil {
-			formattedCount++
+	// Pre-check which formatters are available
+	formatterAvailable := make(map[string]bool)
+	for _, cmd := range formatters {
+		bin := cmd[0]
+		if _, checked := formatterAvailable[bin]; !checked {
+			_, err := exec.LookPath(bin)
+			formatterAvailable[bin] = err == nil
 		}
 	}
 
-	return formattedCount
+	var jobs []formatJob
+	for filePath := range files {
+		ext := strings.ToLower(filepath.Ext(filePath))
+		cmd, ok := formatters[ext]
+		if !ok || !formatterAvailable[cmd[0]] {
+			continue
+		}
+		jobs = append(jobs, formatJob{path: filePath, cmd: cmd})
+	}
+
+	if len(jobs) == 0 {
+		return 0
+	}
+
+	// Parallel execution with worker pool
+	var count atomic.Int32
+	var wg sync.WaitGroup
+	ch := make(chan formatJob, len(jobs))
+
+	for _, job := range jobs {
+		ch <- job
+	}
+	close(ch)
+
+	workers := formatWorkers
+	if len(jobs) < workers {
+		workers = len(jobs)
+	}
+
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for job := range ch {
+				if ctx.Err() != nil {
+					return
+				}
+				cmd := exec.CommandContext(ctx, job.cmd[0], append(job.cmd[1:], job.path)...)
+				if err := cmd.Run(); err == nil {
+					count.Add(1)
+				}
+			}
+		}()
+	}
+
+	wg.Wait()
+	return int(count.Load())
 }
 
 func gitStatusAndNotify(cwd, folderName string) {
