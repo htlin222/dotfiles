@@ -186,7 +186,8 @@ func Render(data *protocol.StatuslineInput) {
 	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
 	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
 	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
-	fmt.Printf("%s\ue266 %dMB \uec19 %.1f%% on %d%s ", Gray, ramMB, cpuPct, pid, Reset)
+	ramColor := getRamColor(ramMB)
+	fmt.Printf("%s\ue266 %dMB%s %s\uec19 %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
 	// Show vim mode with saved IM indicator
 	if savedIMShort != "" && vimMode != "INSERT" {
 		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)

@@ -6,6 +6,17 @@ import (
 	"strings"
 )
 
+func getRamColor(mb int) string {
+	switch {
+	case mb >= 1000:
+		return Red
+	case mb >= 500:
+		return Yellow
+	default:
+		return Gray
+	}
+}
+
 func getColor(pct int) string {
 	switch {
 	case pct >= 90:
