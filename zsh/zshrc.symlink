@@ -487,3 +487,6 @@ zshexit() {
   # Also kill by FIFO pattern if any remain
   pkill -f "p10k.worker.*$$" 2>/dev/null
 }
+
+# opencode
+export PATH=/Users/htlin/.opencode/bin:$PATH
