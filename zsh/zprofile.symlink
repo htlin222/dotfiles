@@ -37,7 +37,7 @@ if [[ -n "$IS_MAC" ]] && [[ -d "/Applications/Visual Studio Code.app" ]]; then
 elif command -v code &>/dev/null; then
   : # code already in PATH on Linux
 fi
-export NODE_OPTIONS="--no-deprecation"
+export NODE_OPTIONS="--no-deprecation --disable-warning=ExperimentalWarning"
 export PATH="/usr/bin/python3:$PATH"
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.dotfiles/shellscripts:$PATH"
@@ -61,7 +61,7 @@ export PATH="/usr/local/sbin:$PATH"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$HOME/edirect:${PATH}"
-export NODE_OPTIONS='--disable-warning=ExperimentalWarning'
+# NODE_OPTIONS consolidated to line 40
 export AIDER_YES_ALWAYS=true
 export AIDER_AUTO_TEST=true
 export AIDER_WATCH_FILES=true
