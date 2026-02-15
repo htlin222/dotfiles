@@ -150,7 +150,7 @@ func Run() {
 		// Run processors (check-only mode)
 		success, output := processors.ProcessFile(filePath)
 		if !success && output != "" {
-			fmt.Fprintln(os.Stderr, output)
+			warnings = append(warnings, output)
 		}
 	}
 

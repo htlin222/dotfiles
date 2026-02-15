@@ -58,6 +58,14 @@ func Run() {
 
 	if len(todos) > 0 {
 		logTodos(todos)
+		// Notify Claude about TODOs found in edited files
+		var summaries []string
+		for _, t := range todos {
+			summaries = append(summaries, fmt.Sprintf("%s:%d [%s] %s", filepath.Base(t.File), t.Line, t.Tag, t.Text))
+		}
+		msg := fmt.Sprintf("TODOs detected in edited files:\n%s", strings.Join(summaries, "\n"))
+		fmt.Println(protocol.ContinueWithMessage(msg))
+		return
 	}
 
 	fmt.Println(protocol.ContinueResponse())

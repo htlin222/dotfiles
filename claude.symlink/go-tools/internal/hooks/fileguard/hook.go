@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/htlin/claude-tools/internal/protocol"
-	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/patterns"
 )
 
@@ -17,17 +16,20 @@ import (
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		os.Exit(0)
+		fmt.Println(protocol.ContinueResponse())
+		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		os.Exit(0)
+		fmt.Println(protocol.ContinueResponse())
+		return
 	}
 
 	// Only check file-based tools
 	if data.ToolName != "Read" && data.ToolName != "Write" && data.ToolName != "Edit" && data.ToolName != "MultiEdit" {
-		os.Exit(0)
+		fmt.Println(protocol.ContinueResponse())
+		return
 	}
 
 	// Get file paths
@@ -47,8 +49,9 @@ func Run() {
 		// Check pattern match
 		isSensitive, reason := patterns.MatchesSensitivePattern(filePath)
 		if isSensitive {
-			printBlockMessage(filePath, reason)
-			os.Exit(2) // Block the operation
+			blockMsg := fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason)
+			fmt.Println(protocol.BlockResponse(blockMsg))
+			return
 		}
 
 		// Check content patterns for existing JSON files
@@ -57,8 +60,9 @@ func Run() {
 				content, err := os.ReadFile(filePath)
 				if err == nil && len(content) <= 10000 {
 					if hasSensitive, contentReason := patterns.HasSensitiveContent(string(content)); hasSensitive {
-						printBlockMessage(filePath, contentReason)
-						os.Exit(2)
+						blockMsg := fmt.Sprintf("BLOCKED: Sensitive content detected in %s (%s). Add to .agentignore exceptions if needed.", filePath, contentReason)
+						fmt.Println(protocol.BlockResponse(blockMsg))
+						return
 					}
 				}
 			}
@@ -66,20 +70,5 @@ func Run() {
 	}
 
 	// All checks passed
-	os.Exit(0)
-}
-
-func printBlockMessage(filePath, reason string) {
-	fmt.Fprintf(os.Stderr,
-		"%s%s BLOCKED:%s %s%sAccess to sensitive file denied%s\n"+
-			"   %s%s%s %s%s%s\n"+
-			"   %s%s%s %s\n"+
-			"   %s%s%s Add to .agentignore exceptions if needed%s\n",
-		ansi.BrightRed, ansi.IconShield, ansi.Reset,
-		ansi.BrightWhite, "", ansi.Reset,
-		ansi.Dim, ansi.IconFile, ansi.Reset,
-		ansi.BrightYellow, filePath, ansi.Reset,
-		ansi.Dim, ansi.IconInfo, ansi.Reset, reason,
-		ansi.Dim, ansi.IconArrowRight, ansi.Reset, ansi.Reset,
-	)
+	fmt.Println(protocol.ContinueResponse())
 }

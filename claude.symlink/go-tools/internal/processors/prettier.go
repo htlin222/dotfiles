@@ -48,15 +48,15 @@ func (p *MarkdownProcessor) Process(filePath string) (bool, string) {
 		}
 	}
 
-	// Run Vale
-	if commandExists("vale") {
-		cmd := exec.Command("vale", filePath)
-		output, err := cmd.CombinedOutput()
-		if err != nil {
-			success = false
-			issues = append(issues, fmt.Sprintf("Vale: %s", string(output)))
-		}
-	}
+	// Vale disabled — not currently needed
+	// if commandExists("vale") {
+	// 	cmd := exec.Command("vale", filePath)
+	// 	output, err := cmd.CombinedOutput()
+	// 	if err != nil {
+	// 		success = false
+	// 		issues = append(issues, fmt.Sprintf("Vale: %s", string(output)))
+	// 	}
+	// }
 
 	if !success {
 		return false, fmt.Sprintf("📝 %s: %v", filePath, issues)

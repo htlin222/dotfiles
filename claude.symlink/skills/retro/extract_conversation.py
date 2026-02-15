@@ -195,8 +195,9 @@ def find_project_sessions(project_dir: Path | None = None) -> list[Path]:
     if project_dir is None:
         project_dir = Path.cwd()
 
-    # Claude Code encodes the project path by replacing / and . with -
-    encoded = str(project_dir).replace("/", "-").replace(".", "-")
+    # Claude Code encodes the project path by replacing all non-alphanumeric,
+    # non-hyphen characters (/, ., _, spaces, unicode, etc.) with -
+    encoded = re.sub(r"[^a-zA-Z0-9-]", "-", str(project_dir))
     session_dir = claude_dir / encoded
 
     if not session_dir.is_dir():
