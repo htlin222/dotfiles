@@ -8,6 +8,9 @@ A5: Weak ending
 A6: Vague aim
 A7: P-value without CI
 A8: Citation stacking
+A9: Contractions
+A10: Duplicate adjacent words
+A11: Tautological acronyms (RAS syndrome)
 """
 
 import re
@@ -389,6 +392,115 @@ def _emit_stacking_finding(findings, lines, sections, consecutive):
     ))
 
 
+# --- A9: Contractions ---
+
+_CONTRACTION_PATTERN = re.compile(
+    r"\b(?:don't|can't|won't|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't|"
+    r"couldn't|wouldn't|shouldn't|it's|that's|there's|we're|they're|we've|"
+    r"we'll|who's|what's|let's|didn't|doesn't)\b",
+    re.I,
+)
+
+
+def check_contractions(lines, sections):
+    """A9: Flag contractions in formal manuscript text."""
+    findings = []
+    for i, line in enumerate(lines):
+        m = _CONTRACTION_PATTERN.search(line)
+        if m:
+            findings.append(Finding(
+                check_id="A9",
+                check_name="contraction",
+                severity="error",
+                section=get_section_for_line(sections, i + 1),
+                line_num=i + 1,
+                line_text=line.strip(),
+                matched_text=m.group(),
+                message=f'Contraction "{m.group()}" in formal prose',
+                suggestion="Expand the contraction: don't -> do not, can't -> cannot, it's -> it is",
+            ))
+    return findings
+
+
+# --- A10: Duplicate adjacent words ---
+
+_DUPLICATE_WORD = re.compile(r"\b(\w{2,})\s+\1\b", re.I)
+# Legitimate repeated words
+_DUPLICATE_EXCEPTIONS = {"had", "that", "very", "much", "so"}
+
+
+def check_duplicate_words(lines, sections):
+    """A10: Flag duplicate adjacent words (the the, of of)."""
+    findings = []
+    for i, line in enumerate(lines):
+        for m in _DUPLICATE_WORD.finditer(line):
+            word = m.group(1).lower()
+            if word in _DUPLICATE_EXCEPTIONS:
+                continue
+            findings.append(Finding(
+                check_id="A10",
+                check_name="duplicate-word",
+                severity="error",
+                section=get_section_for_line(sections, i + 1),
+                line_num=i + 1,
+                line_text=line.strip(),
+                matched_text=m.group(),
+                message=f'Duplicate adjacent word: "{m.group()}"',
+                suggestion="Remove the duplicate word",
+            ))
+            break  # one finding per line
+    return findings
+
+
+# --- A11: Tautological acronyms (RAS syndrome) ---
+
+_RAS_PAIRS = [
+    (re.compile(r"\bHIV\s+virus\b", re.I), "HIV virus", "HIV (virus is in the acronym)"),
+    (re.compile(r"\bPCR\s+reaction\b", re.I), "PCR reaction", "PCR (reaction is in the acronym)"),
+    (re.compile(r"\bELISA\s+assay\b", re.I), "ELISA assay", "ELISA (assay is in the acronym)"),
+    (re.compile(r"\bRNA\s+acid\b", re.I), "RNA acid", "RNA (acid is in the acronym)"),
+    (re.compile(r"\bDNA\s+acid\b", re.I), "DNA acid", "DNA (acid is in the acronym)"),
+    (re.compile(r"\bCT\s+tomography\b", re.I), "CT tomography", "CT (tomography is in the acronym)"),
+    (re.compile(r"\bMRI\s+imaging\b", re.I), "MRI imaging", "MRI (imaging is in the acronym)"),
+    (re.compile(r"\bECG\s+(?:gram|graph)\b", re.I), "ECG gram/graph", "ECG"),
+    (re.compile(r"\bEEG\s+(?:gram|graph)\b", re.I), "EEG gram/graph", "EEG"),
+    (re.compile(r"\bBMI\s+index\b", re.I), "BMI index", "BMI (index is in the acronym)"),
+    (re.compile(r"\bGFR\s+rate\b", re.I), "GFR rate", "GFR (rate is in the acronym)"),
+    (re.compile(r"\bICU\s+unit\b", re.I), "ICU unit", "ICU (unit is in the acronym)"),
+    (re.compile(r"\bER\s+room\b", re.I), "ER room", "ER (room is in the acronym)"),
+    (re.compile(r"\bCOPD\s+disease\b", re.I), "COPD disease", "COPD (disease is in the acronym)"),
+    (re.compile(r"\bADHD\s+disorder\b", re.I), "ADHD disorder", "ADHD (disorder is in the acronym)"),
+    (re.compile(r"\bOCD\s+disorder\b", re.I), "OCD disorder", "OCD (disorder is in the acronym)"),
+    (re.compile(r"\bNSAID\s+drug\b", re.I), "NSAID drug", "NSAID"),
+    (re.compile(r"\bPDF\s+format\b", re.I), "PDF format", "PDF (format is in the acronym)"),
+    (re.compile(r"\bATM\s+machine\b", re.I), "ATM machine", "ATM (machine is in the acronym)"),
+    (re.compile(r"\bPIN\s+number\b", re.I), "PIN number", "PIN (number is in the acronym)"),
+    (re.compile(r"\bLCD\s+display\b", re.I), "LCD display", "LCD (display is in the acronym)"),
+]
+
+
+def check_tautological_acronyms(lines, sections):
+    """A11: Flag tautological acronym expansions (HIV virus, PCR reaction)."""
+    findings = []
+    for i, line in enumerate(lines):
+        for pattern, label, fix in _RAS_PAIRS:
+            m = pattern.search(line)
+            if m:
+                findings.append(Finding(
+                    check_id="A11",
+                    check_name="tautological-acronym",
+                    severity="error",
+                    section=get_section_for_line(sections, i + 1),
+                    line_num=i + 1,
+                    line_text=line.strip(),
+                    matched_text=m.group(),
+                    message=f'Tautological acronym: "{label}"',
+                    suggestion=f"Use just: {fix}",
+                ))
+                break  # one finding per line
+    return findings
+
+
 # --- Registry ---
 
 ALL_TIER_A_CHECKS = [
@@ -400,4 +512,7 @@ ALL_TIER_A_CHECKS = [
     check_vague_aims,
     check_pvalue_without_ci,
     check_citation_stacking,
+    check_contractions,
+    check_duplicate_words,
+    check_tautological_acronyms,
 ]

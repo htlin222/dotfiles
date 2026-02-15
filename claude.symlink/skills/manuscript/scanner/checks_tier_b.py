@@ -6,6 +6,9 @@ B3: Table/figure narration
 B4: Statistical Discussion opener
 B5: Mechanical transitions
 B6: Overclaiming language
+B7: Anthropomorphism (inanimate agency)
+B8: Informal/colloquial language
+B9: British/American English mixing
 """
 
 import re
@@ -297,6 +300,177 @@ def check_overclaiming(lines, sections):
     return findings
 
 
+# --- B7: Anthropomorphism (inanimate agency) ---
+
+_ANTHROPOMORPHISM_PATTERNS = [
+    (re.compile(r"\bthis\s+study\s+(?:found|showed|demonstrated|revealed|concluded|proved|confirmed|discovered|observed|established|believed|argued)\b", re.I),
+     "this study found/showed"),
+    (re.compile(r"\bthe\s+data\s+(?:suggest|show|demonstrate|reveal|argue|indicate|confirm|support|prove)\b", re.I),
+     "the data suggest/argue"),
+    (re.compile(r"\bthe\s+results?\s+(?:suggest|show|demonstrate|reveal|argue|indicate|confirm|support|prove|concluded)\b", re.I),
+     "the results suggest/show"),
+    (re.compile(r"\bthe\s+analysis\s+(?:found|showed|demonstrated|revealed|concluded|confirmed|discovered)\b", re.I),
+     "the analysis found/showed"),
+    (re.compile(r"\bthe\s+findings?\s+(?:suggest|show|demonstrate|reveal|argue|indicate|confirm|support)\b", re.I),
+     "the findings suggest"),
+    (re.compile(r"\bthe\s+evidence\s+(?:suggests?|shows?|demonstrates?|argues?|proves?|confirms?)\b", re.I),
+     "the evidence suggests"),
+    (re.compile(r"\bthis\s+paper\s+(?:argues?|shows?|demonstrates?|proves?|presents?|describes?|reports?)\b", re.I),
+     "this paper argues/shows"),
+    (re.compile(r"\bthe\s+literature\s+(?:suggests?|shows?|demonstrates?|argues?|supports?|confirms?)\b", re.I),
+     "the literature suggests"),
+]
+
+
+def check_anthropomorphism(lines, sections):
+    """B7: Flag inanimate subjects given human agency."""
+    findings = []
+    for i, line in enumerate(lines):
+        for pattern, label in _ANTHROPOMORPHISM_PATTERNS:
+            m = pattern.search(line)
+            if m:
+                findings.append(Finding(
+                    check_id="B7",
+                    check_name="anthropomorphism",
+                    severity="warning",
+                    section=get_section_for_line(sections, i + 1),
+                    line_num=i + 1,
+                    line_text=line.strip(),
+                    matched_text=m.group(),
+                    message=f'Anthropomorphism: "{label}"',
+                    suggestion="Use researchers as subject: 'We found...' or 'The analysis revealed...' -> 'Using [method], we found...'",
+                ))
+                break
+    return findings
+
+
+# --- B8: Informal/colloquial language ---
+
+_INFORMAL_PATTERNS = [
+    (re.compile(r"\ba\s+lot\s+of\b", re.I), "a lot of", "many/numerous"),
+    (re.compile(r"\blots\s+of\b", re.I), "lots of", "many/numerous"),
+    (re.compile(r"\bpretty\s+(?:much|significant|clear|good|bad|strong|weak|high|low|big|small)\b", re.I),
+     "pretty [adj]", "quite/rather or remove"),
+    (re.compile(r"\bkind\s+of\b", re.I), "kind of", "somewhat/rather"),
+    (re.compile(r"\bsort\s+of\b", re.I), "sort of", "somewhat/rather"),
+    (re.compile(r"\b(?:get|got|getting)\s+(?:worse|better|rid)\b", re.I),
+     "get worse/better", "worsened/improved/eliminated"),
+    (re.compile(r"\breally\s+(?:significant|important|high|low|large|small)\b", re.I),
+     "really [adj]", "remove intensifier or use precise language"),
+    (re.compile(r"\bbasically\b", re.I), "basically", "(remove)"),
+    (re.compile(r"\bstuff\b", re.I), "stuff", "materials/components/factors"),
+    (re.compile(r"\bokay\b", re.I), "okay", "acceptable/satisfactory"),
+    (re.compile(r"\band\s+so\s+on\b", re.I), "and so on", "etc. or list explicitly"),
+    (re.compile(r"\band\s+so\s+forth\b", re.I), "and so forth", "etc. or list explicitly"),
+    (re.compile(r"\bnowadays\b", re.I), "nowadays", "currently/at present"),
+]
+
+
+def check_informal_language(lines, sections):
+    """B8: Flag informal or colloquial language in formal prose."""
+    findings = []
+    for i, line in enumerate(lines):
+        for pattern, label, replacement in _INFORMAL_PATTERNS:
+            m = pattern.search(line)
+            if m:
+                findings.append(Finding(
+                    check_id="B8",
+                    check_name="informal-language",
+                    severity="warning",
+                    section=get_section_for_line(sections, i + 1),
+                    line_num=i + 1,
+                    line_text=line.strip(),
+                    matched_text=m.group(),
+                    message=f'Informal language: "{label}"',
+                    suggestion=f"Replace with: {replacement}",
+                ))
+                break
+    return findings
+
+
+# --- B9: British/American English mixing ---
+
+_BRITISH_MARKERS = re.compile(
+    r"\b\w+(?:ise|ised|ising)\b|"
+    r"\b\w*(?:colour|behaviour|favour|honour|labour|neighbour|tumour|humour)\b|"
+    r"\b(?:analyse|paralyse|catalyse|dialyse)\b|"
+    r"\b(?:anaemia|haemoglobin|oedema|oestrogen|leukaemia|diarrhoea|haemorrhage|foetus|faeces|paediatric|gynaecology|orthopaedic)\b|"
+    r"\b(?:centre|fibre|metre|litre|theatre)\b|"
+    r"\b(?:defence|offence|licence|practise)\b|"
+    r"\bgrey\b",
+    re.I,
+)
+
+_AMERICAN_MARKERS = re.compile(
+    r"\b\w+(?:ize|ized|izing)\b|"
+    r"\b\w*(?:color|behavior|favor|honor|labor|neighbor|tumor|humor)\b|"
+    r"\b(?:analyze|paralyze|catalyze|dialyze)\b|"
+    r"\b(?:anemia|hemoglobin|edema|estrogen|leukemia|diarrhea|hemorrhage|fetus|feces|pediatric|gynecology|orthopedic)\b|"
+    r"\b(?:center|fiber|meter|liter|theater)\b|"
+    r"\b(?:defense|offense|license|practice)\b|"
+    r"\bgray\b",
+    re.I,
+)
+
+# Words that legitimately end in -ize/-ise in both dialects
+_DIALECT_EXCEPTIONS = {"size", "sized", "sizing", "prize", "prized", "prizing",
+                       "seize", "seized", "seizing", "advise", "advised", "advising",
+                       "exercise", "exercised", "exercising", "comprise", "comprised",
+                       "comprising", "supervise", "supervised", "supervising",
+                       "otherwise", "rise", "risen", "wise", "sunrise", "demise",
+                       "promise", "promised", "promising", "surprise", "surprised"}
+
+
+def check_dialect_mixing(lines, sections):
+    """B9: Flag mixing of British and American English spelling."""
+    findings = []
+    text = "\n".join(lines)
+
+    british_hits = []
+    american_hits = []
+
+    for m in _BRITISH_MARKERS.finditer(text):
+        word = m.group().lower()
+        if word not in _DIALECT_EXCEPTIONS:
+            british_hits.append(m.group())
+
+    for m in _AMERICAN_MARKERS.finditer(text):
+        word = m.group().lower()
+        if word not in _DIALECT_EXCEPTIONS:
+            american_hits.append(m.group())
+
+    if british_hits and american_hits:
+        # Find first line with a minority-dialect word
+        minority = british_hits if len(british_hits) < len(american_hits) else american_hits
+        majority_label = "American" if len(british_hits) < len(american_hits) else "British"
+        minority_label = "British" if majority_label == "American" else "American"
+
+        # Find line number of first minority hit
+        first_word = minority[0]
+        line_num = 1
+        for i, line in enumerate(lines):
+            if first_word in line:
+                line_num = i + 1
+                break
+
+        br_sample = ", ".join(set(british_hits[:3]))
+        am_sample = ", ".join(set(american_hits[:3]))
+
+        findings.append(Finding(
+            check_id="B9",
+            check_name="dialect-mixing",
+            severity="warning",
+            section=get_section_for_line(sections, line_num),
+            line_num=line_num,
+            line_text=lines[line_num - 1].strip() if line_num <= len(lines) else "",
+            matched_text=f"British: {br_sample}; American: {am_sample}",
+            message=f"Mixed British ({len(british_hits)} words: {br_sample}) and American ({len(american_hits)} words: {am_sample}) spelling",
+            suggestion=f"Manuscript appears predominantly {majority_label}; standardize {minority_label} spellings ({', '.join(set(minority[:3]))})",
+        ))
+
+    return findings
+
+
 # --- Registry ---
 
 ALL_TIER_B_CHECKS = [
@@ -306,4 +480,7 @@ ALL_TIER_B_CHECKS = [
     check_statistical_discussion_opener,
     check_mechanical_transitions,
     check_overclaiming,
+    check_anthropomorphism,
+    check_informal_language,
+    check_dialect_mixing,
 ]

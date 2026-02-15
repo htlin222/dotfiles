@@ -158,9 +158,10 @@ def format_checklist(findings, sections):
         "Methods": [],
         "Results": ["A1", "A7"],
         "Discussion": ["A5", "B4", "B6"],
-        "Sentence Craft": ["A2", "A3", "B1", "B2", "B5"],
+        "Sentence Craft": ["A2", "A3", "B1", "B2", "B5", "B7"],
         "Figures & Tables": ["B3"],
         "Style": ["C1", "C2", "C3", "C4", "C5", "C6"],
+        "Mechanics": ["A9", "A10", "A11", "B8", "B9"],
     }
 
     for group_name, check_ids in check_groups.items():
