@@ -16,6 +16,7 @@ A11: Tautological acronyms (RAS syndrome)
 import re
 from .models import Finding
 from .detector import get_section_for_line, get_section_lines
+from .patterns import PVALUE, CI, CITATION_VERB
 
 # --- A1: Interpretation in Results ---
 
@@ -287,8 +288,6 @@ def check_vague_aims(lines, sections):
 
 # --- A7: P-value without CI ---
 
-_PVALUE_PATTERN = re.compile(r"p\s*[<>=]\s*0\.\d+|p\s*<\s*0\.001", re.I)
-_CI_PATTERN = re.compile(r"\d+%?\s*CI|confidence\s+interval", re.I)
 _TABLE_REF = re.compile(r"\bTable\s+1\b|\bbaseline\b|\bdemographic\b", re.I)
 
 
@@ -304,7 +303,7 @@ def check_pvalue_without_ci(lines, sections):
 
     for i in check_range:
         line = lines[i]
-        p_matches = list(_PVALUE_PATTERN.finditer(line))
+        p_matches = list(PVALUE.finditer(line))
         if not p_matches:
             continue
 
@@ -317,7 +316,7 @@ def check_pvalue_without_ci(lines, sections):
         if i + 1 < len(lines):
             context += " " + lines[i + 1]
 
-        if not _CI_PATTERN.search(context):
+        if not CI.search(context):
             findings.append(Finding(
                 check_id="A7",
                 check_name="pvalue-without-ci",
@@ -333,13 +332,6 @@ def check_pvalue_without_ci(lines, sections):
 
 
 # --- A8: Citation stacking ---
-
-_CITATION_VERB = re.compile(
-    r"[A-Z][a-z]+(?:\s+et\s+al\.?)?\s*\(\d{4}\)\s+"
-    r"(?:found|showed|reported|demonstrated|observed|studied|investigated|examined|analyzed|concluded)\b",
-    re.I,
-)
-
 
 def check_citation_stacking(lines, sections):
     """A8: Flag 3+ consecutive citation-verb sentences."""
@@ -361,7 +353,7 @@ def check_citation_stacking(lines, sections):
             consecutive = []
             continue
 
-        m = _CITATION_VERB.search(line)
+        m = CITATION_VERB.search(line)
         if m:
             consecutive.append((i, m.group()))
         else:

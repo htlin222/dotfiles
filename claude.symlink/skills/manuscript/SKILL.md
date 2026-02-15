@@ -120,7 +120,7 @@ Copy and track progress through each section:
 
 ## Quick Scan
 
-Run the built-in scanner to catch mechanical anti-patterns (26 checks, section-aware):
+Run the built-in scanner to catch mechanical anti-patterns (31 checks, section-aware):
 
 ```bash
 # Full scan
@@ -140,9 +140,9 @@ python3 ~/.claude/skills/manuscript/scan-manuscript.py --checklist manuscript.md
 python3 ~/.claude/skills/manuscript/scan-manuscript.py --list-checks
 ```
 
-**What it catches** (~35-40% of this skill's guidance): hedge stacking, empty adjectives, interpretation in Results, textbook openings, vague aims, p-values without CIs, citation stacking, contractions, duplicate words, tautological acronyms (HIV virus), passive voice ratio, sentence monotony, table/figure narration, statistical Discussion openers, mechanical transitions, overclaiming, anthropomorphism, informal language, British/American spelling mix, nominalizations, wordy phrases, redundant modifiers, self-referential filler, sentence sprawl, double negatives.
+**What it catches** (~57% of this skill's scriptable guidance): hedge stacking, empty adjectives, interpretation in Results, textbook openings, vague aims, p-values without CIs, citation stacking (Introduction + Discussion), contractions, duplicate words, tautological acronyms (HIV virus), passive voice ratio, sentence monotony, table/figure narration, statistical Discussion openers, statistical conclusions, mechanical transitions, overclaiming, anthropomorphism, informal language, British/American spelling mix, nominalizations, wordy phrases, redundant modifiers, self-referential filler, sentence sprawl, double negatives, missing reporting guidelines, p-value ordering, monotonous results patterns.
 
-**What it cannot catch** (~55%): argumentation quality, logical chains, gap specificity, interpretive framework depth, limitation balance. These require human judgment or AI-assisted review.
+**What it cannot catch** (~43%): argumentation quality, logical chains, gap specificity, interpretive framework depth, limitation balance. These require human judgment or AI-assisted review.
 
 ## Related Skills
 
@@ -150,3 +150,8 @@ python3 ~/.claude/skills/manuscript/scan-manuscript.py --list-checks
 - `/meta-manuscript-assembly` — Assemble tables, figures, references for meta-analyses
 - `/scientific-figure-assembly` — Create multi-panel publication figures
 - `/vale` — Lint prose for style and grammar
+- `/strobe-check` — Audit observational studies (cohort, case-control, cross-sectional) against STROBE
+- `/prisma-check` — Audit systematic reviews and meta-analyses against PRISMA 2020
+- `/care-check` — Audit case reports against CARE checklist
+- `/consort-check` — Audit RCTs against CONSORT 2010
+- `/tripod-check` — Audit prediction models and clinical AI against TRIPOD+AI

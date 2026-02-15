@@ -155,9 +155,9 @@ def format_checklist(findings, sections):
 
     check_groups = {
         "Introduction": ["A4", "A6", "A8"],
-        "Methods": [],
-        "Results": ["A1", "A7"],
-        "Discussion": ["A5", "B4", "B6"],
+        "Methods": ["C7"],
+        "Results": ["A1", "A7", "C8", "C9"],
+        "Discussion": ["A5", "B4", "B6", "B10", "B11"],
         "Sentence Craft": ["A2", "A3", "B1", "B2", "B5", "B7"],
         "Figures & Tables": ["B3"],
         "Style": ["C1", "C2", "C3", "C4", "C5", "C6"],

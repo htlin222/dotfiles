@@ -6,12 +6,16 @@ C3: Redundant modifiers
 C4: Self-referential filler
 C5: Sentence sprawl
 C6: Double negatives
+C7: Missing reporting guideline
+C8: P-value before effect estimate
+C9: Monotonous results pattern
 """
 
 import re
 from .models import Finding
-from .detector import get_section_for_line
+from .detector import get_section_for_line, get_section_lines
 from .tokenizer import split_sentences, sentence_word_count
+from .patterns import PVALUE, EFFECT_ESTIMATE
 
 # --- C1: Nominalization + weak verb ---
 
@@ -242,6 +246,159 @@ def check_double_negatives(lines, sections):
     return findings
 
 
+# --- C7: Missing reporting guideline ---
+
+_GUIDELINES = re.compile(
+    r"\b(?:STROBE|CONSORT|PRISMA|STARD|TRIPOD|CARE|COREQ|"
+    r"SPIRIT|ARRIVE|CHEERS|MOOSE|QUOROM|RECORD|SQUIRE)\b"
+)
+
+
+def check_missing_reporting_guideline(lines, sections):
+    """C7: Flag if no reporting guideline (STROBE/CONSORT/etc.) is mentioned."""
+    findings = []
+
+    # Check Methods first, then whole document
+    sec = get_section_lines(sections, "Methods")
+    if sec:
+        start, end = sec
+        text = "\n".join(lines[start - 1:min(end, len(lines))])
+    else:
+        text = "\n".join(lines)
+
+    if not _GUIDELINES.search(text):
+        # Determine line to report on
+        if sec:
+            line_num = sec[0]
+        else:
+            line_num = 1
+
+        findings.append(Finding(
+            check_id="C7",
+            check_name="missing-reporting-guideline",
+            severity="suggestion",
+            section="Methods" if sec else "Overall",
+            line_num=line_num,
+            line_text=lines[line_num - 1].strip() if line_num <= len(lines) else "",
+            matched_text="(none found)",
+            message="No reporting guideline mentioned (STROBE, CONSORT, PRISMA, etc.)",
+            suggestion="Cite the applicable reporting guideline and include the checklist as supplementary material",
+        ))
+
+    return findings
+
+
+# --- C8: P-value before effect estimate ---
+
+
+def check_pvalue_before_effect(lines, sections):
+    """C8: Flag sentences where p-value precedes the effect estimate."""
+    findings = []
+    sec = get_section_lines(sections, "Results")
+    if sec:
+        start, end = sec
+        check_range = range(start - 1, min(end, len(lines)))
+    else:
+        check_range = range(len(lines))
+
+    for i in check_range:
+        line = lines[i]
+        p_match = PVALUE.search(line)
+        e_match = EFFECT_ESTIMATE.search(line)
+
+        if p_match and e_match and p_match.start() < e_match.start():
+            findings.append(Finding(
+                check_id="C8",
+                check_name="pvalue-before-effect",
+                severity="suggestion",
+                section=get_section_for_line(sections, i + 1),
+                line_num=i + 1,
+                line_text=line.strip(),
+                matched_text=f"{p_match.group()} before {e_match.group()}",
+                message="P-value appears before effect estimate",
+                suggestion="Lead with the effect estimate (HR, OR, RR), then the CI, then the p-value",
+            ))
+
+    return findings
+
+
+# --- C9: Monotonous results pattern ---
+
+_RESULTS_TEMPLATE = re.compile(
+    r"\b(?:group|cohort|arm|patients?)\b.*?\bp\s*[<>=]",
+    re.I,
+)
+
+
+def check_monotonous_results(lines, sections):
+    """C9: Flag 3+ consecutive lines matching the same results template."""
+    findings = []
+    sec = get_section_lines(sections, "Results")
+    if sec:
+        start, end = sec
+        check_range = range(start - 1, min(end, len(lines)))
+    else:
+        check_range = range(len(lines))
+
+    consecutive = 0
+    run_start = None
+
+    for i in check_range:
+        line = lines[i].strip()
+        if not line:
+            if consecutive >= 3:
+                findings.append(Finding(
+                    check_id="C9",
+                    check_name="monotonous-results",
+                    severity="suggestion",
+                    section=get_section_for_line(sections, run_start + 1),
+                    line_num=run_start + 1,
+                    line_text=lines[run_start].strip(),
+                    matched_text=f"{consecutive} consecutive 'Group... p<...' lines",
+                    message=f"Monotonous results reporting: {consecutive} consecutive lines with same pattern",
+                    suggestion="Vary sentence structure — lead with the clinical finding, not the group comparison",
+                ))
+            consecutive = 0
+            run_start = None
+            continue
+
+        if _RESULTS_TEMPLATE.search(line):
+            if consecutive == 0:
+                run_start = i
+            consecutive += 1
+        else:
+            if consecutive >= 3:
+                findings.append(Finding(
+                    check_id="C9",
+                    check_name="monotonous-results",
+                    severity="suggestion",
+                    section=get_section_for_line(sections, run_start + 1),
+                    line_num=run_start + 1,
+                    line_text=lines[run_start].strip(),
+                    matched_text=f"{consecutive} consecutive 'Group... p<...' lines",
+                    message=f"Monotonous results reporting: {consecutive} consecutive lines with same pattern",
+                    suggestion="Vary sentence structure — lead with the clinical finding, not the group comparison",
+                ))
+            consecutive = 0
+            run_start = None
+
+    # Handle end of range
+    if consecutive >= 3:
+        findings.append(Finding(
+            check_id="C9",
+            check_name="monotonous-results",
+            severity="suggestion",
+            section=get_section_for_line(sections, run_start + 1),
+            line_num=run_start + 1,
+            line_text=lines[run_start].strip(),
+            matched_text=f"{consecutive} consecutive 'Group... p<...' lines",
+            message=f"Monotonous results reporting: {consecutive} consecutive lines with same pattern",
+            suggestion="Vary sentence structure — lead with the clinical finding, not the group comparison",
+        ))
+
+    return findings
+
+
 # --- Registry ---
 
 ALL_TIER_C_CHECKS = [
@@ -251,4 +408,7 @@ ALL_TIER_C_CHECKS = [
     check_self_referential_filler,
     check_sentence_sprawl,
     check_double_negatives,
+    check_missing_reporting_guideline,
+    check_pvalue_before_effect,
+    check_monotonous_results,
 ]

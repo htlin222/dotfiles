@@ -9,12 +9,15 @@ B6: Overclaiming language
 B7: Anthropomorphism (inanimate agency)
 B8: Informal/colloquial language
 B9: British/American English mixing
+B10: Citation stacking in Discussion
+B11: Statistical conclusion
 """
 
 import re
 from .models import Finding
 from .detector import get_section_for_line, get_section_lines
 from .tokenizer import split_sentences, sentence_word_count
+from .patterns import CITATION_VERB, STAT_NOTATION
 
 # --- B1: Passive voice ratio ---
 
@@ -171,15 +174,6 @@ def check_table_figure_narration(lines, sections):
 
 # --- B4: Statistical Discussion opener ---
 
-_STAT_IN_DISCUSSION = re.compile(
-    r"(?:HR|OR|RR|AOR|aHR|aOR)\s*[=:]\s*\d|"
-    r"\bp\s*[<>=]\s*0\.\d|"
-    r"\d+%?\s*CI\s*[=:,]?\s*\d|"
-    r"95%\s*(?:CI|confidence)",
-    re.I,
-)
-
-
 def check_statistical_discussion_opener(lines, sections):
     """B4: Flag Discussion opening with statistical results."""
     findings = []
@@ -198,7 +192,7 @@ def check_statistical_discussion_opener(lines, sections):
         if count > 3:
             break
 
-        if _STAT_IN_DISCUSSION.search(line):
+        if STAT_NOTATION.search(line):
             findings.append(Finding(
                 check_id="B4",
                 check_name="statistical-discussion-opener",
@@ -471,6 +465,118 @@ def check_dialect_mixing(lines, sections):
     return findings
 
 
+# --- B10: Citation stacking in Discussion ---
+
+
+def check_citation_stacking_discussion(lines, sections):
+    """B10: Flag 3+ consecutive citation-verb sentences in Discussion."""
+    findings = []
+    sec = get_section_lines(sections, "Discussion")
+    if not sec:
+        return findings
+
+    start, end = sec
+    check_range = range(start - 1, min(end, len(lines)))
+
+    consecutive = []  # list of (line_index, matched_text)
+
+    for i in check_range:
+        line = lines[i].strip()
+        if not line:
+            if len(consecutive) >= 3:
+                _emit_discussion_stacking(findings, lines, sections, consecutive)
+            consecutive = []
+            continue
+
+        m = CITATION_VERB.search(line)
+        if m:
+            consecutive.append((i, m.group()))
+        else:
+            if len(consecutive) >= 3:
+                _emit_discussion_stacking(findings, lines, sections, consecutive)
+            consecutive = []
+
+    if len(consecutive) >= 3:
+        _emit_discussion_stacking(findings, lines, sections, consecutive)
+
+    return findings
+
+
+def _emit_discussion_stacking(findings, lines, sections, consecutive):
+    """Create a finding for stacked citations in Discussion."""
+    first_line = consecutive[0][0]
+    findings.append(Finding(
+        check_id="B10",
+        check_name="citation-stacking-discussion",
+        severity="warning",
+        section="Discussion",
+        line_num=first_line + 1,
+        line_text=lines[first_line].strip(),
+        matched_text=f"{len(consecutive)} consecutive Author (year) verb sentences",
+        message=f"Citation stacking in Discussion: {len(consecutive)} consecutive 'Author (year) found/showed' sentences",
+        suggestion="Synthesize sources into a coherent argument; don't just list what others found",
+    ))
+
+
+# --- B11: Statistical conclusion ---
+
+
+def check_statistical_conclusion(lines, sections):
+    """B11: Flag conclusion ending with statistics instead of clinical implication."""
+    findings = []
+
+    # Check last 15 non-empty lines of Discussion/Conclusion
+    check_ranges = []
+    for name in ("Conclusion", "Discussion"):
+        sec = get_section_lines(sections, name)
+        if sec:
+            start, end = sec
+            check_start = max(start - 1, end - 15)
+            check_ranges.append((name, range(check_start, min(end, len(lines)))))
+
+    if not check_ranges:
+        # Fallback: last 15 lines of document
+        check_ranges.append(("Unknown", range(max(0, len(lines) - 15), len(lines))))
+
+    for sec_name, check_range in check_ranges:
+        # Find last non-empty line in range that contains stats
+        last_stat_line = None
+        last_stat_idx = None
+        for i in check_range:
+            line = lines[i].strip()
+            if not line:
+                continue
+            if STAT_NOTATION.search(line):
+                last_stat_line = line
+                last_stat_idx = i
+
+        # Only flag if the stat appears in the final 3 non-empty lines
+        if last_stat_idx is not None:
+            trailing_nonempty = 0
+            for i in reversed(list(check_range)):
+                if lines[i].strip():
+                    trailing_nonempty += 1
+                    if i == last_stat_idx:
+                        # Found stat in final lines
+                        if trailing_nonempty <= 3:
+                            findings.append(Finding(
+                                check_id="B11",
+                                check_name="statistical-conclusion",
+                                severity="warning",
+                                section=sec_name,
+                                line_num=last_stat_idx + 1,
+                                line_text=last_stat_line[:80] + ("..." if len(last_stat_line) > 80 else ""),
+                                matched_text="statistical values in conclusion",
+                                message="Conclusion ends with statistics instead of clinical implication",
+                                suggestion="End with a concrete clinical takeaway, not numbers",
+                            ))
+                        break
+                    if trailing_nonempty > 3:
+                        break
+
+    return findings
+
+
 # --- Registry ---
 
 ALL_TIER_B_CHECKS = [
@@ -483,4 +589,6 @@ ALL_TIER_B_CHECKS = [
     check_anthropomorphism,
     check_informal_language,
     check_dialect_mixing,
+    check_citation_stacking_discussion,
+    check_statistical_conclusion,
 ]

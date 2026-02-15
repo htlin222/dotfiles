@@ -53,6 +53,11 @@ CHECK_DESCRIPTIONS = {
     "C4": ("suggestion", "self-referential-filler", "Excessive 'in this/our/the present study' (3+ occurrences)"),
     "C5": ("suggestion", "sentence-sprawl", "Sentences exceeding 50 words"),
     "C6": ("suggestion", "double-negative", "Double negative constructions (not uncommon, cannot be excluded)"),
+    "B10": ("warning", "citation-stacking-discussion", "3+ consecutive Author (year) found/showed sentences in Discussion"),
+    "B11": ("warning", "statistical-conclusion", "Conclusion ends with statistics instead of clinical implication"),
+    "C7": ("suggestion", "missing-reporting-guideline", "No reporting guideline mentioned (STROBE, CONSORT, PRISMA, etc.)"),
+    "C8": ("suggestion", "pvalue-before-effect", "P-value appears before effect estimate in Results"),
+    "C9": ("suggestion", "monotonous-results", "3+ consecutive lines with same Group... p<... reporting pattern"),
 }
 
 
