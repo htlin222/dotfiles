@@ -105,10 +105,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks file-guard"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks large-write-guard"
 					}
 				]
 			},

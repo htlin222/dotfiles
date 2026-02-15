@@ -96,6 +96,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 # Claude Code
 #
 export CLAUDE_CODE_ENABLE_TASKS=true
+export DISABLE_COST_WARNINGS=1
 
 # you-should-use settings
 export YSU_MESSAGE_POSITION="after"
@@ -461,8 +462,6 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 export RUST_LOG=himalaya=error
 
-# Enable HTTP/2 globally for all Node.js processes (fixes CDN connection exhaustion)
-export NODE_OPTIONS="${NODE_OPTIONS} --require $HOME/.node/enable-h2.cjs"
 
 # Gmail sync alias (run to fetch new emails)
 alias gsync='mbsync gmail gmail-work && notmuch new'

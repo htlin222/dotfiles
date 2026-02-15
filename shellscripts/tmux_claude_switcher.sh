@@ -2,7 +2,7 @@
 # Suppress all stderr during cache building
 exec 2>/dev/null
 # title: "tmux_claude_switcher"
-# version: 3.6.1 - sort inactive by recency (newest first)
+# version: 3.7.0 - use exact basename matching for claude process detection (same as nav)
 # description: Claude pane switcher - active panes fresh, inactive sessions cached
 #
 # ============================================================================
@@ -125,12 +125,27 @@ if (( use_active_cache )); then
     done < "$ACTIVE_CACHE"
 else
     typeset -A claude_pids
+    local valid_pids
+    valid_pids=$(ps -eo ppid=,pid=,comm= 2>/dev/null | awk '
+    {
+        ppid=$1; pid=$2; comm=$3
+        parent[pid] = ppid
+        n = split(comm, parts, "/")
+        base = parts[n]
+        if (base == "claude") {
+            claude_parents[ppid] = 1
+        }
+    }
+    END {
+        for (p in claude_parents) {
+            if (p == 0 || p == 1) continue
+            print p
+            if (p in parent && parent[p] != 0 && parent[p] != 1) print parent[p]
+        }
+    }')
     while read -r pid; do
-        ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
-        [[ -n "$ppid" ]] && claude_pids[$ppid]=1
-        gppid=$(ps -o ppid= -p "$ppid" 2>/dev/null | tr -d ' ')
-        [[ -n "$gppid" ]] && claude_pids[$gppid]=1
-    done < <(pgrep -f '[c]laude' 2>/dev/null)
+        [[ -n "$pid" ]] && claude_pids[$pid]=1
+    done <<< "$valid_pids"
 
     cache_content=""
     while IFS='|' read -r pane_pid pane_id pane_path tmux_pane_id; do

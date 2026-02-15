@@ -1,0 +1,126 @@
+# AI-Favored English Words
+# Based on: Matsui (2025), Kobak et al. (2025), and community observations
+#
+# Format:
+#   tier1/tier2:
+#     word: "suggested alternatives"
+#
+# tier1 = highest Z-scores in PubMed 2024 (weighted 1.2x in scoring)
+# tier2 = significantly elevated in research
+#
+# To add your own words: add entries under "custom" section at the bottom
+# To exclude a word: comment it out with #
+#
+# Legitimate context exclusions are in the script (LEGITIMATE_CONTEXTS dict)
+
+tier1:
+  # Top flagged words from Matsui (2025) — highest Z-scores
+  delve: "explore, examine, look into"
+  underscore: "emphasize, highlight, stress"
+  meticulous: "careful, thorough, precise"
+  intricate: "complex, detailed, elaborate"
+  tapestry: "mix, combination, range"
+  commendable: "impressive, notable, solid"
+  showcase: "show, demonstrate, present"
+  pivotal: "key, important, central"
+  bolster: "support, strengthen, back up"
+  surpass: "exceed, beat, outperform"
+  boast: "have, feature, offer"
+  primarily: "mainly, mostly, largely"
+
+tier2:
+  # --- Verbs ---
+  elucidate: "explain, clarify, make clear"
+  garner: "gain, attract, earn, get"
+  leverage: "use, take advantage of, build on"
+  unveil: "reveal, introduce, present"
+  scrutinize: "examine, inspect, review"
+  foster: "encourage, promote, support"
+  facilitate: "help, enable, make easier"
+  harness: "use, apply, put to use"
+  navigate: "handle, manage, deal with"
+  streamline: "simplify, improve, speed up"
+  illuminate: "show, reveal, shed light on"
+  spearhead: "lead, drive, champion"
+  embark: "start, begin, launch"
+  endeavor: "try, attempt, work toward"
+  encompass: "include, cover, span"
+  catalyze: "trigger, spark, drive"
+  augment: "add to, increase, supplement"
+  delineate: "describe, outline, define"
+  juxtapose: "compare, contrast, set side by side"
+  transcend: "go beyond, rise above, exceed"
+  underscore: "emphasize, highlight, stress"
+  revolutionize: "change, reshape, transform"
+  optimize: "improve, fine-tune, adjust"
+  empower: "enable, help, give power to"
+  mitigate: "reduce, lessen, ease"
+  exacerbate: "worsen, make worse, intensify"
+  proliferate: "spread, increase, multiply"
+  underscore: "emphasize, highlight, stress"
+
+  # --- Adjectives ---
+  groundbreaking: "new, innovative, first-of-its-kind"
+  transformative: "significant, game-changing, major"
+  nuanced: "subtle, complex, layered"
+  comprehensive: "full, complete, thorough"
+  robust: "strong, solid, reliable"
+  multifaceted: "complex, varied, diverse"
+  noteworthy: "notable, worth noting, significant"
+  paramount: "most important, top, critical"
+  holistic: "overall, whole, complete"
+  overarching: "main, broad, general"
+  unprecedented: "never before seen, first, new"
+  salient: "key, main, important"
+  burgeoning: "growing, rising, expanding"
+  cutting-edge: "latest, newest, advanced"
+  invaluable: "very useful, essential, important"
+  indispensable: "essential, necessary, vital"
+  seminal: "influential, important, landmark"
+  ubiquitous: "widespread, common, everywhere"
+  myriad: "many, numerous, a wide range of"
+  plethora: "many, plenty, a lot of"
+  imperative: "essential, necessary, urgent"
+  compelling: "convincing, strong, persuasive"
+  profound: "deep, significant, far-reaching"
+
+  # --- Adverbs ---
+  notably: "especially, in particular"
+  predominantly: "mostly, mainly, largely"
+  compellingly: "convincingly, strongly"
+  profoundly: "deeply, greatly, strongly"
+  moreover: "also, besides, in addition"
+  furthermore: "also, and, in addition"
+  remarkably: "surprisingly, strikingly"
+  substantially: "greatly, significantly, a lot"
+  inherently: "by nature, naturally"
+  crucially: "(often deletable) the key point is"
+  importantly: "(often deletable) just state the fact"
+  undeniably: "clearly, obviously"
+  arguably: "possibly, some say, it could be said"
+  meticulously: "carefully, thoroughly"
+
+  # --- Nouns ---
+  realm: "area, field, domain"
+  landscape: "field, area, scene, picture"
+  synergy: "teamwork, cooperation, combined effect"
+  paradigm: "model, approach, framework"
+  nexus: "link, connection, center"
+  interplay: "interaction, relationship"
+  cornerstone: "foundation, basis, key part"
+  underpinning: "basis, foundation, support"
+  discourse: "discussion, debate, conversation"
+  trajectory: "path, direction, trend"
+  endeavor: "effort, attempt, project"
+  linchpin: "key part, essential element"
+  bedrock: "foundation, basis, core"
+  catalyst: "trigger, driver, spark"
+  forefront: "front, lead, cutting edge"
+  vanguard: "front, lead, forefront"
+  echelon: "level, rank, tier"
+  zeitgeist: "spirit of the time, trend"
+
+# --- Custom: Add your own observations below ---
+# custom:
+#   whateverword: "better alternative"
+#   anotherword: "simpler option"
