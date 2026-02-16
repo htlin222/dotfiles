@@ -15,8 +15,13 @@ description: Use when polishing or reviewing English text to avoid AI-flavored v
 - 用戶請你寫英文學術/專業文章
 - 用戶想檢查文章裡有沒有 AI 味的英文詞
 - 用戶說 "human-write" 或 "scan AI words"
+- 中文寫作請參考 `chinese-patterns.md`
 
-## 快速掃描：Top 10 最嚴重的 AI 詞
+## Top 10 最嚴重的 AI 詞
+
+基於 2025 年兩篇研究，分析 2,750 萬篇 PubMed 文獻，找出 AI 偏好的英文詞彙。
+
+### Top 10 最嚴重的 AI 詞
 
 寫完或潤完稿，先搜這 10 個。出現任何一個都要三思：
 
@@ -156,7 +161,7 @@ python3 ~/.claude/skills/human-write/scan-ai-words.py <file>
 cat essay.txt | python3 ~/.claude/skills/human-write/scan-ai-words.py
 ```
 
-#### 輸出格式
+### 輸出格式
 
 ```
 ═══ AI Word Scan Report ═══
@@ -179,7 +184,7 @@ Suggestions:
   ...
 ```
 
-#### 評分標準
+### 評分標準
 
 | 分數  | 密度        | 解讀                 |
 | ----- | ----------- | -------------------- |
@@ -231,4 +236,5 @@ Suggestions:
 - 這個清單基於**醫學文獻**研究，但 AI 偏好詞彙在各領域通用
 - 不是說這些詞「不能用」，而是用之前要確認是自己的選擇
 - 非英語母語者用 AI 潤稿完全合理，只要最後自己編輯一遍
+- 人類文章有「凸點、凹洞、偏執與破綻」，這是特徵不是缺點
 - **AI 是草稿機，不是代筆人**
