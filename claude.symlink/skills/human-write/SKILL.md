@@ -1,22 +1,23 @@
 ---
 name: human-write
-description: Use when writing or polishing text (English or Chinese) to avoid AI-flavored patterns. Includes English AI-vocabulary scanner (PubMed research) and Chinese AI-sentence-pattern guidelines.
+description: Use when polishing or reviewing English text to avoid AI-flavored vocabulary. Scans for LLM-preferred words identified by PubMed research (delve, meticulous, underscore, etc.) and suggests natural alternatives.
 ---
 
 # Human Write
 
-讓文章有人味——英文避 AI 詞彙，中文避 AI 句型。
+請 AI 幫忙潤稿嗎？請避開以下詞！
+
+基於 2025 年兩篇研究，分析 2,750 萬篇 PubMed 文獻，找出 AI 偏好的英文詞彙。
 
 ## 觸發時機
 
-- 用戶請你潤飾英文文章、寫英文學術/專業文章
-- 用戶請你寫中文文章、部落格、專欄
-- 用戶想檢查文章裡有沒有 AI 味（中文或英文）
-- 用戶說 "human-write"、"scan AI words"、「幫我寫得更有人味」
+- 用戶請你潤飾英文文章
+- 用戶請你寫英文學術/專業文章
+- 用戶想檢查文章裡有沒有 AI 味的英文詞
+- 用戶說 "human-write" 或 "scan AI words"
+- 中文寫作請參考 `chinese-patterns.md`
 
----
-
-## 英文篇：AI 偏好詞彙
+## Top 10 最嚴重的 AI 詞
 
 基於 2025 年兩篇研究，分析 2,750 萬篇 PubMed 文獻，找出 AI 偏好的英文詞彙。
 
@@ -37,7 +38,7 @@ description: Use when writing or polishing text (English or Chinese) to avoid AI
 | 9    | **bolster**   | AI 用來替代 support/strengthen | support, strengthen, back up |
 | 10   | **surpass**   | AI 用來替代 exceed/outperform  | exceed, beat, outperform |
 
-### 完整 AI 偏好詞彙表
+## 完整 AI 偏好詞彙表
 
 <details>
 <summary>動詞 (Verbs) — 點擊展開</summary>
@@ -139,9 +140,9 @@ description: Use when writing or polishing text (English or Chinese) to avoid AI
 
 </details>
 
-### 英文使用方式
+## 使用方式
 
-#### 潤稿時自動避開
+### 模式一：潤稿時自動避開
 
 幫用戶潤飾英文時，**主動**避開以上所有詞彙。如果原文沒有這些詞，潤稿後也不該出現。
 
@@ -150,7 +151,7 @@ description: Use when writing or polishing text (English or Chinese) to avoid AI
 2. **替換原文已有的 AI 詞** — 用更自然的替代詞，但先問用戶
 3. **保留用戶的聲音** — 如果用戶本來就愛用某個詞，別幫他換掉
 
-#### 掃描檢測
+### 模式二：掃描檢測
 
 用內建腳本掃描文章，產生 AI 詞彙密度報告：
 
@@ -160,7 +161,7 @@ python3 ~/.claude/skills/human-write/scan-ai-words.py <file>
 cat essay.txt | python3 ~/.claude/skills/human-write/scan-ai-words.py
 ```
 
-#### 輸出格式
+### 輸出格式
 
 ```
 ═══ AI Word Scan Report ═══
@@ -183,7 +184,7 @@ Suggestions:
   ...
 ```
 
-#### 評分標準
+### 評分標準
 
 | 分數  | 密度        | 解讀                 |
 | ----- | ----------- | -------------------- |
@@ -192,23 +193,6 @@ Suggestions:
 | 5-6   | 0.5%-1.0%   | 中度，建議逐一檢查   |
 | 7-8   | 1.0%-2.0%   | 明顯，需要大量改寫   |
 | 9-10  | > 2.0%      | 強烈 AI 味，重寫吧   |
-
----
-
-### 附：中文 AI 句型速查
-
-寫中文時，避開這些 AI 罐頭句型：
-
-- **假轉折**：不是…而是…、不僅…更…
-- **風險緩衝**：在某種程度上、可以說是、某種意義上
-- **假深度**：然而我們也必須意識到、關鍵在於、這意味著
-- **罐頭結尾**：總的來說、綜合以上、讓我們共同期待
-- **空洞修飾**：多維度、深遠影響、賦能、範式轉換
-- **中立廢話**：這是一個值得深思的問題、每個人可能有不同看法
-
-替代原則：用具體細節取代抽象、敢站邊有立場、用生活譬喻、允許不確定、結尾可以懸著不必總結。
-
----
 
 ## 研究背景
 
@@ -249,8 +233,8 @@ Suggestions:
 
 ## 注意事項
 
-- 英文清單基於**醫學文獻**研究，但 AI 偏好詞彙在各領域通用
-- 不是說這些詞/句型「不能用」，而是用之前要確認是自己的選擇
+- 這個清單基於**醫學文獻**研究，但 AI 偏好詞彙在各領域通用
+- 不是說這些詞「不能用」，而是用之前要確認是自己的選擇
 - 非英語母語者用 AI 潤稿完全合理，只要最後自己編輯一遍
 - 人類文章有「凸點、凹洞、偏執與破綻」，這是特徵不是缺點
 - **AI 是草稿機，不是代筆人**
