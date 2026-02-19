@@ -235,3 +235,7 @@ Guide through decision points:
 ### Testing
 - [ ] Tested with real usage scenarios
 - [ ] Works across target models (Haiku needs more guidance, Opus needs less)
+
+## Further Reading
+
+**Eval-driven development**: See [references/eval-driven-development.md](references/eval-driven-development.md) for the build → test → observe → iterate cycle, two-Claude iterative development, and observation patterns for refining skills after initial creation.

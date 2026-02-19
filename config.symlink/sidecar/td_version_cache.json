@@ -1,0 +1,6 @@
+{
+  "latestVersion": "v0.37.0",
+  "currentVersion": "\u001b[0;31mError\n-----\n\u001b[0mA store for your todos is missing. You have 2 possibilities:\n  1. create a \".todos\" file in your local folder.\n  2. the environment variable \"TODO_DB_PATH\" could be set.\n    (example: \"export TODO_DB_PATH=$HOME/Dropbox/todo.json\" in your .bashrc or .bash_profile)\n\nopen : no such file or directory",
+  "checkedAt": "2026-02-17T02:32:22.227299+08:00",
+  "hasUpdate": true
+}

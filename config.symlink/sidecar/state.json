@@ -1,0 +1,13 @@
+{
+  "gitDiffMode": "unified",
+  "fileBrowser": {
+    "/Users/htlin/.dotfiles": {
+      "selectedFile": ".git",
+      "activePane": "tree",
+      "showIgnored": true
+    }
+  },
+  "activePlugin": {
+    "/Users/htlin/.dotfiles": "td-monitor"
+  }
+}
