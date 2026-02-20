@@ -152,6 +152,35 @@ clean: down
 	docker image prune -f
 ```
 
+## Reference Stacks
+
+Ready-to-deploy compose files in `references/`. Replace `<nas-host>` and `<nas-user>` with your values.
+
+| Stack | File | Port | Description |
+|-------|------|------|-------------|
+| **Nginx Proxy Manager** | `nginx-reverse-proxy.yml` | 80, 443, 81 | Reverse proxy with SSL termination and web UI |
+| **FreshRSS** | `freshrss.yml` | 8280 | RSS feed aggregator with PostgreSQL backend |
+| **BookLore** | `booklore.yml` | 6060 | Digital library for EPUB/PDF/CBZ with auto-metadata |
+| **Telegram Bot** | `telegram-bot.yml` | — | Python bot running 24/7, custom Dockerfile |
+
+**Quick deploy any stack:**
+```bash
+# Example: deploy FreshRSS
+crane pull freshrss/freshrss:latest /tmp/freshrss.tar
+crane pull postgres:16-alpine /tmp/postgres-16-alpine.tar
+docker load -i /tmp/freshrss.tar
+docker load -i /tmp/postgres-16-alpine.tar
+docker compose -f references/freshrss.yml up -d
+```
+
+**Multi-service architecture** (recommended for production):
+```
+Nginx Proxy Manager (:80/:443)
+  ├── FreshRSS    → localhost:8280
+  ├── BookLore    → localhost:6060
+  └── Other apps  → localhost:XXXX
+```
+
 ## Troubleshooting
 
 | Problem | Cause | Fix |

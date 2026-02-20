@@ -1,0 +1,55 @@
+# FreshRSS — Self-Hosted RSS Reader on NAS
+# A lightweight, self-hostable RSS feed aggregator
+# Access: http://<nas-ip>:8280
+# Ref: https://freshrss.org | https://hub.docker.com/r/freshrss/freshrss
+#
+# Crane images needed:
+#   crane pull freshrss/freshrss:latest /tmp/freshrss.tar
+#   crane pull postgres:16-alpine /tmp/postgres-16-alpine.tar
+#
+# NAS volume setup:
+#   mkdir -p ~/docker/freshrss/{data,extensions}
+#   mkdir -p ~/docker/freshrss/db
+
+services:
+  freshrss:
+    image: freshrss/freshrss:latest
+    restart: unless-stopped
+    ports:
+      - "8280:80"
+    volumes:
+      - /home/<nas-user>/docker/freshrss/data:/var/www/FreshRSS/data
+      - /home/<nas-user>/docker/freshrss/extensions:/var/www/FreshRSS/extensions
+    environment:
+      TZ: Asia/Taipei
+      CRON_MIN: "3,33"              # Auto-fetch feeds at :03 and :33
+      FRESHRSS_ENV: production
+      FRESHRSS_INSTALL: |-
+        --api_enabled
+        --db-type pgsql
+        --db-host db
+        --db-port 5432
+        --db-base freshrss
+        --db-user freshrss
+        --db-password changeme
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - /home/<nas-user>/docker/freshrss/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: freshrss
+      POSTGRES_USER: freshrss
+      POSTGRES_PASSWORD: changeme
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U freshrss"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# First run: visit http://<nas-ip>:8280 to complete setup wizard
+# Mobile: use FeedMe (Android) or NetNewsWire (iOS) with FreshRSS API

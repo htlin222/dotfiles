@@ -1,0 +1,33 @@
+# Nginx Reverse Proxy for NAS
+# Routes traffic to multiple self-hosted services behind a single IP
+# Access: http://<nas-ip>:80 / https://<nas-ip>:443
+# Ref: https://github.com/NginxProxyManager/nginx-proxy-manager
+#
+# Crane images needed:
+#   crane pull jc21/nginx-proxy-manager:latest /tmp/npm.tar
+#
+# NAS volume setup:
+#   mkdir -p ~/docker/nginx-proxy/{data,letsencrypt}
+
+services:
+  nginx-proxy:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"       # Admin UI
+    volumes:
+      - /home/<nas-user>/docker/nginx-proxy/data:/data
+      - /home/<nas-user>/docker/nginx-proxy/letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy-net
+
+networks:
+  proxy-net:
+    name: proxy-net
+    driver: bridge
+
+# After first run, visit http://<nas-ip>:81
+# Default login: admin@example.com / changeme
+# Add proxy hosts to route *.yourdomain.com → internal containers
