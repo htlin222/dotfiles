@@ -69,6 +69,7 @@ claude.symlink/*cache*/
 claude.symlink/telemetry/
 claude.symlink/.credentials.json
 claude.symlink/paste-cache/
+claude.symlink/backups/
 
 **/logs/
 **/codebase-maps/
@@ -84,5 +85,3 @@ docs/*.pdf
 docs/**/*_files/
 .quarto/
 *.zwc
-zsh/modules/alias.zsh.zwc
-*.zsh.zwc

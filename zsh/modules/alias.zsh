@@ -41,6 +41,7 @@ if [[ -n "$IS_MAC" ]]; then
 else
   alias mcpconfig='nvim ~/.config/claude/claude_desktop_config.json'
 fi
+alias ccupdate='curl -fsSL https://claude.ai/install.sh | bash'
 # man coloring handled by colored-man-pages plugin
 alias how="$DOTFILES/shellscripts/how.sh"
 alias ztop='zenith'
@@ -230,12 +231,18 @@ fi
 [[ -x "/home/htlin222/.better-rm/better-rm" ]] && alias rm='/home/htlin222/.better-rm/better-rm'
 
 # Fallback clipboard helpers if none are available
-_pbcopy_fallback() { echo "pbcopy not available" >&2; return 127; }
-_pbpaste_fallback() { echo "pbpaste not available" >&2; return 127; }
+_pbcopy_fallback() {
+  echo "pbcopy not available" >&2
+  return 127
+}
+_pbpaste_fallback() {
+  echo "pbpaste not available" >&2
+  return 127
+}
 
-if ! whence -p pbcopy >/dev/null 2>&1 && ! alias pbcopy >/dev/null 2>&1 && (( ! $+functions[pbcopy] )); then
+if ! whence -p pbcopy >/dev/null 2>&1 && ! alias pbcopy >/dev/null 2>&1 && ((!$ + functions[pbcopy])); then
   alias pbcopy='_pbcopy_fallback'
 fi
-if ! whence -p pbpaste >/dev/null 2>&1 && ! alias pbpaste >/dev/null 2>&1 && (( ! $+functions[pbpaste] )); then
+if ! whence -p pbpaste >/dev/null 2>&1 && ! alias pbpaste >/dev/null 2>&1 && ((!$ + functions[pbpaste])); then
   alias pbpaste='_pbpaste_fallback'
 fi
