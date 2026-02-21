@@ -14,10 +14,9 @@
 
 ## Delegation Rule
 
-NEVER use Write/Edit/MultiEdit directly in this session for source code.
-ALWAYS delegate code modifications to Task subagents.
-This keeps the main session focused on planning/discussion and preserves context window.
-Allowed direct edits only: _.md, CLAUDE.md, plans/_, settings.json, Makefile, .gitignore, go-tools/\*\*
+Small edits (Edit, ≤3 MultiEdits, ≤100-line Write) are allowed directly.
+Large edits (big Write, many MultiEdits, multi-file refactors) → delegate to Task subagents.
+Config/docs (.md, CLAUDE.md, plans/\*, settings.json, Makefile, .gitignore, go-tools/\*\*) always allowed.
 
 ## On-Demand (use --verbose or when needed)
 

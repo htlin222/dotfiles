@@ -50,8 +50,12 @@ func Run() {
 		msgs = append(msgs, "👑 我在大清當皇帝")
 	}
 
-	// Delegation reminder
-	msgs = append(msgs, "🔄 Delegation active: delegate all source code edits (Write/Edit) to Task subagents. Direct edits allowed only for: *.md, settings.json, Makefile, .gitignore, go-tools/**")
+	// Delegation reminder (adapts to FORCE_DELEGATION env)
+	if strings.EqualFold(os.Getenv("FORCE_DELEGATION"), "true") {
+		msgs = append(msgs, "🔄 Strict delegation: ALL source code edits must use Task subagents. Direct edits allowed only for: *.md, settings.json, Makefile, .gitignore, go-tools/**")
+	} else {
+		msgs = append(msgs, "🔄 Smart delegation: small edits (Edit, ≤3 MultiEdits, ≤100-line Write) OK directly. Large edits → use Task subagents.")
+	}
 
 	// @LAST hint after /clear
 	if data.Source == "clear" && snapshot.IsAvailable(data.CWD) {

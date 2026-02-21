@@ -1,5 +1,5 @@
-// Package delegateedits blocks Write/Edit/MultiEdit in the main session,
-// encouraging delegation to Task subagents to preserve context window.
+// Package delegateedits suggests delegation to Task subagents for large edits
+// in the main session, while allowing small targeted changes directly.
 package delegateedits
 
 import (
@@ -14,21 +14,27 @@ import (
 	"github.com/htlin/claude-tools/internal/state"
 )
 
-// allowedExtensions are file extensions the main session may edit directly.
+// Thresholds for "large" edits that should be delegated.
+const (
+	maxMultiEdits = 3   // MultiEdit with more than this many edits → delegate
+	maxWriteLines = 100 // Write with more than this many lines → delegate
+)
+
+// allowedExtensions are file extensions always allowed directly.
 var allowedExtensions = map[string]bool{
 	".md": true,
 }
 
-// allowedBasenames are exact filenames allowed in any directory.
+// allowedBasenames are exact filenames always allowed directly.
 var allowedBasenames = map[string]bool{
-	"CLAUDE.md":            true,
-	"Makefile":             true,
-	".gitignore":           true,
-	"settings.json":        true,
-	"settings.local.json":  true,
+	"CLAUDE.md":           true,
+	"Makefile":            true,
+	".gitignore":          true,
+	"settings.json":       true,
+	"settings.local.json": true,
 }
 
-// allowedPathContains are path fragments that permit direct edits.
+// allowedPathContains are path fragments that always permit direct edits.
 var allowedPathContains = []string{
 	"/.claude/",
 	"/claude.symlink/go-tools/",
@@ -36,6 +42,8 @@ var allowedPathContains = []string{
 }
 
 // Run executes the delegate-edits PreToolUse hook.
+// Set FORCE_DELEGATION=true to block ALL direct source-code edits in main session.
+// Default (unset or false): only large edits are blocked.
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
@@ -58,18 +66,17 @@ func Run() {
 	// Load state to get main session ID
 	st, err := state.Load()
 	if err != nil || st.MainSessionID == "" {
-		// No stored session ID — can't determine main session, allow
 		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
-	// If this is NOT the main session (subagent), allow
+	// If this is NOT the main session (subagent), always allow
 	if data.SessionID != st.MainSessionID {
 		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
-	// This IS the main session — check file paths against allowlist
+	// --- Main session: check allowlist first ---
 	var filePaths []string
 	if data.ToolName == "MultiEdit" {
 		for _, edit := range data.ToolInput.Edits {
@@ -81,27 +88,72 @@ func Run() {
 		filePaths = []string{data.ToolInput.FilePath}
 	}
 
-	// If no file paths found, allow (shouldn't happen, but safe default)
 	if len(filePaths) == 0 {
 		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
-	// Check each file path against allowlist
+	// Allowlisted files are always permitted
+	allAllowed := true
 	for _, fp := range filePaths {
 		if !isAllowed(fp) {
-			msg := fmt.Sprintf(
-				"🔄 DELEGATE: Use a Task agent to modify source code — keeps this session focused on discussion.\n\n"+
-					"  Task → \"Edit %s: [describe the change]\"\n\n"+
-					"Allowed direct edits: .md, CLAUDE.md, plans/*, settings.json, Makefile, .gitignore, go-tools/**",
-				filepath.Base(fp),
-			)
-			fmt.Println(protocol.BlockResponse(msg))
+			allAllowed = false
+			break
+		}
+	}
+	if allAllowed {
+		fmt.Println(protocol.ContinueResponse())
+		return
+	}
+
+	// --- FORCE_DELEGATION mode: block everything except allowlisted ---
+	forceMode := strings.EqualFold(os.Getenv("FORCE_DELEGATION"), "true")
+
+	if forceMode {
+		msg := fmt.Sprintf(
+			"🔄 DELEGATE (FORCE_DELEGATION=true): Use a Task agent to modify source code.\n\n"+
+				"  Task → \"Edit %s: [describe the change]\"\n\n"+
+				"Unset FORCE_DELEGATION to allow small direct edits.",
+			filepath.Base(filePaths[0]),
+		)
+		fmt.Println(protocol.BlockResponse(msg))
+		return
+	}
+
+	// --- Default mode: size-based — small edits pass, large edits blocked ---
+
+	// Edit (single replacement in one file) is always small → allow
+	if data.ToolName == "Edit" {
+		fmt.Println(protocol.ContinueResponse())
+		return
+	}
+
+	// MultiEdit: allow if few edits
+	if data.ToolName == "MultiEdit" && len(data.ToolInput.Edits) <= maxMultiEdits {
+		fmt.Println(protocol.ContinueResponse())
+		return
+	}
+
+	// Write: allow if content is small
+	if data.ToolName == "Write" {
+		lines := strings.Count(data.ToolInput.Content, "\n") + 1
+		if lines <= maxWriteLines {
+			fmt.Println(protocol.ContinueResponse())
 			return
 		}
 	}
 
-	fmt.Println(protocol.ContinueResponse())
+	// Large edit → suggest delegation
+	msg := fmt.Sprintf(
+		"🔄 Large edit detected — consider using a Task agent to preserve context window.\n\n"+
+			"  Task → \"Edit %s: [describe the change]\"\n\n"+
+			"Small edits (Edit, ≤%d MultiEdits, ≤%d-line Write) are allowed directly.\n"+
+			"Set FORCE_DELEGATION=true to block all direct source edits.",
+		filepath.Base(filePaths[0]),
+		maxMultiEdits,
+		maxWriteLines,
+	)
+	fmt.Println(protocol.BlockResponse(msg))
 }
 
 // isAllowed checks if a file path is in the allowlist for direct main-session edits.
@@ -109,22 +161,16 @@ func isAllowed(fp string) bool {
 	base := filepath.Base(fp)
 	ext := filepath.Ext(fp)
 
-	// Check allowed extensions
 	if allowedExtensions[ext] {
 		return true
 	}
-
-	// Check allowed basenames
 	if allowedBasenames[base] {
 		return true
 	}
-
-	// Check allowed path fragments
 	for _, fragment := range allowedPathContains {
 		if strings.Contains(fp, fragment) {
 			return true
 		}
 	}
-
 	return false
 }
