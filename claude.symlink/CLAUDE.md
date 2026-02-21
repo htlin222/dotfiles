@@ -12,6 +12,13 @@
 @FLAGS.md
 @PERSONAS.md
 
+## Delegation Rule
+
+NEVER use Write/Edit/MultiEdit directly in this session for source code.
+ALWAYS delegate code modifications to Task subagents.
+This keeps the main session focused on planning/discussion and preserves context window.
+Allowed direct edits only: _.md, CLAUDE.md, plans/_, settings.json, Makefile, .gitignore, go-tools/\*\*
+
 ## On-Demand (use --verbose or when needed)
 
 - COMMANDS.md - Full command reference

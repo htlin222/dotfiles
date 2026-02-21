@@ -42,16 +42,16 @@ func Run() {
 		})
 	}
 
-	// Only hint about @LAST after /clear, not on fresh startup
-	if data.Source != "clear" {
-		fmt.Println(protocol.ContinueResponse())
-		return
+	// Delegation reminder on startup
+	delegationMsg := "🔄 Delegation active: delegate all source code edits (Write/Edit) to Task subagents. Direct edits allowed only for: *.md, settings.json, Makefile, .gitignore, go-tools/**"
+
+	// Hint about @LAST after /clear, delegation reminder on startup
+	if data.Source == "clear" {
+		if snapshot.IsAvailable(data.CWD) {
+			fmt.Println(protocol.ContinueWithMessage(delegationMsg + "\n💡 前次對話快照可用，輸入 @LAST 載入前次上下文"))
+			return
+		}
 	}
 
-	if snapshot.IsAvailable(data.CWD) {
-		fmt.Println(protocol.ContinueWithMessage("💡 前次對話快照可用，輸入 @LAST 載入前次上下文"))
-		return
-	}
-
-	fmt.Println(protocol.ContinueResponse())
+	fmt.Println(protocol.ContinueWithMessage(delegationMsg))
 }
