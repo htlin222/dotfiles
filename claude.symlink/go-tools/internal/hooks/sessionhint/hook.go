@@ -42,16 +42,21 @@ func Run() {
 		})
 	}
 
-	// Delegation reminder on startup
-	delegationMsg := "🔄 Delegation active: delegate all source code edits (Write/Edit) to Task subagents. Direct edits allowed only for: *.md, settings.json, Makefile, .gitignore, go-tools/**"
+	// Build startup messages
+	var msgs []string
 
-	// Hint about @LAST after /clear, delegation reminder on startup
-	if data.Source == "clear" {
-		if snapshot.IsAvailable(data.CWD) {
-			fmt.Println(protocol.ContinueWithMessage(delegationMsg + "\n💡 前次對話快照可用，輸入 @LAST 載入前次上下文"))
-			return
-		}
+	// Qing dynasty court mode
+	if strings.EqualFold(os.Getenv("QING"), "true") {
+		msgs = append(msgs, "👑 我在大清當皇帝")
 	}
 
-	fmt.Println(protocol.ContinueWithMessage(delegationMsg))
+	// Delegation reminder
+	msgs = append(msgs, "🔄 Delegation active: delegate all source code edits (Write/Edit) to Task subagents. Direct edits allowed only for: *.md, settings.json, Makefile, .gitignore, go-tools/**")
+
+	// @LAST hint after /clear
+	if data.Source == "clear" && snapshot.IsAvailable(data.CWD) {
+		msgs = append(msgs, "💡 前次對話快照可用，輸入 @LAST 載入前次上下文")
+	}
+
+	fmt.Println(protocol.ContinueWithMessage(strings.Join(msgs, "\n")))
 }
