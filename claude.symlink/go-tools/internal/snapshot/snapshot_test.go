@@ -49,7 +49,7 @@ func TestGenerate_WritesToCWDBasedPath(t *testing.T) {
 	withTempSnapshotDir(t)
 	cwd := t.TempDir()
 
-	err := Generate("", cwd, "session-123")
+	err := Generate("", cwd, "session-123", "")
 	if err != nil {
 		t.Fatalf("Generate() error = %v", err)
 	}
@@ -76,12 +76,12 @@ func TestCrossCWD_Isolation(t *testing.T) {
 	cwdB := t.TempDir()
 
 	// Session A writes snapshot
-	if err := Generate("", cwdA, "session-a"); err != nil {
+	if err := Generate("", cwdA, "session-a", ""); err != nil {
 		t.Fatalf("Generate(A) error = %v", err)
 	}
 
 	// Session B writes snapshot
-	if err := Generate("", cwdB, "session-b"); err != nil {
+	if err := Generate("", cwdB, "session-b", ""); err != nil {
 		t.Fatalf("Generate(B) error = %v", err)
 	}
 
@@ -218,6 +218,65 @@ func TestConsume_StaleSnapshot(t *testing.T) {
 	_, err := Consume(cwd)
 	if err == nil {
 		t.Error("Consume() should fail for stale snapshot")
+	}
+}
+
+func TestGenerate_WithLastAssistantMessage(t *testing.T) {
+	withTempSnapshotDir(t)
+	cwd := t.TempDir()
+
+	err := Generate("", cwd, "session-456", "I've completed the refactoring.")
+	if err != nil {
+		t.Fatalf("Generate() error = %v", err)
+	}
+
+	p := snapshotPathForCWD(cwd)
+	data, err := os.ReadFile(p)
+	if err != nil {
+		t.Fatalf("reading snapshot: %v", err)
+	}
+
+	content := string(data)
+	if !strings.Contains(content, "I've completed the refactoring.") {
+		t.Error("snapshot missing last_assistant_message content")
+	}
+	if !strings.Contains(content, "### Assistant") {
+		t.Error("snapshot missing Assistant header for last_assistant_message")
+	}
+}
+
+func TestGenerate_LastAssistantMessageReplacesTranscript(t *testing.T) {
+	withTempSnapshotDir(t)
+	cwd := t.TempDir()
+
+	// Create a transcript with an assistant turn
+	tmpFile := filepath.Join(t.TempDir(), "transcript.jsonl")
+	lines := []string{
+		`{"type":"human","message":{"role":"user","content":"do something"}}`,
+		`{"type":"assistant","message":{"role":"assistant","content":"old response"}}`,
+	}
+	if err := os.WriteFile(tmpFile, []byte(strings.Join(lines, "\n")), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Provide last_assistant_message which should replace the transcript's last assistant turn
+	err := Generate(tmpFile, cwd, "session-789", "new official response")
+	if err != nil {
+		t.Fatalf("Generate() error = %v", err)
+	}
+
+	p := snapshotPathForCWD(cwd)
+	data, err := os.ReadFile(p)
+	if err != nil {
+		t.Fatalf("reading snapshot: %v", err)
+	}
+
+	content := string(data)
+	if !strings.Contains(content, "new official response") {
+		t.Error("snapshot should contain the official last_assistant_message")
+	}
+	if strings.Contains(content, "old response") {
+		t.Error("snapshot should NOT contain the old transcript response")
 	}
 }
 

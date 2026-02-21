@@ -72,8 +72,8 @@ func Run() {
 	gitStatusAndNotify(cwd, folderName)
 
 	// Feature 2.5: Save context snapshot for @LAST
-	if data.TranscriptPath != "" {
-		snapshot.Generate(data.TranscriptPath, cwd, sessionID)
+	if data.TranscriptPath != "" || data.LastAssistantMessage != "" {
+		snapshot.Generate(data.TranscriptPath, cwd, sessionID, data.LastAssistantMessage)
 	}
 
 	// Log metrics

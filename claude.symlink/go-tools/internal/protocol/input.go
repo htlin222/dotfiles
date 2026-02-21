@@ -11,6 +11,10 @@ type HookInput struct {
 	ToolName       string    `json:"tool_name,omitempty"`
 	ToolInput      ToolInput `json:"tool_input,omitempty"`
 	ToolResult     any       `json:"tool_result,omitempty"`
+
+	// Stop hook fields (provided by Claude Code for Stop events only)
+	StopHookActive       bool   `json:"stop_hook_active,omitempty"`
+	LastAssistantMessage string `json:"last_assistant_message,omitempty"`
 }
 
 // ToolInput contains tool-specific input parameters.

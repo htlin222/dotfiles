@@ -61,8 +61,32 @@ type conversationTurn struct {
 }
 
 // Generate creates a context snapshot from the transcript and project state.
-func Generate(transcriptPath, cwd, sessionID string) error {
+// If lastAssistantMessage is provided (from the official Stop hook input),
+// it is used directly instead of parsing the transcript for the last assistant turn.
+func Generate(transcriptPath, cwd, sessionID, lastAssistantMessage string) error {
 	turns := extractConversation(transcriptPath)
+
+	// If the official last_assistant_message is available, ensure it's the final turn.
+	// This avoids relying on transcript parsing for the most recent response.
+	if lastAssistantMessage != "" {
+		msg := lastAssistantMessage
+		if len(msg) > MaxTextLen {
+			msg = msg[:MaxTextLen] + "..."
+		}
+		// Replace the last assistant turn or append if missing
+		replaced := false
+		for i := len(turns) - 1; i >= 0; i-- {
+			if turns[i].Role == "assistant" {
+				turns[i].Text = msg
+				replaced = true
+				break
+			}
+		}
+		if !replaced {
+			turns = append(turns, conversationTurn{Role: "assistant", Text: msg})
+		}
+	}
+
 	editedFiles := getEditedFilesList()
 	gitStatus := getGitStatusString(cwd)
 
