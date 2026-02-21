@@ -70,6 +70,23 @@ func Run() {
 
 	var messages []string
 
+	// Feature: Qing dynasty court roleplay (env QING=true)
+	var qingPersona string
+	if strings.EqualFold(os.Getenv("QING"), "true") {
+		if st.QingPersona == "" {
+			// First prompt: roll persona and persist
+			rollScript := filepath.Join(os.Getenv("HOME"), ".claude", "skills", "qing", "roll.sh")
+			if out, err := exec.Command("bash", rollScript).Output(); err == nil && len(out) > 0 {
+				st.QingPersona = strings.TrimSpace(string(out))
+			}
+		}
+		qingPersona = st.QingPersona
+		if qingPersona != "" && st.PromptCount == 1 {
+			messages = append(messages, fmt.Sprintf("%s👑%s 清宮模式已啟動（QING=true）",
+				ansi.BrightYellow, ansi.Reset))
+		}
+	}
+
 	// Log the prompt
 	if prompt != "" {
 		metrics.LogPrompt(cwd, prompt)
@@ -158,6 +175,9 @@ func Run() {
 
 	// Build additionalContext
 	contextParts := []string{"Again: " + prompt}
+	if qingPersona != "" {
+		contextParts = append(contextParts, "\n---\n"+qingPersona)
+	}
 	if snapshotContent != "" {
 		contextParts = append(contextParts, "\n---\n## Previous Session Context\n"+snapshotContent)
 	}

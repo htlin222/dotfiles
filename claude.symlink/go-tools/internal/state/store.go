@@ -17,7 +17,7 @@ type State struct {
 	LastGitCheck          int      `json:"last_git_check,omitempty"`
 	LastContextSuggestion int      `json:"last_context_suggestion,omitempty"`
 	LastPressureCheck     int      `json:"last_pressure_check,omitempty"`
-
+	QingPersona           string   `json:"qing_persona,omitempty"`
 }
 
 var (
