@@ -7,6 +7,7 @@ import (
 
 	"github.com/htlin/claude-tools/internal/hooks/autostage"
 	"github.com/htlin/claude-tools/internal/hooks/branchguard"
+	"github.com/htlin/claude-tools/internal/hooks/delegateedits"
 	"github.com/htlin/claude-tools/internal/hooks/checkfileexists"
 	"github.com/htlin/claude-tools/internal/hooks/checkreadexists"
 	"github.com/htlin/claude-tools/internal/hooks/checkrm"
@@ -53,6 +54,8 @@ func main() {
 		subagentstop.Run()
 	case "auto-stage":
 		autostage.Run()
+	case "delegate-edits":
+		delegateedits.Run()
 	case "dep-remind":
 		depremind.Run()
 	case "todo-tracker":
@@ -87,6 +90,7 @@ Commands:
   post-tool-use      Handle PostToolUse events
   file-guard         Block access to sensitive files (PreToolUse)
   check-rm           Block rm commands (PreToolUse)
+  delegate-edits     Block direct edits in main session, suggest Task agents (PreToolUse)
   branch-guard       Block destructive git on protected branches (PreToolUse)
   large-write-guard  Warn on large file writes >500 lines (PreToolUse)
   check-file-exists  Block cat/bat if file not found (PreToolUse)

@@ -118,6 +118,15 @@
         ]
       },
       {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks delegate-edits"
+          }
+        ]
+      },
+      {
         "matcher": "Read",
         "hooks": [
           {

@@ -223,6 +223,28 @@ func CheckComplexTask(prompt string) bool {
 	return false
 }
 
+// ImplementationTaskPatterns detect prompts that involve code modifications.
+var ImplementationTaskPatterns = []*regexp.Regexp{
+	regexp.MustCompile(`(?i)^implement\b`),
+	regexp.MustCompile(`(?i)^add (?:a )?feature\b`),
+	regexp.MustCompile(`(?i)^fix (?:the |a )?bug\b`),
+	regexp.MustCompile(`(?i)^refactor\b`),
+	regexp.MustCompile(`(?i)^write (?:the )?code\b`),
+	regexp.MustCompile(`(?i)^create (?:a )?file\b`),
+	regexp.MustCompile(`(?i)implement (?:the |this )?(?:plan|following)`),
+}
+
+// CheckImplementationTask checks for implementation-oriented prompts that should delegate edits.
+func CheckImplementationTask(prompt string) bool {
+	promptLower := strings.ToLower(prompt)
+	for _, pattern := range ImplementationTaskPatterns {
+		if pattern.MatchString(promptLower) {
+			return true
+		}
+	}
+	return false
+}
+
 // CheckToolEfficiency checks for bash search commands that should use native tools.
 func CheckToolEfficiency(prompt string) string {
 	promptLower := strings.ToLower(prompt)

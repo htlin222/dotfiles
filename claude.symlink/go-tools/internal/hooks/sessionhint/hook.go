@@ -35,8 +35,11 @@ func Run() {
 	}
 
 	// Reset state on new session or clear (prevents zombie accumulation)
+	// Preserve the main session ID so delegate-edits can detect the main session
 	if data.Source == "startup" || data.Source == "clear" {
-		state.Save(&state.State{})
+		state.Save(&state.State{
+			MainSessionID: data.SessionID,
+		})
 	}
 
 	// Only hint about @LAST after /clear, not on fresh startup

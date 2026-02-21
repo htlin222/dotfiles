@@ -18,6 +18,7 @@ type State struct {
 	LastContextSuggestion int      `json:"last_context_suggestion,omitempty"`
 	LastPressureCheck     int      `json:"last_pressure_check,omitempty"`
 	QingPersona           string   `json:"qing_persona,omitempty"`
+	MainSessionID         string   `json:"main_session_id,omitempty"`
 }
 
 var (

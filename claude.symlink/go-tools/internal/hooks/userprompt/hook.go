@@ -125,6 +125,9 @@ func Run() {
 	if patterns.CheckComplexTask(prompt) {
 		messages = append(messages, fmt.Sprintf("%s%s%s Complex task detected: consider using Task agents to delegate work",
 			ansi.BrightMagenta, ansi.IconRocket, ansi.Reset))
+	} else if patterns.CheckImplementationTask(prompt) {
+		messages = append(messages, fmt.Sprintf("%s%s%s Implementation task detected: delegate edits to Task agents to preserve context",
+			ansi.BrightMagenta, ansi.IconRocket, ansi.Reset))
 	}
 
 	// Feature 3: Suggest skill if applicable
