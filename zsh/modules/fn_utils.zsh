@@ -1,12 +1,7 @@
 # Miscellaneous Utility Functions
 
-# Mobile mode: auto-detect narrow terminal (iOS), or manual toggle
-if [[ "$COLUMNS" -lt 120 ]]; then
-  export ISMOBILE=true
-  [[ -n "$TMUX" ]] && tmux set -g @ismobile on
-else
-  export ISMOBILE=false
-fi
+# Mobile mode toggle
+export ISMOBILE=false
 mobile() {
   if [[ "$ISMOBILE" == "true" ]]; then
     export ISMOBILE=false

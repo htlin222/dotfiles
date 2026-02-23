@@ -191,7 +191,7 @@ bind-key -T copy-mode-vi 'C-\' select-pane -l
 # == menus settings ==
 set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
-set -g status-right '#(if [ "$(tmux show -gqv @ismobile)" = "on" ]; then echo ""; else command -v gitmux >/dev/null 2>&1 && gitmux "#{pane_current_path}"; fi)'
+set -g status-right '#{?#{e|<:#{client_width},120},,#(command -v gitmux >/dev/null 2>&1 && gitmux "#{pane_current_path}")}'
 # NB: put the following line if you want to make the status-position at top
 # set -g status-position top
 
