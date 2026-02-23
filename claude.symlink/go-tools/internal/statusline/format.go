@@ -1,7 +1,6 @@
 package statusline
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -44,21 +43,15 @@ func getBgColor(pct int) string {
 }
 
 func formatTokens(tokens int) string {
-	if tokens >= 1000000 {
-		return fmt.Sprintf("%.1fM", float64(tokens)/1000000)
-	}
 	if tokens >= 1000 {
-		return fmt.Sprintf("%.1fK", float64(tokens)/1000)
+		return strconv.Itoa(tokens / 1000)
 	}
 	return strconv.Itoa(tokens)
 }
 
 func formatTokensShort(tokens int) string {
-	if tokens >= 1000000 {
-		return fmt.Sprintf("%dM", tokens/1000000)
-	}
 	if tokens >= 1000 {
-		return fmt.Sprintf("%dK", tokens/1000)
+		return strconv.Itoa(tokens / 1000)
 	}
 	return strconv.Itoa(tokens)
 }

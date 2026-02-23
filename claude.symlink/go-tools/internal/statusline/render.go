@@ -2,13 +2,39 @@ package statusline
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
+	"syscall"
+	"unsafe"
 
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/pkg/context"
 )
+
+// getTermWidth returns the terminal width in columns, or 0 if unknown.
+func getTermWidth() int {
+	// Open /dev/tty directly — works even when all fds are piped
+	tty, err := os.Open("/dev/tty")
+	if err != nil {
+		return 0
+	}
+	defer tty.Close()
+
+	var ws struct {
+		Row, Col, Xpixel, Ypixel uint16
+	}
+	_, _, errno := syscall.Syscall(syscall.SYS_IOCTL,
+		tty.Fd(),
+		syscall.TIOCGWINSZ,
+		uintptr(unsafe.Pointer(&ws)))
+	if errno == 0 && ws.Col > 0 {
+		return int(ws.Col)
+	}
+	return 0
+}
+
+const narrowThreshold = 80
 
 // ANSI constants
 const (
@@ -128,20 +154,11 @@ func Render(data *protocol.StatuslineInput) {
 	currentDisplay := formatTokens(currentTokens)
 	windowDisplay := formatTokensShort(windowSize)
 
-	// Context bar
-	barWidth := 10
-	filled := contextPct * barWidth / 100
-	if filled > barWidth {
-		filled = barWidth
-	}
 	contextColor := getColor(contextPct)
-	contextBar := contextColor + strings.Repeat("█", filled) + Gray + strings.Repeat("░", barWidth-filled) + Reset
 
 	// Usage colors
 	fiveHourColor := getColor(usage.FiveHourPct)
-	fiveHourBg := getBgColor(usage.FiveHourPct)
 	weeklyColor := getColor(usage.WeeklyPct)
-	weeklyBg := getBgColor(usage.WeeklyPct)
 
 	fiveHourDisplay := fmt.Sprintf("%d%%", usage.FiveHourPct)
 	weeklyDisplay := fmt.Sprintf("%d%%", usage.WeeklyPct)
@@ -160,6 +177,15 @@ func Render(data *protocol.StatuslineInput) {
 
 	// Begin output with synchronized update
 	fmt.Print(SyncStart)
+
+	// Narrow screen: single compact line
+	if w := getTermWidth(); w > 0 && w < narrowThreshold {
+		fmt.Printf("%s%s[C]%d%% %s/%s%s", ClearLine, contextColor, contextPct, currentDisplay, windowDisplay, Reset)
+		fmt.Printf(" %s[5hr]%s-%s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
+		fmt.Printf("\033[K\n")
+		fmt.Print(SyncEnd)
+		return
+	}
 
 	// Line 1: Last user command with timestamp
 	if lastCmd != "" {
@@ -195,23 +221,10 @@ func Render(data *protocol.StatuslineInput) {
 		fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
 	}
 
-	// Line 2: context bar, 5h usage, weekly
-	fmt.Printf("%s%s%s%s", ClearLine, contextColor, IconContext, Reset)
-	fmt.Printf("%s ", contextBar)
-	fmt.Printf("%s%s%s/%s ", contextColor, currentDisplay, Reset, windowDisplay)
-	fmt.Printf("%s%d%%%s ", contextColor, contextPct, Reset)
-
-	// 5-hour segment
-	fmt.Printf("%s%s %s %s", fiveHourBg, Black, IconUsage, Reset)
-	fmt.Printf("%s%s%s ", fiveHourColor, IconSepRight, Reset)
-	fmt.Printf("%s%s%s ", fiveHourColor, fiveHourDisplay, Reset)
-	fmt.Printf("%s%s %s%s ", Gray, IconTimerSand, usage.TimeLeft, Reset)
-
-	// Weekly segment
-	fmt.Printf("%s%s %s %s", weeklyBg, Black, IconWeekly, Reset)
-	fmt.Printf("%s%s%s ", weeklyColor, IconSepRight, Reset)
-	fmt.Printf("%s%s%s ", weeklyColor, weeklyDisplay, Reset)
-	fmt.Printf("%s%s%s\033[K\n", Gray, usage.WeeklyResetDate, Reset)
+	// Line: context + usage (compact, no icons, no bar)
+	fmt.Printf("%s%s[C]%d%% %s/%s%s", ClearLine, contextColor, contextPct, currentDisplay, windowDisplay, Reset)
+	fmt.Printf(" %s[5hr]%s-%s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
+	fmt.Printf(" %s[1w]%s %s%s\033[K\n", weeklyColor, weeklyDisplay, usage.WeeklyResetDate, Reset)
 
 	// Folder + Git branch
 	if gitStatus.BranchLine != "" {

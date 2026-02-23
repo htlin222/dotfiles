@@ -1,5 +1,23 @@
 # Miscellaneous Utility Functions
 
+# Mobile mode: auto-detect narrow terminal (iOS), or manual toggle
+if [[ "$COLUMNS" -lt 120 ]]; then
+  export ISMOBILE=true
+  [[ -n "$TMUX" ]] && tmux set -g @ismobile on
+else
+  export ISMOBILE=false
+fi
+mobile() {
+  if [[ "$ISMOBILE" == "true" ]]; then
+    export ISMOBILE=false
+    [[ -n "$TMUX" ]] && tmux set -g @ismobile off
+  else
+    export ISMOBILE=true
+    [[ -n "$TMUX" ]] && tmux set -g @ismobile on
+  fi
+  echo "ISMOBILE=$ISMOBILE"
+}
+
 # Cross-platform notification
 function notify() {
   local title="$1"

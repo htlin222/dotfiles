@@ -16,7 +16,7 @@ func formatTimestamp(ts string) string {
 	if err != nil {
 		return ""
 	}
-	return t.Local().Format("15:04:05") + " GMT+8"
+	return t.Local().Format("15:04")
 }
 
 // parseISO8601 parses an ISO 8601 timestamp string.
