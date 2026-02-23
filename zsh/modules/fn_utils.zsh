@@ -351,3 +351,17 @@ line() {
     fi
   fi
 }
+
+claudetmux() {
+  local slug
+  slug="claude-$(openssl rand -hex 3)"
+  tmux new-session -d -s "$slug" 'claude --dangerously-skip-permissions'
+  tmux attach -t "$slug"
+}
+
+codextmux() {
+  local slug
+  slug="codex-$(openssl rand -hex 3)"
+  tmux new-session -d -s "$slug" 'codex --yolo'
+  tmux attach -t "$slug"
+}

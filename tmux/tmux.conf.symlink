@@ -45,6 +45,7 @@ bind r source-file ~/.tmux.conf \; display 'Reloaded!'
 unbind [
 bind Escape copy-mode
 bind-key -n C-b copy-mode  # Ctrl+b directly enters copy mode (no prefix)
+bind-key -n C-q detach-client  # Ctrl+q directly detaches (no prefix)
 unbind p
 bind p paste-buffer
 # Use v to trigger selection
