@@ -72,3 +72,6 @@ local_settings.py
 
 # ===== Custom Exceptions (prefix with !) =====
 # !path/to/allowed/file.env
+!docker/**/docker-compose.yml
+!docker/**/docker-compose.*.yml
+!docker/**/.env

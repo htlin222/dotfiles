@@ -1,26 +1,27 @@
-# BookLore — Self-Hosted Digital Library on NAS
-# Jellyfin for eBooks: EPUB, PDF, CBZ reader with auto-metadata
-# Access: http://<nas-ip>:6060
+# BookLore — Digital Library on VM
+# EPUB, PDF, CBZ reader with auto-metadata
+# Access: http://vm/booklore (via Traefik)
 # Ref: https://github.com/booklore-app/booklore | https://booklore.org
 #
 # Crane images needed:
 #   crane pull booklore/booklore:latest /tmp/booklore.tar
 #   crane pull lscr.io/linuxserver/mariadb:latest /tmp/mariadb.tar
 #
-# NAS volume setup:
-#   mkdir -p ~/docker/booklore/{data,books,bookdrop}
-#   mkdir -p ~/docker/booklore/db
+# Volume setup:
+#   mkdir -p ~/docker/booklore/{data,books,bookdrop,db}
+#
+# Traefik: ~/traefik/dynamic/booklore.yml (already exists)
+# Homepage: entry under "Media" group in ~/homepage/config/services.yaml
 
 services:
   booklore:
     image: booklore/booklore:latest
     restart: unless-stopped
-    ports:
-      - "6060:6060"
+    # No host ports — Traefik routes /booklore via traefik-proxy network
     volumes:
-      - /home/<nas-user>/docker/booklore/data:/app/data
-      - /home/<nas-user>/docker/booklore/books:/books
-      - /home/<nas-user>/docker/booklore/bookdrop:/bookdrop
+      - /home/htlin222/docker/booklore/data:/app/data
+      - /home/htlin222/docker/booklore/books:/books
+      - /home/htlin222/docker/booklore/bookdrop:/bookdrop
     environment:
       USER_ID: 1000
       GROUP_ID: 1000
@@ -31,12 +32,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - traefik-proxy
 
   db:
     image: lscr.io/linuxserver/mariadb:latest
     restart: unless-stopped
     volumes:
-      - /home/<nas-user>/docker/booklore/db:/config
+      - /home/htlin222/docker/booklore/db:/config
     environment:
       MYSQL_ROOT_PASSWORD: changeme-root
       MYSQL_DATABASE: booklore
@@ -47,6 +50,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - traefik-proxy
+
+networks:
+  traefik-proxy:
+    external: true
 
 # Drop EPUB/PDF/CBZ files into ~/docker/booklore/bookdrop/
 # BookLore auto-imports and fetches metadata from Goodreads, Google Books, etc.

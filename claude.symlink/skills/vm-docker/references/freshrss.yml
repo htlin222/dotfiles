@@ -1,25 +1,26 @@
-# FreshRSS — Self-Hosted RSS Reader on NAS
+# FreshRSS — Self-Hosted RSS Reader on VM
 # A lightweight, self-hostable RSS feed aggregator
-# Access: http://<nas-ip>:8280
+# Access: http://vm/freshrss (via Traefik)
 # Ref: https://freshrss.org | https://hub.docker.com/r/freshrss/freshrss
 #
 # Crane images needed:
 #   crane pull freshrss/freshrss:latest /tmp/freshrss.tar
 #   crane pull postgres:16-alpine /tmp/postgres-16-alpine.tar
 #
-# NAS volume setup:
-#   mkdir -p ~/docker/freshrss/{data,extensions}
-#   mkdir -p ~/docker/freshrss/db
+# Volume setup:
+#   mkdir -p ~/docker/freshrss/{data,extensions,db}
+#
+# Traefik: create ~/traefik/dynamic/freshrss.yml (see SKILL.md template)
+# Homepage: add entry under appropriate group in ~/homepage/config/services.yaml
 
 services:
   freshrss:
     image: freshrss/freshrss:latest
     restart: unless-stopped
-    ports:
-      - "8280:80"
+    # No host ports — Traefik routes /freshrss via traefik-proxy network
     volumes:
-      - /home/<nas-user>/docker/freshrss/data:/var/www/FreshRSS/data
-      - /home/<nas-user>/docker/freshrss/extensions:/var/www/FreshRSS/extensions
+      - /home/htlin222/docker/freshrss/data:/var/www/FreshRSS/data
+      - /home/htlin222/docker/freshrss/extensions:/var/www/FreshRSS/extensions
     environment:
       TZ: Asia/Taipei
       CRON_MIN: "3,33"              # Auto-fetch feeds at :03 and :33
@@ -35,12 +36,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - traefik-proxy
 
   db:
     image: postgres:16-alpine
     restart: unless-stopped
     volumes:
-      - /home/<nas-user>/docker/freshrss/db:/var/lib/postgresql/data
+      - /home/htlin222/docker/freshrss/db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: freshrss
       POSTGRES_USER: freshrss
@@ -50,6 +53,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - traefik-proxy
 
-# First run: visit http://<nas-ip>:8280 to complete setup wizard
+networks:
+  traefik-proxy:
+    external: true
+
+# First run: visit http://vm/freshrss to complete setup wizard
 # Mobile: use FeedMe (Android) or NetNewsWire (iOS) with FreshRSS API

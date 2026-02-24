@@ -1,0 +1,46 @@
+# Python Telegram Bot on VM
+# Self-hosted bot running 24/7
+# No web UI — no Traefik registration needed
+# Ref: https://github.com/CarlosLugones/python-telegram-bot-docker
+#
+# Crane images needed:
+#   crane pull python:3.12-slim /tmp/python-slim.tar
+#   (or build custom image locally)
+#
+# Volume setup:
+#   mkdir -p ~/docker/telegram-bot/{app,data}
+
+services:
+  telegram-bot:
+    build:
+      context: /home/htlin222/docker/telegram-bot/app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - /home/htlin222/docker/telegram-bot/.env
+    volumes:
+      - /home/htlin222/docker/telegram-bot/data:/app/data
+
+# --- .env file (~/docker/telegram-bot/.env) ---
+# TELEGRAM_BOT_TOKEN=your-bot-token-here
+# ALLOWED_USERS=123456789,987654321
+
+# --- Dockerfile (~/docker/telegram-bot/app/Dockerfile) ---
+# FROM python:3.12-slim
+# WORKDIR /app
+# COPY requirements.txt .
+# RUN pip install --no-cache-dir -r requirements.txt
+# COPY . .
+# CMD ["python", "bot.py"]
+
+# --- requirements.txt ---
+# python-telegram-bot>=21.0
+
+# Build workflow:
+#   1. crane pull python:3.12-slim /tmp/python-slim.tar
+#   2. docker load -i /tmp/python-slim.tar
+#   3. docker compose build
+#   4. docker compose up -d
+#
+# No Traefik or Homepage registration needed (no web UI).
+# Optionally add to Homepage for container status monitoring.

@@ -1,0 +1,57 @@
+# HedgeDoc — Collaborative Markdown Editor
+# Path: ~/docker/hedgedoc/docker-compose.yml
+# Traefik: /hedgedoc (with stripPrefix + CMD_URL_PATH)
+# Images: quay.io/hedgedoc/hedgedoc:1.10.2, postgres:17-alpine
+# Notes:
+#   - CMD_URL_PATH=hedgedoc generates /hedgedoc-prefixed URLs
+#   - Traefik stripPrefix strips /hedgedoc before forwarding (app serves at /)
+#   - Both are needed: stripPrefix for routing, CMD_URL_PATH for link generation
+#   - CMD_DOMAIN must be vm.local (mDNS), not vm
+#   - Secrets generated via: openssl rand -hex 16 (pg), openssl rand -hex 32 (session)
+#   - DB data at ~/docker/hedgedoc/db, uploads at ~/docker/hedgedoc/uploads
+
+services:
+  hedgedoc:
+    image: quay.io/hedgedoc/hedgedoc:1.10.2
+    restart: unless-stopped
+    depends_on:
+      hedgedoc-db:
+        condition: service_healthy
+    volumes:
+      - /home/htlin222/docker/hedgedoc/uploads:/hedgedoc/public/uploads
+    environment:
+      TZ: Asia/Taipei
+      CMD_DB_URL: "postgres://hedgedoc:<POSTGRES_PASSWORD>@hedgedoc-db:5432/hedgedoc"
+      CMD_DOMAIN: vm.local
+      CMD_PROTOCOL_USESSL: "false"
+      CMD_URL_ADDPORT: "false"
+      CMD_URL_PATH: hedgedoc
+      CMD_IMAGE_UPLOAD_TYPE: filesystem
+      CMD_SESSION_SECRET: "<CMD_SESSION_SECRET>"
+    networks:
+      - traefik-proxy
+      - hedgedoc-internal
+
+  hedgedoc-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    volumes:
+      - /home/htlin222/docker/hedgedoc/db:/var/lib/postgresql/data
+    environment:
+      TZ: Asia/Taipei
+      POSTGRES_USER: hedgedoc
+      POSTGRES_PASSWORD: "<POSTGRES_PASSWORD>"
+      POSTGRES_DB: hedgedoc
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hedgedoc"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hedgedoc-internal
+
+networks:
+  traefik-proxy:
+    external: true
+  hedgedoc-internal:
+    driver: bridge
