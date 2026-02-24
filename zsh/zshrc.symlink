@@ -466,8 +466,8 @@ export RUST_LOG=himalaya=error
 # Gmail sync alias (run to fetch new emails)
 alias gsync='mbsync gmail gmail-work && notmuch new'
 
-# Fix Himalaya UTF-8 truncation bug
 export PATH="$HOME/.local/bin:$PATH"
+export PATH=/usr/local/go/bin:$PATH
 
 # HTTP Proxy (sourced from separate config file for security)
 [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
