@@ -177,7 +177,7 @@ func Run() {
 	state.Save(st)
 
 	// Build additionalContext
-	contextParts := []string{"Again: " + prompt}
+	var contextParts []string
 	if qingPersona != "" {
 		contextParts = append(contextParts, "\n---\n"+qingPersona)
 	}

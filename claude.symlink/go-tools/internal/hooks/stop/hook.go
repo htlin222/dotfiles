@@ -17,11 +17,13 @@ import (
 	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/hooks/busy"
 	"github.com/htlin/claude-tools/internal/hooks/sessiontimer"
+	"github.com/htlin/claude-tools/internal/processors"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/notify"
+	"github.com/htlin/claude-tools/pkg/patterns"
 )
 
 const (
@@ -68,6 +70,12 @@ func Run() {
 		formattedCount = formatEditedFiles(dirtyFiles)
 	}
 
+	// Feature 1.5: Lint dirty files (one-time, not per-tool-call)
+	lintCount := 0
+	if len(dirtyFiles) > 0 {
+		lintCount = lintDirtyFiles(dirtyFiles, cwd)
+	}
+
 	// Feature 2: Notification with last assistant message
 	title := "Claude Code"
 	if folderName != "" {
@@ -92,6 +100,7 @@ func Run() {
 	metrics.LogMetrics("stop", "Stop", executionTimeMS, true, map[string]any{
 		"session_id":      sessionID,
 		"files_formatted": formattedCount,
+		"files_linted":    lintCount,
 		"files_found":     len(dirtyFiles),
 	})
 
@@ -100,10 +109,11 @@ func Run() {
 	})
 
 	// Print summary to stderr (visible in verbose mode)
-	if formattedCount > 0 {
-		fmt.Fprintf(os.Stderr, "%s%s%s %s%d%s files formatted\n",
+	if formattedCount > 0 || lintCount > 0 {
+		fmt.Fprintf(os.Stderr, "%s%s%s %s%d%s files formatted, %s%d%s files linted\n",
 			ansi.BrightGreen, ansi.IconCheck, ansi.Reset,
-			ansi.BrightWhite, formattedCount, ansi.Reset)
+			ansi.BrightWhite, formattedCount, ansi.Reset,
+			ansi.BrightWhite, lintCount, ansi.Reset)
 	}
 
 	// Print session duration
@@ -149,6 +159,71 @@ func getGitDirtyFiles(cwd string) map[string]bool {
 	}
 
 	return files
+}
+
+// skipDirs lists directories to skip for linting.
+var skipDirs = map[string]bool{
+	"node_modules": true, "dist": true, "build": true, ".next": true,
+	".nuxt": true, "__pycache__": true, ".venv": true, "venv": true,
+	".git": true, "coverage": true, ".cache": true, "out": true, ".output": true,
+}
+
+// lintDirtyFiles runs risky pattern detection and processors on dirty git files.
+// Results are printed to stderr (informational only, not injected into context).
+func lintDirtyFiles(files map[string]bool, cwd string) int {
+	linted := 0
+	for filePath := range files {
+		// Skip directories that shouldn't be linted
+		parts := strings.Split(strings.ReplaceAll(filePath, "\\", "/"), "/")
+		skip := false
+		for _, part := range parts {
+			if skipDirs[part] {
+				skip = true
+				break
+			}
+		}
+		if skip {
+			continue
+		}
+
+		content, err := os.ReadFile(filePath)
+		if err != nil {
+			continue
+		}
+
+		linted++
+		filename := filepath.Base(filePath)
+
+		// Detect risky patterns
+		isTest := isTestFilePath(filePath)
+		findings := patterns.DetectRiskyPatterns(string(content), isTest)
+		for _, f := range findings {
+			if f.Severity == "high" {
+				fmt.Fprintf(os.Stderr, "%s%s%s %s%s%s: %s\n",
+					ansi.BrightRed, ansi.IconWarning, ansi.Reset,
+					ansi.BrightYellow, filename, ansi.Reset,
+					f.Description)
+			}
+		}
+
+		// Run processors (linters)
+		success, output := processors.ProcessFile(filePath)
+		if !success && output != "" {
+			fmt.Fprintf(os.Stderr, "%s\n", output)
+		}
+	}
+	return linted
+}
+
+func isTestFilePath(filePath string) bool {
+	lower := strings.ToLower(filePath)
+	testIndicators := []string{"test", "spec", "__test__", ".test.", "_test."}
+	for _, indicator := range testIndicators {
+		if strings.Contains(lower, indicator) {
+			return true
+		}
+	}
+	return false
 }
 
 // formatEditedFiles runs formatters in parallel with a timeout.

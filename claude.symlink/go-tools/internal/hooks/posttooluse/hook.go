@@ -6,34 +6,14 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"regexp"
-	"strings"
 	"time"
 
-	"github.com/htlin/claude-tools/internal/processors"
 	"github.com/htlin/claude-tools/internal/protocol"
-	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
-	"github.com/htlin/claude-tools/pkg/patterns"
 )
 
-// Skip directories for linting
-var skipDirs = map[string]bool{
-	"node_modules": true, "dist": true, "build": true, ".next": true,
-	".nuxt": true, "__pycache__": true, ".venv": true, "venv": true,
-	".git": true, "coverage": true, ".cache": true, "out": true, ".output": true,
-}
-
-// Extensions that trigger the large-file refactoring prompt
-var refactorExts = map[string]bool{
-	".js": true, ".py": true, ".go": true, ".r": true, ".jsx": true,
-}
-
-const largeFileThreshold = 500
-
-// Run executes the post-tool-use hook.
+// Run executes the post-tool-use hook (metrics-only, no file reads or linting).
 func Run() {
 	startTime := time.Now()
 
@@ -52,7 +32,7 @@ func Run() {
 	cwd := data.CWD
 	sessionID := data.SessionID
 
-	// Handle Bash commands
+	// Handle Bash commands — log metrics only
 	if toolName == "Bash" {
 		command := data.ToolInput.Command
 		if command != "" {
@@ -63,16 +43,13 @@ func Run() {
 				}
 			}
 			metrics.LogBashCommand(command, cwd, exitCode)
-
-			// Skip further processing for git commands
-			if strings.HasPrefix(strings.TrimSpace(command), "git ") || strings.Contains(command, "git ") {
-				fmt.Println(protocol.ContinueResponse())
-				return
-			}
 		}
+		fmt.Println(protocol.ContinueResponse())
+		logMetrics(startTime, sessionID, toolName, cwd, nil)
+		return
 	}
 
-	// Find file paths
+	// Find file paths for edit metrics
 	filePathPattern := regexp.MustCompile(`"(?:filePath|file_path)"\s*:\s*"([^"]+)"`)
 	matches := filePathPattern.FindAllStringSubmatch(string(input), -1)
 
@@ -83,178 +60,31 @@ func Run() {
 		}
 	}
 
-	var warnings []string
-	tsFilesEdited := false
-
-	// Process found paths
+	// Log edit metrics only (no file reads, no linting)
 	for _, filePath := range filePaths {
 		if _, err := os.Stat(filePath); os.IsNotExist(err) {
 			continue
 		}
-
-		ext := filepath.Ext(filePath)
-
-		// Log the edit
 		metrics.LogEdit(filePath, toolName, cwd, sessionID)
-
-		// Skip gitignored files
-		if isGitignored(filePath, cwd) {
-			continue
-		}
-
-		// Track TypeScript files
-		if ext == ".ts" || ext == ".tsx" {
-			tsFilesEdited = true
-		}
-
-		// Detect risky patterns
-		isTestFile := isTestFilePath(filePath)
-		content, err := os.ReadFile(filePath)
-		if err == nil {
-			findings := patterns.DetectRiskyPatterns(string(content), isTestFile)
-			for _, finding := range findings {
-				filename := filepath.Base(filePath)
-				if finding.Severity == "high" {
-					warnings = append(warnings, fmt.Sprintf("%s%s%s %s%s%s: %s",
-						ansi.BrightRed, ansi.IconWarning, ansi.Reset,
-						ansi.BrightYellow, filename, ansi.Reset,
-						finding.Description))
-				} else if finding.Severity == "medium" {
-					warnings = append(warnings, fmt.Sprintf("%s%s%s %s%s%s: %s",
-						ansi.BrightYellow, ansi.IconWarning, ansi.Reset,
-						ansi.BrightCyan, filename, ansi.Reset,
-						finding.Description))
-				}
-			}
-		}
-
-		// Check for large files that need refactoring (only on edit tools)
-		if toolName == "Edit" || toolName == "Write" || toolName == "MultiEdit" {
-			if refactorExts[strings.ToLower(ext)] && content != nil {
-				lineCount := strings.Count(string(content), "\n") + 1
-				if lineCount > largeFileThreshold {
-					warnings = append(warnings, fmt.Sprintf(
-						"Current File `%s` exceed %d lines (%d lines) after edit. "+
-							"Analyze this file for repeated patterns, duplicated logic, and tightly coupled sections, "+
-							"then refactor it by extracting shared utilities for all DRY violations, "+
-							"splitting the code into cohesive single-responsibility modules under 200 lines each "+
-							"with no circular dependencies, preserving the existing public API and external behavior, "+
-							"and outputting each new module with its filename, a one-line docstring, full code, and updated imports "+
-							"— work in phases: first list all duplications and natural seams, "+
-							"then propose the module structure and dependency graph, then extract one module at a time.",
-						filepath.Base(filePath), largeFileThreshold, lineCount))
-				}
-			}
-		}
-
-		// Run processors (check-only mode)
-		success, output := processors.ProcessFile(filePath)
-		if !success && output != "" {
-			warnings = append(warnings, output)
-		}
 	}
 
-	// TypeScript build check
-	if tsFilesEdited && cwd != "" {
-		success, errorCount := checkTypeScriptBuild(cwd)
-		if !success && errorCount > 5 {
-			warnings = append(warnings, fmt.Sprintf("%s%s%s TypeScript: %s%d%s type errors - 建議執行 %s/build-and-fix%s",
-				ansi.BrightRed, ansi.IconCross, ansi.Reset,
-				ansi.BrightWhite, errorCount, ansi.Reset,
-				ansi.BrightCyan, ansi.Reset))
-		}
-	}
+	fmt.Println(protocol.ContinueResponse())
+	logMetrics(startTime, sessionID, toolName, cwd, filePaths)
+}
 
-	// Output response
-	if len(warnings) > 0 {
-		// Limit to 5 warnings
-		if len(warnings) > 5 {
-			warnings = warnings[:5]
-		}
-		fmt.Println(protocol.ContinueWithMessage(strings.Join(warnings, "\n")))
-	} else {
-		fmt.Println(protocol.ContinueResponse())
-	}
-
-	// Log metrics
+func logMetrics(startTime time.Time, sessionID, toolName, cwd string, filePaths []string) {
 	executionTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0
 	metrics.LogMetrics("post_tool_use", "PostToolUse", executionTimeMS, true, map[string]any{
 		"session_id":      sessionID,
 		"tool_name":       toolName,
 		"files_processed": len(filePaths),
-		"warnings_count":  len(warnings),
+		"warnings_count":  0,
 	})
 
 	metrics.LogEvent("PostToolUse", "post_tool_use", sessionID, cwd, map[string]any{
 		"tool_name":  toolName,
 		"file_paths": truncateSlice(filePaths, 5),
-		"warnings":   truncateSlice(warnings, 3),
 	})
-}
-
-func isGitignored(filePath, cwd string) bool {
-	// Check skip directories first (fast path)
-	parts := strings.Split(strings.ReplaceAll(filePath, "\\", "/"), "/")
-	for _, part := range parts {
-		if skipDirs[part] {
-			return true
-		}
-	}
-
-	// Use git check-ignore for accurate detection
-	dir := cwd
-	if dir == "" {
-		dir = filepath.Dir(filePath)
-	}
-	if dir == "" {
-		dir = "."
-	}
-
-	cmd := exec.Command("git", "check-ignore", "-q", filePath)
-	cmd.Dir = dir
-	err := cmd.Run()
-	return err == nil
-}
-
-func isTestFilePath(filePath string) bool {
-	lower := strings.ToLower(filePath)
-	testIndicators := []string{"test", "spec", "__test__", ".test.", "_test."}
-	for _, indicator := range testIndicators {
-		if strings.Contains(lower, indicator) {
-			return true
-		}
-	}
-	return false
-}
-
-func checkTypeScriptBuild(cwd string) (bool, int) {
-	// Check if package.json exists
-	if _, err := os.Stat(filepath.Join(cwd, "package.json")); os.IsNotExist(err) {
-		return true, 0
-	}
-
-	// Try running typecheck
-	commands := [][]string{
-		{"pnpm", "typecheck"},
-		{"pnpm", "tsc", "--noEmit"},
-		{"npx", "tsc", "--noEmit"},
-	}
-
-	for _, cmdArgs := range commands {
-		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-		cmd.Dir = cwd
-		output, err := cmd.CombinedOutput()
-		if err == nil {
-			return true, 0
-		}
-
-		// Count errors
-		errorPattern := regexp.MustCompile(`error TS\d+:`)
-		matches := errorPattern.FindAllString(string(output), -1)
-		return false, len(matches)
-	}
-
-	return true, 0
 }
 
 func truncateSlice(slice []string, maxLen int) []string {
@@ -263,4 +93,3 @@ func truncateSlice(slice []string, maxLen int) []string {
 	}
 	return slice[:maxLen]
 }
-

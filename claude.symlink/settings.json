@@ -160,10 +160,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks dep-remind"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks todo-tracker"
 					}
 				]
 			}
@@ -186,14 +182,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks stop"
-					}
-				]
-			},
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "/Users/htlin/.local/share/uv/tools/aline-ai/bin/python /Users/htlin/.local/share/uv/tools/aline-ai/lib/python3.12/site-packages/realign/claude_hooks/stop_hook.py  # aline-stop-hook"
 					}
 				]
 			}
@@ -227,14 +215,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks user-prompt"
-					}
-				]
-			},
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "/Users/htlin/.local/share/uv/tools/aline-ai/bin/python /Users/htlin/.local/share/uv/tools/aline-ai/lib/python3.12/site-packages/realign/claude_hooks/user_prompt_submit_hook.py  # aline-user-prompt-submit-hook"
 					}
 				]
 			}
