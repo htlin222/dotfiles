@@ -58,25 +58,25 @@ const (
 	Cyan         = "\033[36m"
 	Magenta      = "\033[35m"
 
-	// Nerd Font icons
-	IconModel       = "\ue20f "
-	IconFolderGit   = "\ue5fb "
-	IconFolder      = "\ue5ff "
-	IconContext      = "\ueaa4 "
-	IconUsage       = "\ueded"
-	IconWeekly      = "\ueebf"
-	IconTime        = "\U000f0954 "
-	IconSession     = "\U000f0b77 "
-	IconVim         = "\ue7c5 "
-	IconLines       = "\uf44d "
-	IconDepth       = "\uf075 "
-	IconBranch      = "\ue725 "
-	IconSepRight    = "\ue0bc"
-	IconCompact     = "\uea6c"
-	IconTimerSand   = "\ueb7c"
-	IconLastCmd     = "\uf4a4 " // nf-md-message_text
-	IconUser        = "\ued35 "
-	IconFirstPrompt = "\uf041 " // nf-fa-map_marker
+	// Statusline icons (UTF-8)
+	IconModel       = "◆ "
+	IconFolderGit   = "□ "
+	IconFolder      = "□ "
+	IconContext      = "⊞ "
+	IconUsage       = "⏐"
+	IconWeekly      = "⟳"
+	IconTime        = "◷ "
+	IconSession     = "▶ "
+	IconVim         = "◈ "
+	IconLines       = "≡ "
+	IconDepth       = "↕ "
+	IconBranch      = "⎇ "
+	IconSepRight    = "│"
+	IconCompact     = "⊟"
+	IconTimerSand   = "⧗"
+	IconLastCmd     = "› "
+	IconUser        = "○"
+	IconFirstPrompt = "● "
 
 	// Synchronized Update
 	SyncStart = "\033[?2026h"
@@ -101,15 +101,9 @@ func Render(data *protocol.StatuslineInput) {
 	}
 
 	// Check if git repo
-	folderIcon := IconFolder
 	cmd := exec.Command("git", "rev-parse", "--git-dir")
 	cmd.Dir = data.Workspace.CurrentDir
-	if err := cmd.Run(); err == nil {
-		folderIcon = IconFolderGit
-	}
-
-	// Detect language
-	langIcon := DetectLanguage(data.Workspace.CurrentDir)
+	cmd.Run()
 
 	// Vim mode
 	vimMode := data.Vim.Mode
@@ -213,7 +207,7 @@ func Render(data *protocol.StatuslineInput) {
 	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
 	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
 	ramColor := getRamColor(ramMB)
-	fmt.Printf("%s\ue266 %dMB%s %s\uec19 %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
+	fmt.Printf("%s✿ %dMB%s %s✿ %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
 	// Show vim mode with saved IM indicator
 	if savedIMShort != "" && vimMode != "INSERT" {
 		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
@@ -229,11 +223,8 @@ func Render(data *protocol.StatuslineInput) {
 	// Folder + Git branch
 	if gitStatus.BranchLine != "" {
 		fmt.Printf("\n%s", ClearLine)
-		// Folder before branch (light blue with padding)
-		fmt.Printf("%s %s%s %s", LightBlue, folderIcon, dir, Reset)
-		if langIcon != "" {
-			fmt.Printf(" %s%s%s", Cyan, langIcon, Reset)
-		}
+		// Folder: bg yellow with black text
+		fmt.Printf("%s %s %s", BgYellow+Black, dir, Reset)
 		fmt.Print(" ")
 		renderBranchLine(gitStatus)
 	}

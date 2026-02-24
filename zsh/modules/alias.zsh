@@ -49,10 +49,12 @@ alias f="fix"
 alias ec="echo"
 alias nt='newsboat'
 alias claupub="npm run build && netlify deploy --prod --dir=dist"
+alias localip="ipconfig getifaddr en0"
 alias claupub_lab="cd ~/claude_lab && npm run build && netlify deploy --prod --dir=dist"
 alias ripnetlify="rip ./.netlify"
 alias artifact="cd ~/claude_lab/src/ && vim ~/claude_lab/src/App.jsx"
 alias todo='pter ~/Dropbox/todo/todo.txt'
+alias ttydtmux="ttyd -W -p 8080 -c htlin:htlin tmux new -A -s main"
 # Dropbox path (OS-specific)
 if [[ -n "$IS_MAC" ]]; then
   alias cdropbox='cd $HOME/Library/CloudStorage/Dropbox/'

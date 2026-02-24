@@ -165,11 +165,11 @@ func DetectLanguage(dir string) string {
 		files []string
 		icon  string
 	}{
-		{[]string{"Cargo.toml"}, "\ue7a8"},                                      // Rust
-		{[]string{"package.json"}, "\ued0d"},                                    // JS
-		{[]string{"pyproject.toml", "setup.py", "requirements.txt"}, "\ue73c"}, // Python
-		{[]string{"go.mod"}, "\ue626"},                                          // Go
-		{[]string{"init.lua"}, "\ue826"},                                        // Lua
+		{[]string{"Cargo.toml"}, "⚙"},                                      // Rust
+		{[]string{"package.json"}, "⬡"},                                    // JS
+		{[]string{"pyproject.toml", "setup.py", "requirements.txt"}, "◎"}, // Python
+		{[]string{"go.mod"}, "⟐"},                                          // Go
+		{[]string{"init.lua"}, "☽"},                                        // Lua
 	}
 
 	for _, check := range checks {
@@ -185,12 +185,12 @@ func DetectLanguage(dir string) string {
 	if err == nil {
 		for _, entry := range entries {
 			if strings.HasSuffix(entry.Name(), ".Rproj") {
-				return "\uedc1" // R
+				return "®" // R
 			}
 		}
 	}
 	if _, err := os.Stat(filepath.Join(dir, "DESCRIPTION")); err == nil {
-		return "\uedc1" // R
+		return "®" // R
 	}
 
 	return ""

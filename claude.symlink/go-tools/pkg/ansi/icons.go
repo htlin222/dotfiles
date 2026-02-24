@@ -2,120 +2,120 @@ package ansi
 
 import "path/filepath"
 
-// Nerd Font icons for visual styling
+// UTF-8 icons for visual styling (portable, no Nerd Font required)
 const (
 	// Status Icons
-	IconCheck    = "\uf00c" //
-	IconCross    = "\uf00d" //
-	IconWarning  = "\uf071" //
-	IconInfo     = "\uf05a" //
-	IconQuestion = "\uf128" //
-	IconExclaim  = "\uf12a" //
-	IconPlus     = "\uf067" //
-	IconMinus    = "\uf068" //
+	IconCheck    = "✓" // U+2713
+	IconCross    = "✗" // U+2717
+	IconWarning  = "⚠" // U+26A0
+	IconInfo     = "ℹ" // U+2139
+	IconQuestion = "?" // U+003F
+	IconExclaim  = "!" // U+0021
+	IconPlus     = "+" // U+002B
+	IconMinus    = "−" // U+2212
 
 	// File & Folder Icons
-	IconFile       = "\uf15b" //
-	IconFileCode   = "\uf1c9" //
-	IconFileText   = "\uf15c" //
-	IconFolder     = "\uf07b" //
-	IconFolderOpen = "\uf07c" //
-	IconFolderGit  = "\ue5fb" //
-	IconSave       = "\uf0c7" //
+	IconFile       = "◇" // U+25C7
+	IconFileCode   = "◈" // U+25C8
+	IconFileText   = "▤" // U+25A4
+	IconFolder     = "□" // U+25A1
+	IconFolderOpen = "▣" // U+25A3
+	IconFolderGit  = "□" // U+25A1
+	IconSave       = "⊡" // U+22A1
 
 	// Code & Dev Icons
-	IconCode     = "\uf121" //
-	IconTerminal = "\uf120" //
-	IconBug      = "\uf188" //
-	IconGear     = "\uf013" //
-	IconWrench   = "\uf0ad" //
-	IconMagic    = "\uf0d0" //
-	IconRocket   = "\uf135" //
+	IconCode     = "⟨⟩" // U+27E8 U+27E9
+	IconTerminal = "▸"  // U+25B8
+	IconBug      = "¤"  // U+00A4
+	IconGear     = "⚙"  // U+2699
+	IconWrench   = "⚒"  // U+2692
+	IconMagic    = "✦"  // U+2726
+	IconRocket   = "↗"  // U+2197
 
 	// Git Icons
-	IconGit    = "\uf1d3" //
-	IconGitHub = "\uf09b" //
-	IconBranch = "\ue725" //
-	IconCommit = "\uf417" //
-	IconMerge  = "\uf419" //
+	IconGit    = "⎇" // U+2387
+	IconGitHub = "⊙" // U+2299
+	IconBranch = "⎇" // U+2387
+	IconCommit = "◉" // U+25C9
+	IconMerge  = "⊕" // U+2295
 
 	// Status & Progress Icons
-	IconPlay      = "\uf04b" //
-	IconPause     = "\uf04c" //
-	IconStop      = "\uf04d" //
-	IconSpinner   = "\uf110" //
-	IconClock     = "\uf017" //
-	IconHourglass = "\uf252" //
+	IconPlay      = "▶" // U+25B6
+	IconPause     = "⏸" // U+23F8
+	IconStop      = "■" // U+25A0
+	IconSpinner   = "◌" // U+25CC
+	IconClock     = "◷" // U+25F7
+	IconHourglass = "⧗" // U+29D7
 
 	// Security Icons
-	IconLock   = "\uf023" //
-	IconUnlock = "\uf09c" //
-	IconShield = "\uf132" //
-	IconKey    = "\uf084" //
+	IconLock   = "⊘" // U+2298
+	IconUnlock = "⊙" // U+2299
+	IconShield = "⊞" // U+229E
+	IconKey    = "⚿" // U+26BF
 
 	// Misc Icons
-	IconLightning = "\uf0e7" //
-	IconStar      = "\uf005" //
-	IconHeart     = "\uf004" //
-	IconFire      = "\uf06d" //
-	IconDatabase  = "\uf1c0" //
-	IconCloud     = "\uf0c2" //
-	IconDownload  = "\uf019" //
-	IconUpload    = "\uf093" //
-	IconSync      = "\uf021" //
-	IconSearch    = "\uf002" //
-	IconEye       = "\uf06e" //
-	IconComment   = "\uf075" //
-	IconBell      = "\uf0f3" //
-	IconFlag      = "\uf024" //
-	IconTag       = "\uf02b" //
-	IconBookmark  = "\uf02e" //
-	IconTrash     = "\uf1f8" //
-	IconEdit      = "\uf044" //
-	IconCopy      = "\uf0c5" //
-	IconPaste     = "\uf0ea" //
-	IconLink      = "\uf0c1" //
-	IconUnlink    = "\uf127" //
+	IconLightning = "⚡" // U+26A1
+	IconStar      = "★"  // U+2605
+	IconHeart     = "♥"  // U+2665
+	IconFire      = "△"  // U+25B3
+	IconDatabase  = "⊞"  // U+229E
+	IconCloud     = "☁"  // U+2601
+	IconDownload  = "↓"  // U+2193
+	IconUpload    = "↑"  // U+2191
+	IconSync      = "⟳"  // U+27F3
+	IconSearch    = "⌕"  // U+2315
+	IconEye       = "◎"  // U+25CE
+	IconComment   = "▹"  // U+25B9
+	IconBell      = "♪"  // U+266A
+	IconFlag      = "⚑"  // U+2691
+	IconTag       = "⏏"  // U+23CF
+	IconBookmark  = "▷"  // U+25B7
+	IconTrash     = "⊗"  // U+2297
+	IconEdit      = "✎"  // U+270E
+	IconCopy      = "⊡"  // U+22A1
+	IconPaste     = "⊟"  // U+229F
+	IconLink      = "∞"  // U+221E
+	IconUnlink    = "≠"  // U+2260
 
 	// Arrow Icons
-	IconArrowRight   = "\uf061" //
-	IconArrowLeft    = "\uf060" //
-	IconArrowUp      = "\uf062" //
-	IconArrowDown    = "\uf063" //
-	IconChevronRight = "\uf054" //
-	IconChevronLeft  = "\uf053" //
+	IconArrowRight   = "→" // U+2192
+	IconArrowLeft    = "←" // U+2190
+	IconArrowUp      = "↑" // U+2191
+	IconArrowDown    = "↓" // U+2193
+	IconChevronRight = "›" // U+203A
+	IconChevronLeft  = "‹" // U+2039
 
 	// Language Icons
-	IconPython     = "\ue73c" //
-	IconJavaScript = "\ue74e" //
-	IconTypeScript = "\ue628" //
-	IconRust       = "\ue7a8" //
-	IconGo         = "\ue626" //
-	IconRuby       = "\ue791" //
-	IconJava       = "\ue738" //
-	IconLua        = "\ue826" //
-	IconMarkdown   = "\ueb1d" //
-	IconR          = "\uedc1" //
+	IconPython     = "◎" // U+25CE
+	IconJavaScript = "⬡" // U+2B21
+	IconTypeScript = "⬢" // U+2B22
+	IconRust       = "⚙" // U+2699
+	IconGo         = "⟐" // U+27D0
+	IconRuby       = "◆" // U+25C6
+	IconJava       = "◇" // U+25C7
+	IconLua        = "☽" // U+263D
+	IconMarkdown   = "▾" // U+25BE
+	IconR          = "®" // U+00AE
 
 	// Claude Icons
-	IconClaude     = "\ue20f" //
-	IconCrosshairs = "\uf05d" //
-	IconSmile      = "\uf118" //
-	IconMeh        = "\uf11a" //
-	IconFrown      = "\uf119" //
+	IconClaude     = "◆" // U+25C6
+	IconCrosshairs = "⊕" // U+2295
+	IconSmile      = "☺" // U+263A
+	IconMeh        = "○" // U+25CB
+	IconFrown      = "●" // U+25CF
 
 	// Statusline Icons (safe single-width)
-	IconModel   = "\ue20f " // Claude
-	IconSession = "\U000f0b77 "
-	IconContext = "\ueaa4 "
-	IconUsage   = "\ueded"
-	IconWeekly  = "\ueebf"
-	IconTime    = "\U000f0954 "
-	IconVim     = "\ue7c5 "
-	IconLines   = "\uf44d "
-	IconBurn    = "\uf490 "
-	IconDepth   = "\uf075 "
-	IconSepLeft = "\ue0ba"
+	IconModel   = "◆ " // U+25C6 + space
+	IconSession = "▶ " // U+25B6 + space
+	IconContext = "⊞ " // U+229E + space
+	IconUsage   = "⏐"  // U+23D0
+	IconWeekly  = "⟳"  // U+27F3
+	IconTime    = "◷ " // U+25F7 + space
+	IconVim     = "◈ " // U+25C8 + space
+	IconLines   = "≡ " // U+2261 + space
+	IconBurn    = "△ " // U+25B3 + space
+	IconDepth   = "↕ " // U+2195 + space
+	IconSepLeft = "│"  // U+2502
 )
 
 // GitStatusIcon returns the appropriate icon for a git status code.

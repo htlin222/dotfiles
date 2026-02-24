@@ -14,7 +14,7 @@ func renderBranchLine(status *GitStatus) {
 		displayLine = branchLine[:idx]
 	}
 
-	fmt.Printf("%s%s", IconBranch, displayLine)
+	fmt.Printf("%s%s%s%s", Orange, IconBranch, displayLine, Reset)
 
 	// Show ahead/behind with dots (spaced)
 	if status.AheadCount > 0 && status.BehindCount > 0 {

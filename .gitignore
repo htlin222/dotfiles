@@ -85,3 +85,4 @@ docs/*.pdf
 docs/**/*_files/
 .quarto/
 *.zwc
+config.symlink/code-server/*
