@@ -17,16 +17,19 @@ import (
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	command := data.ToolInput.Command
 	if command == "" {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
@@ -38,5 +41,8 @@ func Run() {
 			ansi.BrightYellow, ansi.Reset,
 		)
 		fmt.Println(protocol.BlockResponse(reason))
+		return
 	}
+
+	fmt.Println(protocol.ContinueResponse())
 }

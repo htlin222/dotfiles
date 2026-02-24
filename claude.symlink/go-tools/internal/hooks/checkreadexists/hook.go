@@ -16,21 +16,25 @@ import (
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	// Only check Read tool
 	if data.ToolName != "Read" {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	filePath := data.ToolInput.FilePath
 	if filePath == "" {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
@@ -53,7 +57,10 @@ func Run() {
 			ansi.BrightCyan, filePath, ansi.Reset,
 		)
 		fmt.Println(protocol.BlockResponse(reason))
+		return
 	}
+
+	fmt.Println(protocol.ContinueResponse())
 }
 
 // resolvePath expands ~ and makes path absolute.

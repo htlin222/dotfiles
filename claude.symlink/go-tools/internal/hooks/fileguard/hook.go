@@ -12,6 +12,10 @@ import (
 	"github.com/htlin/claude-tools/pkg/patterns"
 )
 
+// maxScanSize is the maximum file size (1MB) for content scanning.
+// Files larger than this are allowed through (fail-open).
+const maxScanSize = 1 << 20
+
 // Run executes the file guard hook.
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
@@ -46,29 +50,94 @@ func Run() {
 
 	// Check each file path
 	for _, filePath := range filePaths {
-		// Check pattern match
-		isSensitive, reason := patterns.MatchesSensitivePattern(filePath)
-		if isSensitive {
-			blockMsg := fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason)
-			fmt.Println(protocol.BlockResponse(blockMsg))
+		if result := checkFile(filePath, &data); result != "" {
+			fmt.Println(result)
 			return
-		}
-
-		// Check content patterns for existing JSON files
-		if strings.HasSuffix(filePath, ".json") {
-			if _, err := os.Stat(filePath); err == nil {
-				content, err := os.ReadFile(filePath)
-				if err == nil && len(content) <= 10000 {
-					if hasSensitive, contentReason := patterns.HasSensitiveContent(string(content)); hasSensitive {
-						blockMsg := fmt.Sprintf("BLOCKED: Sensitive content detected in %s (%s). Add to .agentignore exceptions if needed.", filePath, contentReason)
-						fmt.Println(protocol.BlockResponse(blockMsg))
-						return
-					}
-				}
-			}
 		}
 	}
 
 	// All checks passed
 	fmt.Println(protocol.ContinueResponse())
+}
+
+// checkFile evaluates a single file path through the 3-tier system.
+// Returns a block response string if blocked, empty string if allowed.
+func checkFile(filePath string, data *protocol.HookInput) string {
+	// Step 1: Exclusions always pass
+	if patterns.IsExcluded(filePath) {
+		return ""
+	}
+
+	// Step 2: Directory block — always block sensitive directories
+	if matched, reason := patterns.MatchesDirectoryBlock(filePath); matched {
+		return protocol.BlockResponse(
+			fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason))
+	}
+
+	// Step 3: Always-block — binary/opaque files
+	if matched, reason := patterns.MatchesAlwaysBlock(filePath); matched {
+		return protocol.BlockResponse(
+			fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason))
+	}
+
+	// Step 4: Content-scan — text configs scanned for actual secrets
+	if patterns.MatchesContentScan(filePath) {
+		return scanContent(filePath, data)
+	}
+
+	// Step 5: No pattern match — allow
+	return ""
+}
+
+// scanContent scans file content for secrets. Returns block response if secrets found, empty if clean.
+func scanContent(filePath string, data *protocol.HookInput) string {
+	var content string
+
+	if data.ToolName == "Write" {
+		// For Write operations, scan the content being written
+		content = data.ToolInput.Content
+	} else {
+		// For Read/Edit/MultiEdit, scan existing file on disk
+		var err error
+		content, err = readFileForScan(filePath)
+		if err != nil {
+			// Fail-open: can't read → allow (file may not exist, permissions, etc.)
+			return ""
+		}
+	}
+
+	if content == "" {
+		return ""
+	}
+
+	if hasSensitive, description := patterns.HasSensitiveContent(content); hasSensitive {
+		return protocol.BlockResponse(
+			fmt.Sprintf("BLOCKED: Sensitive content detected in %s (%s). Add to .agentignore exceptions if needed.", filePath, description))
+	}
+
+	// Content is clean — allow
+	return ""
+}
+
+// readFileForScan reads a file for content scanning.
+// Returns content string and error. Fail-open on all errors.
+func readFileForScan(filePath string) (string, error) {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		// File doesn't exist — allow
+		return "", err
+	}
+
+	if info.Size() > maxScanSize {
+		// File too large — allow (unlikely to be a small config with secrets)
+		return "", fmt.Errorf("file too large: %d bytes", info.Size())
+	}
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// Can't read — allow
+		return "", err
+	}
+
+	return string(data), nil
 }

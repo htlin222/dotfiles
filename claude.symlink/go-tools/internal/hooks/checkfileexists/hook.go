@@ -19,26 +19,31 @@ var catBatPattern = regexp.MustCompile(`(?:^|&&|\|\||;|\|)\s*(?:cat|bat)\s+`)
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	command := data.ToolInput.Command
 	if command == "" {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	// Check if command uses cat or bat
 	if !catBatPattern.MatchString(command) {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	filePath := extractFilePath(command)
 	if filePath == "" {
+		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
@@ -50,7 +55,10 @@ func Run() {
 			ansi.BrightYellow, filePath, ansi.Reset,
 		)
 		fmt.Println(protocol.BlockResponse(reason))
+		return
 	}
+
+	fmt.Println(protocol.ContinueResponse())
 }
 
 // extractFilePath extracts file path from cat/bat command.
