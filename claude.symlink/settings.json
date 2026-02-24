@@ -1,237 +1,253 @@
 {
-  "env": {
-    "DISABLE_AUTOUPDATER": "1"
-  },
-  "permissions": {
-    "allow": [
-      "Bash(ls:*)",
-      "Bash(cd:*)",
-      "Bash(cat:*)",
-      "Bash(bat:*)",
-      "Bash(python:*)",
-      "Bash(Rscript:*)",
-      "Bash(brew:*)",
-      "Bash(pwd)",
-      "Bash(mkdir:*)",
-      "Bash(cp:*)",
-      "Bash(mv:*)",
-      "Bash(touch:*)",
-      "Bash(cat:*)",
-      "Bash(head:*)",
-      "Bash(tail:*)",
-      "Bash(less:*)",
-      "Bash(more:*)",
-      "Bash(grep:*)",
-      "Bash(rg:*)",
-      "Bash(awk:*)",
-      "Bash(sed:*)",
-      "Bash(find:*)",
-      "Bash(du:*)",
-      "Bash(df:*)",
-      "Bash(wc:*)",
-      "Bash(cut:*)",
-      "Bash(sort:*)",
-      "Bash(uniq:*)",
-      "Bash(xargs:*)",
-      "Bash(tr:*)",
-      "Bash(split:*)",
-      "Bash(diff:*)",
-      "Bash(cmp:*)",
-      "Bash(tree:*)",
-      "Bash(date)",
-      "Bash(cal)",
-      "Bash(whoami)",
-      "Bash(id)",
-      "Bash(env)",
-      "Bash(export:*)",
-      "Bash(unset:*)",
-      "Bash(alias:*)",
-      "Bash(unalias:*)",
-      "Bash(echo:*)",
-      "Bash(seq:*)",
-      "Bash(printf:*)",
-      "Bash(history)",
-      "Bash(clear)",
-      "Bash(file:*)",
-      "Bash(stat:*)",
-      "Bash(basename:*)",
-      "Bash(dirname:*)",
-      "Bash(pnpm:*)",
-      "Bash(uv venv:*)",
-      "Bash(source:*)",
-      "Bash(uv pip install:*)",
-      "Bash(chmod:*)"
-    ],
-    "defaultMode": "acceptEdits"
-  },
-  "enableAllProjectMcpServers": true,
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks env-validate"
-          },
-          {
-            "type": "command",
-            "command": "claude-hooks session-hint"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks check-rm"
-          },
-          {
-            "type": "command",
-            "command": "claude-hooks branch-guard"
-          },
-          {
-            "type": "command",
-            "command": "claude-hooks check-file-exists"
-          }
-        ]
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks file-guard"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks file-guard"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks delegate-edits"
-          }
-        ]
-      },
-      {
-        "matcher": "Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks file-guard"
-          },
-          {
-            "type": "command",
-            "command": "claude-hooks check-read-exists"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks post-tool-use"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks auto-stage"
-          },
-          {
-            "type": "command",
-            "command": "claude-hooks dep-remind"
-          },
-          {
-            "type": "command",
-            "command": "claude-hooks todo-tracker"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks notification"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks stop"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks subagent-stop"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks pre-compact"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claude-hooks user-prompt"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "command -v claude-statusline >/dev/null && claude-statusline || echo '[!] claude-statusline not found. Run: cd ~/.dotfiles/claude.symlink/go-tools && make'"
-  },
-  "enabledPlugins": {
-    "superpowers@superpowers-dev": true,
-    "javascript-typescript@claude-code-workflows": true
-  },
-  "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+	"env": {
+		"DISABLE_AUTOUPDATER": "1"
+	},
+	"permissions": {
+		"allow": [
+			"Bash(ls:*)",
+			"Bash(cd:*)",
+			"Bash(cat:*)",
+			"Bash(bat:*)",
+			"Bash(python:*)",
+			"Bash(Rscript:*)",
+			"Bash(brew:*)",
+			"Bash(pwd)",
+			"Bash(mkdir:*)",
+			"Bash(cp:*)",
+			"Bash(mv:*)",
+			"Bash(touch:*)",
+			"Bash(cat:*)",
+			"Bash(head:*)",
+			"Bash(tail:*)",
+			"Bash(less:*)",
+			"Bash(more:*)",
+			"Bash(grep:*)",
+			"Bash(rg:*)",
+			"Bash(awk:*)",
+			"Bash(sed:*)",
+			"Bash(find:*)",
+			"Bash(du:*)",
+			"Bash(df:*)",
+			"Bash(wc:*)",
+			"Bash(cut:*)",
+			"Bash(sort:*)",
+			"Bash(uniq:*)",
+			"Bash(xargs:*)",
+			"Bash(tr:*)",
+			"Bash(split:*)",
+			"Bash(diff:*)",
+			"Bash(cmp:*)",
+			"Bash(tree:*)",
+			"Bash(date)",
+			"Bash(cal)",
+			"Bash(whoami)",
+			"Bash(id)",
+			"Bash(env)",
+			"Bash(export:*)",
+			"Bash(unset:*)",
+			"Bash(alias:*)",
+			"Bash(unalias:*)",
+			"Bash(echo:*)",
+			"Bash(seq:*)",
+			"Bash(printf:*)",
+			"Bash(history)",
+			"Bash(clear)",
+			"Bash(file:*)",
+			"Bash(stat:*)",
+			"Bash(basename:*)",
+			"Bash(dirname:*)",
+			"Bash(pnpm:*)",
+			"Bash(uv venv:*)",
+			"Bash(source:*)",
+			"Bash(uv pip install:*)",
+			"Bash(chmod:*)"
+		],
+		"defaultMode": "acceptEdits"
+	},
+	"enableAllProjectMcpServers": true,
+	"hooks": {
+		"SessionStart": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks env-validate"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks session-hint"
+					}
+				]
+			}
+		],
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks check-rm"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks branch-guard"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks check-file-exists"
+					}
+				]
+			},
+			{
+				"matcher": "Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks file-guard"
+					}
+				]
+			},
+			{
+				"matcher": "Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks file-guard"
+					}
+				]
+			},
+			{
+				"matcher": "Write|Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks delegate-edits"
+					}
+				]
+			},
+			{
+				"matcher": "Read",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks file-guard"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks check-read-exists"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Write|Edit|MultiEdit|Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks post-tool-use"
+					}
+				]
+			},
+			{
+				"matcher": "Write|Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks auto-stage"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks dep-remind"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks todo-tracker"
+					}
+				]
+			}
+		],
+		"Notification": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks notification"
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks stop"
+					}
+				]
+			},
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "/Users/htlin/.local/share/uv/tools/aline-ai/bin/python /Users/htlin/.local/share/uv/tools/aline-ai/lib/python3.12/site-packages/realign/claude_hooks/stop_hook.py  # aline-stop-hook"
+					}
+				]
+			}
+		],
+		"SubagentStop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks subagent-stop"
+					}
+				]
+			}
+		],
+		"PreCompact": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks pre-compact"
+					}
+				]
+			}
+		],
+		"UserPromptSubmit": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks user-prompt"
+					}
+				]
+			},
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "/Users/htlin/.local/share/uv/tools/aline-ai/bin/python /Users/htlin/.local/share/uv/tools/aline-ai/lib/python3.12/site-packages/realign/claude_hooks/user_prompt_submit_hook.py  # aline-user-prompt-submit-hook"
+					}
+				]
+			}
+		]
+	},
+	"statusLine": {
+		"type": "command",
+		"command": "command -v claude-statusline >/dev/null && claude-statusline || echo '[!] claude-statusline not found. Run: cd ~/.dotfiles/claude.symlink/go-tools && make'"
+	},
+	"enabledPlugins": {
+		"superpowers@superpowers-dev": true,
+		"javascript-typescript@claude-code-workflows": true
+	},
+	"alwaysThinkingEnabled": true,
+	"skipDangerousModePermissionPrompt": true
 }

@@ -68,8 +68,19 @@ func Run() {
 		formattedCount = formatEditedFiles(dirtyFiles)
 	}
 
-	// Feature 2: Git status & notification
-	gitStatusAndNotify(cwd, folderName)
+	// Feature 2: Notification with last assistant message
+	title := "Claude Code"
+	if folderName != "" {
+		title = fmt.Sprintf("Claude Code 📁 %s", folderName)
+	}
+	body := data.LastAssistantMessage
+	if body == "" {
+		body = "對話已完成"
+	}
+	if len(body) > 500 {
+		body = body[:500] + "…"
+	}
+	notify.Send(title, body)
 
 	// Feature 2.5: Save context snapshot for @LAST
 	if data.TranscriptPath != "" || data.LastAssistantMessage != "" {
@@ -210,45 +221,3 @@ func formatEditedFiles(files map[string]bool) int {
 	return int(count.Load())
 }
 
-func gitStatusAndNotify(cwd, folderName string) {
-	title := "Claude Code"
-	if folderName != "" {
-		title = fmt.Sprintf("Claude Code 📁 %s", folderName)
-	}
-
-	// Get git status
-	cmd := exec.Command("git", "status", "-s")
-	cmd.Dir = cwd
-	output, err := cmd.Output()
-	if err != nil {
-		notify.Send(title, "對話已完成")
-		return
-	}
-
-	gitStatus := strings.TrimSpace(string(output))
-	if gitStatus == "" {
-		notify.Send(title, "無 Git 變動")
-		return
-	}
-
-	// Format status lines with emoji
-	lines := strings.Split(gitStatus, "\n")
-	var formatted []string
-	for _, line := range lines {
-		if len(line) < 3 {
-			continue
-		}
-		code := line[:2]
-		path := strings.TrimSuffix(line[3:], "/")
-		filename := filepath.Base(path)
-		parent := filepath.Base(filepath.Dir(path))
-		displayName := filename
-		if parent != "." && parent != "" {
-			displayName = parent + "/" + filename
-		}
-		emoji := ansi.GetGitStatusEmoji(code)
-		formatted = append(formatted, fmt.Sprintf("%s %s", emoji, displayName))
-	}
-
-	notify.Send(title, strings.Join(formatted, "\n"))
-}
