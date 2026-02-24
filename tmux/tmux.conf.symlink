@@ -10,7 +10,7 @@ bind -n C-a run-shell -b "command -v im-select >/dev/null 2>&1 && im-select com.
 bind -T prefix C-a send-keys C-a
 # Setting up the colors and copy/paste
 # highlight (change color) on control key (send-prefix) event?
-set -g status-left '#{?#{==:#{client_key_table},prefix},#[bg=colour212]PFX.#[bg=colour202]#S,#[fg=white,bg=colour203,bold]#S}'
+# status-left managed by tmux-dotbar
 # ─── Active Pane 視覺辨識 ───────────────────────────
 # 內容區差異：inactive 背景微暗（整片視覺差異，不被內容干擾）
 set -g window-style        'fg=colour245,bg=terminal'
@@ -122,16 +122,19 @@ set -g pane-base-index 1
 set-window-option -g pane-base-index 1
 set-option -g renumber-windows on
 # set-window-option -g clock-mode-colour colour64 #green
-set -g @catppuccin_flavour 'mocha'
-# set -g @catppuccin_flavour 'latte'
-# set -g @catppuccin_no_patched_fonts_theme_enabled on
-# set -g @catppuccin_date_time "%H:%M"
-set -g @catppuccin_datetime_icon "󰔚"
-# set -g @catppuccin_user_icon "B"
-# set -g @catppuccin_directory_icon "C"
-# set -g @catppuccin_window_icon "D"
-# set -g @catppuccin_session_icon "E"
-# set -g @catppuccin_host_icon "F"
+# ─── tmux-dotbar theme ────────────────────────────
+set -g @tmux-dotbar-bg "#0B0E14"
+set -g @tmux-dotbar-fg "#475266"
+set -g @tmux-dotbar-fg-current "#BFBDB6"
+set -g @tmux-dotbar-fg-session "#565B66"
+set -g @tmux-dotbar-fg-prefix "#95E6CB"
+set -g @tmux-dotbar-position bottom
+set -g @tmux-dotbar-right true
+set -g @tmux-dotbar-status-right-text " %H:%M "
+set -g @tmux-dotbar-session-text " #S "
+set -g @tmux-dotbar-ssh-enabled true
+set -g @tmux-dotbar-ssh-icon '§'
+set -g @tmux-dotbar-maximized-icon '⇱'
 # List of plugins prefix I to install
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'laktak/tome'
@@ -162,7 +165,7 @@ set -g @jump-key 's'
 # 自動重載 config
 set -g @plugin 'b0o/tmux-autoreload'
 set -g @plugin 'sainnhe/tmux-fzf'
-set -g @plugin 'dreamsofcode-io/catppuccin-tmux'
+set -g @plugin 'vaaleyard/tmux-dotbar'
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
 # is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
@@ -192,7 +195,7 @@ bind-key -T copy-mode-vi 'C-\' select-pane -l
 # == menus settings ==
 set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
-set -g status-right '#{?#{e|<:#{client_width},120},,#(command -v gitmux >/dev/null 2>&1 && gitmux "#{pane_current_path}")}'
+# status-right managed by tmux-dotbar
 # NB: put the following line if you want to make the status-position at top
 # set -g status-position top
 
