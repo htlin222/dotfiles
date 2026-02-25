@@ -16,14 +16,14 @@ func Send(title, body string) error {
 
 // SendToTopic sends a notification to a specific ntfy topic (fire-and-forget).
 func SendToTopic(topic, title, body string) error {
-	cmd := exec.Command("ntfy", "publish", "--title", title, topic, body)
+	cmd := exec.Command("ntfy", "publish", "--markdown", "--title", title, topic, body)
 	return cmd.Start()
 }
 
 // SendSimple sends a simple notification without a title (fire-and-forget).
 func SendSimple(body string) error {
 	playSound()
-	cmd := exec.Command("ntfy", "publish", defaultTopic, body)
+	cmd := exec.Command("ntfy", "publish", "--markdown", defaultTopic, body)
 	return cmd.Start()
 }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>sh.ntfy.client</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NTFY_BIN__</string>
+    <string>subscribe</string>
+    <string>--from-config</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/ntfy.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/ntfy.err</string>
+</dict>
+</plist>

@@ -1,0 +1,7 @@
+# ntfy client configuration
+# Installed to: ~/Library/Application Support/ntfy/client.yml
+default-host: https://ntfy.sh
+subscribe:
+  - topic: lizard
+    command: |
+      osascript -e "display notification \"$message\" with title \"$title\""
