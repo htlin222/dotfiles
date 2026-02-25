@@ -62,18 +62,40 @@ htpasswd -n htlin222
 
 ### Dashboard route (`~/traefik/dynamic/traefik-dashboard.yml`)
 
+Two routers required: one for `/traefik` (dashboard HTML) and one for `/api` (dashboard JS API calls).
+
 ```yaml
 http:
   routers:
-    traefik-api:
+    traefik-dashboard:
       rule: "PathPrefix(`/traefik`)"
+      entryPoints:
+        - web
+      middlewares:
+        - auth@file
+        - strip-traefik@file
+      service: api@internal
+      priority: 10
+
+    traefik-api:
+      rule: "PathPrefix(`/api`)"
       entryPoints:
         - web
       middlewares:
         - auth@file
       service: api@internal
       priority: 10
+
+  middlewares:
+    strip-traefik:
+      stripPrefix:
+        prefixes:
+          - "/traefik"
 ```
+
+> **Why two routers?** The dashboard HTML loads at `/traefik/dashboard/` (stripPrefix → `/dashboard/`).
+> But dashboard JS has hardcoded `window.APIURL = "/api/"` — those calls need their own router.
+> Do NOT use `api.basePath` — it breaks the insecure port (8080) API and the Homepage widget.
 
 ## Traefik Container
 
@@ -142,11 +164,19 @@ layout:
 ---
 - Media:
     - Booklore:
-        href: /booklore
+        href: http://172.16.252.7:6060  # direct port — no subpath support
         description: Book management
         icon: mdi-book-open-variant
         server: my-docker
         container: kavita-booklore-1
+
+- Productivity:
+    - HedgeDoc:
+        href: /hedgedoc  # subpath-aware (CMD_URL_PATH=hedgedoc)
+        description: Collaborative markdown editor
+        icon: hedgedoc
+        server: my-docker
+        container: hedgedoc-hedgedoc-1
 
 - Infrastructure:
     - Traefik:

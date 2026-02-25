@@ -74,6 +74,8 @@ http:
 
 Add to `~/homepage/config/services.yaml`:
 
+### Subpath-aware apps (routed via Traefik)
+
 ```yaml
 - <Group>:
     - <Name>:
@@ -83,6 +85,22 @@ Add to `~/homepage/config/services.yaml`:
         server: my-docker
         container: <container-name>
 ```
+
+### Apps without subpath support (direct port access)
+
+```yaml
+- <Group>:
+    - <Name>:
+        href: http://172.16.252.7:<host-port>
+        description: <short description>
+        icon: <icon-name>
+        server: my-docker
+        container: <container-name>
+```
+
+> **Which to use?** Check if the app supports a `BASE_PATH`/`BASE_URL`/context-path config.
+> If it has hardcoded `<base href="/">` with no config → use direct port.
+> Known: Booklore = direct port, HedgeDoc = subpath-aware (`CMD_URL_PATH`).
 
 - Icons: `mdi-*` (Material Design) or service name (e.g., `traefik`, `hedgedoc`)
 - New groups also need an entry in `~/homepage/config/settings.yaml`:
