@@ -156,8 +156,10 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'tmux-plugins/tmux-open'
 set -g @plugin 'schasse/tmux-jump'
 
-# continuum 設定：自動恢復 session
+# continuum 設定：自動儲存 + 自動恢復 session
+# boot 由 LaunchAgent 處理（Ghostty 不在 continuum 支援清單）
 set -g @continuum-restore 'on'
+set -g @continuum-save-interval '15'
 
 # jump 設定：prefix + s 啟動跳轉
 set -g @jump-key 's'

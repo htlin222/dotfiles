@@ -24,6 +24,7 @@ unsetopt hup
 setopt long_list_jobs
 setopt notify
 unsetopt nomatch
+unset CLAUDECODE
 
 # Ensure DOTFILES is set even in non-login shells
 export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"

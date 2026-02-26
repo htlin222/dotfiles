@@ -60,17 +60,60 @@ function organize(appName)
 	hs.osascript.applescript(script)
 end
 
+-- App 切換追蹤（存到 /tmp/app-idle.tsv）
+appSwitchLog = {}
+local logFile = "/tmp/app-idle.tsv"
+local appSwitchDirty = true
+
+-- lightweight flush: only writes idle/switch data (no top, instant)
+function flushAppLogFast()
+	local now = os.time()
+	local f = io.open(logFile, "w")
+	if not f then return end
+	f:write("PID\tAPP\tIDLE\tCOUNT\tLAST_SEEN\tRAM_MB\n")
+
+	local apps = hs.application.runningApplications()
+	local seen = {}
+	for _, app in ipairs(apps) do
+		local ok, name, pid, kind = pcall(function()
+			return app:name(), app:pid(), app:kind()
+		end)
+		if ok and name and pid and kind and kind == 1 then
+			local info = appSwitchLog[name]
+			local lastSeen = info and info.lastSeen or 0
+			local count = info and info.count or 0
+			local idle = lastSeen > 0 and (now - lastSeen) or -1
+			if not seen[name] then
+				f:write(string.format("%d\t%s\t%d\t%d\t%s\t0\n", pid, name, idle, count,
+					lastSeen > 0 and os.date("%Y-%m-%d %H:%M:%S", lastSeen) or "never"))
+				seen[name] = true
+			end
+		end
+	end
+	f:close()
+end
+
 -- 監控應用程式切換事件
 hs.application.watcher
 	.new(function(appName, eventType, appObject)
 		if eventType == hs.application.watcher.activated then
+			-- 記錄切換
+			if appName then
+				if not appSwitchLog[appName] then
+					appSwitchLog[appName] = { count = 0, lastSeen = os.time() }
+				end
+				appSwitchLog[appName].lastSeen = os.time()
+				appSwitchLog[appName].count = appSwitchLog[appName].count + 1
+			end
+			flushAppLogFast()
+
 			if appName == "Skim" or appName == "Finder" then
 				mergeAllWindows(appName)
 			end
-			-- if appName == "Finder" then
-			-- 	organize(appName)
-			-- end
 		end
 	end)
 	:start()
+
+-- 啟動時先 flush 一次
+flushAppLogFast()
 hs.alert.show("成功載入", 1)
