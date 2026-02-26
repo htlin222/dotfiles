@@ -70,6 +70,7 @@ claude.symlink/telemetry/
 claude.symlink/.credentials.json
 claude.symlink/paste-cache/
 claude.symlink/backups/
+claude.symlink/mcp-needs-auth-cache.json
 
 **/logs/
 **/codebase-maps/
