@@ -6,7 +6,7 @@ unbind C-b
 # Setting two prefix: 'Ctrl+b' to 'Ctrl+A'
 # Use manual prefix to auto-switch input method to ABC on prefix press
 set-option -g prefix None
-bind -n C-a run-shell -b "command -v im-select >/dev/null 2>&1 && im-select com.apple.keylayout.ABC; true" \; switch-client -T prefix
+bind -n C-a run-shell -b "im-select com.apple.keylayout.ABC 2>/dev/null; true" \; switch-client -T prefix
 bind -T prefix C-a send-keys C-a
 # Setting up the colors and copy/paste
 # highlight (change color) on control key (send-prefix) event?

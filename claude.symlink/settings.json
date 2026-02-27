@@ -226,7 +226,7 @@
 	},
 	"enabledPlugins": {
 		"superpowers@superpowers-dev": true,
-		"javascript-typescript@claude-code-workflows": true
+		"dev-workflows-frontend@claude-code-workflows": true
 	},
 	"alwaysThinkingEnabled": true,
 	"skipDangerousModePermissionPrompt": true
