@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/htlin/claude-tools/internal/hooks/busy"
+	"github.com/htlin/claude-tools/internal/hooks/killtimer"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/internal/state"
@@ -43,6 +44,11 @@ var projectTypes = map[string]struct {
 
 // Run executes the user prompt hook.
 func Run() {
+	// Cancel any pending kill timer — user is still active
+	if claudePID := killtimer.FindClaudePID(); claudePID > 0 {
+		killtimer.Cancel(claudePID)
+	}
+
 	if pane := busy.GetTmuxPane(); pane != "" {
 		busy.SetBusy(pane)
 	}

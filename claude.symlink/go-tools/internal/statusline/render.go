@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/htlin/claude-tools/internal/hooks/killtimer"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/pkg/context"
 )
@@ -208,6 +209,13 @@ func Render(data *protocol.StatuslineInput) {
 	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
 	ramColor := getRamColor(ramMB)
 	fmt.Printf("%s✿ %dMB%s %s✿ %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
+	// Show kill timer countdown if active
+	if pid > 0 {
+		if m := killtimer.ReadMarker(pid); m != nil {
+			secs := m.SecondsRemaining()
+			fmt.Printf("%s%s %dm%02ds%s ", Orange, IconTimerSand, secs/60, secs%60, Reset)
+		}
+	}
 	// Show vim mode with saved IM indicator
 	if savedIMShort != "" && vimMode != "INSERT" {
 		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
