@@ -1,4 +1,4 @@
-#!/bin/zsh -f
+#!/usr/bin/env zsh
 # Suppress all stderr during cache building
 exec 2>/dev/null
 # title: "tmux_claude_switcher"

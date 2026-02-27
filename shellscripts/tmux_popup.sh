@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # title: "tmux_popup"
 # author: Hsieh-Ting Lin
 # date: "2024-06-17"

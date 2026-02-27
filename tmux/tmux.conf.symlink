@@ -6,7 +6,7 @@ unbind C-b
 # Setting two prefix: 'Ctrl+b' to 'Ctrl+A'
 # Use manual prefix to auto-switch input method to ABC on prefix press
 set-option -g prefix None
-bind -n C-a run-shell -b "command -v im-select >/dev/null 2>&1 && im-select com.apple.keylayout.ABC" \; switch-client -T prefix
+bind -n C-a run-shell -b "command -v im-select >/dev/null 2>&1 && im-select com.apple.keylayout.ABC; true" \; switch-client -T prefix
 bind -T prefix C-a send-keys C-a
 # Setting up the colors and copy/paste
 # highlight (change color) on control key (send-prefix) event?
@@ -28,8 +28,6 @@ set -g set-clipboard on
 set-option -g status-interval 5
 set-option -g automatic-rename on
 set-option -g automatic-rename-format '#{b:pane_current_path}'
-set -sg escape-time 0
-
 # Pass through terminal environment variables for image support (WezTerm, iTerm2, Kitty)
 set -g update-environment "TERM_PROGRAM TERM_PROGRAM_VERSION"
 set -g allow-passthrough on
@@ -85,14 +83,10 @@ bind -r J resize-pane -D 5
 bind -r K resize-pane -U 5
 bind -r L resize-pane -R 5
 
-# Shift Alt vim keys to switch windows
-bind -n M-H previous-window
-bind -n M-L next-window
-
 # [不會關掉的 tmux popup - HackMD](https://hackmd.io/@DailyOops/persistent-tmux-popup?type=view)
 
 unbind i
-bind i if-shell "[[ $(tmux display-message -p '#S') = floating* ]]" {
+bind i if-shell -F "#{m:floating*,#{session_name}}" {
     detach-client
 } {
   run-shell "$HOME/.dotfiles/shellscripts/tmux_popup.sh"

@@ -1,4 +1,4 @@
-#!/bin/zsh -f
+#!/usr/bin/env zsh
 # tmux_claude_nav v3 - Robust version
 zmodload zsh/stat 2>/dev/null     # for zstat
 zmodload zsh/datetime 2>/dev/null  # for EPOCHSECONDS
