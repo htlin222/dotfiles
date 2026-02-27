@@ -75,9 +75,9 @@ func Start(claudePID int, sessionID string) error {
 
 	deadline := time.Now().Add(time.Duration(timerSeconds) * time.Second)
 
-	// Build the kill script: sleep, TERM, grace period, KILL
+	// Build the kill script: sleep, TERM, grace period, KILL, then play sound
 	script := fmt.Sprintf(
-		"sleep %d && kill -TERM %d 2>/dev/null; sleep 5 && kill -KILL %d 2>/dev/null",
+		"sleep %d && kill -TERM %d 2>/dev/null; sleep 5 && kill -KILL %d 2>/dev/null; afplay /System/Library/Sounds/Hero.aiff &",
 		timerSeconds, claudePID, claudePID,
 	)
 
