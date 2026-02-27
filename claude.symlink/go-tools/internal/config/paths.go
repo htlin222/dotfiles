@@ -56,6 +56,10 @@ func StateFile() string {
 	return filepath.Join(LogDir, "hook_state.json")
 }
 
+func LastSessionIDFile() string {
+	return filepath.Join(ClaudeDir, "last_session_id")
+}
+
 // EnsureLogDir creates the log directory if it doesn't exist.
 func EnsureLogDir() error {
 	return os.MkdirAll(LogDir, 0755)

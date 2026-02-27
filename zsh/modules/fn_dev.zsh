@@ -183,6 +183,24 @@ function nccn() {
   sh ~/Documents/guidelines/NCCN/nccn.sh
 }
 
+# Resume last Claude Code session
+function resume() {
+  local session_file="$HOME/.claude/last_session_id"
+  if [[ -f "$session_file" ]]; then
+    local sid
+    sid=$(<"$session_file")
+    sid="${sid%$'\n'}"  # trim trailing newline
+    if [[ -n "$sid" ]]; then
+      export CURRENT_CLAUDE_CODE_SESSIONID="$sid"
+      echo "Resuming session: $sid"
+      claude --dangerously-skip-permissions --resume "$sid"
+      return
+    fi
+  fi
+  echo "No saved session ID found in $session_file"
+  return 1
+}
+
 # Medical scripts
 function sss() {
   $HOME/Dropbox/Medical/scripts/ls.sh

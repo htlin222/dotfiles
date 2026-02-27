@@ -18,6 +18,7 @@ import (
 	"github.com/htlin/claude-tools/internal/hooks/notification"
 	"github.com/htlin/claude-tools/internal/hooks/posttooluse"
 	"github.com/htlin/claude-tools/internal/hooks/precompact"
+	"github.com/htlin/claude-tools/internal/hooks/sessionend"
 	"github.com/htlin/claude-tools/internal/hooks/sessionhint"
 	"github.com/htlin/claude-tools/internal/hooks/stop"
 	"github.com/htlin/claude-tools/internal/hooks/subagentstop"
@@ -64,6 +65,8 @@ func main() {
 		precompact.Run()
 	case "stop":
 		stop.Run()
+	case "session-end":
+		sessionend.Run()
 	case "session-hint":
 		sessionhint.Run()
 	case "env-validate":
@@ -102,6 +105,7 @@ Commands:
   todo-tracker       Log TODO/FIXME/HACK from edited files (PostToolUse)
   pre-compact        Save context snapshot before compaction (PreCompact)
   stop               Handle Stop events (format, backup, notify)
+  session-end        Save session ID for resume on SessionEnd
   session-hint       Hint @LAST snapshot availability on SessionStart
   env-validate       Validate dev environment on SessionStart
   version            Show version
