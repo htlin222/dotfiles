@@ -18,6 +18,11 @@ func (p *ESLintProcessor) Process(filePath string) (bool, string) {
 		return true, ""
 	}
 
+	// Only lint uncommitted files
+	if !isUncommitted(filePath) {
+		return true, ""
+	}
+
 	cmd := exec.Command("eslint", "--no-error-on-unmatched-pattern", filePath)
 	output, err := cmd.CombinedOutput()
 

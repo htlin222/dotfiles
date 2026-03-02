@@ -4,6 +4,7 @@ package processors
 import (
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // Processor is the interface for file processors.
@@ -62,4 +63,15 @@ func ProcessFile(filePath string) (bool, string) {
 func commandExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
+}
+
+// isUncommitted checks if a file has uncommitted changes (staged or unstaged).
+func isUncommitted(filePath string) bool {
+	cmd := exec.Command("git", "diff", "--name-only", "HEAD", "--", filePath)
+	output, err := cmd.Output()
+	if err != nil {
+		// If git fails (e.g., not a repo, no HEAD yet), treat as uncommitted
+		return true
+	}
+	return len(strings.TrimSpace(string(output))) > 0
 }
