@@ -4,6 +4,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
@@ -57,7 +58,14 @@ func StateFile() string {
 }
 
 func LastSessionIDFile() string {
-	return filepath.Join(ClaudeDir, "last_session_id")
+	return filepath.Join(os.TempDir(), "claude_last_session_id")
+}
+
+// LastSessionIDFileForPane returns a pane-specific session ID file path.
+// TMUX_PANE is like "%134" — strip the % for a clean filename.
+func LastSessionIDFileForPane(paneID string) string {
+	clean := strings.TrimPrefix(paneID, "%")
+	return filepath.Join(os.TempDir(), "claude_session_id_pane_"+clean)
 }
 
 // EnsureLogDir creates the log directory if it doesn't exist.

@@ -185,7 +185,15 @@ function nccn() {
 
 # Resume last Claude Code session
 function resume() {
-  local session_file="$HOME/.claude/last_session_id"
+  local session_file
+  # Use pane-specific file if inside tmux
+  if [[ -n "$TMUX_PANE" ]]; then
+    session_file="/tmp/claude_session_id_pane_${TMUX_PANE#%}"
+  fi
+  # Fall back to shared file
+  if [[ -z "$session_file" || ! -f "$session_file" ]]; then
+    session_file="/tmp/claude_last_session_id"
+  fi
   if [[ -f "$session_file" ]]; then
     local sid
     sid=$(<"$session_file")
