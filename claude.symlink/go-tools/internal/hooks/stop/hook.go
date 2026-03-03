@@ -61,6 +61,19 @@ func Run() {
 	sessionID := data.SessionID
 	folderName := filepath.Base(cwd)
 
+	// Persist session ID early so it survives kill signals
+	// (sessionend hook may not run if process is killed)
+	if sessionID != "" {
+		_ = os.WriteFile(config.LastSessionIDFile(), []byte(sessionID+"\n"), 0644)
+		if pane := os.Getenv("TMUX_PANE"); pane != "" {
+			_ = os.WriteFile(config.LastSessionIDFileForPane(pane), []byte(sessionID+"\n"), 0644)
+		}
+		// Also store in tmux server memory as redundancy (survives /tmp cleanup)
+		if os.Getenv("TMUX") != "" {
+			_ = exec.Command("tmux", "set-environment", "CLAUDE_LAST_SESSION_ID", sessionID).Run()
+		}
+	}
+
 	// TTS: say the repo name (fire-and-forget)
 	notify.Say(folderName)
 
