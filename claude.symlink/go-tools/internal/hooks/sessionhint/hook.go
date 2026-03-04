@@ -8,7 +8,9 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/hooks/busy"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
@@ -40,6 +42,13 @@ func Run() {
 		state.Save(&state.State{
 			MainSessionID: data.SessionID,
 		})
+	}
+
+	// Record session start timestamp for shell access
+	ts := []byte(fmt.Sprintf("%d\n", time.Now().Unix()))
+	os.WriteFile(config.SessionStartTimeFile(), ts, 0644)
+	if pane := os.Getenv("TMUX_PANE"); pane != "" {
+		os.WriteFile(config.SessionStartTimeFileForPane(pane), ts, 0644)
 	}
 
 	// Build startup messages

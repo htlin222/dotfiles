@@ -58,14 +58,24 @@ func StateFile() string {
 }
 
 func LastSessionIDFile() string {
-	return filepath.Join(os.TempDir(), "claude_last_session_id")
+	return filepath.Join("/tmp", "claude_last_session_id")
+}
+
+func SessionStartTimeFile() string {
+	return filepath.Join("/tmp", "claude_session_start_time")
+}
+
+// SessionStartTimeFileForPane returns a pane-specific session start time file path.
+func SessionStartTimeFileForPane(paneID string) string {
+	clean := strings.TrimPrefix(paneID, "%")
+	return filepath.Join("/tmp", "claude_session_start_time_pane_"+clean)
 }
 
 // LastSessionIDFileForPane returns a pane-specific session ID file path.
 // TMUX_PANE is like "%134" — strip the % for a clean filename.
 func LastSessionIDFileForPane(paneID string) string {
 	clean := strings.TrimPrefix(paneID, "%")
-	return filepath.Join(os.TempDir(), "claude_session_id_pane_"+clean)
+	return filepath.Join("/tmp", "claude_session_id_pane_"+clean)
 }
 
 // EnsureLogDir creates the log directory if it doesn't exist.
