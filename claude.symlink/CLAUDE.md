@@ -14,7 +14,7 @@
 
 ## Delegation Rule
 
-Small edits (Edit, ≤3 MultiEdits, ≤100-line Write) are allowed directly.
+Small edits (Edit, ≤5 MultiEdits, ≤500-line Write) are allowed directly.
 Large edits (big Write, many MultiEdits, multi-file refactors) → delegate to Task subagents.
 Config/docs (.md, CLAUDE.md, plans/\*, settings.json, Makefile, .gitignore, go-tools/\*\*) always allowed.
 

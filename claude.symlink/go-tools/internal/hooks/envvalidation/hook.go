@@ -64,6 +64,20 @@ var ProcessorTools = []ToolConfig{
 	{Name: "shellcheck", Cmd: []string{"shellcheck", "--version"}, Optional: true, InstallCmd: []string{"brew", "install", "shellcheck"}},
 }
 
+// EnhancerTools are optional CLI tools that enhance Claude Code capabilities.
+// See: https://batsov.com/articles/2026/02/17/supercharging-claude-code-with-the-right-tools/
+var EnhancerTools = []ToolConfig{
+	{Name: "ast-grep", Cmd: []string{"ast-grep", "--version"}, Optional: true},
+	{Name: "difftastic", Cmd: []string{"difft", "--version"}, Optional: true},
+	{Name: "sd", Cmd: []string{"sd", "--version"}, Optional: true},
+	{Name: "scc", Cmd: []string{"scc", "--version"}, Optional: true},
+	{Name: "yq", Cmd: []string{"yq", "--version"}, Optional: true},
+	{Name: "comby", Cmd: []string{"comby", "-version"}, Optional: true},
+	{Name: "hyperfine", Cmd: []string{"hyperfine", "--version"}, Optional: true},
+	{Name: "watchexec", Cmd: []string{"watchexec", "--version"}, Optional: true},
+	{Name: "delta", Cmd: []string{"delta", "--version"}, Optional: true},
+}
+
 // ProjectRequirements maps config files to required tools.
 var ProjectRequirements = []ProjectRequirement{
 	{ConfigFile: "package.json", Tools: []string{"node", "pnpm"}},
@@ -107,6 +121,7 @@ func Run() {
 
 	// Check all tools in parallel
 	allTools := append(RequiredTools, ProcessorTools...)
+	allTools = append(allTools, EnhancerTools...)
 	results := checkToolsParallel(allTools)
 
 	// Check project requirements

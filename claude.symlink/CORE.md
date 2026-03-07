@@ -18,6 +18,21 @@
 | Analysis | Sequential | Docs  | Context7   |
 | UI       | Magic      | E2E   | Playwright |
 
+## CLI Enhancers (use via Bash when applicable)
+
+| Need              | Tool         | When                                        |
+| ----------------- | ------------ | ------------------------------------------- |
+| AST search        | `ast-grep`   | structural code search/refactor (>regex)     |
+| Structural diff   | `difft`      | comparing code changes by AST, not lines     |
+| Shell lint         | `shellcheck` | writing/reviewing shell scripts              |
+| Text replace       | `sd`         | sed replacement, PCRE regex without escaping |
+| Code stats         | `scc`        | codebase size/complexity overview            |
+| YAML/JSON edit     | `yq`         | query/modify YAML/JSON/TOML preserving fmt   |
+| Structural replace | `comby`      | cross-language search-replace by structure    |
+| Benchmark          | `hyperfine`  | CLI performance benchmarking                 |
+| File watch         | `watchexec`  | run commands on file changes                 |
+| Diff pager         | `delta`      | syntax-highlighted git diff                  |
+
 ## Efficiency
 
 1. Direct tools (Grep,Read,Glob) > 2. Skills (/commit,/map) > 3. Task agents

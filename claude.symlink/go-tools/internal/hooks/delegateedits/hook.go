@@ -16,8 +16,8 @@ import (
 
 // Thresholds for "large" edits that should be delegated.
 const (
-	maxMultiEdits = 3   // MultiEdit with more than this many edits → delegate
-	maxWriteLines = 100 // Write with more than this many lines → delegate
+	maxMultiEdits = 5   // MultiEdit with more than this many edits → delegate
+	maxWriteLines = 500 // Write with more than this many lines → delegate
 )
 
 // allowedExtensions are file extensions always allowed directly.
