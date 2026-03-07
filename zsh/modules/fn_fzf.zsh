@@ -97,7 +97,6 @@ function rga-fzf() {
 # FZF tmux navigator — sessions →(→)→ windows →(→)→ panes (←: back)
 function fzftmux() {
   local tmpdir=$(mktemp -d)
-  trap "command rm -rf '$tmpdir'" RETURN
 
   # --- State ---
   printf 'sessions' > "$tmpdir/mode"
@@ -223,7 +222,7 @@ PREVIEW_EOF
         esac"
   )
 
-  [[ -z "$target" ]] && return
+  [[ -z "$target" ]] && { command rm -rf "$tmpdir"; return; }
 
   local current_sess=$(cat "$tmpdir/current_session" 2>/dev/null | tr -d '[:space:]')
   local current_win=$(cat "$tmpdir/current_window" 2>/dev/null | tr -d '[:space:]')
@@ -239,6 +238,7 @@ PREVIEW_EOF
     local sess=$(printf '%s' "$stripped" | sed 's/.*[▶▷] *//;s/ .*//')
     tmux attach-session -t "$sess"
   fi
+  command rm -rf "$tmpdir"
 }
 
 # Delete line from file with fzf
