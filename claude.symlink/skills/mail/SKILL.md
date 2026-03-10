@@ -96,9 +96,26 @@ For each new email, determine if it requires action. Classify into:
 For each actionable email, extract:
 
 - **name**: Short task description (not the raw subject — rewrite for clarity)
-- **body**: Key details — who sent it, what's needed, any links
+- **body**: Key details — who sent it, what's needed, any action URLs (see Step 6b)
 - **due**: Best estimate of deadline in "YYYY-MM-DD HH:MM" format. If no explicit deadline, set reasonable default (e.g., next business day for requests, meeting time for prep)
 - **priority**: 1 (high/urgent), 5 (medium/normal), 9 (low/FYI)
+
+### Step 6b: Extract URLs from Actionable Emails
+
+Many emails encode links only in HTML (base64-encoded MIME), so the plain text preview misses them. For each **actionable** email, extract URLs:
+
+```bash
+~/.claude/skills/mail/scripts/extract-urls.sh "<message-id>"
+```
+
+Returns one URL per line, filtered to remove tracking pixels, images, and social media links.
+
+**How to use extracted URLs**:
+- Include the most relevant action URL in the reminder **body** (e.g., sign-off links, registration URLs, form links)
+- If multiple URLs are returned, pick the one most relevant to the required action (e.g., a token/report URL, not the homepage)
+- Show actionable URLs in the summary report (Step 10) under a **Link** column
+
+**Performance note**: Only run this for actionable emails (typically 1-5 per batch), not for all emails. Each call takes ~2-3 seconds due to AppleScript + MIME decoding.
 
 ### Step 7: Deduplicate Against Existing Reminders
 
@@ -158,14 +175,16 @@ Present results to user in a table:
 
 ### Actionable Items Added to Reminders:
 
-| # | Due | Reminder | Priority | Source |
-|---|-----|----------|----------|--------|
-| 1 | 3/9 12:00 | Task name | HIGH | sender@email.com |
+| # | Due | Reminder | Priority | Source | Link |
+|---|-----|----------|----------|--------|------|
+| 1 | 3/9 12:00 | Task name | HIGH | sender@email.com | [action link](url) |
 
 ### Non-Actionable (skipped):
 - Newsletter from X
 - Notification from Y
 ```
+
+If no actionable URL was found for an item, show "—" in the Link column.
 
 ## Notes
 
