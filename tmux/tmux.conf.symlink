@@ -101,6 +101,9 @@ if-shell -b 'tmux -V | awk "{split(\$2,a,\".\"); exit !(a[1]>3 || (a[1]==3 && a[
 bind -n S-Up   run-shell "$HOME/.dotfiles/shellscripts/tmux_claude_nav.sh prev"
 bind -n S-Down run-shell "$HOME/.dotfiles/shellscripts/tmux_claude_nav.sh next"
 
+# sesh - smart session manager with zoxide
+bind T display-popup -E "sesh connect \"$(sesh list | fzf)\""
+
 set -g mouse on  # Let terminal handle selection natively (Ghostty over SSH)
 # Mouse scroll enters copy mode automatically
 bind -n WheelUpPane if-shell -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e; send-keys -M'
@@ -161,6 +164,8 @@ set -g @jump-key 's'
 # 自動重載 config
 set -g @plugin 'b0o/tmux-autoreload'
 set -g @plugin 'sainnhe/tmux-fzf'
+set -g @plugin 'roosta/tmux-fuzzback'
+set -g @plugin 'fcsonline/tmux-thumbs'
 set -g @plugin 'vaaleyard/tmux-dotbar'
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator

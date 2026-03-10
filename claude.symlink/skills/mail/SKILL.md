@@ -44,13 +44,15 @@ This returns a JSON array. Each email object has: `id`, `account`, `subject`, `f
 
 ### Step 4: Load Dedup Database
 
-Check for previously processed emails:
+Use the **Read** tool (not bash `cat`) to load previously processed emails:
 
-```bash
-cat /tmp/mail-already-processed.json 2>/dev/null || echo '{"processed_ids":[]}'
-```
+1. Try to **Read** `/tmp/mail-already-processed.json`
+2. If the file does not exist (Read fails/hook blocks), initialize it:
+   - **Write** `/tmp/mail-already-processed.json` with: `{"processed_ids":[],"last_run":""}`
+   - Then **Read** it
 
 The file structure:
+
 ```json
 {
   "processed_ids": ["msg-id-1", "msg-id-2"],
@@ -62,19 +64,22 @@ Filter out emails whose `id` is already in `processed_ids`. Only analyze NEW ema
 
 ### Step 5: Fetch Existing Reminders
 
-Get current incomplete reminders from "Inbox" list to avoid content-level duplicates:
+Fetch incomplete reminders from the "Inbox" list for deduplication:
 
 ```bash
-osascript ~/.claude/skills/mail/scripts/fetch-reminders.applescript
+~/.claude/skills/mail/scripts/reminders-cli fetch
 ```
 
-Returns JSON array with `name`, `body`, `due` fields.
+Returns JSON array with `name`, `body`, `due` fields. Runs in <1 second via EventKit.
+
+**First run**: macOS will show a system permission dialog for Reminders access. Grant it once and subsequent runs need no interaction.
 
 ### Step 6: Analyze Emails for Actionable Items
 
 For each new email, determine if it requires action. Classify into:
 
 **Actionable** (create reminder):
+
 - Explicit deadlines or due dates mentioned
 - Meeting invitations requiring RSVP or preparation
 - Requests addressed to the user (reply needed, form to fill, document to sign)
@@ -82,12 +87,14 @@ For each new email, determine if it requires action. Classify into:
 - Action items with keywords: "please", "action required", "deadline", "due by", "before", "sign", "submit", "reply", "confirm"
 
 **Not actionable** (skip):
+
 - Newsletters, promotional emails, product announcements
 - Read receipts, automated notifications (no action needed)
 - Already-read informational emails
 - Spam, marketing
 
 For each actionable email, extract:
+
 - **name**: Short task description (not the raw subject — rewrite for clarity)
 - **body**: Key details — who sent it, what's needed, any links
 - **due**: Best estimate of deadline in "YYYY-MM-DD HH:MM" format. If no explicit deadline, set reasonable default (e.g., next business day for requests, meeting time for prep)
@@ -96,6 +103,7 @@ For each actionable email, extract:
 ### Step 7: Deduplicate Against Existing Reminders
 
 Before adding, check if a similar reminder already exists by comparing:
+
 - Exact or fuzzy match on reminder name
 - Same due date
 - Similar body content (e.g., same sender + same topic)
@@ -107,10 +115,11 @@ Skip any reminder that would be a duplicate.
 For each new actionable item, run:
 
 ```bash
-osascript ~/.claude/skills/mail/scripts/add-reminder.applescript "<name>" "<body>" "<due_date>" "<priority>"
+~/.claude/skills/mail/scripts/reminders-cli add "<name>" "<body>" "<due_date>" "<priority>"
 ```
 
 Where:
+
 - `<name>`: reminder title (keep under 80 chars)
 - `<body>`: details and context
 - `<due_date>`: format "YYYY-MM-DD HH:MM" or empty string "" for no due date
@@ -121,20 +130,21 @@ Where:
 ### Step 9: Update Dedup Database
 
 After processing, update `/tmp/mail-already-processed.json`:
+
 - Add all newly processed email IDs (both actionable and non-actionable) to `processed_ids`
 - Update `last_run` timestamp
 - Keep only IDs from the last 30 days to prevent unbounded growth
 
-Write the updated JSON:
+Use the **Write** tool (not bash heredoc/redirect) to write the updated JSON:
 
-```bash
-cat > /tmp/mail-already-processed.json << 'DEDUP_EOF'
+```json
 {
   "processed_ids": ["id1", "id2", ...],
-  "last_run": "2026-03-08T10:00:00"
+  "last_run": "2026-03-10T00:00:00"
 }
-DEDUP_EOF
 ```
+
+**Important**: Do NOT use `cat > file << EOF` — the `check-file-exists` hook will block the `>` redirect. Always use the Write tool for this file.
 
 ### Step 10: Report Summary
 
