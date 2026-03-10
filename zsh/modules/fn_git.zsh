@@ -63,15 +63,9 @@ git-top() { cd "$(git rev-parse --show-toplevel 2>/dev/null)" || return; }
 function gitwt() {
   is_git_repo || { echo "Not a git repo"; return 1; }
 
-  local worktree
-  worktree=$(git worktree list | \
-    awk '{
-      path=$1; branch=$NF;
-      gsub(/[\[\]]/, "", branch);
-      printf "\033[36m%s\033[0m \033[33m%s\033[0m\n", path, branch
-    }' | \
-    fzf --ansi --height 80% --layout=reverse \
-      --prompt="worktree > " \
+  local preview_opts=()
+  if (( COLUMNS >= 50 )); then
+    preview_opts=(
       --preview '
         dir=$(echo {} | sed "s/\x1b\[[0-9;]*m//g" | awk "{print \$1}")
         echo "\033[35m== Branch ==\033[0m"
@@ -85,8 +79,21 @@ function gitwt() {
         echo ""
         echo "\033[35m== Recent Commits ==\033[0m"
         git -C "$dir" log --oneline --graph --color=always -15 2>/dev/null
-      ' \
-      --preview-window=right:55%:wrap \
+      '
+      --preview-window=right:55%:wrap
+    )
+  fi
+
+  local worktree
+  worktree=$(git worktree list | \
+    awk '{
+      path=$1; branch=$NF;
+      gsub(/[\[\]]/, "", branch);
+      printf "\033[36m%s\033[0m \033[33m%s\033[0m\n", path, branch
+    }' | \
+    fzf --ansi --height 80% --layout=reverse \
+      --prompt="worktree > " \
+      "${preview_opts[@]}" \
       --bind '?:toggle-preview')
 
   [[ -z "$worktree" ]] && return

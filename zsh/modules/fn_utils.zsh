@@ -365,3 +365,27 @@ codextmux() {
   tmux new-session -d -s "$slug" 'codex --yolo'
   tmux attach -t "$slug"
 }
+
+# Break all panes in current tmux window into separate windows
+break_panes() {
+  if [[ -z "$TMUX" ]]; then
+    echo "Not in a tmux session."
+    return 1
+  fi
+  local session win panes new_panes
+  session=$(tmux display-message -p '#S')
+  win=$(tmux display-message -p '#I')
+  panes=$(tmux list-panes -t "${session}:${win}" | wc -l | tr -d ' ')
+  if (( panes <= 1 )); then
+    echo "Only 1 pane, nothing to break."
+    return 0
+  fi
+  while (( panes > 1 )); do
+    tmux break-pane -d -s "${session}:${win}.1" 2>/dev/null || break
+    new_panes=$(tmux list-panes -t "${session}:${win}" | wc -l | tr -d ' ')
+    (( new_panes >= panes )) && break
+    panes=$new_panes
+  done
+  echo "Done. Broke into separate windows."
+}
+alias bp='break_panes'

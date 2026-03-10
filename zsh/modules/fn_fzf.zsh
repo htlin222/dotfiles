@@ -183,13 +183,20 @@ PREVIEW_EOF
 
   chmod +x "$tmpdir"/{sessions,windows,panes,preview}
 
+  local fzf_preview_opts
+  if (( COLUMNS < 50 )); then
+    fzf_preview_opts="--preview-window=hidden"
+  else
+    fzf_preview_opts="--preview-window=right:55%:wrap"
+  fi
+
   local target
   target=$(sh "$tmpdir/sessions" | \
     fzf --ansi --height 80% --layout=reverse \
       --prompt="sessions › " \
       --header=$'\033[90mEnter: attach  →: drill in  ←: back\033[0m' \
       --preview "sh $tmpdir/preview {} $tmpdir" \
-      --preview-window=right:55%:wrap \
+      $fzf_preview_opts \
       --bind "right:transform:
         case {fzf:prompt} in
           *panes*) ;;
@@ -227,6 +234,27 @@ PREVIEW_EOF
   local current_sess=$(cat "$tmpdir/current_session" 2>/dev/null | tr -d '[:space:]')
   local current_win=$(cat "$tmpdir/current_window" 2>/dev/null | tr -d '[:space:]')
   local stripped=$(printf '%s' "$target" | sed 's/\x1b\[[0-9;]*m//g')
+
+  # Auto break panes in target session when terminal is narrow (before attach)
+  if (( COLUMNS < 50 )); then
+    local bp_sess
+    if [[ -n "$current_sess" ]]; then
+      bp_sess="$current_sess"
+    else
+      bp_sess=$(printf '%s' "$stripped" | sed 's/.*[▶▷] *//;s/ .*//')
+    fi
+    if [[ -n "$bp_sess" ]]; then
+      for bp_win in $(tmux list-windows -t "$bp_sess" -F '#I'); do
+        local bp_panes=$(tmux list-panes -t "${bp_sess}:${bp_win}" | wc -l | tr -d ' ')
+        while (( bp_panes > 1 )); do
+          tmux break-pane -d -s "${bp_sess}:${bp_win}.1" 2>/dev/null || break
+          local bp_new=$(tmux list-panes -t "${bp_sess}:${bp_win}" | wc -l | tr -d ' ')
+          (( bp_new >= bp_panes )) && break
+          bp_panes=$bp_new
+        done
+      done
+    fi
+  fi
 
   if [[ -n "$current_win" ]]; then
     local pane=$(printf '%s' "$stripped" | sed 's/.*◻ *\([0-9]*\) .*/\1/')
