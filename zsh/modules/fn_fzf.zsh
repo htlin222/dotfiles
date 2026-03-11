@@ -94,7 +94,7 @@ function rga-fzf() {
     }
 }
 
-# FZF tmux navigator — sessions →(→)→ windows →(→)→ panes (←: back)
+# FZF tmux navigator — sessions >(>)> windows >(>)> panes (<: back)
 function fzftmux() {
   local tmpdir=$(mktemp -d)
 
@@ -108,9 +108,9 @@ function fzftmux() {
 #!/bin/sh
 tmux ls -F "#{session_name}|#{session_windows}|#{session_attached}" 2>/dev/null | while IFS='|' read -r name wins att; do
   if [ "$att" -gt 0 ]; then
-    printf "\033[32m▶ %-20s \033[36m⧉ %s win  \033[33m● attached\033[0m\n" "$name" "$wins"
+    printf "\033[32m> %-20s \033[36m[%s win]  \033[33m* attached\033[0m\n" "$name" "$wins"
   else
-    printf "\033[37m▷ %-20s \033[36m⧉ %s win  \033[90m○ detached\033[0m\n" "$name" "$wins"
+    printf "\033[37m  %-20s \033[36m[%s win]  \033[90m  detached\033[0m\n" "$name" "$wins"
   fi
 done
 EOF
@@ -122,9 +122,9 @@ sess="$1"
 tmux list-windows -t "$sess" -F "#{window_index}|#{window_name}|#{pane_current_command}|#{pane_current_path}|#{window_active}" 2>/dev/null | while IFS='|' read -r idx wname cmd cpath active; do
   dir=$(echo "$cpath" | sed "s|^$HOME|~|")
   if [ "$active" = "1" ]; then
-    printf "\033[32m▸ %s: %-14s \033[33m⚙ %s  \033[36m📂 %s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
+    printf "\033[32m> %s: %-14s \033[33m[%s]  \033[36m%s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
   else
-    printf "\033[37m  %s: %-14s \033[90m⚙ %s  📁 %s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
+    printf "\033[37m  %s: %-14s \033[90m[%s]  %s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
   fi
 done
 EOF
@@ -136,9 +136,9 @@ sess="$1"; win="$2"
 tmux list-panes -t "${sess}:${win}" -F "#{pane_index}|#{pane_current_command}|#{pane_current_path}|#{pane_active}|#{pane_width}x#{pane_height}" 2>/dev/null | while IFS='|' read -r idx cmd cpath active size; do
   dir=$(echo "$cpath" | sed "s|^$HOME|~|")
   if [ "$active" = "1" ]; then
-    printf "\033[32m◻ %s  ⚙ %-12s 📂 %-30s \033[90m%s\033[0m\n" "$idx" "$cmd" "$dir" "$size"
+    printf "\033[32m# %s  [%-12s] %-30s \033[90m%s\033[0m\n" "$idx" "$cmd" "$dir" "$size"
   else
-    printf "\033[37m◻ %s  \033[90m⚙ %-12s 📁 %-30s %s\033[0m\n" "$idx" "$cmd" "$dir" "$size"
+    printf "\033[37m  %s  \033[90m[%-12s] %-30s %s\033[0m\n" "$idx" "$cmd" "$dir" "$size"
   fi
 done
 EOF
@@ -149,33 +149,38 @@ EOF
 line="$1"; tmpdir="$2"
 mode=$(cat "$tmpdir/mode" 2>/dev/null)
 
+strip_ansi() { printf '%s' "$1" | sed 's/\x1b\[[0-9;]*m//g'; }
+
 case "$mode" in
   sessions)
-    sess=$(printf '%s' "$line" | sed 's/\x1b\[[0-9;]*m//g;s/.*[▶▷] *//;s/ .*//')
+    clean=$(strip_ansi "$line")
+    sess=$(printf '%s' "$clean" | sed 's/^[> ] *//;s/ .*//')
     [ -z "$sess" ] && exit 0
-    printf "\033[35m◈ %s\033[0m\n\n" "$sess"
+    printf "\033[35m== %s ==\033[0m\n\n" "$sess"
     tmux list-windows -t "$sess" -F "#{window_index}|#{window_name}|#{pane_current_command}|#{pane_current_path}|#{window_active}" 2>/dev/null | while IFS='|' read -r idx wname cmd cpath active; do
       dir=$(echo "$cpath" | sed "s|^$HOME|~|")
       if [ "$active" = "1" ]; then
-        printf "\033[32m  ▸ %s:\033[1m%-14s \033[33m⚙ %s  \033[36m📂 %s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
+        printf "\033[32m  > %s:\033[1m%-14s \033[33m[%s]  \033[36m%s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
       else
-        printf "\033[90m    %s:\033[0m%-14s \033[90m⚙ %s  📁 %s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
+        printf "\033[90m    %s:\033[0m%-14s \033[90m[%s]  %s\033[0m\n" "$idx" "$wname" "$cmd" "$dir"
       fi
     done
     ;;
   windows)
     sess=$(cat "$tmpdir/current_session" 2>/dev/null | tr -d '[:space:]')
-    win=$(printf '%s' "$line" | sed 's/\x1b\[[0-9;]*m//g;s/.*[▸ ] *\([0-9]*\):.*/\1/')
+    clean=$(strip_ansi "$line")
+    win=$(printf '%s' "$clean" | sed 's/^[> ] *\([0-9]*\):.*/\1/')
     [ -z "$sess" ] || [ -z "$win" ] && exit 0
-    printf "\033[35m◈ %s:%s\033[0m\n\n" "$sess" "$win"
+    printf "\033[35m== %s:%s ==\033[0m\n\n" "$sess" "$win"
     tmux capture-pane -e -t "${sess}:${win}" -p 2>/dev/null
     ;;
   panes)
     sess=$(cat "$tmpdir/current_session" 2>/dev/null | tr -d '[:space:]')
     win=$(cat "$tmpdir/current_window" 2>/dev/null | tr -d '[:space:]')
-    pane=$(printf '%s' "$line" | sed 's/\x1b\[[0-9;]*m//g;s/.*◻ *\([0-9]*\) .*/\1/')
+    clean=$(strip_ansi "$line")
+    pane=$(printf '%s' "$clean" | sed 's/^[# ] *\([0-9]*\) .*/\1/')
     [ -z "$pane" ] && exit 0
-    printf "\033[35m◈ %s:%s.%s\033[0m\n\n" "$sess" "$win" "$pane"
+    printf "\033[35m== %s:%s.%s ==\033[0m\n\n" "$sess" "$win" "$pane"
     tmux capture-pane -e -t "${sess}:${win}.${pane}" -p 2>/dev/null
     ;;
 esac
@@ -184,7 +189,7 @@ PREVIEW_EOF
   chmod +x "$tmpdir"/{sessions,windows,panes,preview}
 
   local fzf_preview_opts
-  if (( COLUMNS < 50 )); then
+  if (( ${COLUMNS:-80} < 50 )); then
     fzf_preview_opts="--preview-window=hidden"
   else
     fzf_preview_opts="--preview-window=right:55%:wrap"
@@ -193,8 +198,8 @@ PREVIEW_EOF
   local target
   target=$(sh "$tmpdir/sessions" | \
     fzf --ansi --height 80% --layout=reverse \
-      --prompt="sessions › " \
-      --header=$'\033[90mEnter: attach  →: drill in  ←: back\033[0m' \
+      --prompt="sessions > " \
+      --header=$'Enter: attach  right: drill in  left: back' \
       --preview "sh $tmpdir/preview {} $tmpdir" \
       $fzf_preview_opts \
       --bind "right:transform:
@@ -202,18 +207,18 @@ PREVIEW_EOF
           *panes*) ;;
           *windows*)
             sess=\$(cat $tmpdir/current_session | tr -d '[:space:]')
-            win=\$(printf '%s' {} | sed 's/\x1b\[[0-9;]*m//g;s/.*[▸ ] *\([0-9]*\):.*/\1/')
+            win=\$(printf '%s' {} | sed 's/\x1b\[[0-9;]*m//g;s/^[> ] *\([0-9]*\):.*/\1/')
             pc=\$(tmux list-panes -t \"\${sess}:\${win}\" 2>/dev/null | wc -l | tr -d ' ')
             if [ \"\$pc\" -gt 1 ]; then
               printf '%s' \"\$win\" > $tmpdir/current_window
               printf 'panes' > $tmpdir/mode
-              echo \"reload(sh $tmpdir/panes \$sess \$win)+change-prompt(\$sess:\$win › panes › )\"
+              echo \"reload(sh $tmpdir/panes \$sess \$win)+change-prompt(\$sess:\$win panes > )\"
             fi ;;
           *sessions*)
-            sess=\$(printf '%s' {} | sed 's/\x1b\[[0-9;]*m//g;s/.*[▶▷] *//;s/ .*//')
+            sess=\$(printf '%s' {} | sed 's/\x1b\[[0-9;]*m//g;s/^[> ] *//;s/ .*//')
             printf '%s' \"\$sess\" > $tmpdir/current_session
             printf 'windows' > $tmpdir/mode
-            echo \"reload(sh $tmpdir/windows \$sess)+change-prompt(\$sess › windows › )\" ;;
+            echo \"reload(sh $tmpdir/windows \$sess)+change-prompt(\$sess windows > )\" ;;
         esac" \
       --bind "left:transform:
         case {fzf:prompt} in
@@ -221,11 +226,11 @@ PREVIEW_EOF
             sess=\$(cat $tmpdir/current_session | tr -d '[:space:]')
             printf '' > $tmpdir/current_window
             printf 'windows' > $tmpdir/mode
-            echo \"reload(sh $tmpdir/windows \$sess)+change-prompt(\$sess › windows › )\" ;;
+            echo \"reload(sh $tmpdir/windows \$sess)+change-prompt(\$sess windows > )\" ;;
           *windows*)
             printf '' > $tmpdir/current_session
             printf 'sessions' > $tmpdir/mode
-            echo \"reload(sh $tmpdir/sessions)+change-prompt(sessions › )\" ;;
+            echo \"reload(sh $tmpdir/sessions)+change-prompt(sessions > )\" ;;
         esac"
   )
 
@@ -236,12 +241,12 @@ PREVIEW_EOF
   local stripped=$(printf '%s' "$target" | sed 's/\x1b\[[0-9;]*m//g')
 
   # Auto break panes in target session when terminal is narrow (before attach)
-  if (( COLUMNS < 50 )); then
+  if (( ${COLUMNS:-80} < 50 )); then
     local bp_sess
     if [[ -n "$current_sess" ]]; then
       bp_sess="$current_sess"
     else
-      bp_sess=$(printf '%s' "$stripped" | sed 's/.*[▶▷] *//;s/ .*//')
+      bp_sess=$(printf '%s' "$stripped" | sed 's/^[> ] *//;s/ .*//')
     fi
     if [[ -n "$bp_sess" ]]; then
       for bp_win in $(tmux list-windows -t "$bp_sess" -F '#I'); do
@@ -257,13 +262,13 @@ PREVIEW_EOF
   fi
 
   if [[ -n "$current_win" ]]; then
-    local pane=$(printf '%s' "$stripped" | sed 's/.*◻ *\([0-9]*\) .*/\1/')
+    local pane=$(printf '%s' "$stripped" | sed 's/^[# ] *\([0-9]*\) .*/\1/')
     tmux attach-session -t "${current_sess}:${current_win}.${pane}"
   elif [[ -n "$current_sess" ]]; then
-    local win=$(printf '%s' "$stripped" | sed 's/.*[▸ ] *\([0-9]*\):.*/\1/')
+    local win=$(printf '%s' "$stripped" | sed 's/^[> ] *\([0-9]*\):.*/\1/')
     tmux attach-session -t "${current_sess}:${win}"
   else
-    local sess=$(printf '%s' "$stripped" | sed 's/.*[▶▷] *//;s/ .*//')
+    local sess=$(printf '%s' "$stripped" | sed 's/^[> ] *//;s/ .*//')
     tmux attach-session -t "$sess"
   fi
   command rm -rf "$tmpdir"
