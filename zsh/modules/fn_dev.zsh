@@ -209,6 +209,93 @@ function resume() {
   return 1
 }
 
+# Claude Code WorkTree - launch claude in worktree mode with interactive type selector
+function ccwt() {
+  if ! command -v slugify >/dev/null 2>&1; then
+    echo "slugify-cli is required. Install it with: pnpm add -g slugify-cli"
+    return 1
+  fi
+
+  local types=("feature" "bugfix" "optimize" "chore")
+  local colors=("\e[44m" "\e[41m" "\e[43m" "\e[45m")  # blue, red, yellow, magenta bg
+  local count=${#types[@]}
+  local selected=1
+  local key
+
+  # Hide cursor, restore on exit
+  tput civis
+
+  # Draw menu
+  _ccwt_draw() {
+    [[ $1 == "redraw" ]] && printf "\e[${count}A"
+    for i in {1..$count}; do
+      if [[ $i -eq $selected ]]; then
+        printf " ${colors[$i]}\e[1;30m ■ ${types[$i]} \e[0m\e[K\n"
+      else
+        printf "\e[2m □ ${types[$i]}\e[0m\e[K\n"
+      fi
+    done
+  }
+
+  printf "\e[1mSelect worktree type:\e[0m\n"
+  _ccwt_draw "first"
+
+  # Read arrow keys / j/k / enter
+  while true; do
+    read -rsk1 key </dev/tty
+    case "$key" in
+      $'\e')
+        read -rsk1 key </dev/tty
+        read -rsk1 key </dev/tty
+        case "$key" in
+          A) ((selected > 1)) && ((selected--)) ;;   # Up
+          B) ((selected < count)) && ((selected++)) ;; # Down
+        esac
+        ;;
+      k) ((selected > 1)) && ((selected--)) ;;
+      j) ((selected < count)) && ((selected++)) ;;
+      $'\n') break ;;
+      '') break ;;
+    esac
+    _ccwt_draw "redraw"
+  done
+
+  # Restore cursor
+  tput cnorm
+
+  local wt_type="${types[$selected]}"
+  printf "\e[1;32m✓ ${wt_type}\e[0m\n"
+
+  # Prompt for description
+  printf "\e[1mDescription:\e[0m "
+  read -r desc </dev/tty
+  if [[ -z "$desc" ]]; then
+    echo "Description cannot be empty."
+    return 1
+  fi
+
+  # Build worktree name
+  local slug
+  slug=$(slugify "$desc")
+  local wt_name="${wt_type}/${slug}"
+
+  # Ask whether to open in a tmux window
+  local use_tmux="n"
+  printf "\e[1mOpen in a tmux window? [y/N]:\e[0m "
+  read -rk1 use_tmux </dev/tty
+  printf "\n"
+
+  local cmd="claude --dangerously-skip-permissions --worktree ${(q)wt_name}"
+
+  if [[ "${use_tmux:l}" == "y" ]]; then
+    printf "Opening in tmux window: \e[1;36m${wt_name}\e[0m\n"
+    tmux new-window -n "${wt_name}" "$cmd"
+  else
+    printf "Starting claude with worktree: \e[1;36m${wt_name}\e[0m\n"
+    eval "$cmd"
+  fi
+}
+
 # Medical scripts
 function sss() {
   $HOME/Dropbox/Medical/scripts/ls.sh
