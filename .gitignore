@@ -71,6 +71,7 @@ claude.symlink/.credentials.json
 claude.symlink/paste-cache/
 claude.symlink/backups/
 claude.symlink/mcp-needs-auth-cache.json
+claude.symlink/sessions/
 
 **/logs/
 **/codebase-maps/
