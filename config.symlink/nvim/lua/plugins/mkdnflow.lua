@@ -50,11 +50,24 @@ return { --mkdnflow
         end,
       },
       to_do = {
-        symbols = { " ", "x", "X" },
-        update_parents = true,
-        not_started = " ",
-        in_progress = "x",
-        complete = "X",
+        statuses = {
+          {
+            name = "not_started",
+            marker = " ",
+          },
+          {
+            name = "in_progress",
+            marker = "x",
+          },
+          {
+            name = "complete",
+            marker = "X",
+          },
+        },
+        status_propagation = {
+          up = true,
+          down = true,
+        },
       },
       create_dirs = true,
       mappings = {
