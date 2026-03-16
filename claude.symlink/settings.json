@@ -240,5 +240,6 @@
 		"typescript-lsp@claude-plugins-official": true
 	},
 	"alwaysThinkingEnabled": true,
+	"voiceEnabled": true,
 	"skipDangerousModePermissionPrompt": true
 }
