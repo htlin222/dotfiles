@@ -75,10 +75,16 @@ func Start(claudePID int, sessionID string) error {
 
 	deadline := time.Now().Add(time.Duration(timerSeconds) * time.Second)
 
-	// Build the kill script: sleep, TERM, grace period, KILL, then play sound
+	// Build the kill script:
+	// 1. Sleep until 1 min before deadline, send warning notification
+	// 2. Sleep final 60s, TERM, grace period, KILL, then play sound
+	warnAfter := timerSeconds - 60
+	if warnAfter < 0 {
+		warnAfter = 0
+	}
 	script := fmt.Sprintf(
-		"sleep %d && kill -TERM %d 2>/dev/null; sleep 5 && kill -KILL %d 2>/dev/null; afplay /System/Library/Sounds/Hero.aiff &",
-		timerSeconds, claudePID, claudePID,
+		"sleep %d && osascript -e 'display notification \"Claude session will be killed in 1 minute\" with title \"⚠️ Kill Timer\"' 2>/dev/null; afplay /System/Library/Sounds/Ping.aiff 2>/dev/null; sleep 60 && kill -TERM %d 2>/dev/null; sleep 5 && kill -KILL %d 2>/dev/null; afplay /System/Library/Sounds/Hero.aiff &",
+		warnAfter, claudePID, claudePID,
 	)
 
 	cmd := exec.Command("sh", "-c", script)

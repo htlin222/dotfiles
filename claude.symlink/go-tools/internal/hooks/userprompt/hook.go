@@ -45,8 +45,10 @@ var projectTypes = map[string]struct {
 // Run executes the user prompt hook.
 func Run() {
 	// Cancel any pending kill timer — user is still active
-	if claudePID := killtimer.FindClaudePID(); claudePID > 0 {
-		killtimer.Cancel(claudePID)
+	if strings.EqualFold(os.Getenv("CLAUDE_STOP_AND_KILL"), "true") {
+		if claudePID := killtimer.FindClaudePID(); claudePID > 0 {
+			killtimer.Cancel(claudePID)
+		}
 	}
 
 	if pane := busy.GetTmuxPane(); pane != "" {

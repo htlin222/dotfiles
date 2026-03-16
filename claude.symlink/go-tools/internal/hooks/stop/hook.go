@@ -133,13 +133,15 @@ func Run() {
 	// Print session duration
 	sessiontimer.PrintDuration()
 
-	// Start kill timer for idle session cleanup
-	if claudePID := killtimer.FindClaudePID(); claudePID > 0 {
-		if err := killtimer.Start(claudePID, sessionID); err != nil {
-			fmt.Fprintf(os.Stderr, "killtimer: %v\n", err)
-		} else {
-			fmt.Fprintf(os.Stderr, "%s%s  Auto-kill in 10m (PID %d)%s\n",
-				ansi.BrightYellow, ansi.IconHourglass, claudePID, ansi.Reset)
+	// Start kill timer for idle session cleanup (opt-in via CLAUDE_STOP_AND_KILL=true)
+	if strings.EqualFold(os.Getenv("CLAUDE_STOP_AND_KILL"), "true") {
+		if claudePID := killtimer.FindClaudePID(); claudePID > 0 {
+			if err := killtimer.Start(claudePID, sessionID); err != nil {
+				fmt.Fprintf(os.Stderr, "killtimer: %v\n", err)
+			} else {
+				fmt.Fprintf(os.Stderr, "%s%s  Auto-kill in 10m (PID %d)%s\n",
+					ansi.BrightYellow, ansi.IconHourglass, claudePID, ansi.Reset)
+			}
 		}
 	}
 

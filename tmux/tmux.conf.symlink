@@ -166,6 +166,7 @@ set -g @plugin 'b0o/tmux-autoreload'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'roosta/tmux-fuzzback'
 set -g @plugin 'fcsonline/tmux-thumbs'
+set -g @plugin 'sandudorogan/tmux-sidebar'
 set -g @plugin 'vaaleyard/tmux-dotbar'
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
