@@ -25,6 +25,7 @@ alias n='pnpm'
 alias tm='task-master'
 alias nighty="printf '■□□□□□□□□□%.0s' {1..9}"
 alias yolo='echo ""; claude --dangerously-skip-permissions'
+alias cchv='cchv-server --serve --host 0.0.0.0'
 alias taskmaster='task-master'
 alias print7f='lp -d _172_21_75_1'
 alias ymd='date +%F'
