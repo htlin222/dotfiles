@@ -64,11 +64,24 @@ local options = {
       return nil -- Skip formatting
     end
 
+    -- Skip conform formatting for Slidev slides (use project-local prettier instead)
+    local filename = vim.api.nvim_buf_get_name(bufnr)
+    if filename:match("slides%.md$") then
+      return nil
+    end
+
     return {
       timeout_ms = 2000,
       lsp_fallback = false,
     }
   end,
+
+  formatters = {
+    prettier = {
+      -- Use project-local prettier (picks up prettier-plugin-slidev)
+      command = require("conform.util").from_node_modules("prettier"),
+    },
+  },
 }
 
 require("conform").setup(options)
