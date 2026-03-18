@@ -168,6 +168,13 @@ alias vsauto='nvim -S .vim_auto_session.vim'
 alias wpy="pyenv which python"
 alias yt-mp4='yt-dlp --merge-output-format mp4'
 # 查看最近一次失敗 run 的失敗步驟 log
+# Claude Webhook (cwh) management
+alias cwh-register='curl -sL https://raw.githubusercontent.com/htlin222/claude-with-webhook/main/remote-install.sh | bash'
+alias cwh-unregister='curl -sL https://raw.githubusercontent.com/htlin222/claude-with-webhook/main/remote-uninstall.sh | bash'
+alias cwh-start='~/.claude-webhook/start'
+alias cwh-stop='~/.claude-webhook/stop'
+alias cwh-repos='cat ~/.claude-webhook/repos.conf'
+
 alias gha-last-fail='gh run view --log-failed'
 # 追蹤最近一次 run 的執行狀況（像看 live log）
 alias gha-watch='gh run watch --compact --exit-status'
