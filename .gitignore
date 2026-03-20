@@ -89,3 +89,4 @@ docs/**/*_files/
 *.zwc
 *.zip
 config.symlink/code-server/*
+git/gitconfig.symlink
