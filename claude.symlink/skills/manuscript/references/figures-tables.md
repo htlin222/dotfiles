@@ -37,6 +37,21 @@ Then design everything — layout, color, labels, annotations — to serve that 
 | Annotate | Label directly on the figure, not just in the legend |
 | Accessibility | Distinguish by shape/pattern in addition to color |
 
+## Figures as Paper Skeleton
+
+### Create Placeholder Figures Early
+
+Before writing prose, sketch your key figures — even rough whiteboard drawings. If your figures alone tell the complete story, your argument is solid. Figures are "a paper within the paper": many readers will understand your work primarily through figures and captions.
+
+### Caption Depth
+
+Captions must explain two things:
+
+1. **What to observe**: "Survival curves diverge after day 14"
+2. **Why it matters**: "indicating that trajectory classification provides prognostic information beyond the acute phase"
+
+A caption that only describes the visual encoding ("Blue = Group 1, Red = Group 2") is incomplete. The reader should grasp your finding from the caption alone.
+
 ## Figure Legends: Self-Contained Documents
 
 A reader should understand the figure from the legend alone, without reading the paper.

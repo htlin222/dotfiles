@@ -142,6 +142,40 @@ Use the last sentence of a section to foreshadow the next, and the first sentenc
 - P-values: three decimal places (p=0.003)
 - Keep precision consistent for each type throughout the manuscript
 
+## Additional Style Rules
+
+### Tense Consistency
+
+- **Past tense** for your specific results: "We found...", "Mortality was higher..."
+- **Present tense** for established facts and generalizations: "LDH reflects tissue damage", "Trajectory modeling identifies subgroups"
+- **Present tense** when referencing prior work as established knowledge: "Smith (2020) reports..." (the finding still stands)
+
+### Words and Constructions to Avoid
+
+| Avoid | Why | Alternative |
+|-------|-----|-------------|
+| Exclamation marks (!) | Never appropriate in scientific writing | Remove entirely |
+| provides / enables / allows | Vague attribution — hides the actual effect | State the direct effect: "predicts", "reduces", "identifies" |
+| paramount / unique / novel | Overclaiming — "unique" means literally one-of-a-kind | important / distinct / new |
+| "We can compute X" | Hedged action — sounds tentative | "We compute X" |
+| "We aim to exploit" | Distancing — just do it | "We exploit" / "We use" |
+| "In this section we describe..." | Meta-narration — wastes space | Delete and just describe |
+
+### Citation Placement
+
+Never start a sentence with a citation as the grammatical subject:
+
+| Bad | Good |
+|-----|------|
+| "Smith et al. (2020) demonstrated that..." | "Single-timepoint studies have shown limited predictive value (Smith 2020)." |
+| "Chen (2019) reported increased mortality..." | "Delayed recognition is associated with increased mortality (Chen 2019)." |
+
+The finding matters more than who reported it. Make the **science** the subject.
+
+### The "Provides" Test
+
+Search your draft for "provides", "enables", "allows", and "facilitates". Each instance usually hides a stronger, more specific verb. Replace with what the subject actually **does**.
+
 ## Checklist
 
 - [ ] Subjects are research variables or actors, not passive constructions
@@ -153,3 +187,7 @@ Use the last sentence of a section to foreshadow the next, and the first sentenc
 - [ ] Transitions show logical relationships, not just sequence
 - [ ] Numbers formatted consistently throughout
 - [ ] Effect estimates always paired with confidence intervals
+- [ ] No exclamation marks anywhere in the manuscript
+- [ ] Sentences do not begin with citations as subjects
+- [ ] Tense usage is consistent (past for results, present for established facts)
+- [ ] No vague verbs (provides, enables, allows) — replaced with specific actions

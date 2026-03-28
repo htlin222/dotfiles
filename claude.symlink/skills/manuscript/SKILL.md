@@ -32,9 +32,32 @@ Before writing any paragraph, ask: **What role does this play in my argument?** 
 Copy and track progress through each section:
 
 ### Pre-Writing
+- [ ] Define your **nugget**: the single insight that makes your problem solvable
 - [ ] Define your **one-sentence argument** (what gap you fill and why it matters)
+- [ ] Write a **3-sentence elevator pitch** (problem → insight → result)
 - [ ] Identify your target journal and its conventions
 - [ ] Outline the logical chain: Gap → Approach → Key Finding → Implication
+- [ ] Draft **placeholder figures** — they are the paper's skeleton
+- [ ] Identify your audience (clinicians, methodologists, policy makers?)
+- [ ] Write a shitty first draft early — perfection comes in revision
+
+**Detailed guidance:** [references/process.md](references/process.md)
+
+### Title
+- [ ] Condenses the **key insight** (not just the topic)
+- [ ] Searchable — contains main variables, population, and study design
+- [ ] Under journal character limit
+- [ ] No abbreviations (unless universally recognized like ICU, HIV)
+
+### Abstract
+- [ ] Follows journal's required **structured format** (Background/Methods/Results/Conclusions)
+- [ ] Background uses **Goal → Problem → Solution** rhythm
+- [ ] Results state primary outcome with **effect size and 95% CI**
+- [ ] Conclusions state the **clinical implication**, not just the statistical finding
+- [ ] No claims absent from the main text
+- [ ] Word count within journal limit
+
+**Detailed guidance:** [references/abstract.md](references/abstract.md)
 
 ### Introduction
 - [ ] Opens with a **specific clinical dilemma**, not a textbook sentence
@@ -99,6 +122,8 @@ Copy and track progress through each section:
 
 | Section | Goal | Fatal Mistake | Fix |
 |---------|------|--------------|-----|
+| Title | Condense key insight | Generic topic label ("A Study of X and Y") | Include variables + finding direction |
+| Abstract | Standalone argument | Missing structured rhythm | Goal → Problem → Solution in each sub-section |
 | Introduction | Build logical case for your study | Starting with "X is a leading cause of death" | Open with a specific clinical dilemma |
 | Methods | Earn reader trust | Listing tools without justification | Explain *why* for key decisions |
 | Results | Present facts that advance the argument | Smuggling interpretation ("suggests...") | Facts only; interpretation in Discussion |
@@ -117,6 +142,36 @@ Copy and track progress through each section:
 | Self-destructive Limitations | Listing every weakness until the study sounds worthless | Acknowledge → mitigate → contextualize |
 | Hedge stacking | "It is possible that this may potentially suggest..." | One hedge per claim: "This suggests..." |
 | Empty adjectives | "Interestingly, we found..." | Show the contrast or surprise directly |
+| Afterthought title | "A Study of LDH Levels in ICU Patients" | Condense the nugget: "Serial LDH Trajectories Predict 90-Day Mortality in Critically Ill Patients" |
+| No defined nugget | Starting to write without a core argument | Define the one insight that makes your problem solvable before writing |
+| Rough draft to senior author | Sending a messy draft expecting rescue | Polish first; let them focus on argument, not grammar |
+
+## Reviewer Psychology
+
+Reviewers must: (1) summarize your paper, (2) identify strengths, (3) evaluate validity, (4) find weaknesses. Support them:
+
+| Reviewer Need | How to Help |
+|--------------|-------------|
+| Summarize | Crystal-clear abstract + Discussion opener = easy summary |
+| Identify strengths | Explicit contribution statements in Introduction's final paragraph |
+| Evaluate validity | Sensitivity analyses with clear reporting in Results |
+| Find weaknesses | Honest limitations section (they will find them regardless) |
+
+If a reviewer cannot quickly summarize your paper, your structure has failed — not the reviewer.
+
+**Detailed guidance:** [references/process.md](references/process.md)
+
+## Proofreading Protocol
+
+- [ ] Read for **argument flow** — does the logic build from Introduction through Conclusion?
+- [ ] Read every **word, caption, and abbreviation** — detail pass
+- [ ] Read as a **naïve reader** — where do you get confused?
+- [ ] Read as a **hostile reviewer** — what would you attack?
+- [ ] Verify all **numbers in text match** their corresponding tables and figures
+- [ ] Have at least **two co-authors** proofread independently
+- [ ] **Assume your bibliography has errors** — verify every citation
+
+**Detailed guidance:** [references/process.md](references/process.md)
 
 ## Quick Scan
 
