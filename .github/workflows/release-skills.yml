@@ -1,0 +1,66 @@
+name: Release Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "claude.symlink/skills/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Auto-tag
+        id: tag
+        run: |
+          date_tag="skill-$(date +%Y%m%d-%H%M%S)"
+          git tag "$date_tag"
+          git push origin "$date_tag"
+          echo "tag=$date_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Find and zip skill folders
+        run: |
+          mkdir -p dist
+          for dir in claude.symlink/skills/*/; do
+            if [ -f "$dir/SKILL.md" ]; then
+              skill_name=$(basename "$dir")
+              echo "Packaging skill: $skill_name"
+              (cd "$dir" && zip -r "../../../dist/${skill_name}.zip" .)
+            fi
+          done
+          echo "## Packaged skills:" >> "$GITHUB_STEP_SUMMARY"
+          ls dist/*.zip | while read f; do
+            echo "- $(basename "$f")" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Generate skill index
+        run: |
+          echo "# Claude Code Skills" > dist/README.md
+          echo "" >> dist/README.md
+          echo "| Skill | Description |" >> dist/README.md
+          echo "|-------|-------------|" >> dist/README.md
+          for dir in claude.symlink/skills/*/; do
+            if [ -f "$dir/SKILL.md" ]; then
+              skill_name=$(basename "$dir")
+              # Extract description from SKILL.md frontmatter
+              desc=$(grep -m1 '^description:' "$dir/SKILL.md" | sed 's/^description: *//')
+              echo "| ${skill_name} | ${desc:-—} |" >> dist/README.md
+            fi
+          done
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: "Skills ${{ steps.tag.outputs.tag }}"
+          files: dist/*.zip
+          body_path: dist/README.md
