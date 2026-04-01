@@ -39,25 +39,30 @@ jobs:
           done
           wait
 
-          # Also bundle everything into one all-skills.zip
-          (cd dist && zip -q ../dist/all-skills.zip *.zip) || true
+          # Rename .zip to .skill
+          for f in dist/*.zip; do
+            mv "$f" "${f%.zip}.skill"
+          done
 
-          echo "Packaged $(ls dist/*.zip | wc -l) zips"
+          # Also bundle everything into one all-skills.zip
+          (cd dist && zip -q ../dist/all-skills.zip *.skill) || true
+
+          echo "Packaged $(ls dist/*.skill | wc -l) skills"
 
       - name: Generate release body
         run: |
-          count=$(ls dist/*.zip | grep -cv all-skills || true)
+          count=$(ls dist/*.skill | grep -cv all-skills || true)
           cat > dist/BODY.md <<EOF
           ## Skills Catalog (${count} skills)
 
-          > Download individual skills or grab **all-skills.zip** for the full bundle.
+          > Download individual `.skill` files or grab **all-skills.zip** for the full bundle.
 
           | Skill | Description |
           |-------|-------------|
           EOF
 
-          for zip in dist/*.zip; do
-            skill=$(basename "$zip" .zip)
+          for f in dist/*.skill; do
+            skill=$(basename "$f" .skill)
             [ "$skill" = "all-skills" ] && continue
             desc=$(grep -m1 '^description:' "claude.symlink/skills/${skill}/SKILL.md" | sed 's/^description: *//')
             echo "| ${skill} | ${desc:-—} |" >> dist/BODY.md
@@ -70,5 +75,7 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: "Skills ${{ steps.tag.outputs.tag }}"
-          files: dist/*.zip
+          files: |
+            dist/*.skill
+            dist/all-skills.zip
           body_path: dist/BODY.md
