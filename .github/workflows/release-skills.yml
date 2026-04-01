@@ -27,35 +27,43 @@ jobs:
           git push origin "$date_tag"
           echo "tag=$date_tag" >> "$GITHUB_OUTPUT"
 
-      - name: Find and zip skill folders
+      - name: Package skills
         run: |
           mkdir -p dist
+
+          # Zip all skills in parallel
           for dir in claude.symlink/skills/*/; do
-            if [ -f "$dir/SKILL.md" ]; then
-              skill_name=$(basename "$dir")
-              echo "Packaging skill: $skill_name"
-              (cd "$dir" && zip -r "../../../dist/${skill_name}.zip" .)
-            fi
+            [ -f "$dir/SKILL.md" ] || continue
+            name=$(basename "$dir")
+            (cd "$dir" && zip -r -q "../../../dist/${name}.zip" .) &
           done
-          echo "## Packaged skills:" >> "$GITHUB_STEP_SUMMARY"
-          ls dist/*.zip | while read f; do
-            echo "- $(basename "$f")" >> "$GITHUB_STEP_SUMMARY"
+          wait
+
+          # Also bundle everything into one all-skills.zip
+          (cd dist && zip -q ../dist/all-skills.zip *.zip) || true
+
+          echo "Packaged $(ls dist/*.zip | wc -l) zips"
+
+      - name: Generate release body
+        run: |
+          count=$(ls dist/*.zip | grep -cv all-skills || true)
+          cat > dist/BODY.md <<EOF
+          ## Skills Catalog (${count} skills)
+
+          > Download individual skills or grab **all-skills.zip** for the full bundle.
+
+          | Skill | Description |
+          |-------|-------------|
+          EOF
+
+          for zip in dist/*.zip; do
+            skill=$(basename "$zip" .zip)
+            [ "$skill" = "all-skills" ] && continue
+            desc=$(grep -m1 '^description:' "claude.symlink/skills/${skill}/SKILL.md" | sed 's/^description: *//')
+            echo "| ${skill} | ${desc:-—} |" >> dist/BODY.md
           done
 
-      - name: Generate skill index
-        run: |
-          echo "# Claude Code Skills" > dist/README.md
-          echo "" >> dist/README.md
-          echo "| Skill | Description |" >> dist/README.md
-          echo "|-------|-------------|" >> dist/README.md
-          for dir in claude.symlink/skills/*/; do
-            if [ -f "$dir/SKILL.md" ]; then
-              skill_name=$(basename "$dir")
-              # Extract description from SKILL.md frontmatter
-              desc=$(grep -m1 '^description:' "$dir/SKILL.md" | sed 's/^description: *//')
-              echo "| ${skill_name} | ${desc:-—} |" >> dist/README.md
-            fi
-          done
+          sed -i 's/^          //' dist/BODY.md
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -63,4 +71,4 @@ jobs:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: "Skills ${{ steps.tag.outputs.tag }}"
           files: dist/*.zip
-          body_path: dist/README.md
+          body_path: dist/BODY.md
