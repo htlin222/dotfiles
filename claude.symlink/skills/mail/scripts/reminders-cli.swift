@@ -34,8 +34,10 @@ struct RemindersCLI {
                 exit(3)
             }
             addReminder(store: store, name: args[2], body: args[3], due: args[4], priority: args[5])
+        case "batch-add":
+            batchAddReminders(store: store)
         default:
-            printError("Unknown command: \(command). Use 'fetch' or 'add'.")
+            printError("Unknown command: \(command). Use 'fetch', 'add', or 'batch-add'.")
             exit(3)
         }
     }
@@ -130,6 +132,67 @@ struct RemindersCLI {
             print("OK")
         } catch {
             printError("Failed to save reminder: \(error.localizedDescription)")
+            exit(3)
+        }
+    }
+
+    static func batchAddReminders(store: EKEventStore) {
+        guard let inbox = findInboxCalendar(store: store) else {
+            printError("No 'Inbox' list found in Reminders.app")
+            exit(2)
+        }
+
+        var inputData = Data()
+        while let line = readLine(strippingNewline: false) {
+            inputData.append(Data(line.utf8))
+        }
+
+        guard let items = try? JSONSerialization.jsonObject(with: inputData) as? [[String: Any]] else {
+            printError("Invalid JSON array on stdin. Expected: [{\"name\":...,\"body\":...,\"due\":...,\"priority\":...}, ...]")
+            exit(3)
+        }
+
+        var added = 0
+        for item in items {
+            let name = item["name"] as? String ?? ""
+            let body = item["body"] as? String ?? ""
+            let due = item["due"] as? String ?? ""
+            let priority = item["priority"] as? String ?? "0"
+
+            let reminder = EKReminder(eventStore: store)
+            reminder.title = name
+            reminder.notes = body
+            reminder.calendar = inbox
+
+            if let p = Int(priority) {
+                reminder.priority = p
+            }
+
+            if !due.isEmpty {
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd HH:mm"
+                df.timeZone = TimeZone.current
+                if let date = df.date(from: due) {
+                    reminder.dueDateComponents = Calendar.current.dateComponents(
+                        [.year, .month, .day, .hour, .minute],
+                        from: date
+                    )
+                }
+            }
+
+            do {
+                try store.save(reminder, commit: false)
+                added += 1
+            } catch {
+                printError("Failed to save '\(name)': \(error.localizedDescription)")
+            }
+        }
+
+        do {
+            try store.commit()
+            print("OK:\(added)")
+        } catch {
+            printError("Failed to commit batch: \(error.localizedDescription)")
             exit(3)
         }
     }

@@ -237,7 +237,8 @@
 	"enabledPlugins": {
 		"superpowers@superpowers-dev": true,
 		"dev-workflows-frontend@claude-code-workflows": true,
-		"typescript-lsp@claude-plugins-official": true
+		"typescript-lsp@claude-plugins-official": true,
+		"swift-lsp@claude-plugins-official": true
 	},
 	"alwaysThinkingEnabled": true,
 	"voiceEnabled": true,

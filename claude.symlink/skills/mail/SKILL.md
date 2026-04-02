@@ -15,66 +15,32 @@ Reads macOS Mail.app, identifies actionable emails, and creates reminders in Rem
 
 ## Workflow
 
-### Step 1: Ensure Apps Are Running
+### Batch A: Fetch Everything (PARALLEL)
 
-```bash
-osascript -e 'tell application "Mail" to activate'
-osascript -e 'tell application "Reminders" to activate'
-```
+**Issue ALL of these tool calls in a single parallel message:**
 
-Wait 2 seconds for apps to initialize.
+1. **Bash** — Activate apps + fetch emails (combined to avoid extra round-trip):
 
-### Step 2: Parse Time Range
+   ```bash
+   osascript -e 'tell application "Mail" to activate' && osascript -e 'tell application "Reminders" to activate' && sleep 1 && osascript ~/.claude/skills/mail/scripts/fetch-mail.applescript <days>
+   ```
 
-- Default: 1 day
-- If user provides args like "7 days" or "14 days", extract the number
-- The number is passed as the `<days>` argument to the fetch script
+   - Default `<days>` is 1. If user provides args like "7 days", "48h", or "14 days", extract the number.
+   - Returns JSON array. Each email object has: `id`, `account`, `subject`, `from`, `date`, `read`, `preview`.
 
-### Step 3: Fetch All Emails
+2. **Read** — Load dedup database from `/tmp/mail-already-processed.json`:
+   - If the file does not exist (Read fails/hook blocks), initialize it:
+     - **Write** `/tmp/mail-already-processed.json` with: `{"processed_ids":[],"last_run":""}`
+     - Then **Read** it
 
-Run the AppleScript to fetch emails from ALL accounts, ALL inboxes (matches both "INBOX" and "收件匣"):
+3. **Bash** — Fetch existing reminders for dedup:
+   ```bash
+   ~/.claude/skills/mail/scripts/reminders-cli fetch
+   ```
 
-```bash
-osascript ~/.claude/skills/mail/scripts/fetch-mail.applescript <days>
-```
+**After Batch A completes**, filter out emails whose `id` is already in `processed_ids`. Only analyze NEW emails.
 
-This returns a JSON array. Each email object has: `id`, `account`, `subject`, `from`, `date`, `read`, `preview`.
-
-**Important**: The output may be large. If it fails or is too slow, reduce the day count or process account-by-account.
-
-### Step 4: Load Dedup Database
-
-Use the **Read** tool (not bash `cat`) to load previously processed emails:
-
-1. Try to **Read** `/tmp/mail-already-processed.json`
-2. If the file does not exist (Read fails/hook blocks), initialize it:
-   - **Write** `/tmp/mail-already-processed.json` with: `{"processed_ids":[],"last_run":""}`
-   - Then **Read** it
-
-The file structure:
-
-```json
-{
-  "processed_ids": ["msg-id-1", "msg-id-2"],
-  "last_run": "2026-03-08T10:00:00"
-}
-```
-
-Filter out emails whose `id` is already in `processed_ids`. Only analyze NEW emails.
-
-### Step 5: Fetch Existing Reminders
-
-Fetch incomplete reminders from the "Inbox" list for deduplication:
-
-```bash
-~/.claude/skills/mail/scripts/reminders-cli fetch
-```
-
-Returns JSON array with `name`, `body`, `due` fields. Runs in <1 second via EventKit.
-
-**First run**: macOS will show a system permission dialog for Reminders access. Grant it once and subsequent runs need no interaction.
-
-### Step 6: Analyze Emails for Actionable Items
+### Step B: Analyze Emails for Actionable Items
 
 For each new email, determine if it requires action. Classify into:
 
@@ -96,13 +62,13 @@ For each new email, determine if it requires action. Classify into:
 For each actionable email, extract:
 
 - **name**: Short task description (not the raw subject — rewrite for clarity)
-- **body**: Key details — who sent it, what's needed, any action URLs (see Step 6b)
+- **body**: Key details — who sent it, what's needed, any action URLs (see Batch C)
 - **due**: Best estimate of deadline in "YYYY-MM-DD HH:MM" format. If no explicit deadline, set reasonable default (e.g., next business day for requests, meeting time for prep)
 - **priority**: 1 (high/urgent), 5 (medium/normal), 9 (low/FYI)
 
-### Step 6b: Extract URLs from Actionable Emails
+### Batch C: Extract URLs (PARALLEL)
 
-Many emails encode links only in HTML (base64-encoded MIME), so the plain text preview misses them. For each **actionable** email, extract URLs:
+**Issue ALL extract-urls.sh calls in a single parallel message** — one Bash tool call per actionable email:
 
 ```bash
 ~/.claude/skills/mail/scripts/extract-urls.sh "<message-id>"
@@ -111,15 +77,16 @@ Many emails encode links only in HTML (base64-encoded MIME), so the plain text p
 Returns one URL per line, filtered to remove tracking pixels, images, and social media links.
 
 **How to use extracted URLs**:
+
 - Include the most relevant action URL in the reminder **body** (e.g., sign-off links, registration URLs, form links)
 - If multiple URLs are returned, pick the one most relevant to the required action (e.g., a token/report URL, not the homepage)
-- Show actionable URLs in the summary report (Step 10) under a **Link** column
+- Show actionable URLs in the summary report under a **Link** column
 
-**Performance note**: Only run this for actionable emails (typically 1-5 per batch), not for all emails. Each call takes ~2-3 seconds due to AppleScript + MIME decoding.
+**Performance note**: Only run this for actionable emails (typically 1-5 per batch). Each call takes ~2-3s but they run in parallel, so total wall time ≈ one call.
 
-### Step 7: Deduplicate Against Existing Reminders
+### Step D: Deduplicate Against Existing Reminders
 
-Before adding, check if a similar reminder already exists by comparing:
+Before adding, check if a similar reminder already exists (from Batch A's reminders fetch) by comparing:
 
 - Exact or fuzzy match on reminder name
 - Same due date
@@ -127,24 +94,46 @@ Before adding, check if a similar reminder already exists by comparing:
 
 Skip any reminder that would be a duplicate.
 
-### Step 8: Add Reminders
+### Step E: Add Reminders (BATCH)
 
-For each new actionable item, run:
+Use the batch-add command to create all reminders in a single process invocation:
+
+```bash
+printf '%s' '<JSON_ARRAY>' | ~/.claude/skills/mail/scripts/reminders-cli batch-add
+```
+
+Where `<JSON_ARRAY>` is a JSON array of objects:
+
+```json
+[
+  {
+    "name": "Task title",
+    "body": "Details and context",
+    "due": "YYYY-MM-DD HH:MM",
+    "priority": "1"
+  },
+  {
+    "name": "Another task",
+    "body": "More details",
+    "due": "YYYY-MM-DD HH:MM",
+    "priority": "5"
+  }
+]
+```
+
+Priority values: `"1"` (high/urgent), `"5"` (medium/normal), `"9"` (low/FYI).
+
+Returns `OK:<count>` on success.
+
+**Shell escaping**: The JSON must be valid. Use `printf '%s'` to pipe JSON to stdin. Avoid single quotes inside the JSON — use escaped double quotes for string values.
+
+**Fallback**: If batch-add fails, fall back to individual `reminders-cli add` calls — issue them ALL in a single parallel message:
 
 ```bash
 ~/.claude/skills/mail/scripts/reminders-cli add "<name>" "<body>" "<due_date>" "<priority>"
 ```
 
-Where:
-
-- `<name>`: reminder title (keep under 80 chars)
-- `<body>`: details and context
-- `<due_date>`: format "YYYY-MM-DD HH:MM" or empty string "" for no due date
-- `<priority>`: 1, 5, or 9
-
-**Shell escaping**: Be careful with quotes and special characters in name/body. Use single quotes around arguments and escape any internal single quotes.
-
-### Step 9: Update Dedup Database
+### Step F: Update Dedup Database
 
 After processing, update `/tmp/mail-already-processed.json`:
 
@@ -163,7 +152,7 @@ Use the **Write** tool (not bash heredoc/redirect) to write the updated JSON:
 
 **Important**: Do NOT use `cat > file << EOF` — the `check-file-exists` hook will block the `>` redirect. Always use the Write tool for this file.
 
-### Step 10: Report Summary
+### Step G: Report Summary
 
 Present results to user in a table:
 
