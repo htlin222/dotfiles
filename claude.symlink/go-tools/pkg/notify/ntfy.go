@@ -2,28 +2,36 @@
 package notify
 
 import (
+	"os"
 	"os/exec"
 	"runtime"
 )
 
-const defaultTopic = "lizard"
+const fallbackTopic = "3efa6497d3b3"
+
+func topic() string {
+	if t := os.Getenv("NTFY_TOPIC"); t != "" {
+		return t
+	}
+	return fallbackTopic
+}
 
 // Send sends a notification via ntfy + sound (fire-and-forget).
 func Send(title, body string) error {
 	playSound()
-	return SendToTopic(defaultTopic, title, body)
+	return SendToTopic(topic(), title, body)
 }
 
 // SendToTopic sends a notification to a specific ntfy topic (fire-and-forget).
-func SendToTopic(topic, title, body string) error {
-	cmd := exec.Command("ntfy", "publish", "--markdown", "--title", title, topic, body)
+func SendToTopic(t, title, body string) error {
+	cmd := exec.Command("ntfy", "publish", "--markdown", "--title", title, t, body)
 	return cmd.Start()
 }
 
 // SendSimple sends a simple notification without a title (fire-and-forget).
 func SendSimple(body string) error {
 	playSound()
-	cmd := exec.Command("ntfy", "publish", "--markdown", defaultTopic, body)
+	cmd := exec.Command("ntfy", "publish", "--markdown", topic(), body)
 	return cmd.Start()
 }
 

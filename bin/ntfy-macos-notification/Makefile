@@ -1,5 +1,8 @@
 .PHONY: install uninstall start stop restart status logs help
 
+DOTFILES    := $(realpath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
+-include $(DOTFILES)/.env
+
 LABEL       := sh.ntfy.client
 PLIST_SRC   := sh.ntfy.client.plist
 CONFIG_SRC  := client.yml
@@ -9,6 +12,7 @@ CONFIG_DEST := $(CONFIG_DIR)/client.yml
 NTFY_BIN    := $(shell command -v ntfy 2>/dev/null)
 LOG_FILE    := /tmp/ntfy.log
 ERR_FILE    := /tmp/ntfy.err
+NTFY_TOPIC  ?= ntfy-default
 
 # --- Main targets ---
 
@@ -18,7 +22,7 @@ help: ## Show this help
 
 install: _check-brew _install-ntfy _install-config _install-plist _load ## Install ntfy client service
 	@echo "✓ ntfy macOS notification service installed and running"
-	@echo "  topic: lizard"
+	@echo "  topic: $(NTFY_TOPIC)"
 	@echo "  config: $(CONFIG_DEST)"
 	@echo "  plist:  $(PLIST_DEST)"
 	@echo "  logs:   $(LOG_FILE)"
@@ -60,12 +64,8 @@ _install-ntfy:
 
 _install-config:
 	@mkdir -p "$(CONFIG_DIR)"
-	@if [ -f "$(CONFIG_DEST)" ]; then \
-		echo "✓ config exists: $(CONFIG_DEST) (skipped)"; \
-	else \
-		cp $(CONFIG_SRC) "$(CONFIG_DEST)"; \
-		echo "✓ config installed: $(CONFIG_DEST)"; \
-	fi
+	@sed "s|__NTFY_TOPIC__|$(NTFY_TOPIC)|g" $(CONFIG_SRC) > "$(CONFIG_DEST)"
+	@echo "✓ config installed: $(CONFIG_DEST) (topic=$(NTFY_TOPIC))"
 
 _install-plist:
 	@NTFY=$$(command -v ntfy); \

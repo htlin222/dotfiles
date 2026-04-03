@@ -477,6 +477,9 @@ export PATH=/usr/local/go/bin:$PATH
 # HTTP Proxy (sourced from separate config file for security)
 [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
 
+# Dotfiles .env (secrets not committed to git)
+[[ -f "$DOTFILES/.env" ]] && export $(grep -v '^#' "$DOTFILES/.env" | xargs)
+
 # bun completions
 [ -s "/home/htlin222/.bun/_bun" ] && source "/home/htlin222/.bun/_bun"
 
