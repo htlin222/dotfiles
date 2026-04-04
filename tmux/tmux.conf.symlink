@@ -105,8 +105,10 @@ bind -n S-Down run-shell "$HOME/.dotfiles/shellscripts/tmux_claude_nav.sh next"
 bind T display-popup -E "sesh connect \"$(sesh list | fzf)\""
 
 set -g mouse on  # Let terminal handle selection natively (Ghostty over SSH)
-# Mouse scroll enters copy mode automatically
-bind -n WheelUpPane if-shell -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e; send-keys -M'
+# Mouse: pass events to app in alternate screen / copy-mode / mouse-enabled panes
+# Otherwise enter copy-mode (scroll) or start selection (drag)
+# Ref: https://github.com/tmux/tmux/issues/3705
+bind -n WheelUpPane { if -F '#{||:#{alternate_on},#{pane_in_mode},#{mouse_any_flag}}' { send -M } { copy-mode -e } }
 bind -n WheelDownPane send-keys -M
 # Lower escape timing from 500ms to 50ms for quicker response to scroll-buffer access.
 set -s escape-time 50
@@ -211,6 +213,8 @@ TMUX_FZF_OPTIONS="-w 60% -h 60% -m  --border=none --layout=reverse  --padding=1 
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 run '~/.tmux/plugins/tpm/tpm'
+
+bind -n MouseDrag1Pane { if -F '#{||:#{alternate_on},#{pane_in_mode},#{mouse_any_flag}}' { send -M } { copy-mode -M } }
 
 # Ref: [gpakosz/.tmux: 🇫🇷 Oh my tmux! My self-contained, pretty & versatile tmux configuration made with ❤️](https://github.com/gpakosz/.tmux)
 # [My .tmux.conf for tmux 2.1 (with fixes for mouse breakage)](https://gist.github.com/subfuzion/814b3360e9f0b2d89c08)
