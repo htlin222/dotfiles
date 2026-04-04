@@ -1,221 +1,39 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": [
-    "oh-my-opencode",
-    "opencode-antigravity-auth@1.5.1",
-    "opencode-openai-codex-auth"
-  ],
-  "provider": {
-    "google": {
-      "models": {
-        "antigravity-gemini-3-flash": {
-          "attachment": true,
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "name": "Gemini 3 Flash (Antigravity)"
-        },
-        "antigravity-gemini-3-pro-high": {
-          "attachment": true,
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "name": "Gemini 3 Pro High (Antigravity)",
-          "thinking": true
-        },
-        "antigravity-gemini-3-pro-low": {
-          "attachment": true,
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "name": "Gemini 3 Pro Low (Antigravity)",
-          "thinking": true
-        }
-      },
-      "name": "Google"
-    },
-    "ollama": {
-      "models": {
-        "minimax-m2.5:cloud": {
-          "_launch": true,
-          "limit": {
-            "context": 204800,
-            "output": 128000
-          },
-          "name": "minimax-m2.5:cloud"
-        }
-      },
-      "name": "Ollama (local)",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "http://127.0.0.1:11434/v1"
-      }
-    },
-    "openai": {
-      "models": {
-        "gpt-5.1-codex-max": {
-          "limit": {
-            "context": 272000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "name": "GPT 5.1 Codex Max (OAuth)",
-          "variants": {
-            "high": {
-              "reasoningEffort": "high",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
-            "low": {
-              "reasoningEffort": "low",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
-            "medium": {
-              "reasoningEffort": "medium",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            }
-          }
-        },
-        "gpt-5.2": {
-          "limit": {
-            "context": 272000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "name": "GPT 5.2 (OAuth)",
-          "variants": {
-            "high": {
-              "reasoningEffort": "high",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
-            "low": {
-              "reasoningEffort": "low",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
-            "medium": {
-              "reasoningEffort": "medium",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
-            "none": {
-              "reasoningEffort": "none",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            }
-          }
-        },
-        "gpt-5.2-codex": {
-          "limit": {
-            "context": 272000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "name": "GPT 5.2 Codex (OAuth)",
-          "variants": {
-            "high": {
-              "reasoningEffort": "high",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
-            "low": {
-              "reasoningEffort": "low",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
-            "medium": {
-              "reasoningEffort": "medium",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            }
-          }
-        }
-      },
-      "name": "OpenAI",
-      "options": {
-        "include": [
-          "reasoning.encrypted_content"
-        ],
-        "reasoningEffort": "medium",
-        "reasoningSummary": "auto",
-        "store": false,
-        "textVerbosity": "medium"
-      }
-    }
-  }
+	"$schema": "https://opencode.ai/config.json",
+	"provider": {
+		"kfsyscc_vllm": {
+			"npm": "@ai-sdk/openai-compatible",
+			"name": "KFSYSCC vLLM",
+			"options": {
+				"baseURL": "https://vllm2.kfsyscc.org/v1"
+			},
+			"models": {
+				"openai/gpt-oss-120b": {
+					"name": "gpt-oss-120b",
+					"limit": {
+						"context": 131072,
+						"output": 32768
+					}
+				}
+			}
+		}
+	},
+	"model": "kfsyscc_vllm/openai/gpt-oss-120b",
+	"agent": {
+		"build": {
+			"tools": {
+				"skill": false
+			}
+		},
+		"plan": {
+			"tools": {
+				"skill": false
+			}
+		},
+		"general": {
+			"tools": {
+				"skill": false
+			}
+		}
+	}
 }
