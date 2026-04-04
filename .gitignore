@@ -59,6 +59,9 @@ claude.symlink/*
 !claude.symlink/*.sh
 !claude.symlink/go-tools/
 
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+
 **/logs/
 **/codebase-maps/
 
