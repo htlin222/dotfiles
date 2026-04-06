@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Debug errors, test failures, and unexpected behavior with log analysis and correlation. Use when encountering issues, error messages, analyzing logs, or investigating production errors.
+description: Debug errors and unexpected behavior with log analysis. Use for issues and error messages.
 ---
 
 # Debug

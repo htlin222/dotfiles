@@ -1,6 +1,6 @@
 ---
 name: dx-optimizer
-description: Improve developer experience, tooling, and workflows. Use when setting up projects or reducing development friction.
+description: Improve developer experience and tooling. Use when setting up projects or reducing friction.
 ---
 
 # Developer Experience

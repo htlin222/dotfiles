@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: Refactor code for quality, reduce technical debt, and improve maintainability. Use for cleanup tasks and code improvements.
+description: Refactor code for quality and maintainability. Use for cleanup and tech debt reduction.
 ---
 
 # Code Refactoring

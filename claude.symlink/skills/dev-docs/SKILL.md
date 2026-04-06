@@ -1,6 +1,6 @@
 ---
 name: dev-docs
-description: Create comprehensive strategic plan and dev docs for large tasks. Invoke when starting large tasks that span multiple sessions.
+description: Create strategic plan and dev docs. Use when starting large multi-session tasks.
 allowed-tools: Bash, Read, Write, Glob, Grep, TodoWrite
 ---
 

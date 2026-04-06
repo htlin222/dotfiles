@@ -1,6 +1,37 @@
 {
 	"$schema": "https://opencode.ai/config.json",
 	"provider": {
+		"ollama": {
+			"npm": "@ai-sdk/openai-compatible",
+			"name": "Ollama",
+			"options": {
+				"baseURL": "http://localhost:11434/v1",
+				"apiKey": "ollama"
+			},
+			"models": {
+				"deepseek-coder:6.7b": {
+					"name": "deepseek-coder:6.7b",
+					"limit": {
+						"context": 16384,
+						"output": 4096
+					}
+				},
+				"qwen2.5-coder:1.5b": {
+					"name": "qwen2.5-coder:1.5b",
+					"limit": {
+						"context": 32768,
+						"output": 4096
+					}
+				},
+				"deepseek-coder-v2:16b": {
+					"name": "deepseek-coder-v2:16b",
+					"limit": {
+						"context": 32768,
+						"output": 4096
+					}
+				}
+			}
+		},
 		"kfsyscc_vllm": {
 			"npm": "@ai-sdk/openai-compatible",
 			"name": "KFSYSCC vLLM",
@@ -18,7 +49,7 @@
 			}
 		}
 	},
-	"model": "kfsyscc_vllm/openai/gpt-oss-120b",
+	"model": "ollama/qwen2.5-coder:1.5b",
 	"agent": {
 		"build": {
 			"tools": {

@@ -1,6 +1,6 @@
 ---
 name: vale
-description: Runs Vale prose linter on markdown/text files and auto-fixes issues. Use when the user asks to lint, proofread, or improve writing quality of markdown or text files.
+description: Run Vale prose linter and auto-fix issues. Use when linting or proofreading markdown/text.
 ---
 
 # Vale Lint & Fix

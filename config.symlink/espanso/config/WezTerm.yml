@@ -1,4 +1,4 @@
-filter_exec: WezTerm
+filter_exec: Ghostty
 extra_includes:
   - "../match/_cli.yml"
 extra_excludes:

@@ -1,6 +1,6 @@
 ---
 name: context-report
-description: Analyze Claude Code context efficiency for current project. Invoke when evaluating session efficiency or optimizing Claude Code usage.
+description: Analyze Claude Code context efficiency. Use when evaluating session token usage.
 allowed-tools: Bash(jq:*), Bash(find:*), Bash(wc:*), Bash(du:*), Bash(sort:*), Bash(uniq:*), Bash(head:*), Bash(cat:*), Bash(basename:*), Bash(dirname:*), Bash(bc:*), Bash(date:*), Bash(ls:*), Bash(tr:*)
 ---
 

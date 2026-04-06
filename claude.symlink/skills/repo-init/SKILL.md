@@ -1,6 +1,6 @@
 ---
 name: repo-init
-description: Initializes a public GitHub repo with CITATION.cff, citation.bib, LICENSE (MIT), AMA+APA CSL files, README.md with badges and citation block, and gh repo description. Use when creating a new repo, setting up project metadata, or when user mentions "repo init", "badges", "citation", "CITATION.cff", or "license setup".
+description: Initialize GitHub repo with CITATION.cff, LICENSE, README badges. Use for new repos.
 ---
 
 # Repo Init

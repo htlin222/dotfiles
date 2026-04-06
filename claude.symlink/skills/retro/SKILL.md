@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Review the current Claude Code session conversation. Extracts only human-readable content (user prompts and agent prose responses, skipping tool calls and tool results), then produces a structured retrospective report covering accomplishments, efficiency improvements, English corrections, learning recommendations, and CLAUDE.md suggestions. Use when the user asks to review, retrospect, or summarize the session — especially at the end of a work session.
+description: Session retrospective report. Use when reviewing or summarizing a work session.
 ---
 
 # Session Review Skill

@@ -1,6 +1,6 @@
 ---
 name: mail
-description: Reads Mail.app inboxes from all accounts, identifies actionable items, and adds reminders to Reminders.app with deduplication. Use when user asks to check email, process mail, or wants a mail summary. Trigger on "/mail", "check my mail", "email summary".
+description: Read Mail.app inboxes and create Reminders for actionable items. Use for email triage.
 ---
 
 # Mail Processor

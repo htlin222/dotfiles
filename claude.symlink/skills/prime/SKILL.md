@@ -1,6 +1,6 @@
 ---
 name: prime
-description: Load context for a new agent session by analyzing codebase structure and README. Use when starting a new session or needing to understand an unfamiliar codebase.
+description: Load codebase context by analyzing structure and README. Use when starting a new session.
 ---
 
 # Prime

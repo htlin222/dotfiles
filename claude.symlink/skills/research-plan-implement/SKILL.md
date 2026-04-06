@@ -1,6 +1,6 @@
 ---
 name: research-plan-implement
-description: Enforces a three-phase RPI workflow (Research, Plan, Implement) for code changes. Use when tackling non-trivial features, refactors, or bug fixes in medium-to-large codebases to prevent context waste and ensure correctness over speed.
+description: Three-phase RPI workflow (Research, Plan, Implement). Use for non-trivial code changes.
 ---
 
 # Research-Plan-Implement (RPI)

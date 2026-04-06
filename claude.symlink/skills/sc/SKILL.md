@@ -1,6 +1,6 @@
 ---
 name: sc
-description: Unified SuperClaude workflow skill with subcommands for analysis, building, documentation, git, implementation, and more. Use for any structured development workflow.
+description: Unified SuperClaude workflow with subcommands. Use for structured development workflows.
 ---
 
 # SuperClaude Unified Workflow

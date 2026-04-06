@@ -1,6 +1,6 @@
 ---
 name: test-auto
-description: Create test suites with unit, integration, and e2e tests. Use when setting up tests, improving coverage, or when user asks about testing.
+description: Create unit, integration, and e2e test suites. Use when setting up or improving tests.
 ---
 
 # Test Automation

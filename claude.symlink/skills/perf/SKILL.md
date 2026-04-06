@@ -1,6 +1,6 @@
 ---
 name: perf
-description: Profile applications, optimize bottlenecks, and implement caching. Use for performance issues or optimization tasks.
+description: Profile and optimize bottlenecks. Use for performance issues or caching strategies.
 ---
 
 # Performance Engineering

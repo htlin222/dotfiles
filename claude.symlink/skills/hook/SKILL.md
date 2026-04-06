@@ -1,6 +1,6 @@
 ---
 name: hook
-description: Hook control - enable, disable, and manage Claude Code hooks. Use when you need to manage, debug, or monitor Claude Code hooks for the current session.
+description: Enable, disable, and manage Claude Code hooks. Use for hook debugging or configuration.
 ---
 
 # Hook Management System

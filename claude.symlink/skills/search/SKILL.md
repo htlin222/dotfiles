@@ -1,6 +1,6 @@
 ---
 name: search
-description: Expert web research with advanced search techniques. Use for deep research, information gathering, or fact verification.
+description: Expert web research with advanced techniques. Use for deep research or fact verification.
 ---
 
 # Search Research

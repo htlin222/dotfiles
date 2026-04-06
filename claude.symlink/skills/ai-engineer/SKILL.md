@@ -1,6 +1,6 @@
 ---
 name: ai-engineer
-description: Build LLM applications, RAG systems, and prompt pipelines. Use for LLM features, chatbots, or AI-powered applications.
+description: Build LLM apps, RAG systems, and prompt pipelines. Use for AI-powered features.
 ---
 
 # AI Engineering

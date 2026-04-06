@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-description: Git checkpoint management - create, list, restore checkpoints. Invoke when starting risky changes or needing safe recovery points.
+description: Git checkpoint management. Use when starting risky changes or needing recovery points.
 allowed-tools: Bash, Read, Write, Glob
 ---
 

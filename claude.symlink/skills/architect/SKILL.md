@@ -1,6 +1,6 @@
 ---
 name: architect
-description: Design system architecture, APIs, and component interfaces. Use for architectural decisions and system design.
+description: Design system architecture and component interfaces. Use for architectural decisions.
 ---
 
 # System Architecture

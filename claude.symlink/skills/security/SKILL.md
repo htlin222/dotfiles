@@ -1,6 +1,6 @@
 ---
 name: security
-description: Security audits, vulnerability detection, and secure coding. Use for security reviews, auth implementation, or OWASP compliance.
+description: Security audits and secure coding. Use for vulnerability detection or auth implementation.
 ---
 
 # Security Audit

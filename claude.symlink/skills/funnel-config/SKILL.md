@@ -1,6 +1,6 @@
 ---
 name: funnel-config
-description: Manage Tailscale Funnel routes for multi-service coexistence. Use when checking funnel status, adding/removing service routes, diagnosing tunnel connectivity, or when "funnel", "tailscale", "tunnel", "port routing" is mentioned. Also use proactively when deploying new services that need external HTTPS access.
+description: Manage Tailscale Funnel routes. Use when configuring tunnels or external HTTPS access.
 ---
 
 # Tailscale Funnel Route Management

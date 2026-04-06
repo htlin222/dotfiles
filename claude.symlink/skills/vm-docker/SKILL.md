@@ -1,6 +1,6 @@
 ---
 name: vm-docker
-description: "Use when deploying Docker services on the local VM (hostname: vm, Pop!_OS) with Traefik reverse proxy and Homepage dashboard. Covers crane image workflow, Traefik file-provider registration, Homepage services.yaml entries, and compose templates on the traefik-proxy network."
+description: Deploy Docker services on VM with Traefik and Homepage. Use for VM container deploys.
 ---
 
 # Docker on VM with Traefik + Homepage

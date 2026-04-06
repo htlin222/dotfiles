@@ -1,12 +1,6 @@
 ---
 name: publish-the-skill
-description: >
-  Publish a skill folder as a .skill package to GitHub. Use when the user wants to
-  publish, release, or distribute a skill folder — creates a public GitHub repo with
-  description, README with badges, .gitignore, and a GitHub Action that zips the skill
-  folder into a .skill artifact and creates releases tagged by commit SHA.
-  Trigger on: "publish skill", "release skill", "make skill public", "distribute skill",
-  "package skill for GitHub", or when user has a SKILL.md folder ready for distribution.
+description: Publish a skill folder as a .skill package to GitHub. Use when distributing skills.
 ---
 
 # Publish The Skill

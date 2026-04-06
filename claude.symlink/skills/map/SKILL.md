@@ -1,6 +1,6 @@
 ---
 name: map
-description: Generate semantic codebase symbol map for precise code navigation. Use when starting work on unfamiliar codebase, before refactoring, or when you need to understand where classes/functions/interfaces are defined instead of using rg text-matching.
+description: Generate semantic codebase symbol map. Use when navigating unfamiliar code or before refactoring.
 ---
 
 # Codebase Symbol Map Generator

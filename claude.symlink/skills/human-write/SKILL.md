@@ -1,6 +1,6 @@
 ---
 name: human-write
-description: Use when polishing or reviewing English text to avoid AI-flavored vocabulary. Scans for LLM-preferred words identified by PubMed research (delve, meticulous, underscore, etc.) and suggests natural alternatives.
+description: Scan and replace AI-flavored vocabulary in English text. Use when polishing writing.
 ---
 
 # Human Write

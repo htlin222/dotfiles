@@ -1,6 +1,6 @@
 ---
 name: env-dx
-description: Scan the current environment for developer experience readiness — tools, runtimes, permissions, network, and container config. Use when entering a container, checking what's installed, auditing dev tools, or diagnosing missing dependencies.
+description: Scan environment for dev readiness — tools, runtimes, permissions. Use in new containers.
 ---
 
 # Environment DX Scanner

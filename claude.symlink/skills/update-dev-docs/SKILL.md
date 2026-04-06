@@ -1,6 +1,6 @@
 ---
 name: update-dev-docs
-description: Update dev docs before session compaction to capture progress. Use before compacting conversation, ending sessions, or switching tasks.
+description: Update dev docs before compaction. Use before ending sessions or switching tasks.
 ---
 
 # Update Dev Docs
