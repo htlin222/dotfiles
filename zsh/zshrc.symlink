@@ -487,12 +487,30 @@ export PATH=/usr/local/go/bin:$PATH
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Fix mosh + p10k exit hang - kill orphaned p10k workers
+# Fix mosh + p10k exit garbage (^C^C^C, )###, prediction artifacts)
+# Root cause: p10k async workers + mosh prediction race during PTY teardown
 zshexit() {
-  # Kill p10k worker processes spawned by this shell
-  pkill -P $$ 2>/dev/null
-  # Also kill by FIFO pattern if any remain
-  pkill -f "p10k.worker.*$$" 2>/dev/null
+  # 1. Reset terminal: disable bracketed-paste, show cursor, reset attrs, sane mode
+  #    Prevents mosh client from echoing literal ^C and prompt fragments
+  printf '\e[?2004l\e[?25h\e[0m\e[?1l\e>' 2>/dev/null
+  command stty sane 2>/dev/null
+
+  # 2. Disown all background jobs so they don't emit signals/output back to the PTY
+  disown -a 2>/dev/null
+
+  # 3. Graceful kill of direct children (p10k workers, gitstatusd, etc.)
+  pkill -TERM -P $$ 2>/dev/null
+  pkill -TERM -f "p10k.worker.*$$" 2>/dev/null
+  pkill -TERM -f "gitstatusd.*-s.*$$" 2>/dev/null
+
+  # 4. Force-kill stragglers in background so exit doesn't block
+  ( sleep 0.15; pkill -KILL -P $$ 2>/dev/null; pkill -KILL -f "p10k.worker.*$$" 2>/dev/null ) &!
+
+  # 5. If parent is mosh-server (i.e. not nested in tmux/screen), kill it
+  #    directly to skip mosh's UDP state-sync teardown that causes exit hangs.
+  if [[ $(ps -o comm= -p $PPID 2>/dev/null) == mosh-server ]]; then
+    kill -TERM $PPID 2>/dev/null
+  fi
 }
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

@@ -143,6 +143,29 @@ function killmarp() {
   pkill -f marp
 }
 
+# Force-exit a mosh session by killing its mosh-server ancestor.
+# Avoids the hang caused by mosh's UDP state-sync teardown on `exit`.
+# Walks up the process tree so only the current session's server dies.
+mosh-bye() {
+  emulate -L zsh
+  local pid=$$ server="" comm ppid
+  while (( pid > 1 )); do
+    comm=$(ps -o comm= -p $pid 2>/dev/null)
+    [[ $comm == mosh-server ]] && { server=$pid; break }
+    ppid=$(ps -o ppid= -p $pid 2>/dev/null | tr -d ' ')
+    [[ -z $ppid || $ppid == $pid ]] && break
+    pid=$ppid
+  done
+
+  if [[ -n $server ]]; then
+    print -u2 "mosh-bye: terminating mosh-server (PID $server)"
+    kill -TERM "$server" 2>/dev/null || kill -KILL "$server"
+  else
+    print -u2 "mosh-bye: no mosh-server ancestor found; falling back to exit"
+    exit
+  fi
+}
+
 # Make slide executable and present
 function make_exec_and_slide() {
   cd $HOME/Dropbox/slides/contents
