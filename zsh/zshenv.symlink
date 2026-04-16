@@ -2,3 +2,6 @@ if [ -e ~/.nvm ]; then
   [[ -s ~/.nvm/nvm.sh ]] && . ~/.nvm/nvm.sh
 fi
 . "$HOME/.cargo/env"
+
+# Auto-terminate idle mosh-server after 24h (tmux holds session state)
+export MOSH_SERVER_NETWORK_TMOUT=86400
