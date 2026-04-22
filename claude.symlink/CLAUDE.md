@@ -24,3 +24,5 @@ Config/docs (.md, CLAUDE.md, plans/\*, settings.json, Makefile, .gitignore, go-t
 - MCP.md - MCP server details
 - MODES.md - Mode details
 - PRINCIPLES.md - Design principles
+
+@RTK.md
