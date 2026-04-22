@@ -1,0 +1,34 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# LaTeX build artefacts
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/*.log
+manuscript/*.out
+manuscript/*.synctex.gz
+manuscript/*.toc
+
+# Raw data (regenerable from documented URLs)
+data/raw/*
+!data/raw/.gitkeep
+
+# Processed artefacts (regenerable)
+data/processed/*.tsv
+data/processed/*.txt
+data/processed/*.csv
+data/results/*.npz
+
+# Large supplementary files
+*.xlsx
+!assets/**/*.xlsx
+
+# macOS
+.DS_Store

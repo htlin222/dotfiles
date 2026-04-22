@@ -1,0 +1,90 @@
+name: build-and-release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      has_figures: ${{ steps.check_figures.outputs.has_figures }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: manuscript
+          latexmk_use_xelatex: false
+          args: -pdf -interaction=nonstopmode -file-line-error
+
+      - name: Verify PDF produced
+        run: |
+          test -s manuscript/main.pdf || { echo "main.pdf missing or empty"; exit 1; }
+
+      - name: Lint placeholder DOIs
+        run: |
+          if grep -q "10.0000/placeholder" manuscript/references.bib; then
+            echo "references.bib still contains 10.0000/placeholder entries"
+            exit 1
+          fi
+
+      - name: Check for figures
+        id: check_figures
+        run: |
+          shopt -s nullglob
+          FIGS=(manuscript/Fig*.pdf)
+          if [ ${#FIGS[@]} -gt 0 ]; then
+            echo "has_figures=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_figures=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage release artefacts
+        run: |
+          SLUG="${GITHUB_REPOSITORY#*/}"
+          mkdir -p release
+          cp manuscript/main.pdf "release/${SLUG}.pdf"
+          cp manuscript/main.tex "release/${SLUG}.tex"
+          cp manuscript/references.bib release/
+          if [ -d figures ]; then cp -r figures release/figures; fi
+          tar_extra=()
+          if compgen -G "manuscript/Fig*.pdf" >/dev/null; then
+            tar_extra+=(manuscript/Fig*.pdf)
+          fi
+          if [ -f docs/prereg.md ]; then
+            tar_extra+=(docs/prereg.md)
+          fi
+          tar -czf release/source-bundle.tar.gz \
+            manuscript/main.tex manuscript/references.bib \
+            manuscript/Makefile manuscript/latexmkrc \
+            analysis README.md LICENSE .github/workflows/release.yml \
+            "${tar_extra[@]}"
+          ls -la release/
+
+      - name: Upload PDF as workflow artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-pdf
+          path: release/*.pdf
+
+      - name: Attach artefacts to the tagged release
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.pdf
+            release/*.tex
+            release/references.bib
+            release/source-bundle.tar.gz
+          fail_on_unmatched_files: true
+          # Do NOT auto-generate release notes: user-supplied notes via
+          # `gh release create --notes` are the single source of truth.

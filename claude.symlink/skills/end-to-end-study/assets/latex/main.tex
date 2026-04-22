@@ -1,0 +1,134 @@
+%% Nature-Communications-style preprint template.
+%% Compile: latexmk -pdf main.tex (uses bibtex via latexmkrc).
+%% Engine: pdflatex by default. If authors or figures require Unicode, switch
+%% to xelatex by setting `$pdf_mode = 5;` in latexmkrc and compiling with
+%% `latexmk -xelatex`.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{microtype}
+\usepackage{authblk}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage[hidelinks,colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{setspace}
+%% Reference style: natbib numbered unsrtnat (Nature portfolio, BCJ, Leukemia,
+%% Cell Reports Medicine, npj Precision Oncology). For author-year journals
+%% (Genome Medicine, BMC), switch to
+%%   \usepackage[round,authoryear,sort]{natbib}
+%%   \bibliographystyle{plainnat}
+%% For Vancouver style (Briefings in Bioinformatics): \bibliographystyle{vancouver}.
+\usepackage[numbers,super,sort&compress]{natbib}
+\usepackage{titlesec}
+\usepackage{lineno}
+
+\titleformat{\section}{\fontsize{12}{14}\bfseries\sffamily}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\fontsize{11}{13}\bfseries\sffamily}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\fontsize{10}{12}\itshape\sffamily}{}{0em}{}
+\setlength{\parskip}{0.25\baselineskip}
+\setlength{\parindent}{0pt}
+\captionsetup{font=small,labelfont=bf,labelsep=period}
+\renewcommand{\thefigure}{\arabic{figure}}
+\renewcommand{\familydefault}{\rmdefault}
+
+\title{\fontsize{15}{18}\bfseries\sffamily
+Placeholder title: one concrete finding in at most 15 words}
+
+\author[1,*]{Anonymous}
+\affil[1]{Placeholder affiliation.}
+\affil[*]{Correspondence: \texttt{author@example.org}.}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\vspace{-2em}
+
+\begin{abstract}
+\noindent
+\textbf{Background.}\, One sentence on field state and the gap.
+\textbf{Methods.}\, Pipeline summary, cohort sizes, validation strategy.
+\textbf{Results.}\, Headline quantitative finding with effect size and p-value; second finding; external validation; incremental-value benchmark; honest negative if any.
+\textbf{Conclusion.}\, What the paper does and does not claim; release statement.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords:} placeholder, placeholder, placeholder.
+
+\section{Introduction}\label{sec:intro}
+Field state and clinical / biological motivation\citep{placeholderCiteA}.
+
+Method primitive in one-sentence intuitions and foundational references\citep{placeholderCiteB}.
+
+The gap and the concrete contribution, numbered.
+
+\section{Results}\label{sec:results}
+
+\subsection{Study design and cohort composition}
+Describe cohorts; include age distributions, sample sizes, event counts, follow-up.
+
+\subsection{Core method result}
+\subsection{Stability and null-model results}
+\subsection{Primary outcome result}
+\subsection{External validation}
+\subsection{Incremental value over baseline}
+\subsection{Proportional-hazards diagnostics and calibration}
+\subsection{Molecular or mechanistic correlates}
+
+\section{Discussion}\label{sec:discussion}
+Central finding, three caveats, three positives, limitations, outlook.
+
+\section{Methods}\label{sec:methods}
+
+\subsection{Data sources and harmonisation}
+\subsection{Core method}
+\subsection{Stability and null}
+\subsection{Statistical tests}
+\subsection{Reproducibility}
+
+%% -------------------------------------------------------------------------
+%% Reporting-guideline compliance
+%% -------------------------------------------------------------------------
+%% Clinical-prediction manuscripts: attach a TRIPOD 2015 checklist as
+%% Supplementary Table ST1 (Collins et al., Ann Intern Med 2015).
+%% Observational studies: STROBE checklist.
+%% RCTs: CONSORT 2010.
+%% Diagnostic-accuracy studies: STARD 2015.
+%% Animal studies: ARRIVE 2.0.
+%% Name the guideline and attach a completed checklist; reviewers check.
+\subsection*{Reporting-guideline compliance}
+This study follows the \textbf{<TRIPOD / STROBE / CONSORT / STARD / ARRIVE>} reporting guideline. A completed checklist is provided as Supplementary Table ST1.
+
+\subsection*{Preregistration}
+The primary outcome, primary hypothesis and pre-specified secondary outcomes were recorded in \texttt{docs/prereg.md} at commit \texttt{<hash>} prior to any analysis touching the outcomes. Exploratory analyses are labelled as such.
+
+\subsection*{Data availability}
+Public datasets with URLs, accession numbers, and a persistent DOI (Zenodo / FigShare) for processed data where licensing allows.
+
+\subsection*{Code availability}
+Source code, LaTeX sources and compiled PDF at \url{https://github.com/<user>/<slug>} under the MIT licence. The exact commit tagged \texttt{v<MAJOR>.<MINOR>.<PATCH>} reproduces the figures and tables in this manuscript. Persistent code DOI via Zenodo: \texttt{10.5281/zenodo.<id>} (created via GitHub--Zenodo integration).
+
+\subsection*{Ethics and data-use statement}
+Both datasets used here are fully de-identified publicly released resources. No new human-subjects data were collected. The work falls under the scope of public-data reanalysis and did not require additional institutional review board approval under applicable guidelines.
+
+\subsection*{Acknowledgements}
+\subsection*{Author contributions}
+Following the CRediT taxonomy: \textbf{<Name>}: conceptualisation, methodology, software, formal analysis, writing -- original draft. \textbf{<Name>}: supervision, writing -- review and editing.
+
+\subsection*{Competing interests}
+The authors declare no competing interests.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}
