@@ -87,8 +87,8 @@ const (
 
 // Render outputs the statusline.
 func Render(data *protocol.StatuslineInput) {
-	// Get usage data
-	usage := GetUsageData()
+	// Get usage data (prefers stdin rate_limits, falls back to OAuth API)
+	usage := GetUsageData(data)
 
 	// Calculate values
 	model := data.Model.DisplayName

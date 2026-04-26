@@ -17,14 +17,37 @@ type UsageData struct {
 	WeeklyResetDate string
 }
 
-// GetUsageData fetches real usage data from Anthropic's OAuth API.
-func GetUsageData() *UsageData {
+// GetUsageData returns rate-limit usage, preferring the stdin-provided
+// rate_limits field (added by Claude Code) and falling back to the OAuth usage API.
+func GetUsageData(input *protocol.StatuslineInput) *UsageData {
 	data := &UsageData{
 		TimeLeft:        "--",
 		WeeklyResetDate: "--",
 	}
 
-	// Get OAuth token from macOS Keychain
+	// Prefer rate_limits from stdin JSON (no API call, never rate-limited)
+	if input != nil && input.RateLimits != nil {
+		got := false
+		if p := input.RateLimits.FiveHour; p != nil {
+			data.FiveHourPct = int(p.UsedPercentage)
+			if p.ResetsAt > 0 {
+				data.TimeLeft = formatTimeUntilEpoch(p.ResetsAt)
+			}
+			got = true
+		}
+		if p := input.RateLimits.SevenDay; p != nil {
+			data.WeeklyPct = int(p.UsedPercentage)
+			if p.ResetsAt > 0 {
+				data.WeeklyResetDate = formatResetDateEpoch(p.ResetsAt)
+			}
+			got = true
+		}
+		if got {
+			return data
+		}
+	}
+
+	// Fallback: OAuth token from macOS Keychain
 	cmd := exec.Command("security", "find-generic-password", "-s", "Claude Code-credentials", "-w")
 	output, err := cmd.Output()
 	if err != nil {
@@ -62,6 +85,9 @@ func GetUsageData() *UsageData {
 		return data
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return data
+	}
 
 	var usageResp protocol.UsageAPIResponse
 	if err := json.NewDecoder(resp.Body).Decode(&usageResp); err != nil {
@@ -111,6 +137,15 @@ func formatResetDate(resetTime string) string {
 	}
 	gmt8 := time.FixedZone("GMT+8", 8*60*60)
 	return t.In(gmt8).Format("01/02 15:04")
+}
+
+func formatTimeUntilEpoch(epochSeconds int64) string {
+	return formatTimeUntil(time.Unix(epochSeconds, 0).UTC().Format(time.RFC3339))
+}
+
+func formatResetDateEpoch(epochSeconds int64) string {
+	gmt8 := time.FixedZone("GMT+8", 8*60*60)
+	return time.Unix(epochSeconds, 0).In(gmt8).Format("01/02 15:04")
 }
 
 func formatInt(n int) string {

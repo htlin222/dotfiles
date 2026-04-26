@@ -52,9 +52,20 @@ func Run() {
 		return
 	}
 
-	// Check always-blocked patterns
+	// Skip non-git commands (e.g. gh, echo, etc.)
+	// Only guard commands that actually start with "git "
+	firstLine := strings.SplitN(cmd, "\n", 2)[0]
+	firstWord := strings.Fields(firstLine)[0]
+	if firstWord != "git" {
+		fmt.Println(protocol.ContinueResponse())
+		return
+	}
+
+	// Check always-blocked patterns (only scan first line to avoid
+	// false positives from heredoc/body content)
+	cmdToCheck := firstLine
 	for _, pat := range alwaysBlock {
-		if pat.MatchString(cmd) {
+		if pat.MatchString(cmdToCheck) {
 			fmt.Println(protocol.BlockResponse(
 				fmt.Sprintf("🚫 危險 git 操作被阻擋: %s", cmd)))
 			return
@@ -67,7 +78,7 @@ func Run() {
 		// Replace %s with branch alternatives
 		patStr := strings.ReplaceAll(tmpl.String(), "(%s)", "("+branchAlt+")")
 		pat := regexp.MustCompile(patStr)
-		if pat.MatchString(cmd) {
+		if pat.MatchString(cmdToCheck) {
 			fmt.Println(protocol.BlockResponse(
 				fmt.Sprintf("🚫 受保護分支操作被阻擋: %s", cmd)))
 			return

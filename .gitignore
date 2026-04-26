@@ -54,6 +54,7 @@ claude.symlink/*
 !claude.symlink/agents/
 !claude.symlink/hooks/
 !claude.symlink/skills/
+claude.symlink/skills/notebooklm/
 !claude.symlink/*.md
 !claude.symlink/settings.json
 !claude.symlink/*.sh

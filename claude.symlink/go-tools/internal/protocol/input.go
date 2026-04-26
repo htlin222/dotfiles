@@ -34,12 +34,27 @@ type EditEntry struct {
 
 // StatuslineInput contains JSON input from Claude Code for statusline.
 type StatuslineInput struct {
-	Model          ModelInfo     `json:"model,omitempty"`
-	Cost           CostInfo      `json:"cost,omitempty"`
-	Vim            VimInfo       `json:"vim,omitempty"`
-	ContextWindow  ContextInfo   `json:"context_window,omitempty"`
-	Workspace      WorkspaceInfo `json:"workspace,omitempty"`
-	TranscriptPath string        `json:"transcript_path,omitempty"`
+	Model          ModelInfo       `json:"model,omitempty"`
+	Cost           CostInfo        `json:"cost,omitempty"`
+	Vim            VimInfo         `json:"vim,omitempty"`
+	ContextWindow  ContextInfo     `json:"context_window,omitempty"`
+	Workspace      WorkspaceInfo   `json:"workspace,omitempty"`
+	TranscriptPath string          `json:"transcript_path,omitempty"`
+	RateLimits     *RateLimitsInfo `json:"rate_limits,omitempty"`
+}
+
+// RateLimitsInfo contains rate limit usage provided in the statusline stdin JSON.
+// Only present for Claude.ai subscribers after the first API response of a session.
+type RateLimitsInfo struct {
+	FiveHour *RateLimitPeriod `json:"five_hour,omitempty"`
+	SevenDay *RateLimitPeriod `json:"seven_day,omitempty"`
+}
+
+// RateLimitPeriod represents a single rate-limit window.
+// ResetsAt is Unix epoch seconds when the window resets.
+type RateLimitPeriod struct {
+	UsedPercentage float64 `json:"used_percentage,omitempty"`
+	ResetsAt       int64   `json:"resets_at,omitempty"`
 }
 
 // ModelInfo contains model information.
