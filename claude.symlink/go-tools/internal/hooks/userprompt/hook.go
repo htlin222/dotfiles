@@ -522,14 +522,15 @@ func truncate(s string, maxLen int) string {
 }
 
 // captureToTurso mirrors the prompt into a libSQL DB at ~/.claude/state/prompts.db.
-// Always writes locally; if TURSO_DATABASE_URL/TURSO_AUTH_TOKEN are set the
-// libSQL client doubles as an embedded replica that a separate sync step can
-// flush to the cloud. Failures are silent — never block the user's prompt.
+// Always writes locally; if TURSO_DATABASE_URL/TURSO_AUTH_TOKEN are set, the
+// client is an embedded replica and we kick off a detached `claude-hooks
+// turso-sync` subprocess to push to the cloud out-of-band. Failures are
+// silent — never block the user's prompt.
 func captureToTurso(prompt, sessionID, cwd string) {
-	c, err := turso.Open(turso.DefaultDBPath(),
-		os.Getenv("TURSO_DATABASE_URL"),
-		os.Getenv("TURSO_AUTH_TOKEN"),
-	)
+	url := os.Getenv("TURSO_DATABASE_URL")
+	tok := os.Getenv("TURSO_AUTH_TOKEN")
+
+	c, err := turso.Open(turso.DefaultDBPath(), url, tok)
 	if err != nil || c == nil {
 		return
 	}
@@ -539,5 +540,13 @@ func captureToTurso(prompt, sessionID, cwd string) {
 	}
 	host, _ := os.Hostname()
 	_ = c.InsertPrompt(host, sessionID, cwd, prompt)
+
+	if url == "" || tok == "" {
+		return // local-only mode, nothing to sync
+	}
+	cmd := exec.Command(os.Args[0], "turso-sync")
+	cmd.Stdin, cmd.Stdout, cmd.Stderr = nil, nil, nil
+	cmd.SysProcAttr = detachSysProcAttr()
+	_ = cmd.Start()
 }
 

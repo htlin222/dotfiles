@@ -13,18 +13,20 @@ import (
 	"github.com/tursodatabase/go-libsql"
 )
 
-const schema = `
-CREATE TABLE IF NOT EXISTS prompts (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    ts          REAL    NOT NULL DEFAULT (unixepoch('now','subsec')),
-    device_id   TEXT    NOT NULL,
-    session_id  TEXT,
-    cwd         TEXT,
-    prompt      TEXT    NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_prompts_ts        ON prompts(ts DESC);
-CREATE INDEX IF NOT EXISTS idx_prompts_device_ts ON prompts(device_id, ts DESC);
-`
+// schemaStmts must be one statement per Exec — the Turso cloud's Hrana
+// protocol rejects multi-statement Exec calls (SQL_MANY_STATEMENTS).
+var schemaStmts = []string{
+	`CREATE TABLE IF NOT EXISTS prompts (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        ts          REAL    NOT NULL DEFAULT (unixepoch('now','subsec')),
+        device_id   TEXT    NOT NULL,
+        session_id  TEXT,
+        cwd         TEXT,
+        prompt      TEXT    NOT NULL
+    )`,
+	`CREATE INDEX IF NOT EXISTS idx_prompts_ts ON prompts(ts DESC)`,
+	`CREATE INDEX IF NOT EXISTS idx_prompts_device_ts ON prompts(device_id, ts DESC)`,
+}
 
 type Client struct {
 	db        *sql.DB
@@ -83,8 +85,21 @@ func (c *Client) Close() error {
 }
 
 func (c *Client) EnsureSchema() error {
-	_, err := c.db.Exec(schema)
-	return err
+	for _, stmt := range schemaStmts {
+		if _, err := c.db.Exec(stmt); err != nil {
+			return fmt.Errorf("schema stmt %q: %w", firstLine(stmt), err)
+		}
+	}
+	return nil
+}
+
+func firstLine(s string) string {
+	for i, r := range s {
+		if r == '\n' {
+			return s[:i]
+		}
+	}
+	return s
 }
 
 func (c *Client) InsertPrompt(deviceID, sessionID, cwd, prompt string) error {

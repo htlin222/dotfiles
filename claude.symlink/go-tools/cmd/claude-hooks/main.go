@@ -23,6 +23,7 @@ import (
 	"github.com/htlin/claude-tools/internal/hooks/stop"
 	"github.com/htlin/claude-tools/internal/hooks/subagentstop"
 	"github.com/htlin/claude-tools/internal/hooks/todotracker"
+	"github.com/htlin/claude-tools/internal/hooks/tursosync"
 	"github.com/htlin/claude-tools/internal/hooks/userprompt"
 )
 
@@ -71,6 +72,8 @@ func main() {
 		sessionhint.Run()
 	case "env-validate":
 		envvalidation.Run()
+	case "turso-sync":
+		tursosync.Run()
 	case "help", "-h", "--help":
 		printUsage()
 	case "version", "-v", "--version":
@@ -108,6 +111,7 @@ Commands:
   session-end        Save session ID for resume on SessionEnd
   session-hint       Hint @LAST snapshot availability on SessionStart
   env-validate       Validate dev environment on SessionStart
+  turso-sync         Sync local prompts.db replica with Turso cloud
   version            Show version
   help               Show this help
 

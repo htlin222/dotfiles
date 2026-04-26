@@ -21,6 +21,7 @@ import (
 	"github.com/htlin/claude-tools/internal/processors"
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
+	"github.com/htlin/claude-tools/internal/turso"
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/notify"
@@ -142,6 +143,16 @@ func Run() {
 				fmt.Fprintf(os.Stderr, "%s%s  Auto-kill in 10m (PID %d)%s\n",
 					ansi.BrightYellow, ansi.IconHourglass, claudePID, ansi.Reset)
 			}
+		}
+	}
+
+	// Best-effort flush of the local libSQL replica to Turso cloud — picks up
+	// anything the userprompt-spawned sync subprocess didn't finish in time.
+	// Latency here is invisible to the user (Claude already finished its turn).
+	if url := os.Getenv("TURSO_DATABASE_URL"); url != "" {
+		if c, err := turso.OpenReplica(turso.DefaultDBPath(), url, os.Getenv("TURSO_AUTH_TOKEN")); err == nil && c != nil {
+			_ = c.Sync()
+			_ = c.Close()
 		}
 	}
 
