@@ -34,3 +34,7 @@ withkeys() {
 export OPENAI_API_KEY="${OPENAI_API_KEY:-$(pass show api/openai 2>/dev/null)}"
 export OPENAI_KEY="${OPENAI_KEY:-$(pass show api/openai 2>/dev/null)}"
 export ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-$(pass show api/anthropic 2>/dev/null)}"
+
+# Turso (libSQL) cloud DB for prompt capture — see plans/replicated-wiggling-gray.md
+export TURSO_DATABASE_URL="${TURSO_DATABASE_URL:-$(pass show api/turso/url 2>/dev/null)}"
+export TURSO_AUTH_TOKEN="${TURSO_AUTH_TOKEN:-$(pass show api/turso/token 2>/dev/null)}"
