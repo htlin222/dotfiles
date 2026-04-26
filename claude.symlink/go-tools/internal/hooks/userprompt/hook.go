@@ -22,6 +22,7 @@ import (
 	"github.com/htlin/claude-tools/internal/protocol"
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/internal/state"
+	"github.com/htlin/claude-tools/internal/turso"
 	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/context"
 	"github.com/htlin/claude-tools/pkg/metrics"
@@ -100,6 +101,7 @@ func Run() {
 	// Log the prompt
 	if prompt != "" {
 		metrics.LogPrompt(cwd, prompt)
+		captureToTurso(prompt, sessionID, cwd)
 	}
 
 	// Feature 0: @LAST context injection
@@ -517,5 +519,25 @@ func truncate(s string, maxLen int) string {
 		return s
 	}
 	return s[:maxLen]
+}
+
+// captureToTurso mirrors the prompt into a libSQL DB at ~/.claude/state/prompts.db.
+// Always writes locally; if TURSO_DATABASE_URL/TURSO_AUTH_TOKEN are set the
+// libSQL client doubles as an embedded replica that a separate sync step can
+// flush to the cloud. Failures are silent — never block the user's prompt.
+func captureToTurso(prompt, sessionID, cwd string) {
+	c, err := turso.Open(turso.DefaultDBPath(),
+		os.Getenv("TURSO_DATABASE_URL"),
+		os.Getenv("TURSO_AUTH_TOKEN"),
+	)
+	if err != nil || c == nil {
+		return
+	}
+	defer c.Close()
+	if err := c.EnsureSchema(); err != nil {
+		return
+	}
+	host, _ := os.Hostname()
+	_ = c.InsertPrompt(host, sessionID, cwd, prompt)
 }
 

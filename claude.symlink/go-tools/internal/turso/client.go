@@ -31,9 +31,20 @@ type Client struct {
 	connector *libsql.Connector
 }
 
+// Open returns a libSQL client for dbPath. If syncURL and token are both set,
+// the client is an embedded replica (local-first writes, Sync() pushes to
+// cloud). Otherwise it is a pure-local SQLite — writes still land on disk so
+// the prompt-capture pipeline keeps working before Turso is provisioned.
+func Open(dbPath, syncURL, token string) (*Client, error) {
+	if syncURL != "" && token != "" {
+		return OpenReplica(dbPath, syncURL, token)
+	}
+	return OpenLocal(dbPath)
+}
+
 // OpenReplica opens a libSQL embedded replica at dbPath that syncs to syncURL.
 // Returns (nil, nil) if syncURL or token is empty so callers can treat it as
-// "Turso not configured, skip silently".
+// "Turso not configured, skip cloud bits silently".
 func OpenReplica(dbPath, syncURL, token string) (*Client, error) {
 	if syncURL == "" || token == "" {
 		return nil, nil

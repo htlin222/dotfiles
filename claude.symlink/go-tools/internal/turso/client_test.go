@@ -46,3 +46,26 @@ func TestOpenReplicaSkipsWhenUnconfigured(t *testing.T) {
 		t.Fatalf("expected nil client when unconfigured, got: %v", c)
 	}
 }
+
+func TestOpenAutoFallsBackToLocal(t *testing.T) {
+	dir := t.TempDir()
+	dbPath := filepath.Join(dir, "prompts.db")
+
+	// No URL/token -> should still produce a working local client.
+	c, err := Open(dbPath, "", "")
+	if err != nil || c == nil {
+		t.Fatalf("Open: want client, got (%v, %v)", c, err)
+	}
+	defer c.Close()
+
+	if err := c.EnsureSchema(); err != nil {
+		t.Fatalf("EnsureSchema: %v", err)
+	}
+	if err := c.InsertPrompt("dev1", "sess", "/tmp", "auto-fallback"); err != nil {
+		t.Fatalf("InsertPrompt: %v", err)
+	}
+	// Sync() must be a no-op on the local-only path.
+	if err := c.Sync(); err != nil {
+		t.Fatalf("Sync on local-only: %v", err)
+	}
+}
