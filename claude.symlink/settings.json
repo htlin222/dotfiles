@@ -265,6 +265,6 @@
   "voiceEnabled": true,
   "editorMode": "vim",
   "preferredNotifChannel": "terminal_bell",
-  "remoteControlAtStartup": true,
+  "remoteControlAtStartup": false,
   "agentPushNotifEnabled": true
 }
