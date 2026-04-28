@@ -1,4 +1,7 @@
 **/.env
+# polish-prompt holds a Turso JWT in a file literally named "env" (no
+# dot), which **/.env above does not catch.
+config.symlink/polish-prompt/
 **/*.pyc
 *.test/
 *.ignore/
