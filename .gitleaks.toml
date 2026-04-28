@@ -1,0 +1,22 @@
+# gitleaks allowlist — test fixtures that intentionally contain
+# credential-shaped strings to exercise the redaction pipeline.
+
+title = "dotfiles gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Skip test fixtures and testdata directories"
+paths = [
+  '''.*_test\.go$''',
+  '''.*_test\.py$''',
+  '''.*_test\.ts$''',
+  '''.*\.test\.ts$''',
+  '''.*\.test\.tsx$''',
+  '''.*\.test\.js$''',
+  '''.*_spec\.rb$''',
+  '''testdata/''',
+  '''fixtures/''',
+  '''__fixtures__/''',
+]

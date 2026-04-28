@@ -1,0 +1,16 @@
+version: 2
+
+# Paths excluded from secret scanning. These are test fixtures that
+# intentionally contain credential-shaped strings to exercise the
+# redaction pipeline — they are not real secrets.
+paths-ignore:
+  - "**/*_test.go"
+  - "**/*_test.py"
+  - "**/*_test.ts"
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.test.js"
+  - "**/*_spec.rb"
+  - "**/testdata/**"
+  - "**/fixtures/**"
+  - "**/__fixtures__/**"

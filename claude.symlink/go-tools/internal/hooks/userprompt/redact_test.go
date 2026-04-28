@@ -54,17 +54,21 @@ func TestRedactSecretsNamed(t *testing.T) {
 		name string
 		in   string
 	}{
-		{"github classic pat", "use ghp_abcdefghijklmnopqrstuvwxyz0123456789 to auth"},
-		{"github fine-grained pat", "use github_pat_" + strings.Repeat("A", 82) + " for ci"},
-		{"github oauth", "token gho_abcdefghijklmnopqrstuvwxyz0123456789"},
-		{"openai key", "OPENAI_API_KEY=sk-proj-abcdefghijklmnop1234"},
-		{"anthropic key", "key sk-ant-api03-abcdefghijklmnop1234567890"},
-		{"aws access key", "AKIAIOSFODNN7EXAMPLE is the id"},
+		// All fixtures below are intentionally synthetic. They match the
+		// shape of the corresponding regex but use "FAKE" / repeated
+		// characters so they cannot pass any scanner's checksum or
+		// validation step.
+		{"github classic pat", "use ghp_FAKE" + strings.Repeat("x", 32) + " to auth"},
+		{"github fine-grained pat", "use github_pat_FAKE" + strings.Repeat("x", 78) + " for ci"},
+		{"github oauth", "token gho_FAKE" + strings.Repeat("x", 32)},
+		{"openai key", "key sk-FAKE" + strings.Repeat("x", 20)},
+		{"anthropic key", "key sk-ant-FAKE" + strings.Repeat("x", 20)},
+		{"aws access key", "AKIAIOSFODNN7EXAMPLE is the id"}, // AWS docs canonical example
 		{"aws session key", "ASIAIOSFODNN7EXAMPLE is the id"},
-		{"google api key", "AIzaSyA-abcdefghijklmnopqrstuvwxyz0123456 here"},
+		{"google api key", "key AIzaFAKE_" + strings.Repeat("x", 30) + " here"},
 		{"slack bot token", "xoxb-FAKE-NOT-A-REAL-TOKEN-xxxxxxxxxxxx"},
 		{"jwt", "session eyJhbGciOi.eyJzdWIiOi.signature done"},
-		{"pem block", "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAK\n-----END RSA PRIVATE KEY-----"},
+		{"pem block", "-----BEGIN RSA PRIVATE KEY-----\nFAKEKEYBODY\n-----END RSA PRIVATE KEY-----"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -133,7 +137,7 @@ func TestRedactSecretsRuleOrder(t *testing.T) {
 	// the structured form preserved before braces nuke it. The exact
 	// outcome doesn't matter — we just want to confirm the secret is
 	// gone and no raw key bytes leak.
-	in := "use { ghp_abcdefghijklmnopqrstuvwxyz0123456789 } in env"
+	in := "use { ghp_FAKE" + strings.Repeat("x", 32) + " } in env"
 	got := RedactSecrets(in).Text
 	if strings.Contains(got, "ghp_") {
 		t.Errorf("raw github prefix leaked: %q", got)
