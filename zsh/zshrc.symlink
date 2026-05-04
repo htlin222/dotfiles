@@ -29,6 +29,72 @@ unset CLAUDECODE
 # Ensure DOTFILES is set even in non-login shells
 export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
+##############################
+### Warp Minimal Mode      ###
+##############################
+# Warp owns prompt, completion, history search, suggestions, syntax highlight.
+# Skip our heavy prompt/plugin/widget stack — keep only aliases, functions,
+# PATHs, exports, and on-demand integrations.
+# Toggle off by exporting WARP_FULL_ZSHRC=1 before launching Warp.
+if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
+  # --- Claude Code env ---
+  export CLAUDE_CODE_ENABLE_TASKS=true
+  export CLAUDE_CODE_NO_FLICKER=1
+  CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+  CLAUDE_AUTO_BACKGROUND_TASKS=1
+  CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=true
+  export ENABLE_LSP_TOOLS=1
+
+  # --- SSH agent ---
+  if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    eval "$(ssh-agent -s)" > /dev/null
+  fi
+  ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null
+
+  # --- 1Password CLI plugins ---
+  [[ -f "$HOME/.config/op/plugins.sh" ]] && source "$HOME/.config/op/plugins.sh"
+
+  # --- Aliases + function modules ---
+  source "$DOTFILES/zsh/modules/alias.zsh"
+  source "$DOTFILES/zsh/modules/fzf.zsh"
+  source "$DOTFILES/zsh/modules/note_related.zsh"
+  source "$DOTFILES/zsh/modules/fn_navigation.zsh"
+  source "$DOTFILES/zsh/modules/fn_git.zsh"
+  source "$DOTFILES/zsh/modules/fn_fzf.zsh"
+  source "$DOTFILES/zsh/modules/fn_utils.zsh"
+  source "$DOTFILES/zsh/modules/fn_dev.zsh"
+  source "$DOTFILES/zsh/modules/fn_notes.zsh"
+  source "$DOTFILES/zsh/modules/fn_media.zsh"
+  source "$DOTFILES/zsh/modules/fn_secrets.zsh"
+  [[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
+  [[ -f "$HOME/.uvv" ]] && source "$HOME/.uvv"
+
+  # --- PATH ---
+  export PATH=~/.npm-global/bin:$PATH
+  export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+  export PATH="$HOME/.local/bin:$PATH"
+  export PATH=/usr/local/go/bin:$PATH
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+
+  # --- Proxy + dotfiles secrets ---
+  [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
+  [[ -f "$DOTFILES/.env" ]] && export $(grep -v '^#' "$DOTFILES/.env" | xargs)
+
+  # --- Python venv auto-activate ---
+  [[ -f ".venv/bin/activate" ]] && source .venv/bin/activate
+
+  # --- Misc ---
+  export RUST_LOG=himalaya=error
+  alias gsync='mbsync gmail gmail-work && notmuch new'
+
+  # Skip everything below: p10k, oh-my-zsh, compinit, plugin lazy-load
+  # (zle-line-init / precmd hooks), bindkey -s, atuin/zoxide/forgit widgets,
+  # FZF shell integration, fast-syntax-highlighting, zsh-autosuggestions,
+  # zsh-vi-mode, fzf-tab, cursor escape — all of which conflict with Warp.
+  return
+fi
+
 # Initialize Powerlevel10k instant prompt for faster startup
 # Disable in mosh to prevent exit hang (p10k worker issue)
 if [[ -z "$MOSH_CONNECTION" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
