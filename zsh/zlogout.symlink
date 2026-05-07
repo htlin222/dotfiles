@@ -1,0 +1,13 @@
+# ~/.zlogout — runs when login shell exits (after zshexit hook)
+#
+# Purpose: clean PTY teardown for mosh/ssh sessions to prevent garbage
+# output (^C^C^C, prompt fragments, prediction artifacts) on disconnect.
+
+# Reset terminal: cursor visible, attrs cleared, alt-screen off, bracketed-paste off
+printf '\e[?2004l\e[?25h\e[0m\e[?1049l\e[?1l\e>' 2>/dev/null
+
+# Restore sane line discipline (canonical mode, echo, signals)
+command stty sane 2>/dev/null
+
+# Final form-feed flush so mosh-client doesn't render stale buffer
+printf '\r' 2>/dev/null
