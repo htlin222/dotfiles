@@ -92,10 +92,6 @@ func Run() {
 	}
 
 	// Feature 2: Notification with last assistant message
-	title := "Claude Code"
-	if folderName != "" {
-		title = fmt.Sprintf("Claude Code 📁 %s", folderName)
-	}
 	body := data.LastAssistantMessage
 	if body == "" {
 		body = "對話已完成"
@@ -103,7 +99,11 @@ func Run() {
 	if len(body) > 500 {
 		body = body[:500] + "…"
 	}
-	notify.Send(title, body)
+	var tags string
+	if folderName != "" {
+		tags = "file_folder," + folderName
+	}
+	notify.SendWithTags("Claude Code", body, tags)
 
 	// Feature 2.5: Save context snapshot for @LAST
 	if data.TranscriptPath != "" || data.LastAssistantMessage != "" {

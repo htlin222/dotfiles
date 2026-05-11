@@ -14,12 +14,25 @@ func topic() string {
 // Send sends a notification via ntfy + sound (fire-and-forget).
 // No-op for ntfy when NTFY_TOPIC is unset; sound still plays.
 func Send(title, body string) error {
+	return SendWithTags(title, body, "")
+}
+
+// SendWithTags sends a notification via ntfy + sound with comma-separated
+// tags (fire-and-forget). Known emoji shortcodes (e.g. "file_folder") render
+// as emojis; other values render as labels beneath the message.
+// No-op for ntfy when NTFY_TOPIC is unset; sound still plays.
+func SendWithTags(title, body, tags string) error {
 	playSound()
 	t := topic()
 	if t == "" {
 		return nil
 	}
-	return SendToTopic(t, title, body)
+	args := []string{"publish", "--markdown", "--title", title}
+	if tags != "" {
+		args = append(args, "--tags", tags)
+	}
+	args = append(args, t, body)
+	return exec.Command("ntfy", args...).Start()
 }
 
 // SendToTopic sends a notification to a specific ntfy topic (fire-and-forget).
