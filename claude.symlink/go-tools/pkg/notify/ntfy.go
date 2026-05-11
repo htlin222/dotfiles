@@ -7,19 +7,19 @@ import (
 	"runtime"
 )
 
-const fallbackTopic = "3efa6497d3b3"
-
 func topic() string {
-	if t := os.Getenv("NTFY_TOPIC"); t != "" {
-		return t
-	}
-	return fallbackTopic
+	return os.Getenv("NTFY_TOPIC")
 }
 
 // Send sends a notification via ntfy + sound (fire-and-forget).
+// No-op for ntfy when NTFY_TOPIC is unset; sound still plays.
 func Send(title, body string) error {
 	playSound()
-	return SendToTopic(topic(), title, body)
+	t := topic()
+	if t == "" {
+		return nil
+	}
+	return SendToTopic(t, title, body)
 }
 
 // SendToTopic sends a notification to a specific ntfy topic (fire-and-forget).
@@ -29,9 +29,14 @@ func SendToTopic(t, title, body string) error {
 }
 
 // SendSimple sends a simple notification without a title (fire-and-forget).
+// No-op for ntfy when NTFY_TOPIC is unset; sound still plays.
 func SendSimple(body string) error {
 	playSound()
-	cmd := exec.Command("ntfy", "publish", "--markdown", topic(), body)
+	t := topic()
+	if t == "" {
+		return nil
+	}
+	cmd := exec.Command("ntfy", "publish", "--markdown", t, body)
 	return cmd.Start()
 }
 
