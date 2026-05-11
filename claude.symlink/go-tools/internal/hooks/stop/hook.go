@@ -10,7 +10,6 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -108,7 +107,9 @@ func Run() {
 	if u, err := user.Current(); err == nil && u.Username != "" {
 		tagList = append(tagList, u.Username)
 	}
-	tagList = append(tagList, runtime.GOOS)
+	if host, err := os.Hostname(); err == nil && host != "" {
+		tagList = append(tagList, host)
+	}
 	notify.SendWithTags("Claude Code", body, strings.Join(tagList, ","))
 
 	// Feature 2.5: Save context snapshot for @LAST
