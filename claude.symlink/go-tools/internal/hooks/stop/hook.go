@@ -8,7 +8,9 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -99,11 +101,15 @@ func Run() {
 	if len(body) > 500 {
 		body = body[:500] + "…"
 	}
-	var tags string
+	tagList := make([]string, 0, 4)
 	if folderName != "" {
-		tags = "file_folder," + folderName
+		tagList = append(tagList, "file_folder", folderName)
 	}
-	notify.SendWithTags("Claude Code", body, tags)
+	if u, err := user.Current(); err == nil && u.Username != "" {
+		tagList = append(tagList, u.Username)
+	}
+	tagList = append(tagList, runtime.GOOS)
+	notify.SendWithTags("Claude Code", body, strings.Join(tagList, ","))
 
 	// Feature 2.5: Save context snapshot for @LAST
 	if data.TranscriptPath != "" || data.LastAssistantMessage != "" {
