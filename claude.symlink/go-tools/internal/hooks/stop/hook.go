@@ -100,17 +100,23 @@ func Run() {
 	if len(body) > 500 {
 		body = body[:500] + "…"
 	}
-	tagList := make([]string, 0, 4)
-	if folderName != "" {
-		tagList = append(tagList, "file_folder", folderName)
+	host, _ := os.Hostname()
+	var title string
+	switch {
+	case folderName != "" && host != "":
+		title = folderName + " at " + host
+	case folderName != "":
+		title = folderName
+	case host != "":
+		title = host
+	default:
+		title = "Claude Code"
 	}
+	var tags string
 	if u, err := user.Current(); err == nil && u.Username != "" {
-		tagList = append(tagList, u.Username)
+		tags = u.Username
 	}
-	if host, err := os.Hostname(); err == nil && host != "" {
-		tagList = append(tagList, host)
-	}
-	notify.SendWithTags("Claude Code", body, strings.Join(tagList, ","))
+	notify.SendWithTags(title, body, tags)
 
 	// Feature 2.5: Save context snapshot for @LAST
 	if data.TranscriptPath != "" || data.LastAssistantMessage != "" {
