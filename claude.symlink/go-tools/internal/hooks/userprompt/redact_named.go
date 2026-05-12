@@ -15,6 +15,7 @@ var namedPatterns = []*regexp.Regexp{
 	regexp.MustCompile(`ASIA[0-9A-Z]{16}`),
 	regexp.MustCompile(`AIza[0-9A-Za-z_-]{35}`),
 	regexp.MustCompile(`xox[abprs]-[A-Za-z0-9-]{10,}`),
+	regexp.MustCompile(`cfut_[A-Za-z0-9_-]{20,}`),
 	regexp.MustCompile(`eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_.-]+(?:\.[A-Za-z0-9_-]*)?`),
 	regexp.MustCompile(`(?s)-----BEGIN [A-Z ]*PRIVATE KEY[A-Z ]*-----.*?-----END [A-Z ]*PRIVATE KEY[A-Z ]*-----`),
 }

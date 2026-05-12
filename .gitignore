@@ -2,6 +2,9 @@
 # polish-prompt holds a Turso JWT in a file literally named "env" (no
 # dot), which **/.env above does not catch.
 config.symlink/polish-prompt/
+# himalaya skill is a symlink into the (private) Mail repo and references
+# real Gmail addresses + app-password placeholders. Keep it out of dotfiles.
+claude.symlink/skills/himalaya
 **/*.pyc
 *.test/
 *.ignore/

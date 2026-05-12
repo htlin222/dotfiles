@@ -67,6 +67,7 @@ func TestRedactSecretsNamed(t *testing.T) {
 		{"aws session key", "ASIAIOSFODNN7EXAMPLE is the id"},
 		{"google api key", "key AIzaFAKE_" + strings.Repeat("x", 30) + " here"},
 		{"slack bot token", "xoxb-FAKE-NOT-A-REAL-TOKEN-xxxxxxxxxxxx"},
+		{"cloudflare tunnel", "cfut_FAKE" + strings.Repeat("x", 24) + " in env"},
 		{"jwt", "session eyJhbGciOi.eyJzdWIiOi.signature done"},
 		{"pem block", "-----BEGIN RSA PRIVATE KEY-----\nFAKEKEYBODY\n-----END RSA PRIVATE KEY-----"},
 	}
@@ -106,6 +107,29 @@ func TestRedactSecretsKV(t *testing.T) {
 				t.Errorf("got %q want %q", got, tc.want)
 			}
 		})
+	}
+}
+
+func TestRedactSecretsCloudflareTunnelClassified(t *testing.T) {
+	// Real-shape cfut_ token: 33 chars total — also long enough to hit the
+	// long-token catch-all, but the named rule must win and classify it
+	// precisely so RuleHits reports "named" instead of just "long-token".
+	in := "here is a token cfut_orOykdTQDakYdfMplZB3aiPD8TFT in env"
+	res := RedactSecrets(in)
+	if !res.Triggered {
+		t.Fatalf("expected redaction to fire")
+	}
+	if strings.Contains(res.Text, "cfut_") {
+		t.Errorf("raw cfut_ prefix leaked: %q", res.Text)
+	}
+	hasNamed := false
+	for _, h := range res.RuleHits {
+		if h == "named" {
+			hasNamed = true
+		}
+	}
+	if !hasNamed {
+		t.Errorf("expected named rule to fire, got hits=%v", res.RuleHits)
 	}
 }
 
