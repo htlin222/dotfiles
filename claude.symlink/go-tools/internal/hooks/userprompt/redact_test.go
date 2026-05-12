@@ -37,7 +37,11 @@ func TestRedactSecretsLongToken(t *testing.T) {
 	}{
 		{"32 chars kept", "abcdefghijklmnopqrstuvwxyz012345", "abcdefghijklmnopqrstuvwxyz012345"},
 		{"33 chars redacted", "abcdefghijklmnopqrstuvwxyz0123456", "*****"},
-		{"long url redacted", "see https://example.com/some/very/long/path/that/exceeds/limit", "see *****"},
+		{"long https url kept", "see https://example.com/some/very/long/path/that/exceeds/limit", "see https://example.com/some/very/long/path/that/exceeds/limit"},
+		{"long http url redacted", "see http://example.com/some/very/long/path/that/exceeds/limit", "see *****"},
+		{"abs path kept", "open /var/log/app/very-long-directory-name/nested/file.log", "open /var/log/app/very-long-directory-name/nested/file.log"},
+		{"home path kept", "edit ~/projects/some-long-repo-name/internal/pkg/file.go", "edit ~/projects/some-long-repo-name/internal/pkg/file.go"},
+		{"relative path kept", "cat ./internal/long/nested/directory/segment/file.go", "cat ./internal/long/nested/directory/segment/file.go"},
 		{"tail", "key xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx tail", "key ***** tail"},
 	}
 	for _, tc := range cases {
