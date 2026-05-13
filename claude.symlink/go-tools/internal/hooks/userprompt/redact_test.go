@@ -43,6 +43,16 @@ func TestRedactSecretsLongToken(t *testing.T) {
 		{"home path kept", "edit ~/projects/some-long-repo-name/internal/pkg/file.go", "edit ~/projects/some-long-repo-name/internal/pkg/file.go"},
 		{"relative path kept", "cat ./internal/long/nested/directory/segment/file.go", "cat ./internal/long/nested/directory/segment/file.go"},
 		{"tail", "key xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx tail", "key ***** tail"},
+		{"long cjk prose kept", "請幫我看看這段中文很長很長很長很長很長很長很長很長很長很長很長很長到底會不會被當作敏感字串", "請幫我看看這段中文很長很長很長很長很長很長很長很長很長很長很長很長到底會不會被當作敏感字串"},
+		{"cjk surrounding ascii secret redacted", "鍵是 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 結束", "鍵是 ***** 結束"},
+		{"https query stripped", "see https://example.com/path?api_key=verylongsecret1234567890abcd done", "see https://example.com/path?***** done"},
+		{"https fragment stripped", "see https://example.com/long/path#section-verylongidentifierABCDEFG done", "see https://example.com/long/path#***** done"},
+		{"https userinfo stripped", "see https://user:supersecret@example.com/longer/path/structure done", "see https://*****@example.com/longer/path/structure done"},
+		{"https userinfo and query stripped", "see https://u:p@example.com/x?token=longlonglonglonglonglongtoken done", "see https://*****@example.com/x?***** done"},
+		{"long abs path-shaped non-path redacted", "open /AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA done", "open ***** done"},
+		{"long home path-shaped non-path redacted", "open ~/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA done", "open ***** done"},
+		{"sha1 hex commit kept", "look at commit a1b2c3d4e5f67890123456789012345678901234 today", "look at commit a1b2c3d4e5f67890123456789012345678901234 today"},
+		{"sha256 hex digest kept", "sha256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 ok", "sha256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 ok"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
