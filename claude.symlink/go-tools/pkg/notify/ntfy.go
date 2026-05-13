@@ -1,38 +1,36 @@
-// Package notify provides notification functionality via ntfy.
+// Package notify shows local macOS banners and plays sounds.
+//
+// All paths are macOS-specific (osascript / afplay / say). Notification
+// delivery is local-only — no ntfy publish, no topic ID, no network.
+// Non-darwin platforms get a silent no-op so callers don't have to
+// branch.
 package notify
 
 import (
-	"os"
+	"fmt"
 	"os/exec"
 	"runtime"
+	"strings"
 )
 
-const fallbackTopic = "3efa6497d3b3"
-
-func topic() string {
-	if t := os.Getenv("NTFY_TOPIC"); t != "" {
-		return t
-	}
-	return fallbackTopic
-}
-
-// Send sends a notification via ntfy + sound (fire-and-forget).
+// Send shows a banner with a title (fire-and-forget).
 func Send(title, body string) error {
 	playSound()
-	return SendToTopic(topic(), title, body)
+	macDisplayNotification(title, body)
+	return nil
 }
 
-// SendToTopic sends a notification to a specific ntfy topic (fire-and-forget).
-func SendToTopic(t, title, body string) error {
-	cmd := exec.Command("ntfy", "publish", "--markdown", "--title", title, t, body)
-	return cmd.Start()
+// SendToTopic kept for source compatibility; topic is ignored. Same
+// behavior as Send.
+func SendToTopic(_, title, body string) error {
+	return Send(title, body)
 }
 
-// SendSimple sends a simple notification without a title (fire-and-forget).
+// SendSimple shows a titleless banner (fire-and-forget).
 func SendSimple(body string) error {
 	playSound()
-	cmd := exec.Command("ntfy", "publish", "--markdown", topic(), body)
-	return cmd.Start()
+	macDisplayNotification("", body)
+	return nil
 }
 
 // playSound plays a notification sound (fire-and-forget, macOS only).
@@ -51,4 +49,28 @@ func Say(text string) {
 	}
 	cmd := exec.Command("say", "-v", "Samantha", text)
 	cmd.Start()
+}
+
+// macDisplayNotification shows a native macOS banner via osascript.
+// No-op on other platforms. Fire-and-forget; failures are silent.
+func macDisplayNotification(title, body string) {
+	if runtime.GOOS != "darwin" {
+		return
+	}
+	script := fmt.Sprintf(
+		"display notification %s with title %s",
+		appleScriptString(body),
+		appleScriptString(title),
+	)
+	cmd := exec.Command("osascript", "-e", script)
+	cmd.Start()
+}
+
+// appleScriptString escapes a Go string into a quoted AppleScript
+// literal. AppleScript shares Go's two key escapes (\\ and \"), so
+// quoting is just replacing those plus wrapping in double quotes.
+func appleScriptString(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	return `"` + s + `"`
 }
