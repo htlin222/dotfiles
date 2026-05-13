@@ -9,7 +9,10 @@ import (
 
 // quarantinePath is the local-only sink for prompts where redaction
 // fired. It is intentionally not the libSQL replica DB so a row that
-// might still carry a residual secret cannot reach Turso cloud.
+// might still carry a residual secret cannot reach Turso cloud. The
+// prompt itself is NOT blocked — the user's turn still reaches the
+// model with its original content; only the mirror copy is diverted
+// here for audit.
 func quarantinePath() string {
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, ".claude", "state", "prompts-quarantine.jsonl")

@@ -99,10 +99,13 @@ func Run() {
 	}
 
 	// Log the prompt — redact likely secrets before persisting anywhere.
-	// The raw prompt still drives feature processing below; only mirrored
-	// copies (jsonl, libSQL, Turso cloud, quarantine) see the scrubbed
-	// version. If any redaction rule fired we fail-closed: divert the
-	// row to a local-only JSONL so a residual leak cannot reach Turso.
+	// The raw prompt still drives feature processing below and still
+	// reaches the model; only mirrored copies (jsonl, libSQL, Turso
+	// cloud, quarantine) see the scrubbed version. If any redaction
+	// rule fired we divert the row to a local-only JSONL so a residual
+	// leak cannot reach the cloud mirror — the prompt itself is not
+	// blocked, since the rules have too many benign matches (JSON,
+	// deploy URLs, IDs) to justify aborting the user's turn.
 	redaction := RedactSecrets(prompt)
 	redactedPrompt := redaction.Text
 	if prompt != "" {
@@ -112,28 +115,6 @@ func Run() {
 		} else {
 			captureToTurso(redactedPrompt, sessionID, cwd)
 		}
-	}
-
-	// Strict mode: any secret-shaped or 33+ char run blocks the prompt
-	// before it reaches the model. Quarantine above already captured the
-	// redacted form for audit; here we abort with a visible reason so
-	// the user can edit and resubmit. URLs and long file paths also
-	// trigger by design — explicit user choice for max strictness.
-	if redaction.Triggered {
-		state.Save(st)
-		executionTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0
-		metrics.LogMetrics("user_prompt", "UserPromptSubmit", executionTimeMS, true, map[string]any{
-			"session_id":       sessionID,
-			"prompt_length":    len(prompt),
-			"estimated_tokens": metrics.EstimateTokens(prompt),
-			"blocked":          true,
-			"rules":            redaction.RuleHits,
-		})
-		metrics.LogEvent("UserPromptSubmit", "user_prompt_blocked", sessionID, cwd, map[string]any{
-			"rules": redaction.RuleHits,
-		})
-		fmt.Println(protocol.BlockResponse(blockReason(redaction.RuleHits)))
-		return
 	}
 
 	// Feature 0: @LAST context injection
@@ -544,14 +525,6 @@ func findSortedFiles(dir string) ([]string, error) {
 		result[i] = f.path
 	}
 	return result, nil
-}
-
-func blockReason(hits []string) string {
-	rules := strings.Join(hits, ", ")
-	return fmt.Sprintf(
-		"🚫 Prompt blocked: secret-shaped or long token detected (rules: %s). Remove the sensitive substring (or shorten the 33+ char run) and resubmit. The redacted copy was logged to ~/.claude/state/prompts-quarantine.jsonl for audit.",
-		rules,
-	)
 }
 
 func truncate(s string, maxLen int) string {
