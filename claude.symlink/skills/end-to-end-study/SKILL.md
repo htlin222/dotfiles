@@ -1,6 +1,6 @@
 ---
 name: end-to-end-study
-description: Data-first reproducible research workflow. Given a topic (or none), find the best underutilised public dataset, identify the low-hanging-fruit claim inside it, target the highest-acceptance-probability journal, fetch that journal's author instructions, design method under standard-of-rigor checklist, analyse, write reviewer-and-reader-oriented LaTeX + BibTeX manuscript matching the target-journal style, and ship to a private GitHub repo with CI-built tagged releases bundling PDF + .tex. Use when the user says "end-to-end paper", "take topic to publication", "find a paper in this dataset", "what's publishable here", or asks for a full research pipeline from idea to a tagged release. Good fit for computational-biology, bioinformatics, and clinical-genomics studies on public datasets (TCGA, BeatAML, GEO, GDC, UCSC Xena, cBioPortal).
+description: End-to-end data-first research pipeline — find an underutilised public dataset, pick the publishable claim, target a journal, ship LaTeX manuscript + tagged GitHub release. Use for computational-bio / bioinformatics / clinical-genomics on TCGA, GEO, GDC, cBioPortal, or when user says "end-to-end paper" / "what's publishable here".
 ---
 
 # end-to-end-study

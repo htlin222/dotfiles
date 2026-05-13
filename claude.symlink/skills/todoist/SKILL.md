@@ -1,6 +1,6 @@
 ---
 name: todoist
-description: CRUD operations on the user's Todoist — list/create/update/close/delete tasks (incl. due + deadline), projects, sections, labels, comments, and reminders via the Todoist API v1. Use when the user asks about Todoist, their todo list, adding/completing/rescheduling a task, setting a deadline or reminder, managing projects or labels, or says things like "加到待辦", "今天的 Todoist", "把這個工作排到 Todoist".
+description: Todoist CRUD via API v1 — tasks (due + deadline), projects, sections, labels, comments, reminders. Use when user mentions Todoist, their todo list, scheduling/completing a task, "加到待辦", "今天的 Todoist".
 allowed-tools: Bash(python3 *)
 ---
 

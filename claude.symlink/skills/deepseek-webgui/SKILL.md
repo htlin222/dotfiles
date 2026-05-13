@@ -1,6 +1,6 @@
 ---
 name: deepseek-webgui
-description: Talk to DeepSeek through its private chat.deepseek.com API (the same one the web UI uses) with a browser-exported `userToken`, instead of the official platform.deepseek.com OpenAI-compatible API. Use when the user wants to drive their personal/free DeepSeek webgui account from a script or TUI, mentions reusing browser cookies, asks about the `x-ds-pow-response` POW header, the `DeepSeekHashV1` algorithm, the SSE streaming format with `THINK` / `TOOL_SEARCH` fragments, or wants to integrate the webgui backend into another tool (e.g. DeepSeek-TUI). Bundles a SHA3 WASM POW solver run via `wasmtime`, an httpx-based client, and an SSE patch-stream parser.
+description: DeepSeek client via the private chat.deepseek.com API (browser-exported userToken), not the official platform.deepseek.com API. Use for personal webgui automation, `x-ds-pow-response` / DeepSeekHashV1 POW solving, or SSE THINK/TOOL_SEARCH stream parsing.
 ---
 
 # deepseek-webgui
@@ -65,6 +65,7 @@ DeepSeekClient.completion()
 ```
 
 Three layers of credentials are required and the API will reject calls missing any one of them:
+
 - `Authorization: Bearer <userToken>` from `localStorage.userToken`.
 - Cookies on `*.deepseek.com` (`aws-waf-token` for WAF + `ds_session_id` for session).
 - A handful of frontend identity headers (`x-app-version`, `x-client-platform`, etc.) — the client sets them automatically.
@@ -119,6 +120,7 @@ with DeepSeekClient(cookies, token=token) as ds:
 ## Verification
 
 The skill was built against a HAR capture of two real `chat/completion` round-trips. Verified:
+
 - `solve_pow_challenge(...)` reproduces the captured `answer = 49586` from `(challenge, salt, expire_at, difficulty)`.
 - `_parse_sse(...)` consumes the captured 123 KB SSE stream and yields the expected fragment partitioning (162 chars of THINK reasoning + 3569 chars of visible response + the `云南最好玩推荐` title).
 

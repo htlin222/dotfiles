@@ -1,6 +1,6 @@
 ---
 name: codex-imagegen
-description: Generate an image and write it to a local file by delegating to the Codex CLI agent, which calls OpenAI's images API (gpt-image-1) and saves the result. Use when the user asks for an image to be created/drawn/generated AND saved to a path (e.g. "幫我生一張戴墨鏡的柴犬，存成 tmp/shiba.png", "draw me X and save to images/y.png", "用 codex 生圖"). Requires `codex login` AND `$OPENAI_API_KEY` set in the environment.
+description: Generate an image via Codex CLI (OpenAI gpt-image-1) and save to a local path. Use when user asks to create/draw/generate an image AND save it (e.g. "draw X, save to images/y.png", "用 codex 生圖"). Requires `codex login` + `$OPENAI_API_KEY`.
 ---
 
 # codex-imagegen
@@ -12,6 +12,7 @@ This skill drives the Codex CLI agent (`codex exec`) and asks it to produce a PN
 ## When to use
 
 Trigger when the user's request has both:
+
 1. An image-generation intent — "生圖 / 畫一張 / generate / draw / create an image of …", and
 2. A target file path — "存成 X.png", "save to X.png", or an output directory.
 
@@ -30,6 +31,7 @@ bash {SKILL_DIR}/scripts/imagegen.sh <output-path> <description...>
 source `/Users/htlin/.dotfiles/claude.symlink/skills/codex-imagegen/scripts/imagegen.sh`).
 
 The script:
+
 - Errors out if `codex` is missing or `codex login status` does not say "Logged in".
 - Resolves a relative output path against the current working directory and `mkdir -p` the parent.
 - Calls `codex exec -C "$(pwd)" -s workspace-write --skip-git-repo-check` with a Chinese prompt that instructs codex to use the image generation tool and save to the absolute output path.
