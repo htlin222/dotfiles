@@ -1,36 +1,59 @@
-// Package notify shows local macOS banners and plays sounds.
+// Package notify shows local macOS banners and optionally pushes the
+// same message to a remote ntfy topic for phone delivery.
 //
-// All paths are macOS-specific (osascript / afplay / say). Notification
-// delivery is local-only — no ntfy publish, no topic ID, no network.
-// Non-darwin platforms get a silent no-op so callers don't have to
-// branch.
+// Local macOS path: osascript display notification. The banner shows
+// only title + body, no topic ID. Always runs on darwin.
+//
+// Remote ntfy path: `ntfy publish` to the topic in $NTFY_TOPIC. Only
+// runs when that env var is set, so a private topic value never lives
+// in the source tree. Failures are silent and fire-and-forget.
 package notify
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 	"strings"
 )
 
-// Send shows a banner with a title (fire-and-forget).
+func topic() string {
+	return os.Getenv("NTFY_TOPIC")
+}
+
+// Send shows a local banner and, if $NTFY_TOPIC is set, also publishes
+// to that topic for remote (phone) delivery (fire-and-forget).
 func Send(title, body string) error {
 	playSound()
 	macDisplayNotification(title, body)
-	return nil
+	t := topic()
+	if t == "" {
+		return nil
+	}
+	return SendToTopic(t, title, body)
 }
 
-// SendToTopic kept for source compatibility; topic is ignored. Same
-// behavior as Send.
-func SendToTopic(_, title, body string) error {
-	return Send(title, body)
+// SendToTopic publishes to a specific ntfy topic (fire-and-forget).
+// Skipped silently if t is empty.
+func SendToTopic(t, title, body string) error {
+	if t == "" {
+		return nil
+	}
+	cmd := exec.Command("ntfy", "publish", "--markdown", "--title", title, t, body)
+	return cmd.Start()
 }
 
-// SendSimple shows a titleless banner (fire-and-forget).
+// SendSimple shows a titleless local banner and, if $NTFY_TOPIC is
+// set, publishes to ntfy with an empty title (fire-and-forget).
 func SendSimple(body string) error {
 	playSound()
 	macDisplayNotification("", body)
-	return nil
+	t := topic()
+	if t == "" {
+		return nil
+	}
+	cmd := exec.Command("ntfy", "publish", "--markdown", t, body)
+	return cmd.Start()
 }
 
 // playSound plays a notification sound (fire-and-forget, macOS only).
