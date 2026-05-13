@@ -48,13 +48,13 @@ func Run() {
 
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		notify.SendSimple("Claude Code 對話結束")
+		notify.SendSimple("對話結束")
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		notify.SendSimple("Claude Code 對話結束")
+		notify.SendSimple("對話結束")
 		return
 	}
 
@@ -92,9 +92,9 @@ func Run() {
 	}
 
 	// Feature 2: Notification with last assistant message
-	title := "Claude Code"
+	title := "📁"
 	if folderName != "" {
-		title = fmt.Sprintf("Claude Code 📁 %s", folderName)
+		title = fmt.Sprintf("📁 %s", folderName)
 	}
 	body := data.LastAssistantMessage
 	if body == "" {
