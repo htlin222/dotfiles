@@ -55,7 +55,12 @@ func Run() {
 	// Skip non-git commands (e.g. gh, echo, etc.)
 	// Only guard commands that actually start with "git "
 	firstLine := strings.SplitN(cmd, "\n", 2)[0]
-	firstWord := strings.Fields(firstLine)[0]
+	fields := strings.Fields(firstLine)
+	if len(fields) == 0 {
+		fmt.Println(protocol.ContinueResponse())
+		return
+	}
+	firstWord := fields[0]
 	if firstWord != "git" {
 		fmt.Println(protocol.ContinueResponse())
 		return
