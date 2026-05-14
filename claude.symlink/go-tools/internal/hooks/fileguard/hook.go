@@ -30,15 +30,17 @@ func Run() {
 		return
 	}
 
-	// Only check file-based tools
-	if data.ToolName != "Read" && data.ToolName != "Write" && data.ToolName != "Edit" && data.ToolName != "MultiEdit" {
+	// Only check file-based tools. Codex reports patch edits as apply_patch.
+	if data.ToolName != "Read" && data.ToolName != "Write" && data.ToolName != "Edit" && data.ToolName != "MultiEdit" && data.ToolName != "apply_patch" {
 		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	// Get file paths
 	var filePaths []string
-	if data.ToolName == "MultiEdit" {
+	if data.ToolName == "apply_patch" {
+		filePaths = extractApplyPatchFilePaths(data.ToolInput.Command)
+	} else if data.ToolName == "MultiEdit" {
 		for _, edit := range data.ToolInput.Edits {
 			if edit.FilePath != "" {
 				filePaths = append(filePaths, edit.FilePath)
@@ -96,6 +98,10 @@ func scanContent(filePath string, data *protocol.HookInput) string {
 	if data.ToolName == "Write" {
 		// For Write operations, scan the content being written
 		content = data.ToolInput.Content
+	} else if data.ToolName == "apply_patch" {
+		// Codex sends file edits as an apply_patch command; scan the patch body
+		// when the target path is in the content-scan tier.
+		content = data.ToolInput.Command
 	} else {
 		// For Read/Edit/MultiEdit, scan existing file on disk
 		var err error
@@ -140,4 +146,28 @@ func readFileForScan(filePath string) (string, error) {
 	}
 
 	return string(data), nil
+}
+
+func extractApplyPatchFilePaths(command string) []string {
+	var paths []string
+	seen := map[string]bool{}
+
+	for _, line := range strings.Split(command, "\n") {
+		line = strings.TrimSpace(line)
+		for _, prefix := range []string{
+			"*** Add File: ",
+			"*** Update File: ",
+			"*** Delete File: ",
+		} {
+			if strings.HasPrefix(line, prefix) {
+				path := strings.TrimSpace(strings.TrimPrefix(line, prefix))
+				if path != "" && !seen[path] {
+					seen[path] = true
+					paths = append(paths, path)
+				}
+			}
+		}
+	}
+
+	return paths
 }

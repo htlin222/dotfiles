@@ -158,11 +158,49 @@ services:
 	}
 }
 
+func TestCheckFile_ApplyPatch_SensitiveContent(t *testing.T) {
+	data := &protocol.HookInput{
+		ToolName: "apply_patch",
+		ToolInput: protocol.ToolInput{
+			Command: `*** Begin Patch
+*** Add File: .env
++AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCY
+*** End Patch`,
+		},
+	}
+	result := checkFile(".env", data)
+	if result == "" || !strings.Contains(result, "BLOCKED") {
+		t.Errorf("apply_patch with sensitive content should be blocked, got: %q", result)
+	}
+}
+
 func TestCheckFile_NoPatternMatch(t *testing.T) {
 	data := &protocol.HookInput{ToolName: "Read"}
 	result := checkFile("/project/main.go", data)
 	if result != "" {
 		t.Errorf("non-sensitive file should be allowed, got: %s", result)
+	}
+}
+
+func TestExtractApplyPatchFilePaths(t *testing.T) {
+	command := `*** Begin Patch
+*** Add File: .env
++TOKEN=placeholder
+*** Update File: path/with spaces/config.yml
+@@
+*** Delete File: old.pem
+*** End Patch`
+
+	got := extractApplyPatchFilePaths(command)
+	want := []string{".env", "path/with spaces/config.yml", "old.pem"}
+
+	if len(got) != len(want) {
+		t.Fatalf("got %d paths %v, want %d paths %v", len(got), got, len(want), want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("path %d = %q, want %q", i, got[i], want[i])
+		}
 	}
 }
 
