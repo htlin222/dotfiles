@@ -38,8 +38,8 @@ func TestRun_StartupWithoutQING(t *testing.T) {
 		t.Fatalf("failed to parse output JSON: %v\nraw output: %s", err, out)
 	}
 
-	if !strings.Contains(result.SystemMessage, "Delegation active") {
-		t.Errorf("expected systemMessage to contain %q, got %q", "Delegation active", result.SystemMessage)
+	if !strings.Contains(result.SystemMessage, "Smart delegation") {
+		t.Errorf("expected systemMessage to contain %q, got %q", "Smart delegation", result.SystemMessage)
 	}
 	if strings.Contains(result.SystemMessage, "\u6211\u5728\u5927\u6e05\u7576\u7687\u5e1d") {
 		t.Errorf("expected systemMessage NOT to contain Qing text, got %q", result.SystemMessage)
@@ -73,8 +73,8 @@ func TestRun_StartupWithQING(t *testing.T) {
 	if !strings.Contains(result.SystemMessage, "\u6211\u5728\u5927\u6e05\u7576\u7687\u5e1d") {
 		t.Errorf("expected systemMessage to contain Qing text, got %q", result.SystemMessage)
 	}
-	if !strings.Contains(result.SystemMessage, "Delegation active") {
-		t.Errorf("expected systemMessage to contain %q, got %q", "Delegation active", result.SystemMessage)
+	if !strings.Contains(result.SystemMessage, "Smart delegation") {
+		t.Errorf("expected systemMessage to contain %q, got %q", "Smart delegation", result.SystemMessage)
 	}
 }
 
