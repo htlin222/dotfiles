@@ -98,10 +98,23 @@ func Run() {
 		}
 	}
 
-	// Log the prompt
+	// Log the prompt — redact likely secrets before persisting anywhere.
+	// The raw prompt still drives feature processing below and still
+	// reaches the model; only mirrored copies (jsonl, libSQL, Turso
+	// cloud, quarantine) see the scrubbed version. If any redaction
+	// rule fired we divert the row to a local-only JSONL so a residual
+	// leak cannot reach the cloud mirror — the prompt itself is not
+	// blocked, since the rules have too many benign matches (JSON,
+	// deploy URLs, IDs) to justify aborting the user's turn.
+	redaction := RedactSecrets(prompt)
+	redactedPrompt := redaction.Text
 	if prompt != "" {
-		metrics.LogPrompt(cwd, prompt)
-		captureToTurso(prompt, sessionID, cwd)
+		metrics.LogPrompt(cwd, redactedPrompt)
+		if redaction.Triggered {
+			appendQuarantine(redactedPrompt, sessionID, cwd, redaction.RuleHits)
+		} else {
+			captureToTurso(redactedPrompt, sessionID, cwd)
+		}
 	}
 
 	// Feature 0: @LAST context injection
@@ -322,7 +335,7 @@ func Run() {
 	})
 
 	metrics.LogEvent("UserPromptSubmit", "user_prompt", sessionID, cwd, map[string]any{
-		"prompt_preview": truncate(prompt, 100),
+		"prompt_preview": truncate(redactedPrompt, 100),
 		"suggestions":    messages,
 	})
 }

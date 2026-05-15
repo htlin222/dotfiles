@@ -6,11 +6,16 @@ type HookInput struct {
 	SessionID      string    `json:"session_id,omitempty"`
 	CWD            string    `json:"cwd,omitempty"`
 	TranscriptPath string    `json:"transcript_path,omitempty"`
+	HookEventName  string    `json:"hook_event_name,omitempty"`
+	Model          string    `json:"model,omitempty"`
+	TurnID         string    `json:"turn_id,omitempty"`
+	ToolUseID      string    `json:"tool_use_id,omitempty"`
 	Prompt         string    `json:"prompt,omitempty"`
 	Source         string    `json:"source,omitempty"` // SessionStart: "startup", "clear", "resume", "compact"
 	ToolName       string    `json:"tool_name,omitempty"`
 	ToolInput      ToolInput `json:"tool_input,omitempty"`
 	ToolResult     any       `json:"tool_result,omitempty"`
+	ToolResponse   any       `json:"tool_response,omitempty"`
 
 	// Stop hook fields (provided by Claude Code for Stop events only)
 	StopHookActive       bool   `json:"stop_hook_active,omitempty"`
@@ -77,17 +82,17 @@ type VimInfo struct {
 
 // ContextInfo contains context window information.
 type ContextInfo struct {
-	ContextWindowSize  int          `json:"context_window_size,omitempty"`
-	TotalInputTokens   int          `json:"total_input_tokens,omitempty"`
-	TotalOutputTokens  int          `json:"total_output_tokens,omitempty"`
-	CurrentUsage       CurrentUsage `json:"current_usage,omitempty"`
+	ContextWindowSize int          `json:"context_window_size,omitempty"`
+	TotalInputTokens  int          `json:"total_input_tokens,omitempty"`
+	TotalOutputTokens int          `json:"total_output_tokens,omitempty"`
+	CurrentUsage      CurrentUsage `json:"current_usage,omitempty"`
 }
 
 // CurrentUsage contains current token usage.
 type CurrentUsage struct {
-	InputTokens             int `json:"input_tokens,omitempty"`
+	InputTokens              int `json:"input_tokens,omitempty"`
 	CacheCreationInputTokens int `json:"cache_creation_input_tokens,omitempty"`
-	CacheReadInputTokens    int `json:"cache_read_input_tokens,omitempty"`
+	CacheReadInputTokens     int `json:"cache_read_input_tokens,omitempty"`
 }
 
 // WorkspaceInfo contains workspace information.

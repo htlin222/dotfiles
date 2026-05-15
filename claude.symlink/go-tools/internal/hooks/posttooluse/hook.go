@@ -37,7 +37,11 @@ func Run() {
 		command := data.ToolInput.Command
 		if command != "" {
 			exitCode := 0
-			if result, ok := data.ToolResult.(map[string]any); ok {
+			resultSource := data.ToolResult
+			if resultSource == nil {
+				resultSource = data.ToolResponse
+			}
+			if result, ok := resultSource.(map[string]any); ok {
 				if code, ok := result["exit_code"].(float64); ok {
 					exitCode = int(code)
 				}

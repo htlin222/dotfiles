@@ -86,14 +86,20 @@ def split_csv(value: str | None) -> list[str] | None:
 
 # ---------- Tasks ----------
 def tasks_list(a):
-    out(api("GET", "/tasks", params={
-        "project_id": a.project_id,
-        "section_id": a.section_id,
-        "label": a.label,
-        "filter": a.filter,
-        "lang": a.lang,
-        "ids": a.ids,
-    }))
+    out(
+        api(
+            "GET",
+            "/tasks",
+            params={
+                "project_id": a.project_id,
+                "section_id": a.section_id,
+                "label": a.label,
+                "filter": a.filter,
+                "lang": a.lang,
+                "ids": a.ids,
+            },
+        )
+    )
 
 
 def tasks_get(a):
@@ -101,34 +107,50 @@ def tasks_get(a):
 
 
 def tasks_add(a):
-    out(api("POST", "/tasks", body={
-        "content": a.content,
-        "description": a.description,
-        "project_id": a.project_id,
-        "section_id": a.section_id,
-        "parent_id": a.parent_id,
-        "priority": a.priority,
-        "due_string": a.due,
-        "due_date": a.due_date,
-        "due_lang": a.due_lang,
-        "labels": split_csv(a.labels),
-        "duration": a.duration,
-        "duration_unit": a.duration_unit,
-    }))
+    out(
+        api(
+            "POST",
+            "/tasks",
+            body={
+                "content": a.content,
+                "description": a.description,
+                "project_id": a.project_id,
+                "section_id": a.section_id,
+                "parent_id": a.parent_id,
+                "priority": a.priority,
+                "due_string": a.due,
+                "due_date": a.due_date,
+                "due_lang": a.due_lang,
+                "deadline_date": a.deadline_date,
+                "deadline_lang": a.deadline_lang,
+                "labels": split_csv(a.labels),
+                "duration": a.duration,
+                "duration_unit": a.duration_unit,
+            },
+        )
+    )
 
 
 def tasks_update(a):
-    out(api("POST", f"/tasks/{a.id}", body={
-        "content": a.content,
-        "description": a.description,
-        "priority": a.priority,
-        "due_string": a.due,
-        "due_date": a.due_date,
-        "due_lang": a.due_lang,
-        "labels": split_csv(a.labels),
-        "duration": a.duration,
-        "duration_unit": a.duration_unit,
-    }))
+    out(
+        api(
+            "POST",
+            f"/tasks/{a.id}",
+            body={
+                "content": a.content,
+                "description": a.description,
+                "priority": a.priority,
+                "due_string": a.due,
+                "due_date": a.due_date,
+                "due_lang": a.due_lang,
+                "deadline_date": a.deadline_date,
+                "deadline_lang": a.deadline_lang,
+                "labels": split_csv(a.labels),
+                "duration": a.duration,
+                "duration_unit": a.duration_unit,
+            },
+        )
+    )
 
 
 def tasks_close(a):
@@ -156,22 +178,34 @@ def projects_get(a):
 
 
 def projects_add(a):
-    out(api("POST", "/projects", body={
-        "name": a.name,
-        "parent_id": a.parent_id,
-        "color": a.color,
-        "is_favorite": a.favorite,
-        "view_style": a.view_style,
-    }))
+    out(
+        api(
+            "POST",
+            "/projects",
+            body={
+                "name": a.name,
+                "parent_id": a.parent_id,
+                "color": a.color,
+                "is_favorite": a.favorite,
+                "view_style": a.view_style,
+            },
+        )
+    )
 
 
 def projects_update(a):
-    out(api("POST", f"/projects/{a.id}", body={
-        "name": a.name,
-        "color": a.color,
-        "is_favorite": a.favorite,
-        "view_style": a.view_style,
-    }))
+    out(
+        api(
+            "POST",
+            f"/projects/{a.id}",
+            body={
+                "name": a.name,
+                "color": a.color,
+                "is_favorite": a.favorite,
+                "view_style": a.view_style,
+            },
+        )
+    )
 
 
 def projects_delete(a):
@@ -199,11 +233,17 @@ def sections_get(a):
 
 
 def sections_add(a):
-    out(api("POST", "/sections", body={
-        "name": a.name,
-        "project_id": a.project_id,
-        "order": a.order,
-    }))
+    out(
+        api(
+            "POST",
+            "/sections",
+            body={
+                "name": a.name,
+                "project_id": a.project_id,
+                "order": a.order,
+            },
+        )
+    )
 
 
 def sections_update(a):
@@ -225,21 +265,33 @@ def labels_get(a):
 
 
 def labels_add(a):
-    out(api("POST", "/labels", body={
-        "name": a.name,
-        "color": a.color,
-        "order": a.order,
-        "is_favorite": a.favorite,
-    }))
+    out(
+        api(
+            "POST",
+            "/labels",
+            body={
+                "name": a.name,
+                "color": a.color,
+                "order": a.order,
+                "is_favorite": a.favorite,
+            },
+        )
+    )
 
 
 def labels_update(a):
-    out(api("POST", f"/labels/{a.id}", body={
-        "name": a.name,
-        "color": a.color,
-        "order": a.order,
-        "is_favorite": a.favorite,
-    }))
+    out(
+        api(
+            "POST",
+            f"/labels/{a.id}",
+            body={
+                "name": a.name,
+                "color": a.color,
+                "order": a.order,
+                "is_favorite": a.favorite,
+            },
+        )
+    )
 
 
 def labels_delete(a):
@@ -251,10 +303,16 @@ def labels_delete(a):
 def comments_list(a):
     if not (a.task_id or a.project_id):
         sys.exit("error: --task-id or --project-id required")
-    out(api("GET", "/comments", params={
-        "task_id": a.task_id,
-        "project_id": a.project_id,
-    }))
+    out(
+        api(
+            "GET",
+            "/comments",
+            params={
+                "task_id": a.task_id,
+                "project_id": a.project_id,
+            },
+        )
+    )
 
 
 def comments_get(a):
@@ -264,11 +322,17 @@ def comments_get(a):
 def comments_add(a):
     if not (a.task_id or a.project_id):
         sys.exit("error: --task-id or --project-id required")
-    out(api("POST", "/comments", body={
-        "content": a.content,
-        "task_id": a.task_id,
-        "project_id": a.project_id,
-    }))
+    out(
+        api(
+            "POST",
+            "/comments",
+            body={
+                "content": a.content,
+                "task_id": a.task_id,
+                "project_id": a.project_id,
+            },
+        )
+    )
 
 
 def comments_update(a):
@@ -280,6 +344,74 @@ def comments_delete(a):
     print(f"deleted comment {a.id}")
 
 
+# ---------- Reminders ----------
+# Asymmetry note: requests use `task_id`, responses surface `item_id`.
+# Premium-gated for create/update on free tier (HTTP 403 PREMIUM_ONLY, error_code 32);
+# GET works on any tier.
+def _reminder_due(a) -> dict | None:
+    fields = {
+        "date": a.due_date,
+        "string": a.due_string,
+        "lang": a.due_lang,
+        "timezone": a.due_timezone,
+    }
+    cleaned = {k: v for k, v in fields.items() if v is not None}
+    return cleaned or None
+
+
+def reminders_list(a):
+    out(
+        api(
+            "GET",
+            "/reminders",
+            params={
+                "cursor": a.cursor,
+                "limit": a.limit,
+            },
+        )
+    )
+
+
+def reminders_get(a):
+    out(api("GET", f"/reminders/{a.id}"))
+
+
+def reminders_add(a):
+    out(
+        api(
+            "POST",
+            "/reminders",
+            body={
+                "task_id": a.task_id,
+                "type": a.type,
+                "minute_offset": a.minute_offset,
+                "notify_uid": a.notify_uid,
+                "due": _reminder_due(a),
+            },
+        )
+    )
+
+
+def reminders_update(a):
+    out(
+        api(
+            "POST",
+            f"/reminders/{a.id}",
+            body={
+                "type": a.type,
+                "minute_offset": a.minute_offset,
+                "notify_uid": a.notify_uid,
+                "due": _reminder_due(a),
+            },
+        )
+    )
+
+
+def reminders_delete(a):
+    api("DELETE", f"/reminders/{a.id}")
+    print(f"deleted reminder {a.id}")
+
+
 # ---------- CLI plumbing ----------
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="todoist", description="Todoist API v1 CLI")
@@ -287,47 +419,191 @@ def build_parser() -> argparse.ArgumentParser:
 
     # tasks
     t = sub.add_parser("tasks").add_subparsers(dest="action", required=True)
-    tl = t.add_parser("list"); tl.add_argument("--project-id"); tl.add_argument("--section-id"); tl.add_argument("--label"); tl.add_argument("--filter"); tl.add_argument("--lang"); tl.add_argument("--ids"); tl.set_defaults(func=tasks_list)
-    tg = t.add_parser("get"); tg.add_argument("id"); tg.set_defaults(func=tasks_get)
-    ta = t.add_parser("add"); ta.add_argument("content"); ta.add_argument("--description"); ta.add_argument("--project-id"); ta.add_argument("--section-id"); ta.add_argument("--parent-id"); ta.add_argument("--priority", type=int, choices=[1,2,3,4]); ta.add_argument("--due"); ta.add_argument("--due-date"); ta.add_argument("--due-lang"); ta.add_argument("--labels", help="comma-separated"); ta.add_argument("--duration", type=int); ta.add_argument("--duration-unit", choices=["minute","day"]); ta.set_defaults(func=tasks_add)
-    tu = t.add_parser("update"); tu.add_argument("id"); tu.add_argument("--content"); tu.add_argument("--description"); tu.add_argument("--priority", type=int, choices=[1,2,3,4]); tu.add_argument("--due"); tu.add_argument("--due-date"); tu.add_argument("--due-lang"); tu.add_argument("--labels"); tu.add_argument("--duration", type=int); tu.add_argument("--duration-unit", choices=["minute","day"]); tu.set_defaults(func=tasks_update)
-    tc = t.add_parser("close"); tc.add_argument("id"); tc.set_defaults(func=tasks_close)
-    tr = t.add_parser("reopen"); tr.add_argument("id"); tr.set_defaults(func=tasks_reopen)
-    td = t.add_parser("delete"); td.add_argument("id"); td.set_defaults(func=tasks_delete)
+    tl = t.add_parser("list")
+    tl.add_argument("--project-id")
+    tl.add_argument("--section-id")
+    tl.add_argument("--label")
+    tl.add_argument("--filter")
+    tl.add_argument("--lang")
+    tl.add_argument("--ids")
+    tl.set_defaults(func=tasks_list)
+    tg = t.add_parser("get")
+    tg.add_argument("id")
+    tg.set_defaults(func=tasks_get)
+    ta = t.add_parser("add")
+    ta.add_argument("content")
+    ta.add_argument("--description")
+    ta.add_argument("--project-id")
+    ta.add_argument("--section-id")
+    ta.add_argument("--parent-id")
+    ta.add_argument("--priority", type=int, choices=[1, 2, 3, 4])
+    ta.add_argument("--due")
+    ta.add_argument("--due-date")
+    ta.add_argument("--due-lang")
+    ta.add_argument("--deadline-date")
+    ta.add_argument("--deadline-lang")
+    ta.add_argument("--labels", help="comma-separated")
+    ta.add_argument("--duration", type=int)
+    ta.add_argument("--duration-unit", choices=["minute", "day"])
+    ta.set_defaults(func=tasks_add)
+    tu = t.add_parser("update")
+    tu.add_argument("id")
+    tu.add_argument("--content")
+    tu.add_argument("--description")
+    tu.add_argument("--priority", type=int, choices=[1, 2, 3, 4])
+    tu.add_argument("--due")
+    tu.add_argument("--due-date")
+    tu.add_argument("--due-lang")
+    tu.add_argument("--deadline-date")
+    tu.add_argument("--deadline-lang")
+    tu.add_argument("--labels")
+    tu.add_argument("--duration", type=int)
+    tu.add_argument("--duration-unit", choices=["minute", "day"])
+    tu.set_defaults(func=tasks_update)
+    tc = t.add_parser("close")
+    tc.add_argument("id")
+    tc.set_defaults(func=tasks_close)
+    tr = t.add_parser("reopen")
+    tr.add_argument("id")
+    tr.set_defaults(func=tasks_reopen)
+    td = t.add_parser("delete")
+    td.add_argument("id")
+    td.set_defaults(func=tasks_delete)
 
     # projects
     pr = sub.add_parser("projects").add_subparsers(dest="action", required=True)
     pr.add_parser("list").set_defaults(func=projects_list)
-    pg = pr.add_parser("get"); pg.add_argument("id"); pg.set_defaults(func=projects_get)
-    pa = pr.add_parser("add"); pa.add_argument("name"); pa.add_argument("--parent-id"); pa.add_argument("--color"); pa.add_argument("--favorite", action="store_true", default=None); pa.add_argument("--view-style", choices=["list","board"]); pa.set_defaults(func=projects_add)
-    pu = pr.add_parser("update"); pu.add_argument("id"); pu.add_argument("--name"); pu.add_argument("--color"); pu.add_argument("--favorite", action="store_true", default=None); pu.add_argument("--view-style", choices=["list","board"]); pu.set_defaults(func=projects_update)
-    pd = pr.add_parser("delete"); pd.add_argument("id"); pd.set_defaults(func=projects_delete)
-    par = pr.add_parser("archive"); par.add_argument("id"); par.set_defaults(func=projects_archive)
-    pun = pr.add_parser("unarchive"); pun.add_argument("id"); pun.set_defaults(func=projects_unarchive)
+    pg = pr.add_parser("get")
+    pg.add_argument("id")
+    pg.set_defaults(func=projects_get)
+    pa = pr.add_parser("add")
+    pa.add_argument("name")
+    pa.add_argument("--parent-id")
+    pa.add_argument("--color")
+    pa.add_argument("--favorite", action="store_true", default=None)
+    pa.add_argument("--view-style", choices=["list", "board"])
+    pa.set_defaults(func=projects_add)
+    pu = pr.add_parser("update")
+    pu.add_argument("id")
+    pu.add_argument("--name")
+    pu.add_argument("--color")
+    pu.add_argument("--favorite", action="store_true", default=None)
+    pu.add_argument("--view-style", choices=["list", "board"])
+    pu.set_defaults(func=projects_update)
+    pd = pr.add_parser("delete")
+    pd.add_argument("id")
+    pd.set_defaults(func=projects_delete)
+    par = pr.add_parser("archive")
+    par.add_argument("id")
+    par.set_defaults(func=projects_archive)
+    pun = pr.add_parser("unarchive")
+    pun.add_argument("id")
+    pun.set_defaults(func=projects_unarchive)
 
     # sections
     sc = sub.add_parser("sections").add_subparsers(dest="action", required=True)
-    sl = sc.add_parser("list"); sl.add_argument("--project-id"); sl.set_defaults(func=sections_list)
-    sg = sc.add_parser("get"); sg.add_argument("id"); sg.set_defaults(func=sections_get)
-    sa = sc.add_parser("add"); sa.add_argument("name"); sa.add_argument("--project-id", required=True); sa.add_argument("--order", type=int); sa.set_defaults(func=sections_add)
-    su = sc.add_parser("update"); su.add_argument("id"); su.add_argument("--name", required=True); su.set_defaults(func=sections_update)
-    sd = sc.add_parser("delete"); sd.add_argument("id"); sd.set_defaults(func=sections_delete)
+    sl = sc.add_parser("list")
+    sl.add_argument("--project-id")
+    sl.set_defaults(func=sections_list)
+    sg = sc.add_parser("get")
+    sg.add_argument("id")
+    sg.set_defaults(func=sections_get)
+    sa = sc.add_parser("add")
+    sa.add_argument("name")
+    sa.add_argument("--project-id", required=True)
+    sa.add_argument("--order", type=int)
+    sa.set_defaults(func=sections_add)
+    su = sc.add_parser("update")
+    su.add_argument("id")
+    su.add_argument("--name", required=True)
+    su.set_defaults(func=sections_update)
+    sd = sc.add_parser("delete")
+    sd.add_argument("id")
+    sd.set_defaults(func=sections_delete)
 
     # labels
     lb = sub.add_parser("labels").add_subparsers(dest="action", required=True)
     lb.add_parser("list").set_defaults(func=labels_list)
-    lg = lb.add_parser("get"); lg.add_argument("id"); lg.set_defaults(func=labels_get)
-    la = lb.add_parser("add"); la.add_argument("name"); la.add_argument("--color"); la.add_argument("--order", type=int); la.add_argument("--favorite", action="store_true", default=None); la.set_defaults(func=labels_add)
-    lu = lb.add_parser("update"); lu.add_argument("id"); lu.add_argument("--name"); lu.add_argument("--color"); lu.add_argument("--order", type=int); lu.add_argument("--favorite", action="store_true", default=None); lu.set_defaults(func=labels_update)
-    ld = lb.add_parser("delete"); ld.add_argument("id"); ld.set_defaults(func=labels_delete)
+    lg = lb.add_parser("get")
+    lg.add_argument("id")
+    lg.set_defaults(func=labels_get)
+    la = lb.add_parser("add")
+    la.add_argument("name")
+    la.add_argument("--color")
+    la.add_argument("--order", type=int)
+    la.add_argument("--favorite", action="store_true", default=None)
+    la.set_defaults(func=labels_add)
+    lu = lb.add_parser("update")
+    lu.add_argument("id")
+    lu.add_argument("--name")
+    lu.add_argument("--color")
+    lu.add_argument("--order", type=int)
+    lu.add_argument("--favorite", action="store_true", default=None)
+    lu.set_defaults(func=labels_update)
+    ld = lb.add_parser("delete")
+    ld.add_argument("id")
+    ld.set_defaults(func=labels_delete)
 
     # comments
     cm = sub.add_parser("comments").add_subparsers(dest="action", required=True)
-    cl = cm.add_parser("list"); cl.add_argument("--task-id"); cl.add_argument("--project-id"); cl.set_defaults(func=comments_list)
-    cg = cm.add_parser("get"); cg.add_argument("id"); cg.set_defaults(func=comments_get)
-    ca = cm.add_parser("add"); ca.add_argument("content"); ca.add_argument("--task-id"); ca.add_argument("--project-id"); ca.set_defaults(func=comments_add)
-    cu = cm.add_parser("update"); cu.add_argument("id"); cu.add_argument("--content", required=True); cu.set_defaults(func=comments_update)
-    cd = cm.add_parser("delete"); cd.add_argument("id"); cd.set_defaults(func=comments_delete)
+    cl = cm.add_parser("list")
+    cl.add_argument("--task-id")
+    cl.add_argument("--project-id")
+    cl.set_defaults(func=comments_list)
+    cg = cm.add_parser("get")
+    cg.add_argument("id")
+    cg.set_defaults(func=comments_get)
+    ca = cm.add_parser("add")
+    ca.add_argument("content")
+    ca.add_argument("--task-id")
+    ca.add_argument("--project-id")
+    ca.set_defaults(func=comments_add)
+    cu = cm.add_parser("update")
+    cu.add_argument("id")
+    cu.add_argument("--content", required=True)
+    cu.set_defaults(func=comments_update)
+    cd = cm.add_parser("delete")
+    cd.add_argument("id")
+    cd.set_defaults(func=comments_delete)
+
+    # reminders
+    rm = sub.add_parser("reminders").add_subparsers(dest="action", required=True)
+    rl = rm.add_parser("list")
+    rl.add_argument("--cursor")
+    rl.add_argument("--limit", type=int)
+    rl.set_defaults(func=reminders_list)
+    rg = rm.add_parser("get")
+    rg.add_argument("id")
+    rg.set_defaults(func=reminders_get)
+    ra = rm.add_parser("add")
+    ra.add_argument(
+        "--task-id",
+        required=True,
+        help="response uses 'item_id'; request field is 'task_id'",
+    )
+    ra.add_argument("--type", choices=["relative", "absolute", "location"])
+    ra.add_argument(
+        "--minute-offset", type=int, help="minutes before due time (relative type)"
+    )
+    ra.add_argument("--notify-uid", help="user id to notify (defaults to self)")
+    ra.add_argument("--due-string")
+    ra.add_argument("--due-date", help="ISO datetime, e.g. 2026-12-31T09:00:00")
+    ra.add_argument("--due-lang")
+    ra.add_argument("--due-timezone")
+    ra.set_defaults(func=reminders_add)
+    ru = rm.add_parser("update")
+    ru.add_argument("id")
+    ru.add_argument("--type", choices=["relative", "absolute", "location"])
+    ru.add_argument("--minute-offset", type=int)
+    ru.add_argument("--notify-uid")
+    ru.add_argument("--due-string")
+    ru.add_argument("--due-date")
+    ru.add_argument("--due-lang")
+    ru.add_argument("--due-timezone")
+    ru.set_defaults(func=reminders_update)
+    rd = rm.add_parser("delete")
+    rd.add_argument("id")
+    rd.set_defaults(func=reminders_delete)
 
     return p
 

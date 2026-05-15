@@ -49,13 +49,13 @@ func Run() {
 
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		notify.SendSimple("Claude Code 對話結束")
+		notify.SendSimple("對話結束")
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		notify.SendSimple("Claude Code 對話結束")
+		notify.SendSimple("對話結束")
 		return
 	}
 

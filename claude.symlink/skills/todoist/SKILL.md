@@ -1,93 +1,101 @@
 ---
 name: todoist
-description: CRUD operations on the user's Todoist — list/create/update/close/delete tasks, projects, sections, labels, and comments via the Todoist API v1. Use when the user asks about Todoist, their todo list, adding/completing/rescheduling a task, managing projects or labels, or says things like "加到待辦", "今天的 Todoist", "把這個工作排到 Todoist".
+description: Todoist CRUD via API v1 — tasks (due + deadline), projects, sections, labels, comments, reminders. Use when user mentions Todoist, their todo list, scheduling/completing a task, "加到待辦", "今天的 Todoist".
 allowed-tools: Bash(python3 *)
 ---
 
 # Todoist CRUD
 
-Wraps the Todoist REST API v1 via a bundled Python script. Authentication token lives in `${CLAUDE_SKILL_DIR}/.apikey` (or `TODOIST_API_TOKEN` env var, which takes precedence).
+Wraps the Todoist REST API v1 via a bundled Python script. Token: `${CLAUDE_SKILL_DIR}/.apikey` (or `TODOIST_API_TOKEN` env var, takes precedence).
+
+## Path conventions
+
+`${CLAUDE_SKILL_DIR}` = directory holding this `SKILL.md`. Resolve once per shell:
+
+```bash
+export CLAUDE_SKILL_DIR=<path reported by the Skill tool's "Base directory">
+```
+
+The script self-locates via `__file__`; the env var is only for shell invocations.
 
 ## Invocation
 
-Call the script with `python3`:
-
 ```bash
-python3 ~/.claude/skills/todoist/scripts/todoist.py <resource> <action> [args...]
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" <resource> <action> [args...]
 ```
 
-Resources: `tasks`, `projects`, `sections`, `labels`, `comments`. Every successful call prints the API response as JSON; errors print `HTTP <code>` to stderr and exit non-zero.
+Resources: `tasks`, `projects`, `sections`, `labels`, `comments`, `reminders`. Successful calls print JSON; errors print `HTTP <code>` to stderr and exit non-zero.
 
-For full endpoint/parameter details see [references/api-reference.md](references/api-reference.md).
+## References (load on demand)
+
+- [references/api-reference.md](references/api-reference.md) — endpoint matrix, body fields, date-parsing notes, Premium-only details, Sync API (filters), error codes, soft-delete semantics
+- [references/filter-system.md](references/filter-system.md) — the user's deliberate 8-filter / label system. **Source of truth** for "what should I do now?" / weekly review / prioritization questions
+- [references/reminders.md](references/reminders.md) — reminders write API (Premium-gated; load when user upgrades or for read-side audit)
 
 ## Common playbooks
 
-### Add a task (the 90% case)
+### Add a task
 
 ```bash
-python3 ~/.claude/skills/todoist/scripts/todoist.py tasks add "買牛奶" --due "tomorrow 9am" --priority 2
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" tasks add "買牛奶" --due "tomorrow 9am" --priority 2
 ```
 
-- `--due` accepts Todoist natural-language strings (`today`, `tomorrow 9am`, `every monday`, `2026-05-01`).
-- `--due-lang` if the user wrote Chinese natural-language (e.g. `"下週二"` → add `--due-lang zh`).
-- `--priority` is 1 (lowest) to 4 (highest, p1 in the Todoist UI).
-- `--labels` is comma-separated, e.g. `--labels work,urgent`.
-- `--project-id` to target a specific project. Resolve project name → id with `projects list` first.
+- `--due` accepts English natural-language or `YYYY-MM-DD`. **Chinese relative dates fail** — resolve to absolute date yourself before calling. Details in `api-reference.md` § Date parsing notes.
+- `--priority` 1 (lowest) → 4 (highest, p1 in UI).
+- `--labels` comma-separated.
+- `--project-id` to target a project (resolve name → id with `projects list`).
 
-### See today's tasks
+### Today's tasks
 
 ```bash
-python3 ~/.claude/skills/todoist/scripts/todoist.py tasks list --filter "today"
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" tasks list --filter "today"
 ```
 
-Other filter strings: `overdue`, `7 days`, `p1`, `@work`, `#Inbox`.
+Filter strings: `overdue`, `7 days`, `p1`, `@label`, `#Project`. Combine with `&` `|`.
 
-### Complete a task
+### Complete / reschedule / edit
 
 ```bash
-python3 ~/.claude/skills/todoist/scripts/todoist.py tasks close <task_id>
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" tasks close <id>
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" tasks update <id> --due "friday"
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" tasks update <id> --content "new title" --priority 3
 ```
 
-Use `reopen` to un-complete, `delete` to remove entirely.
+`reopen` to un-complete, `delete` to remove. Update only flags you pass — omitted fields untouched.
 
-### Reschedule / edit
+### Premium-only operations
 
-```bash
-python3 ~/.claude/skills/todoist/scripts/todoist.py tasks update <task_id> --due "friday"
-python3 ~/.claude/skills/todoist/scripts/todoist.py tasks update <task_id> --content "new title" --priority 3
-```
+`--deadline-date` (tasks) and `reminders add`/`update` return **HTTP 403 PREMIUM_ONLY** on Free. **Don't call.** Free-tier substitutes:
 
-Only pass the flags you want to change — omitted fields are left untouched.
+- Day-of reminder → just `--due "YYYY-MM-DD HH:MM"` (Todoist auto-creates the reminder).
+- T-N pre-event nudge → create a separate prep task due on the T-N date.
+
+Full Premium-gate behavior + read-side ops (work on Free): see `api-reference.md` § Premium-only writes and `references/reminders.md`.
 
 ### Project / label bookkeeping
 
 ```bash
-# projects
-python3 ~/.claude/skills/todoist/scripts/todoist.py projects list
-python3 ~/.claude/skills/todoist/scripts/todoist.py projects add "Side project"
-
-# labels
-python3 ~/.claude/skills/todoist/scripts/todoist.py labels list
-python3 ~/.claude/skills/todoist/scripts/todoist.py labels add "deep-work"
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" projects list
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" projects add "Side project"
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" labels list
+python3 "${CLAUDE_SKILL_DIR}/scripts/todoist.py" labels add "deep-work"
 ```
 
 ## Workflow guidance
 
-1. **Resolve names before acting.** Todoist uses numeric IDs. When the user names a project/label/task, first `list` the relevant resource, match by `name`/`content`, then act on the `id`.
-2. **Confirm before destructive ops.** `delete` is irreversible. Confirm with the user when unsure. `close`/`archive` are reversible and safer defaults.
-3. **Prefer `close` over `delete`** for completed tasks — it preserves history.
-4. **Dates:** pass what the user said verbatim to `--due` (e.g. `"tomorrow 3pm"`, `"下週一"`). The API parses it. Set `--due-lang` when the user wrote non-English.
-5. **Soft-delete:** `DELETE` flips `is_deleted: true`; a follow-up `GET` returns **200** with the tombstone, not 404. The script detects this and exits **2** with a stderr warning while still printing the JSON. Treat exit 2 as "gone", not success — don't trust only stdout.
-6. **Token errors:** if the script exits with `HTTP 401` or `HTTP 403`, the token is missing/invalid — tell the user to regenerate it at Todoist Settings → Integrations → Developer and write it to `~/.claude/skills/todoist/.apikey`.
-7. **Rate limits:** Todoist allows ~450 requests / 15 min per user. For bulk operations, batch via `tasks list --ids "1,2,3"` instead of looping `get`.
+1. **Resolve names → IDs first.** Todoist uses numeric IDs. `list` the resource, match by `name`/`content`, act on the `id`.
+2. **`close` > `delete`** for completed tasks (preserves history). Confirm before `delete` — irreversible.
+3. **Soft-delete:** `DELETE` flips `is_deleted: true`; subsequent `GET` returns 200 with tombstone. Script exits **2** with stderr warning. Treat exit 2 as "gone".
+4. **Token errors (HTTP 401/403):** regenerate at Todoist Settings → Integrations → Developer; write to `${CLAUDE_SKILL_DIR}/.apikey`.
+5. **Rate limit:** ~450 req / 15 min. For bulk reads, prefer `tasks list --ids "1,2,3"` over loops of `get`.
 
 ## Token file
 
-Stored at `~/.claude/skills/todoist/.apikey`, permissions `600`. To rotate:
+`${CLAUDE_SKILL_DIR}/.apikey`, mode `600`. Rotate:
 
 ```bash
-printf '%s' "<new-token>" > ~/.claude/skills/todoist/.apikey
-chmod 600 ~/.claude/skills/todoist/.apikey
+printf '%s' "<new-token>" > "${CLAUDE_SKILL_DIR}/.apikey"
+chmod 600 "${CLAUDE_SKILL_DIR}/.apikey"
 ```
 
-Or export `TODOIST_API_TOKEN` to override without touching the file.
+Or `export TODOIST_API_TOKEN=...` to override without touching the file.

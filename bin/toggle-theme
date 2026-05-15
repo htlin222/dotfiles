@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Usage: toggle-theme <light|dark>
+
+THEME=$1
+TMUX_CONF="$HOME/.dotfiles/tmux/tmux.conf.symlink"
+GHOSTTY_CONF="$HOME/.dotfiles/config.symlink/ghostty/config"
+CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+CLAUDE_DOT_SETTINGS="$HOME/.dotfiles/claude.symlink/settings.json"
+
+if [ "$THEME" = "light" ]; then
+    GHOSTTY_THEME="Catppuccin Latte"
+    TMUX_FLAVOUR="latte"
+    CLAUDE_THEME="light"
+    # Tmux Dotbar Colors (Latte)
+    DOTBAR_BG="#eff1f5"      # Catppuccin Latte Base
+    DOTBAR_FG="#4c4f69"      # Catppuccin Latte Text
+    DOTBAR_FG_CUR="#d20f39"  # Catppuccin Latte Red
+    DOTBAR_FG_SES="#5c5f77"  # Catppuccin Latte Subtext 1
+    DOTBAR_FG_PFX="#1e66f5"  # Catppuccin Latte Blue
+    # Active Pane (Latte) - distinct from white text
+    WINDOW_BG="terminal"
+    ACTIVE_BG="#ccd0da"      # Catppuccin Latte Surface 0 (darker than base)
+elif [ "$THEME" = "dark" ]; then
+    GHOSTTY_THEME="Catppuccin Mocha"
+    TMUX_FLAVOUR="mocha"
+    CLAUDE_THEME="dark"
+    # Tmux Dotbar Colors (Mocha)
+    DOTBAR_BG="#1e1e2e"      # Catppuccin Mocha Base
+    DOTBAR_FG="#cdd6f4"      # Catppuccin Mocha Text
+    DOTBAR_FG_CUR="#f38ba8"  # Catppuccin Mocha Red
+    DOTBAR_FG_SES="#a6adc8"  # Catppuccin Mocha Subtext 1
+    DOTBAR_FG_PFX="#89b4fa"  # Catppuccin Mocha Blue
+    # Active Pane (Mocha)
+    WINDOW_BG="terminal"
+    ACTIVE_BG="#313244"      # Catppuccin Mocha Surface 0
+else
+    echo "Usage: toggle-theme <light|dark>"
+    exit 1
+fi
+
+echo "Switching to $THEME mode..."
+
+# 1. Update Ghostty
+# Ensures the terminal background actually flips!
+sed -i '' "s/^theme = .*/theme = $GHOSTTY_THEME/" "$GHOSTTY_CONF"
+
+# 2. Update Tmux Status Bar (Dotbar)
+# This changes the hex codes in the file for next source
+sed -i '' "s/^set -g @tmux-dotbar-bg .*/set -g @tmux-dotbar-bg \"$DOTBAR_BG\"/" "$TMUX_CONF"
+sed -i '' "s/^set -g @tmux-dotbar-fg .*/set -g @tmux-dotbar-fg \"$DOTBAR_FG\"/" "$TMUX_CONF"
+sed -i '' "s/^set -g @tmux-dotbar-fg-current .*/set -g @tmux-dotbar-fg-current \"$DOTBAR_FG_CUR\"/" "$TMUX_CONF"
+sed -i '' "s/^set -g @tmux-dotbar-fg-session .*/set -g @tmux-dotbar-fg-session \"$DOTBAR_FG_SES\"/" "$TMUX_CONF"
+sed -i '' "s/^set -g @tmux-dotbar-fg-prefix .*/set -g @tmux-dotbar-fg-prefix \"$DOTBAR_FG_PFX\"/" "$TMUX_CONF"
+
+# Update Window Styles (for highlighted pane background)
+sed -i '' "s/set -g window-style .*/set -g window-style        'fg=colour245,bg=$WINDOW_BG'/" "$TMUX_CONF"
+sed -i '' "s/set -g window-active-style .*/set -g window-active-style 'fg=terminal,bg=$ACTIVE_BG'/" "$TMUX_CONF"
+
+# Update Catppuccin Flavour variable
+sed -i '' "s/@catppuccin_flavour '.*/@catppuccin_flavour '$TMUX_FLAVOUR'/" "$TMUX_CONF"
+
+# Instantly reload Tmux settings in the current session
+tmux source-file ~/.tmux.conf 2>/dev/null
+
+# 3. Update Claude Code Settings (Crucial for text visibility!)
+update_claude_settings() {
+    local target="$1"
+    if [ -f "$target" ]; then
+        if grep -q '"theme":' "$target"; then
+            sed -i '' "s/\"theme\": \".*\"/\"theme\": \"$CLAUDE_THEME\"/" "$target"
+        else
+            # Ensure "theme" is injected right at the top level
+            sed -i '' "1s/{/{\n  \"theme\": \"$CLAUDE_THEME\",/" "$target"
+        fi
+    fi
+}
+
+update_claude_settings "$CLAUDE_SETTINGS"     # The active one in ~/.claude/
+update_claude_settings "$CLAUDE_DOT_SETTINGS" # The symlink source in dotfiles
+
+echo "Done! Ghostty, Tmux, and Claude are now in $THEME mode."

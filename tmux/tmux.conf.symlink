@@ -21,6 +21,11 @@ set -g display-panes-time 1500
 set -g display-panes-colour colour238
 set -g display-panes-active-colour colour214
 set -g default-terminal "screen-256color"
+# Advertise Synchronized Output (DEC mode 2026) so CLAUDE_CODE_NO_FLICKER=1
+# can avoid alt-screen and keep scrollback. Needed on tmux 3.2a (Linux);
+# tmux 3.4+ on Mac auto-detects, so these lines are no-ops there.
+set -ag terminal-features ",xterm-ghostty:RGB:Sync"
+set -ag terminal-features ",screen-256color:RGB:Sync"
 setw -g mode-keys vi
 
 # OSC 52 clipboard (works over SSH to sync with local Mac clipboard)
