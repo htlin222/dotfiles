@@ -22,7 +22,7 @@ window-padding-balance = true
 background-opacity = 1.0
 macos-titlebar-style = hidden
 window-decoration = false
-window-save-state = always
+window-save-state = never
 window-inherit-working-directory = true
 window-inherit-font-size = true
 
