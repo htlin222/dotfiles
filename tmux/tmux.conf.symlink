@@ -115,6 +115,7 @@ set -g mouse on  # Let terminal handle selection natively (Ghostty over SSH)
 # Ref: https://github.com/tmux/tmux/issues/3705
 bind -n WheelUpPane { if -F '#{||:#{alternate_on},#{pane_in_mode},#{mouse_any_flag}}' { send -M } { copy-mode -e } }
 bind -n WheelDownPane send-keys -M
+bind -n MouseDrag1Pane { if -F '#{||:#{alternate_on},#{pane_in_mode},#{mouse_any_flag}}' { send -M } { copy-mode -M } }
 # Lower escape timing from 500ms to 50ms for quicker response to scroll-buffer access.
 set -s escape-time 50
 # Mouse interactions disabled - using terminal native selection
@@ -155,8 +156,6 @@ set -g @yank_selection 'clipboard'
 set -g @yank_selection_mouse 'clipboard'
 set -g @yank_with_mouse on
 set -g @plugin 'laktak/extrakto'
-set -g @plugin 'tmux-plugins/tmux-resurrect'
-set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'tmux-plugins/tmux-open'
 set -g @plugin 'schasse/tmux-jump'
 
@@ -170,7 +169,6 @@ set -g @jump-key 's'
 
 # 自動重載 config
 set -g @plugin 'b0o/tmux-autoreload'
-set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'roosta/tmux-fuzzback'
 set -g @plugin 'fcsonline/tmux-thumbs'
 set -g @plugin 'sandudorogan/tmux-sidebar'
@@ -214,12 +212,17 @@ TMUX_FZF_OPTIONS="-w 60% -h 60% -m  --border=none --layout=reverse  --padding=1 
 # set -g @plugin 'github_username/plugin_name'
 # set -g @plugin 'git@github.com/user/plugin'
 # set -g @plugin 'git@bitbucket.com/user/plugin'
+# tmux-resurrect + continuum MUST be the last plugins loaded. continuum's
+# restore hook has to register AFTER every other plugin, otherwise the boot-time
+# session restore can race the theme (tmux-dotbar) and you land on the stock
+# green status bar. Options for these live above (@continuum-restore etc).
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 run '~/.tmux/plugins/tpm/tpm'
-
-bind -n MouseDrag1Pane { if -F '#{||:#{alternate_on},#{pane_in_mode},#{mouse_any_flag}}' { send -M } { copy-mode -M } }
 
 # Ref: [gpakosz/.tmux: 🇫🇷 Oh my tmux! My self-contained, pretty & versatile tmux configuration made with ❤️](https://github.com/gpakosz/.tmux)
 # [My .tmux.conf for tmux 2.1 (with fixes for mouse breakage)](https://gist.github.com/subfuzion/814b3360e9f0b2d89c08)
