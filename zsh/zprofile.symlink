@@ -1,3 +1,7 @@
+
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh"
+
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
@@ -115,3 +119,16 @@ if [[ -n "$IS_MAC" ]] && [[ -f "/opt/homebrew/bin/brew" ]]; then
 elif [[ -n "$IS_LINUX" ]] && [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
+
+# Switch input source to ABC on login (macOS) — local sessions only, detached
+if [[ -z $SSH_CONNECTION ]] && command -v im-select >/dev/null 2>&1; then
+  (im-select com.apple.keylayout.ABC >/dev/null 2>&1 &) &!
+fi
+
+# >>> Codex installer >>>
+export PATH="/Users/htlin/.local/bin:$PATH"
+# <<< Codex installer <<<
+
+
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh"
