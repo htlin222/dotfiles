@@ -1,7 +1,3 @@
-
-# Kiro CLI pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
-
 zmodload zsh/zprof
 
 #############################
@@ -40,6 +36,12 @@ export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 # Skip our heavy prompt/plugin/widget stack — keep only aliases, functions,
 # PATHs, exports, and on-demand integrations.
 # Toggle off by exporting WARP_FULL_ZSHRC=1 before launching Warp.
+#
+#
+#
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
+
 if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
   # --- Claude Code env ---
   export CLAUDE_CODE_ENABLE_TASKS=true
@@ -143,6 +145,21 @@ compinit -C -d "${ZSH_COMPDUMP}"
     zcompile "$dump"
   fi
 } &!
+
+##############################
+### carapace completions   ###
+##############################
+# Rich per-tool completions (flags + descriptions + dynamic args) for ~600
+# CLIs via per-command compdef; commands carapace doesn't know fall through to
+# native zsh completion automatically (no bridge needed). Rendered via fzf-tab.
+# NB: deliberately NO CARAPACE_BRIDGES — bridging re-runs zsh/bash/fish
+# completers for commands carapace already owns, duplicating results (e.g. git
+# 177 -> 286 and a "show all possibilities?" prompt).
+if command -v carapace >/dev/null 2>&1; then
+  zstyle ':completion:*' format $'\e[2;37m%d\e[m'        # dim description headers
+  zstyle ':completion:*:descriptions' format '[%d]'      # keep group desc for fzf-tab
+  source <(carapace _carapace)
+fi
 
 ##############################
 ### Oh-My-Zsh and Plugins ###
