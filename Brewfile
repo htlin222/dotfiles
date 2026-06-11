@@ -319,6 +319,8 @@ brew "gtk+"
 brew "icu4c@76"
 # Integrates GTK macOS applications with the Mac desktop
 brew "gtk-mac-integration"
+# Tool for glamorous shell scripts
+brew "gum"
 # Open-source video transcoder available for Linux, Mac, and Windows
 brew "handbrake"
 # CLI email client written in Rust
@@ -363,6 +365,8 @@ brew "jrnl"
 brew "pandoc"
 # Interactive environments for writing and running code
 brew "jupyterlab", link: false
+# Handy way to save and run project-specific commands
+brew "just"
 # Reading, creating, and manipulating file archives
 brew "karchive"
 # Create documentation from DocBook
@@ -689,6 +693,8 @@ brew "woff2"
 brew "wtfutil"
 # Access X11 clipboards from the command-line
 brew "xclip"
+# Friendly and fast tool for sending HTTP requests
+brew "xh"
 # Command-line program for getting and setting the contents of the X selection
 brew "xsel"
 # Yet Another Dotfiles Manager

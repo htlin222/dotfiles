@@ -44,6 +44,10 @@ EOF
 # Confirmation gate for destructive one-liners: confirm && rip build/
 function confirm() {
   local msg="${1:-Are you sure?}"
+  if command -v gum >/dev/null 2>&1; then
+    gum confirm "$msg"
+    return
+  fi
   local reply
   printf '%s [y/N] ' "$msg"
   read -r reply
