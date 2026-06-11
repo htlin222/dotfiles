@@ -21,6 +21,22 @@ func topic() string {
 	return os.Getenv("NTFY_TOPIC")
 }
 
+// ntfyCmd builds an ntfy command with NTFY_TOPIC stripped from the child
+// environment. The ntfy CLI reads $NTFY_TOPIC as the topic and, when set,
+// treats ALL positional args as the message — so our explicit topic arg
+// would be folded into the body ("<topic> <message>").
+func ntfyCmd(args ...string) *exec.Cmd {
+	cmd := exec.Command("ntfy", args...)
+	var env []string
+	for _, e := range os.Environ() {
+		if !strings.HasPrefix(e, "NTFY_TOPIC=") {
+			env = append(env, e)
+		}
+	}
+	cmd.Env = env
+	return cmd
+}
+
 // Send shows a local banner and, if $NTFY_TOPIC is set, also publishes
 // to that topic for remote (phone) delivery (fire-and-forget).
 func Send(title, body string) error {
@@ -43,7 +59,7 @@ func SendWithTags(title, body, tags string) error {
 		args = append(args, "--tags", tags)
 	}
 	args = append(args, t, body)
-	return exec.Command("ntfy", args...).Start()
+	return ntfyCmd(args...).Start()
 }
 
 // SendToTopic publishes to a specific ntfy topic (fire-and-forget).
@@ -52,7 +68,7 @@ func SendToTopic(t, title, body string) error {
 	if t == "" {
 		return nil
 	}
-	cmd := exec.Command("ntfy", "publish", "--markdown", "--title", title, t, body)
+	cmd := ntfyCmd("publish", "--markdown", "--title", title, t, body)
 	return cmd.Start()
 }
 
@@ -65,7 +81,7 @@ func SendSimple(body string) error {
 	if t == "" {
 		return nil
 	}
-	cmd := exec.Command("ntfy", "publish", "--markdown", t, body)
+	cmd := ntfyCmd("publish", "--markdown", t, body)
 	return cmd.Start()
 }
 
