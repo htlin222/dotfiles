@@ -21,8 +21,8 @@ import (
 
 const (
 	apiURL = "https://api.groq.com/openai/v1/chat/completions"
-	// defaultModel is a fast/cheap model; override with $GROQ_MODEL.
-	defaultModel = "llama-3.1-8b-instant"
+	// defaultModel follows length instructions well; override with $GROQ_MODEL.
+	defaultModel = "llama-3.3-70b-versatile"
 	// requestTimeout bounds the whole summarize call so the stop hook
 	// never hangs on a slow network.
 	requestTimeout = 10 * time.Second
@@ -125,7 +125,8 @@ func SummarizeZHTW(text string) (string, error) {
 			{
 				Role: "system",
 				Content: "你是通知摘要器。將使用者訊息濃縮成繁體中文（台灣用語）摘要，" +
-					"嚴格限制在 50 個字以內，只輸出摘要本身，不要加引號、標籤或任何解釋。",
+					"嚴格限制在 30 個字以內。盡量避免英文檔名或術語，必要時以中文改述。" +
+					"只輸出摘要本身，不要加引號、標籤或任何解釋。",
 			},
 			{Role: "user", Content: text},
 		},
