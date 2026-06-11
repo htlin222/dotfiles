@@ -42,6 +42,7 @@ Configuration is split into focused modules in `modules/`:
 - `fn_notes.zsh`: Note-taking (hh, study, dia, drafts, anki)
 - `fn_media.zsh`: Media processing (yt-mp3, joinmp4, convert_mp4_to_gif)
 - `fn_macos.zsh`: macOS-only functions (unlock, unblock, ignore*dropbox*\*)
+- `fn_cookbook.zsh`: Safety/audit/perf/enrichment toolkit (new-script, confirm, dryrun, dotdoctor, brewaudit, pathaudit, zbench, bench, zmodtime, zprofile, gf, fkill, fns, workon)
 
 ## Common Development Commands
 

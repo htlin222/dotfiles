@@ -1,6 +1,6 @@
 ---
 name: defer
-description: Defer execution of a slash-command or prompt until a timer elapses. Starts a background polling timer that prints "TIMER DONE" on stdout, then executes the deferred prompt. Use when the user types `/defer <duration>: <prompt>` (e.g. `/defer 30 mins: run @plan xxx`), `/defer list`, `/defer cancel <id>`, or asks to delay/queue a one-shot prompt for later in the current session.
+description: Defer execution of a slash-command or prompt until a timer elapses. Starts a background polling timer that prints "TIMER DONE" on stdout, then executes the deferred prompt.
 allowed-tools: Bash, Read, Write, TaskStop
 ---
 
@@ -12,12 +12,12 @@ NOT cross-session — the timer dies with the Claude Code process. Point users a
 
 ## Subcommands
 
-| Form | Action |
-| --- | --- |
-| `/defer <duration>: <prompt>` | Arm a new timer. |
-| `/defer list` | Show pending defers. |
-| `/defer cancel <id>` | Cancel one defer. |
-| `/defer cancel all` | Cancel every pending defer. |
+| Form                          | Action                      |
+| ----------------------------- | --------------------------- |
+| `/defer <duration>: <prompt>` | Arm a new timer.            |
+| `/defer list`                 | Show pending defers.        |
+| `/defer cancel <id>`          | Cancel one defer.           |
+| `/defer cancel all`           | Cancel every pending defer. |
 
 `<id>` = the background-bash shell id returned at arm time. Cancellation uses **TaskStop** with `task_id=<id>`.
 
@@ -38,10 +38,12 @@ Informal regex: `^\s*(\d+)\s*([A-Za-z]+)\s*:\s*(\S.*?)\s*$`, unit lower-cased be
 1. **Parse** → `duration_seconds`, `deferred_prompt`. Apply rejection rules.
 2. **Launch** Bash with `run_in_background: true`, using the polling-timer script in [references/timer-script.md](references/timer-script.md). Capture the returned `<sid>`. Do **not** interpolate the prompt into the script.
 3. **Persist** `/tmp/claude-defer-<sid>.txt`:
+
    ```
    END_TS=<unix_end_time>
    <deferred_prompt verbatim>
    ```
+
 4. **Confirm** with one line: `Deferring for <human_duration> (id <sid>). Will run: <≤80-char prompt summary>`
 5. **End the turn.** Do not poll, sleep, or Monitor — the harness re-invokes on completion.
 

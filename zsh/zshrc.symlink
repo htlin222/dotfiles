@@ -44,9 +44,11 @@ if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
   # --- Claude Code env ---
   export CLAUDE_CODE_ENABLE_TASKS=true
   export CLAUDE_CODE_NO_FLICKER=1
-  CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-  CLAUDE_AUTO_BACKGROUND_TASKS=1
-  CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=true
+  export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+  export CLAUDE_AUTO_BACKGROUND_TASKS=1
+  export CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=true
+  export CLAUDE_CODE_WORKFLOWS=1
+  export DISABLE_GROWTHBOOK=1
   export ENABLE_LSP_TOOLS=1
 
   # --- SSH agent ---
@@ -70,6 +72,7 @@ if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
   source "$DOTFILES/zsh/modules/fn_notes.zsh"
   source "$DOTFILES/zsh/modules/fn_media.zsh"
   source "$DOTFILES/zsh/modules/fn_secrets.zsh"
+  source "$DOTFILES/zsh/modules/fn_cookbook.zsh"
   [[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
   [[ -f "$HOME/.uvv" ]] && source "$HOME/.uvv"
 
@@ -343,6 +346,7 @@ source "$DOTFILES/zsh/modules/fn_dev.zsh"
 source "$DOTFILES/zsh/modules/fn_notes.zsh"
 source "$DOTFILES/zsh/modules/fn_media.zsh"
 source "$DOTFILES/zsh/modules/fn_secrets.zsh"
+source "$DOTFILES/zsh/modules/fn_cookbook.zsh"
 [[ -n "$IS_MAC" ]] && source "$DOTFILES/zsh/modules/fn_macos.zsh"
 
 [[ -f "$HOME/.uvv" ]] && source "$HOME/.uvv"
@@ -590,6 +594,9 @@ if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+
+# Added by Antigravity CLI installer
+export PATH="/Users/htlin/.local/bin:$PATH"
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
