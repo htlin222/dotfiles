@@ -113,12 +113,20 @@ alias bam-less='sam-less'
 alias fai-less='source-highlight      -f esc --lang-def=faidx.lang    --outlang-def=bioSyntax.outlang   --style-file=sam.style   | less'
 alias flagstat-less='source-highlight -f esc --lang-def=flagstat.lang --outlang-def=bioSyntax.outlang   --style-file=sam.style   | less'
 
-# Homebrew (OS-specific paths)
-if [[ -n "$IS_MAC" ]] && [[ -f "/opt/homebrew/bin/brew" ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -n "$IS_LINUX" ]] && [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# Homebrew (OS-specific paths) — shellenv output is static per prefix, so cache it
+# (~30ms saved per login shell); cache invalidates when the brew binary updates
+_brew_bin=""
+[[ -n "$IS_MAC" && -f "/opt/homebrew/bin/brew" ]] && _brew_bin="/opt/homebrew/bin/brew"
+[[ -n "$IS_LINUX" && -f "/home/linuxbrew/.linuxbrew/bin/brew" ]] && _brew_bin="/home/linuxbrew/.linuxbrew/bin/brew"
+if [[ -n "$_brew_bin" ]]; then
+  _brew_env_cache="$HOME/.cache/zsh/brew_shellenv.zsh"
+  if [[ ! -f "$_brew_env_cache" || "$_brew_bin" -nt "$_brew_env_cache" ]]; then
+    mkdir -p "$HOME/.cache/zsh"
+    "$_brew_bin" shellenv > "$_brew_env_cache"
+  fi
+  source "$_brew_env_cache"
 fi
+unset _brew_bin _brew_env_cache
 
 # Switch input source to ABC on login (macOS) — local sessions only, detached
 if [[ -z $SSH_CONNECTION ]] && command -v im-select >/dev/null 2>&1; then

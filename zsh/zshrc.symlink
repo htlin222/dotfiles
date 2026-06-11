@@ -33,6 +33,9 @@ unset CLAUDECODE
 # Ensure DOTFILES is set even in non-login shells
 export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
+# Deduplicate PATH/fpath automatically (installers love appending ~/.local/bin)
+typeset -U path PATH fpath FPATH
+
 ##############################
 ### Warp Minimal Mode      ###
 ##############################
@@ -86,7 +89,9 @@ if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
 
   # --- Proxy + dotfiles secrets ---
   [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
-  [[ -f "$DOTFILES/.env" ]] && export $(grep -v '^#' "$DOTFILES/.env" | xargs)
+  if [[ -f "$DOTFILES/.env" ]]; then
+    set -a; source "$DOTFILES/.env"; set +a
+  fi
 
   # --- Python venv auto-activate ---
   [[ -f ".venv/bin/activate" ]] && source .venv/bin/activate
@@ -129,9 +134,10 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-
 ### FAST compinit settings ###
 ##############################
 
-# Fast compinit - always use cache, rebuild daily in background
+# Fast compinit - oh-my-zsh runs `compinit -C -d $ZSH_COMPDUMP` for us
+# (ZSH_DISABLE_COMPFIX=true skips compaudit); only run it ourselves if OMZ is absent
 autoload -Uz compinit
-compinit -C -d "${ZSH_COMPDUMP}"
+[[ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]] || compinit -C -d "${ZSH_COMPDUMP}"
 
 # Background: rebuild if older than 1 day, then compile
 {
@@ -172,7 +178,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export CLAUDE_CODE_ENABLE_TASKS=true
 # export DISABLE_COST_WARNINGS=1
 # Linux (SSH 進來的遠端) tmux 在 alt-screen 下滾輪會被吞，所以只在 macOS 開 NO_FLICKER
-if [[ "$(uname)" != "Linux" ]]; then
+if [[ -z "$IS_LINUX" ]]; then
   export CLAUDE_CODE_NO_FLICKER=1
 fi
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
@@ -311,7 +317,8 @@ add-zsh-hook precmd _load_deferred_plugins
 if [[ -z "$SSH_AUTH_SOCK" ]]; then
   eval "$(ssh-agent -s)" > /dev/null
 fi
-ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null
+# Background: key add talks to the agent socket (~11ms); nothing needs it at prompt time
+[[ -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
 
 export ENABLE_LSP_TOOLS=1
 
@@ -555,10 +562,13 @@ export PATH=/usr/local/go/bin:$PATH
 [[ -f "$HOME/.HTTPCONFIG" ]] && source "$HOME/.HTTPCONFIG"
 
 # Dotfiles .env (secrets not committed to git)
-[[ -f "$DOTFILES/.env" ]] && export $(grep -v '^#' "$DOTFILES/.env" | xargs)
+# set -a/+a exports everything the file defines; survives quotes/spaces unlike xargs
+if [[ -f "$DOTFILES/.env" ]]; then
+  set -a; source "$DOTFILES/.env"; set +a
+fi
 
-# bun completions
-[ -s "/home/htlin222/.bun/_bun" ] && source "/home/htlin222/.bun/_bun"
+# bun completions ($HOME, not /home/...: stat'ing /home on macOS triggers autofs, ~23ms)
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
@@ -590,7 +600,14 @@ zshexit() {
   fi
 }
 
-if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+# Lazy wt: init shell integration on first use instead of forking at startup
+if command -v wt >/dev/null 2>&1; then
+  wt() {
+    unfunction wt 2>/dev/null
+    eval "$(command wt config shell init zsh)"
+    wt "$@"
+  }
+fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
