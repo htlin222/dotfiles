@@ -89,3 +89,10 @@ git/gitconfig.symlink
 
 # rclone config contains live R2 credentials
 config.symlink/rclone/rclone.conf
+
+# credential files that tools auto-write into ~/.config (symlinked into this repo)
+**/auth.yaml
+**/credentials.json
+**/*_token
+**/*.pem
+**/*.key

@@ -1,0 +1,11 @@
+# Block commits that contain secrets (uses repo's .gitleaks.toml allowlist).
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --no-banner --config .gitleaks.toml || {
+    echo "" >&2
+    echo "gitleaks: secret detected in staged changes — commit blocked." >&2
+    echo "If this is a false positive, add it to .gitleaks.toml allowlist." >&2
+    exit 1
+  }
+else
+  echo "warning: gitleaks not installed — secret scan skipped (brew install gitleaks)" >&2
+fi

@@ -1,0 +1,6 @@
+# migrated from .git/hooks/prepare-commit-msg (aicommits symlink)
+# $2 (commit source) is set when a message already exists (-m, merge, squash,
+# template) — only invoke aicommits for plain `git commit`, and never block.
+[ -n "$2" ] && exit 0
+AICOMMITS=/opt/homebrew/lib/node_modules/aicommits/dist/cli.mjs
+[ -f "$AICOMMITS" ] && "$AICOMMITS" "$@" || true

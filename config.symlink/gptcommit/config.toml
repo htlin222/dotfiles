@@ -8,7 +8,9 @@ file_ignore = [
 ]
 
 [openai]
-api_key = "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"
+# Set via env var instead of committing a key to this (public) repo:
+#   export GPTCOMMIT__OPENAI__API_KEY="sk-..."
+api_key = ""
 model = "gpt-3.5-turbo"
 retries = 2
 

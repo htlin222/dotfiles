@@ -1,0 +1,2 @@
+# migrated from .git/hooks/pre-push
+[ "$(uname)" = "Darwin" ] && afplay /System/Library/Sounds/Submarine.aiff &

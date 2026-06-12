@@ -9,11 +9,23 @@
 # @raycast.mode fullOutput
 # @raycast.packageName System
 # @raycast.schemaVersion 1
+import os
 import re
+import sys
+from pathlib import Path
+
 import pyperclip
 import bitlyshortener
-# Bitly token
-api_token = 'db874d7954f55ad86d7a6bb769af1bff34153aa1'
+
+# Bitly token: read from env or ~/.bitly_token — never hardcode in this public repo
+api_token = os.environ.get("BITLY_TOKEN", "")
+if not api_token:
+    token_file = Path.home() / ".bitly_token"
+    if token_file.is_file():
+        api_token = token_file.read_text().strip()
+if not api_token:
+    print("Missing Bitly token: set BITLY_TOKEN or create ~/.bitly_token")
+    sys.exit(1)
 # get myurl from clipboard
 myurl = pyperclip.paste()
 # Create and regex for check if a valid URL or not
