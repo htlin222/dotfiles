@@ -102,3 +102,37 @@ func truncateString(s string, maxLen int) string {
 	}
 	return s
 }
+
+// wrapPrompt wraps s into at most 2 lines of the given rune width,
+// breaking at word boundaries and trimming the second line with an
+// ellipsis if it overflows.
+func wrapPrompt(s string, width int) []string {
+	if width < 10 {
+		width = 10
+	}
+	r := []rune(s)
+	if len(r) <= width {
+		return []string{s}
+	}
+
+	cut := wordBreakPoint(r, width)
+	first := strings.TrimRight(string(r[:cut]), " ")
+	rest := []rune(strings.TrimLeft(string(r[cut:]), " "))
+	if len(rest) > width {
+		cut2 := wordBreakPoint(rest, width-1)
+		rest = append(rest[:cut2], '…')
+	}
+	return []string{first, string(rest)}
+}
+
+// wordBreakPoint returns the index to break r so the first part fits in
+// width runes, preferring the last space; falls back to a hard break
+// when no space exists (e.g. one long token or CJK without spaces).
+func wordBreakPoint(r []rune, width int) int {
+	for i := width; i > 0; i-- {
+		if r[i] == ' ' {
+			return i
+		}
+	}
+	return width
+}

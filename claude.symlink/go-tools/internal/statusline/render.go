@@ -111,23 +111,23 @@ func Render(data *protocol.StatuslineInput) {
 	if vimMode == "" {
 		vimMode = "NORMAL"
 	}
-	vimColor := Yellow
-	switch vimMode {
-	case "INSERT":
-		vimColor = Green
-	case "VISUAL":
-		vimColor = Magenta
-	}
+	// vimColor := Yellow
+	// switch vimMode {
+	// case "INSERT":
+	// 	vimColor = Green
+	// case "VISUAL":
+	// 	vimColor = Magenta
+	// }
 
-	// Switch input method and get saved IM for display
-	savedIMShort := handleVimModeIMSwitch(vimMode, data.TranscriptPath)
+	// Switch input method (side effect kept); vim status no longer displayed
+	_ = handleVimModeIMSwitch(vimMode, data.TranscriptPath)
 
 	// Lines
 	linesAdded := data.Cost.TotalLinesAdded
 	linesRemoved := data.Cost.TotalLinesRemoved
 
-	// Conversation depth
-	convDepth := countConversationDepth(data.TranscriptPath)
+	// Conversation depth (not displayed)
+	// convDepth := countConversationDepth(data.TranscriptPath)
 
 	// Context usage
 	windowSize := data.ContextWindow.ContextWindowSize
@@ -159,13 +159,13 @@ func Render(data *protocol.StatuslineInput) {
 	weeklyDisplay := fmt.Sprintf("%d%%", usage.WeeklyPct)
 
 	// Get dad joke
-	dadJoke := GetDadJoke()
+	// dadJoke := GetDadJoke()
 
-	// Get last user command
-	lastCmd, lastCmdTime := getLastUserCommand(data.TranscriptPath, 60)
+	// Get last user command (long enough to fill 2 wrapped lines)
+	lastCmd, _ := getLastUserCommand(data.TranscriptPath, 500)
 
 	// Get first prompt (saved persistently)
-	firstPrompt := getFirstPrompt(data.TranscriptPath, 50)
+	// firstPrompt := getFirstPrompt(data.TranscriptPath, 50)
 
 	// Git status
 	gitStatus := GetGitStatus(data.Workspace.CurrentDir)
@@ -182,31 +182,35 @@ func Render(data *protocol.StatuslineInput) {
 		return
 	}
 
-	// Line 1: Last user command with timestamp
+	// Line 1: Last user command, wrapped to max 2 lines (indented continuation)
 	if lastCmd != "" {
-		fmt.Printf("%s%s%s%s%s", ClearLine, LightGreen, IconLastCmd, lastCmd, Reset)
-		if lastCmdTime != "" {
-			fmt.Printf(" %sat %s%s", Gray, lastCmdTime, Reset)
+		width := getTermWidth()
+		if width <= 0 {
+			width = 80
 		}
-		fmt.Printf("%s\n", "\033[K")
+		const indent = "  " // matches IconLastCmd width
+		lines := wrapPrompt(lastCmd, width-len(indent))
+		fmt.Printf("%s%s%s%s%s\033[K\n", ClearLine, LightGreen, IconLastCmd, lines[0], Reset)
+		if len(lines) > 1 {
+			fmt.Printf("%s%s%s%s%s\033[K\n", ClearLine, LightGreen, indent, lines[1], Reset)
+		}
 	}
 
-	// Line 2: First prompt of session (persists across compacts)
-	if firstPrompt != "" {
-		firstPromptTime := getFirstPromptTime(data.TranscriptPath)
-		fmt.Printf("%s%s%s%s%s", ClearLine, DarkGreen, IconFirstPrompt, firstPrompt, Reset)
-		if firstPromptTime != "" {
-			fmt.Printf(" %sat %s%s", Gray, firstPromptTime, Reset)
-		}
-		fmt.Printf("%s\n", "\033[K")
-	}
+	// Line 2: First prompt of session (removed)
+	// if firstPrompt != "" {
+	// 	firstPromptTime := getFirstPromptTime(data.TranscriptPath)
+	// 	fmt.Printf("%s%s%s%s%s", ClearLine, DarkGreen, IconFirstPrompt, firstPrompt, Reset)
+	// 	if firstPromptTime != "" {
+	// 		fmt.Printf(" %sat %s%s", Gray, firstPromptTime, Reset)
+	// 	}
+	// 	fmt.Printf("%s\n", "\033[K")
+	// }
 
-	// Line 3: user@host, model, RAM/CPU, vim
-	userHost := getUserHost()
+	// Line 3: RAM/CPU (user@host, vim status commented out; model moved to weekly usage line)
+	// userHost := getUserHost()
 	ramMB, cpuPct, pid := getClaudeProcessStats()
 	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
-	fmt.Printf("%s%s%s ", Gray, userHost, Reset)
-	fmt.Printf("%s%s%s%s ", ClaudeOrange, IconModel, model, Reset)
+	// fmt.Printf("%s%s%s ", Gray, userHost, Reset)
 	ramColor := getRamColor(ramMB)
 	fmt.Printf("%s✿ %dMB%s %s✿ %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
 	// Show kill timer countdown if active
@@ -216,49 +220,42 @@ func Render(data *protocol.StatuslineInput) {
 			fmt.Printf("%s%s %dm%02ds%s ", Orange, IconTimerSand, secs/60, secs%60, Reset)
 		}
 	}
+	fmt.Println()
 	// Show vim mode with saved IM indicator
-	if savedIMShort != "" && vimMode != "INSERT" {
-		fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
-	} else {
-		fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
-	}
+	// if savedIMShort != "" && vimMode != "INSERT" {
+	// 	fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
+	// } else {
+	// 	fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
+	// }
 
 	// Line: context + usage (compact, no icons, no bar)
 	fmt.Printf("%s%s[C]%d%% %s/%s%s", ClearLine, contextColor, contextPct, currentDisplay, windowDisplay, Reset)
 	fmt.Printf(" %s[5hr]%s-%s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
-	fmt.Printf(" %s[1w]%s %s%s\033[K\n", weeklyColor, weeklyDisplay, usage.WeeklyResetDate, Reset)
+	fmt.Printf(" %s[1w]%s %s%s", weeklyColor, weeklyDisplay, usage.WeeklyResetDate, Reset)
+	fmt.Printf(" %s%s%s%s\033[K\n", ClaudeOrange, IconModel, model, Reset)
 
 	// Folder + Git branch
 	if gitStatus.BranchLine != "" {
 		fmt.Printf("\n%s", ClearLine)
-		// Folder: bg yellow with black text
-		fmt.Printf("%s %s %s", BgYellow+Black, dir, Reset)
+		// Folder: yellow text with trailing "/" as folder hint
+		fmt.Printf("%s%s/%s", Yellow, dir, Reset)
 		fmt.Print(" ")
-		renderBranchLine(gitStatus)
+		renderBranchLine(gitStatus, linesAdded, linesRemoved)
 	}
 
 	// Git file status
 	if len(gitStatus.Files) > 0 {
-		for _, file := range gitStatus.Files {
-			fmt.Print(ClearLine)
-			renderFileStatus(file)
-		}
-		fmt.Print(ClearLine)
+		renderFileStatuses(gitStatus.Files)
 		if gitStatus.TotalFiles > 6 {
 			extra := gitStatus.TotalFiles - 6
-			fmt.Printf("%s[+%d more]%s ", Dim, extra, Reset)
+			fmt.Printf("%s%s[+%d more]%s\n", ClearLine, Dim, extra, Reset)
 		}
-		// Session stats: lines, depth (same line)
-		fmt.Printf("%s+%d%s%s-%d%s ", Green, linesAdded, Reset, Red, linesRemoved, Reset)
-		fmt.Printf("%s%s%d%s\n", LightBlue, IconDepth, convDepth, Reset)
-	} else {
-		// No git files, still show stats
-		fmt.Printf("%s%s+%d%s%s-%d%s ", ClearLine, Green, linesAdded, Reset, Red, linesRemoved, Reset)
-		fmt.Printf("%s%s%d%s\n", LightBlue, IconDepth, convDepth, Reset)
 	}
+	// Conversation depth (commented out)
+	// fmt.Printf("%s%s%s%d%s\n", ClearLine, LightBlue, IconDepth, convDepth, Reset)
 
 	// Dad joke (at the bottom)
-	fmt.Printf("%s%s%s%s\n", ClearLine, Dim, dadJoke, Reset)
+	// fmt.Printf("%s%s%s%s\n", ClearLine, Dim, dadJoke, Reset)
 
 	// End synchronized update
 	fmt.Print(SyncEnd)

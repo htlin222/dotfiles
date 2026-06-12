@@ -89,8 +89,8 @@ func getLastUserCommand(transcriptPath string, maxLen int) (string, string) {
 		lastUserMsg = strings.ReplaceAll(lastUserMsg, "  ", " ")
 	}
 
-	if len(lastUserMsg) > maxLen {
-		lastUserMsg = lastUserMsg[:maxLen-3] + "..."
+	if r := []rune(lastUserMsg); len(r) > maxLen {
+		lastUserMsg = string(r[:maxLen-3]) + "..."
 	}
 
 	// Format timestamp as HH:MM:SS
