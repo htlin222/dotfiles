@@ -95,11 +95,19 @@ func Run() {
 	}
 
 	// Feature 2: Notification with last assistant message.
+	// Codex's Stop payload may omit last_assistant_message, so fall back
+	// to extracting it from the transcript (Claude or Codex format).
 	// Long messages are condensed to a ≤50-char zh-TW summary via Groq;
 	// on any failure we fall back to plain truncation.
 	body := data.LastAssistantMessage
+	msgSource := "payload"
+	if body == "" && data.TranscriptPath != "" {
+		body = lastMessageFromTranscript(data.TranscriptPath)
+		msgSource = "transcript"
+	}
 	if body == "" {
 		body = "對話已完成"
+		msgSource = "none"
 	}
 	if utf8.RuneCountInString(body) > 50 {
 		if summary, err := groq.SummarizeZHTW(body); err == nil {
@@ -138,6 +146,7 @@ func Run() {
 		"files_formatted": formattedCount,
 		"files_linted":    lintCount,
 		"files_found":     len(dirtyFiles),
+		"msg_source":      msgSource,
 	})
 
 	metrics.LogEvent("Stop", "stop", sessionID, cwd, map[string]any{
