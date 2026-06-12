@@ -154,6 +154,7 @@ link_dotfiles() {
   link_file "$DOTFILES_ROOT/zsh/zshrc.symlink" "$HOME/.zshrc"
   link_file "$DOTFILES_ROOT/zsh/zprofile.symlink" "$HOME/.zprofile"
   link_file "$DOTFILES_ROOT/zsh/zshenv.symlink" "$HOME/.zshenv"
+  link_file "$DOTFILES_ROOT/zsh/p10k.zsh.symlink" "$HOME/.p10k.zsh"
 
   # Tmux
   link_file "$DOTFILES_ROOT/tmux/tmux.conf.symlink" "$HOME/.tmux.conf"

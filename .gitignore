@@ -86,3 +86,6 @@ docs/**/*_files/
 *.zip
 config.symlink/code-server/*
 git/gitconfig.symlink
+
+# rclone config contains live R2 credentials
+config.symlink/rclone/rclone.conf

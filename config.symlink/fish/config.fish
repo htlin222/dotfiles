@@ -14,3 +14,7 @@ $MAMBA_EXE shell hook --shell fish --prefix $MAMBA_ROOT_PREFIX | source
 
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /Users/htlin/.cache/lm-studio/bin
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/Users/htlin/.local/bin" $PATH

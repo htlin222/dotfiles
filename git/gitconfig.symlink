@@ -31,7 +31,7 @@
     # light = true
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 
 [help]
     autocorrect = prompt
@@ -112,7 +112,7 @@
     updateRefs = true
 
 [core]
-	editor = vim
+	editor = nvim
     pager = delta
 	autocrlf = input
 	excludesFile = ~/.gitignore_global
@@ -160,6 +160,10 @@
 	sp = stash pop
 	staged = diff --cached
 	contributors = shortlog -sn --all
+	# structural (AST) diffs via difftastic, on demand; delta stays the default pager
+	dft = -c diff.external=difft diff
+	dshow = -c diff.external=difft show --ext-diff
+	dlog = -c diff.external=difft log -p --ext-diff
   backto = "!f() { git rev-list --reverse \"$1\"..HEAD | while read sha; do git revert --no-commit \"$sha\" || exit 1; done && git commit -m \"Revert back to $1\"; }; f"
 [credential "https://github.com"]
 	helper = 

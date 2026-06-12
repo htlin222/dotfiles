@@ -29,17 +29,14 @@ set -g default-terminal "tmux-256color"
 set -ag terminal-features ",xterm-ghostty:RGB:Sync"
 set -ag terminal-features ",tmux-256color:RGB:Sync"
 set -ag terminal-features ",screen-256color:RGB:Sync"
-setw -g mode-keys vi
-
-# ─── Core settings made explicit (robustness) ──────────────
-# These are also provided by tmux-sensible, but hard-coding them keeps the
-# config correct on a fresh machine before TPM has cloned the plugins.
+# Let nvim autoread/gitsigns react to focus; bigger scrollback than the 2000 default
+set -g focus-events on
 set -g history-limit 50000
-set -g focus-events on   # neovim autoread / FocusGained-Lost across panes
-# Disambiguate Ctrl/Shift/Alt + key (incl. Ctrl+digit) via CSI-u extended keys.
-# Ghostty supports this; tmux requests it from apps and withdraws on exit.
+# Pass CSI u extended keys through to apps that request them (nvim in Ghostty/kitty).
+# Disambiguates Ctrl/Shift/Alt + key (incl. Ctrl+digit); Ghostty advertises extkeys.
 set -s extended-keys on
 set -as terminal-features ",xterm-ghostty:extkeys"
+setw -g mode-keys vi
 
 # OSC 52 clipboard (works over SSH to sync with local Mac clipboard)
 set -g set-clipboard on
@@ -60,6 +57,8 @@ bind r source-file ~/.tmux.conf \; display 'Reloaded!'
 # Vim style copy / paste
 unbind [
 bind Escape copy-mode
+# prefix / = regex scrollback search (built-in since tmux 2.4; replaces tmux-copycat)
+bind / command-prompt -p 'search:' 'copy-mode; send-keys -X search-backward "%%"'
 bind-key -n C-b copy-mode  # Ctrl+b directly enters copy mode (no prefix)
 bind-key -n C-q detach-client  # Ctrl+q directly detaches (no prefix)
 unbind p
@@ -153,17 +152,22 @@ set -g @tmux-dotbar-session-text " #S "
 set -g @tmux-dotbar-ssh-enabled true
 set -g @tmux-dotbar-ssh-icon '§'
 set -g @tmux-dotbar-maximized-icon '⇱'
+# Embed continuum's save trigger inside dotbar's own status-right so it can't
+# be clobbered by plugin load order (dotbar overwrites status-right at load;
+# continuum's autosave silently never fired before this — resurrect dir was empty).
+# The #(...continuum_save.sh) runs every status-interval and saves when
+# @continuum-save-interval (minutes) has elapsed.
+set -g @tmux-dotbar-status-right "#(~/.tmux/plugins/tmux-continuum/scripts/continuum_save.sh)#[bg=#0B0E14,fg=#565B66] %H:%M #[bg=#0B0E14,fg=#565B66]"
 # List of plugins prefix I to install
+# Trimmed 2026-06-12 (each plugin script runs synchronously at server start):
+# removed tome (unused), tmux-copycat (built-in regex search since tmux 2.4),
+# tmuxifier (no layouts), tmux-keyboard-layout (prefix already runs im-select),
+# tmux-sidebar (yazi/lf cover it), duplicate tmux-fzf declaration
 set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'laktak/tome'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'christoomey/vim-tmux-navigator'
-# tmux-copycat removed: deprecated upstream; native copy-mode search (tmux >=2.4)
-# plus tmux-fuzzback already cover it, and it spawned a background ps-scraper.
 set -g @plugin 'jaclu/tmux-menus'
-set -g @plugin 'jimeh/tmuxifier'
 set -g @plugin 'sainnhe/tmux-fzf'
-set -g @plugin 'imomaliev/tmux-keyboard-layout'
 set -g @plugin 'tmux-plugins/tmux-yank'
 # tmux-yank: use system clipboard via OSC 52 (not xclip)
 set -g @yank_selection 'clipboard'
@@ -185,8 +189,13 @@ set -g @jump-key 's'
 set -g @plugin 'b0o/tmux-autoreload'
 set -g @plugin 'roosta/tmux-fuzzback'
 set -g @plugin 'fcsonline/tmux-thumbs'
-set -g @plugin 'sandudorogan/tmux-sidebar'
 set -g @plugin 'vaaleyard/tmux-dotbar'
+# resurrect/continuum MUST load after dotbar: continuum arms its periodic save
+# by appending #(continuum_save.sh) to status-right; dotbar overwrites that
+# variable at load. Wrong order = autosave silently never fires (found 2026-06-12
+# with ~/.tmux/resurrect/ empty despite @continuum-restore on).
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
 # is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
@@ -236,7 +245,9 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
-run '~/.tmux/plugins/tpm/tpm'
+# run -b: plugins load in background (~1.3s serially); first prompt is instant.
+# Plugin keybindings/statusbar styling attach within ~1s of server start.
+run -b '~/.tmux/plugins/tpm/tpm'
 
 # Ref: [gpakosz/.tmux: 🇫🇷 Oh my tmux! My self-contained, pretty & versatile tmux configuration made with ❤️](https://github.com/gpakosz/.tmux)
 # [My .tmux.conf for tmux 2.1 (with fixes for mouse breakage)](https://gist.github.com/subfuzion/814b3360e9f0b2d89c08)

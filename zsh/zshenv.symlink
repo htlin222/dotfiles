@@ -1,7 +1,14 @@
-if [ -e ~/.nvm ]; then
-  [[ -s ~/.nvm/nvm.sh ]] && . ~/.nvm/nvm.sh
+# zshenv: runs for EVERY zsh (scripts included) — keep minimal and fast.
+
+# OS flags available to all shells (no uname fork; zprofile re-exports are idempotent)
+if [[ -z "$IS_MAC" && -z "$IS_LINUX" ]]; then
+  case "$OSTYPE" in
+    darwin*) export IS_MAC=1 ;;
+    linux*) export IS_LINUX=1 ;;
+  esac
 fi
-. "$HOME/.cargo/env"
+
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 # Auto-terminate idle mosh-server after 24h (tmux holds session state)
 export MOSH_SERVER_NETWORK_TMOUT=86400
 export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH

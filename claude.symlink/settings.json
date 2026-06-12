@@ -1,4 +1,5 @@
 {
+	"skillListingBudgetFraction": 0.03,
 	"env": {
 		"DISABLE_AUTOUPDATER": "1"
 	},
@@ -64,6 +65,7 @@
 		],
 		"defaultMode": "auto"
 	},
+	"model": "claude-fable-5[1m]",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
 		"SessionStart": [
@@ -267,7 +269,6 @@
 		}
 	},
 	"alwaysThinkingEnabled": true,
-	"skillListingBudgetFraction": 0.03,
 	"skipDangerousModePermissionPrompt": true,
 	"editorMode": "vim",
 	"preferredNotifChannel": "terminal_bell",

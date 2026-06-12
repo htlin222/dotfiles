@@ -13,3 +13,6 @@ claude-statusline
 
 # Dependency directories
 vendor/
+
+# Secrets (Groq API key for stop-hook summarization)
+.env

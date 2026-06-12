@@ -239,7 +239,8 @@ if command -v oco &>/dev/null; then
 fi
 
 # better-rm: 更安全的 rm 命令 / A safer rm command
-[[ -x "/home/htlin222/.better-rm/better-rm" ]] && alias rm='/home/htlin222/.better-rm/better-rm'
+# Linux-only guard first: stat'ing /home/... on macOS triggers the autofs automounter (~23ms)
+[[ -n "$IS_LINUX" && -x "/home/htlin222/.better-rm/better-rm" ]] && alias rm='/home/htlin222/.better-rm/better-rm'
 
 # Fallback clipboard helpers if none are available
 _pbcopy_fallback() {

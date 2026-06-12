@@ -14,6 +14,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"unicode/utf8"
 
 	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/hooks/busy"
@@ -24,6 +25,7 @@ import (
 	"github.com/htlin/claude-tools/internal/snapshot"
 	"github.com/htlin/claude-tools/internal/turso"
 	"github.com/htlin/claude-tools/pkg/ansi"
+	"github.com/htlin/claude-tools/pkg/groq"
 	"github.com/htlin/claude-tools/pkg/metrics"
 	"github.com/htlin/claude-tools/pkg/notify"
 	"github.com/htlin/claude-tools/pkg/patterns"
@@ -92,13 +94,19 @@ func Run() {
 		lintCount = lintDirtyFiles(dirtyFiles, cwd)
 	}
 
-	// Feature 2: Notification with last assistant message
+	// Feature 2: Notification with last assistant message.
+	// Long messages are condensed to a ≤50-char zh-TW summary via Groq;
+	// on any failure we fall back to plain truncation.
 	body := data.LastAssistantMessage
 	if body == "" {
 		body = "對話已完成"
 	}
-	if len(body) > 500 {
-		body = body[:500] + "…"
+	if utf8.RuneCountInString(body) > 50 {
+		if summary, err := groq.SummarizeZHTW(body); err == nil {
+			body = summary
+		} else if len(body) > 500 {
+			body = body[:500] + "…"
+		}
 	}
 	host, _ := os.Hostname()
 	var title string
