@@ -110,24 +110,14 @@ func GetUsageData(input *protocol.StatuslineInput) *UsageData {
 	return data
 }
 
+// formatTimeUntil renders the reset moment as actual clock time hh:mm (GMT+8).
 func formatTimeUntil(resetTime string) string {
 	t, err := time.Parse(time.RFC3339, resetTime)
 	if err != nil {
 		return "--"
 	}
-
-	diff := time.Until(t)
-	if diff < 0 {
-		return "0m"
-	}
-
-	hours := int(diff.Hours())
-	minutes := int(diff.Minutes()) % 60
-
-	if hours > 0 {
-		return formatInt(hours) + "h" + formatIntPad(minutes) + "m"
-	}
-	return formatInt(minutes) + "m"
+	gmt8 := time.FixedZone("GMT+8", 8*60*60)
+	return t.In(gmt8).Format("15:04")
 }
 
 func formatResetDate(resetTime string) string {

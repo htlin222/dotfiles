@@ -146,8 +146,8 @@ func Render(data *protocol.StatuslineInput) {
 	// Persist real context pressure for userprompt hook
 	context.WritePressure(rawContextPct, currentTokens, windowSize)
 
-	currentDisplay := formatTokens(currentTokens)
-	windowDisplay := formatTokensShort(windowSize)
+	// currentDisplay := formatTokens(currentTokens)
+	// windowDisplay := formatTokensShort(windowSize)
 
 	contextColor := getColor(contextPct)
 
@@ -175,8 +175,8 @@ func Render(data *protocol.StatuslineInput) {
 
 	// Narrow screen: single compact line
 	if w := getTermWidth(); w > 0 && w < narrowThreshold {
-		fmt.Printf("%s%s[C]%d%% %s/%s%s", ClearLine, contextColor, contextPct, currentDisplay, windowDisplay, Reset)
-		fmt.Printf(" %s[5hr]%s-%s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
+		fmt.Printf("%s%s[C]%d%%%s", ClearLine, contextColor, contextPct, Reset)
+		fmt.Printf(" %s[5]%s %s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
 		fmt.Printf("\033[K\n")
 		fmt.Print(SyncEnd)
 		return
@@ -206,21 +206,21 @@ func Render(data *protocol.StatuslineInput) {
 	// 	fmt.Printf("%s\n", "\033[K")
 	// }
 
-	// Line 3: RAM/CPU (user@host, vim status commented out; model moved to weekly usage line)
+	// Line 3: RAM/CPU/PID (commented out; kill timer kept, shown only when active)
 	// userHost := getUserHost()
-	ramMB, cpuPct, pid := getClaudeProcessStats()
-	fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
+	// ramMB, cpuPct, pid := getClaudeProcessStats()
+	// fmt.Printf("%s%s%s%s ", ClearLine, Dim, IconUser, Reset)
 	// fmt.Printf("%s%s%s ", Gray, userHost, Reset)
-	ramColor := getRamColor(ramMB)
-	fmt.Printf("%s✿ %dMB%s %s✿ %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
+	// ramColor := getRamColor(ramMB)
+	// fmt.Printf("%s✿ %dMB%s %s✿ %.1f%% on %d%s ", ramColor, ramMB, Reset, Gray, cpuPct, pid, Reset)
 	// Show kill timer countdown if active
+	_, _, pid := getClaudeProcessStats()
 	if pid > 0 {
 		if m := killtimer.ReadMarker(pid); m != nil {
 			secs := m.SecondsRemaining()
-			fmt.Printf("%s%s %dm%02ds%s ", Orange, IconTimerSand, secs/60, secs%60, Reset)
+			fmt.Printf("%s%s%s %dm%02ds%s\n", ClearLine, Orange, IconTimerSand, secs/60, secs%60, Reset)
 		}
 	}
-	fmt.Println()
 	// Show vim mode with saved IM indicator
 	// if savedIMShort != "" && vimMode != "INSERT" {
 	// 	fmt.Printf("%s%s%s%s %s(%s)%s\n", vimColor, IconVim, vimMode, Reset, Dim, savedIMShort, Reset)
@@ -228,11 +228,10 @@ func Render(data *protocol.StatuslineInput) {
 	// 	fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
 	// }
 
-	// Line: context + usage (compact, no icons, no bar)
-	fmt.Printf("%s%s[C]%d%% %s/%s%s", ClearLine, contextColor, contextPct, currentDisplay, windowDisplay, Reset)
-	fmt.Printf(" %s[5hr]%s-%s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
-	fmt.Printf(" %s[1w]%s %s%s", weeklyColor, weeklyDisplay, usage.WeeklyResetDate, Reset)
-	fmt.Printf(" %s%s%s%s\033[K\n", ClaudeOrange, IconModel, model, Reset)
+	// Line: model + context + usage (compact, no icons, no bar)
+	fmt.Printf("%s%s%s%s %s%d%%%s", ClearLine, ClaudeOrange, model, Reset, contextColor, contextPct, Reset)
+	fmt.Printf(" %s[5]%s %s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
+	fmt.Printf(" %s[W]%s %s%s\033[K\n", weeklyColor, weeklyDisplay, usage.WeeklyResetDate, Reset)
 
 	// Folder + Git branch
 	if gitStatus.BranchLine != "" {
