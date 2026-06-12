@@ -1,159 +1,64 @@
 #!/usr/bin/env bash
 #
-# bootstrap installs things.
+# bootstrap — full machine setup: Homebrew, oh-my-zsh, symlinks, deps.
+
+set -e
 
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd -P)
 
-set -e
+source "$DOTFILES_ROOT/start/lib/ui.sh"
+source "$DOTFILES_ROOT/start/lib/links.sh"
 
-echo ''
-
-info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
-}
-
-user () {
-  printf "\r  [ \033[0;33m?\033[0m ] $1 "
-}
-
-success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
-}
-
-fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-  echo ''
-  exit
-}
-
-link_file () {
-  local src=$1 dst=$2
-
-  local overwrite= backup= skip=
-  local action=
-
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
-  then
-
-    if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
-    then
-
-      local currentSrc="$(readlink $dst)"
-
-      if [ "$currentSrc" == "$src" ]
-      then
-
-        skip=true;
-
-      else
-
-        user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
-        [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-        read -n 1 action
-
-        case "$action" in
-          o )
-            overwrite=true;;
-          O )
-            overwrite_all=true;;
-          b )
-            backup=true;;
-          B )
-            backup_all=true;;
-          s )
-            skip=true;;
-          S )
-            skip_all=true;;
-          * )
-            ;;
-        esac
-
-      fi
-
-    fi
-
-    overwrite=${overwrite:-$overwrite_all}
-    backup=${backup:-$backup_all}
-    skip=${skip:-$skip_all}
-
-    if [ "$overwrite" == "true" ]
-    then
-      rm -rf "$dst"
-      success "removed $dst"
-    fi
-
-    if [ "$backup" == "true" ]
-    then
-      mv "$dst" "${dst}.backup"
-      success "moved $dst to ${dst}.backup"
-    fi
-
-    if [ "$skip" == "true" ]
-    then
-      success "skipped $src"
-    fi
-  fi
-
-  if [ "$skip" != "true" ]  # "false" or empty
-  then
-    ln -s "$1" "$2"
-    success "linked $1 to $2"
-  fi
-}
-
-install_homebrew () {
-  if test ! $(which brew)
-  then
-    echo "  Installing Homebrew for you..."
-
-    # Install the correct homebrew for each OS type
-    if test "$(uname)" = "Darwin"
-    then
-      ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    elif test "$(expr substr $(uname -s) 1 5)" = "Linux"
-    then
-      ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
-    fi
-
-  fi
-}
-
-install_ohmyzsh () {
-  if [ ! -d ~/.oh-my-zsh ]
-  then
-    info '  Installing oh-my-zsh'
-    curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
-  fi
-}
-
-install_dotfiles () {
-  info '  Installing dotfiles'
-
-  local overwrite_all=false backup_all=false skip_all=false
-
-  for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
-  do
-    dst="$HOME/.$(basename "${src%.*}")"
-    link_file "$src" "$dst"
-  done
-}
-
-install_homebrew
-install_ohmyzsh
-install_dotfiles
-
-# If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Darwin" ]
-then
-  info "installing dependencies"
-  if source bin/dot
-  then
-    success "dependencies installed"
+install_homebrew() {
+  ui_step "Homebrew"
+  if command -v brew >/dev/null 2>&1; then
+    ui_ok "already installed ${C_DIM}($(command -v brew))${C_RESET}"
   else
-    fail "error installing dependencies"
+    ui_info "installing Homebrew (this may prompt for your password)…"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ui_ok "Homebrew installed"
   fi
-fi
+}
 
-echo ''
-echo '  All installed!'
+install_ohmyzsh() {
+  ui_step "oh-my-zsh"
+  if [ -d "$HOME/.oh-my-zsh" ]; then
+    ui_ok "already installed"
+  else
+    ui_info "installing oh-my-zsh…"
+    # --unattended: don't chsh or exec zsh mid-bootstrap
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    ui_ok "oh-my-zsh installed"
+  fi
+}
+
+main() {
+  ui_banner "dotfiles bootstrap" "$DOTFILES_ROOT"
+
+  if [ "$(uname -s)" = "Darwin" ]; then
+    ui_steps_total 4
+  else
+    ui_steps_total 3
+  fi
+
+  install_homebrew
+  install_ohmyzsh
+
+  ui_step "Symlinks"
+  install_dotfiles
+  links_summary
+
+  if [ "$(uname -s)" = "Darwin" ]; then
+    ui_step "macOS dependencies"
+    if source "$DOTFILES_ROOT/bin/dot"; then
+      ui_ok "dependencies installed"
+    else
+      ui_fail "error installing dependencies"
+    fi
+  fi
+
+  ui_done "All installed!"
+}
+
+main "$@"

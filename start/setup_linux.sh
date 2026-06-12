@@ -8,24 +8,19 @@ set -e
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd -P)
 
-info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
-}
+source "$DOTFILES_ROOT/start/lib/ui.sh"
+source "$DOTFILES_ROOT/start/lib/links.sh"
 
-success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
-}
-
-fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-  exit 1
-}
+# Unattended runs: never prompt on conflicts, keep a .backup instead.
+# shellcheck disable=SC2034  # consumed by link_file in links.sh
+backup_all=true
 
 # ============================================
 # 1. Install system packages
 # ============================================
 install_packages() {
-  info "Installing system packages..."
+  ui_step "System packages"
+  # Streamed (not spinnered): apt needs the sudo password prompt visible.
   sudo apt update
   sudo apt install -y \
     zsh \
@@ -45,24 +40,24 @@ install_packages() {
     fontconfig
 
   # Create fd symlink (Ubuntu/Debian names it fdfind)
-  if command -v fdfind &> /dev/null && ! command -v fd &> /dev/null; then
+  if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
     mkdir -p ~/.local/bin
-    ln -sf $(which fdfind) ~/.local/bin/fd
+    ln -sf "$(which fdfind)" ~/.local/bin/fd
   fi
 
-  success "System packages installed"
+  ui_ok "system packages installed"
 }
 
 # ============================================
 # 2. Install Oh-My-Zsh
 # ============================================
 install_ohmyzsh() {
+  ui_step "oh-my-zsh"
   if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    info "Installing oh-my-zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    success "Oh-My-Zsh installed"
+    ui_run "install oh-my-zsh" \
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
   else
-    success "Oh-My-Zsh already installed"
+    ui_ok "already installed"
   fi
 }
 
@@ -72,83 +67,48 @@ install_ohmyzsh() {
 install_zsh_plugins() {
   local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
-  info "Installing zsh plugins..."
+  ui_step "Zsh plugins"
 
-  # Powerlevel10k theme
-  if [ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
-  fi
-
-  # zsh-autosuggestions
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-  fi
-
-  # fast-syntax-highlighting
-  if [ ! -d "$ZSH_CUSTOM/plugins/fast-syntax-highlighting" ]; then
-    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git "$ZSH_CUSTOM/plugins/fast-syntax-highlighting"
-  fi
-
-  # zsh-vi-mode
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-vi-mode" ]; then
-    git clone https://github.com/jeffreytse/zsh-vi-mode "$ZSH_CUSTOM/plugins/zsh-vi-mode"
-  fi
-
-  # fzf-tab
-  if [ ! -d "$ZSH_CUSTOM/plugins/fzf-tab" ]; then
-    git clone https://github.com/Aloxaf/fzf-tab "$ZSH_CUSTOM/plugins/fzf-tab"
-  fi
-
-  # zsh-autopair
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autopair" ]; then
-    git clone https://github.com/hlissner/zsh-autopair "$ZSH_CUSTOM/plugins/zsh-autopair"
-  fi
-
-  # zsh-lazyload
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-lazyload" ]; then
-    git clone https://github.com/qoomon/zsh-lazyload "$ZSH_CUSTOM/plugins/zsh-lazyload"
-  fi
-
-  # zsh-auto-notify
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-auto-notify" ]; then
-    git clone https://github.com/MichaelAquilina/zsh-auto-notify.git "$ZSH_CUSTOM/plugins/zsh-auto-notify"
-  fi
-
-  success "Zsh plugins installed"
+  local entry name kind url dst
+  for entry in \
+    'powerlevel10k|themes|https://github.com/romkatv/powerlevel10k.git' \
+    'zsh-autosuggestions|plugins|https://github.com/zsh-users/zsh-autosuggestions' \
+    'fast-syntax-highlighting|plugins|https://github.com/zdharma-continuum/fast-syntax-highlighting.git' \
+    'zsh-vi-mode|plugins|https://github.com/jeffreytse/zsh-vi-mode' \
+    'fzf-tab|plugins|https://github.com/Aloxaf/fzf-tab' \
+    'zsh-autopair|plugins|https://github.com/hlissner/zsh-autopair' \
+    'zsh-lazyload|plugins|https://github.com/qoomon/zsh-lazyload' \
+    'zsh-auto-notify|plugins|https://github.com/MichaelAquilina/zsh-auto-notify.git'; do
+    name=${entry%%|*}
+    kind=${entry#*|}
+    kind=${kind%%|*}
+    url=${entry##*|}
+    dst="$ZSH_CUSTOM/$kind/$name"
+    if [ -d "$dst" ]; then
+      ui_info "${C_DIM}$name already installed${C_RESET}"
+    else
+      ui_run "$name" git clone --depth=1 "$url" "$dst"
+    fi
+  done
 }
 
 # ============================================
 # 4. Install TPM (Tmux Plugin Manager)
 # ============================================
 install_tpm() {
+  ui_step "TPM (tmux plugin manager)"
   if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    info "Installing TPM..."
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    success "TPM installed"
+    ui_run "tpm" git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
   else
-    success "TPM already installed"
+    ui_ok "already installed"
   fi
 }
 
 # ============================================
 # 5. Link dotfiles
 # ============================================
-link_file() {
-  local src=$1 dst=$2
-
-  if [ -L "$dst" ]; then
-    rm "$dst"
-  elif [ -f "$dst" ] || [ -d "$dst" ]; then
-    mv "$dst" "${dst}.backup"
-    info "Backed up $dst to ${dst}.backup"
-  fi
-
-  ln -s "$src" "$dst"
-  success "Linked $src → $dst"
-}
-
 link_dotfiles() {
-  info "Linking dotfiles..."
+  ui_step "Dotfiles"
 
   # Zsh files
   link_file "$DOTFILES_ROOT/zsh/zshrc.symlink" "$HOME/.zshrc"
@@ -172,19 +132,19 @@ link_dotfiles() {
   # Dotfiles symlink (for zsh modules to work)
   link_file "$DOTFILES_ROOT" "$HOME/.dotfiles"
 
-  success "Dotfiles linked"
+  links_summary
 }
 
 # ============================================
 # 6. Set zsh as default shell
 # ============================================
 set_zsh_default() {
+  ui_step "Default shell"
   if [ "$SHELL" != "$(which zsh)" ]; then
-    info "Setting zsh as default shell..."
-    chsh -s $(which zsh)
-    success "Zsh set as default shell (restart terminal to apply)"
+    chsh -s "$(which zsh)"
+    ui_ok "zsh set as default shell ${C_DIM}(restart terminal to apply)${C_RESET}"
   else
-    success "Zsh is already default shell"
+    ui_ok "zsh is already the default shell"
   fi
 }
 
@@ -192,31 +152,27 @@ set_zsh_default() {
 # 7. Install optional tools
 # ============================================
 install_optional_tools() {
-  info "Installing optional tools..."
+  ui_step "Optional tools"
 
   # atuin (shell history)
-  if ! command -v atuin &> /dev/null; then
-    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+  if command -v atuin &>/dev/null; then
+    ui_info "${C_DIM}atuin already installed${C_RESET}"
+  else
+    ui_run "atuin" sh -c 'curl --proto "=https" --tlsv1.2 -LsSf https://setup.atuin.sh | sh' || true
   fi
 
   # yazi (file manager)
-  if ! command -v yazi &> /dev/null; then
-    info "Note: Install yazi manually from https://github.com/sxyazi/yazi/releases"
+  if ! command -v yazi &>/dev/null; then
+    ui_warn "yazi not installed — grab it from https://github.com/sxyazi/yazi/releases"
   fi
-
-  success "Optional tools check complete"
 }
 
 # ============================================
 # Main
 # ============================================
 main() {
-  echo ""
-  echo "╔═══════════════════════════════════════════╗"
-  echo "║  Pop!_OS Dotfiles Setup                   ║"
-  echo "║  (neovim, tmux, zsh)                      ║"
-  echo "╚═══════════════════════════════════════════╝"
-  echo ""
+  ui_banner "Pop!_OS dotfiles setup" "neovim · tmux · zsh"
+  ui_steps_total 7
 
   install_packages
   install_ohmyzsh
@@ -226,18 +182,11 @@ main() {
   set_zsh_default
   install_optional_tools
 
-  echo ""
-  echo "╔═══════════════════════════════════════════╗"
-  echo "║  Setup complete!                          ║"
-  echo "╠═══════════════════════════════════════════╣"
-  echo "║  Next steps:                              ║"
-  echo "║  1. Restart terminal or run: exec zsh    ║"
-  echo "║  2. Open tmux and press: prefix + I       ║"
-  echo "║     to install tmux plugins               ║"
-  echo "║  3. Open nvim to let lazy.nvim install    ║"
-  echo "║     plugins automatically                 ║"
-  echo "╚═══════════════════════════════════════════╝"
-  echo ""
+  ui_done "Setup complete!"
+  printf '  %sNext steps%s\n' "$C_BOLD" "$C_RESET"
+  printf '  1. Restart terminal or run: %sexec zsh%s\n' "$C_CYAN" "$C_RESET"
+  printf '  2. In tmux press %sprefix + I%s to install tmux plugins\n' "$C_CYAN" "$C_RESET"
+  printf '  3. Open %snvim%s — lazy.nvim installs plugins automatically\n\n' "$C_CYAN" "$C_RESET"
 }
 
 main "$@"

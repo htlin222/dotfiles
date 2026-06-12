@@ -1,14 +1,38 @@
 #!/usr/bin/env bash
 #
-# Run all dotfiles installers.
+# install — run brew bundle, then every topic install.sh installer.
 
 set -e
 
-cd "$(dirname $0)"/..
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT=$(pwd -P)
 
-# Run Homebrew through the Brewfile
-echo "› brew bundle"
-brew bundle
+source "$DOTFILES_ROOT/start/lib/ui.sh"
 
-# find the installers and run them iteratively
-find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+ui_banner "dotfiles install" "brew bundle + topic installers"
+ui_steps_total 2
+
+ui_step "Homebrew bundle"
+if command -v brew >/dev/null 2>&1; then
+  # Streamed (not spinnered): brew bundle output is long and useful.
+  brew bundle
+  ui_ok "brew bundle complete"
+else
+  ui_warn "brew not found — skipping bundle"
+fi
+
+ui_step "Topic installers"
+found=0
+failed=0
+while IFS= read -r installer; do
+  found=$((found + 1))
+  ui_run "${installer#./}" sh "$installer" || failed=$((failed + 1))
+done < <(find . -name install.sh -not -path './.git/*' | sort)
+
+if [ "$found" -eq 0 ]; then
+  ui_info "no install.sh scripts found"
+elif [ "$failed" -gt 0 ]; then
+  ui_warn "$failed of $found installers failed"
+fi
+
+ui_done "Install complete!"
