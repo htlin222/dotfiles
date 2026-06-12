@@ -20,13 +20,26 @@ set -g window-active-style 'fg=terminal,bg=colour233'
 set -g display-panes-time 1500
 set -g display-panes-colour colour238
 set -g display-panes-active-colour colour214
-set -g default-terminal "screen-256color"
-# Advertise Synchronized Output (DEC mode 2026) so CLAUDE_CODE_NO_FLICKER=1
-# can avoid alt-screen and keep scrollback. Needed on tmux 3.2a (Linux);
-# tmux 3.4+ on Mac auto-detects, so these lines are no-ops there.
+# tmux-256color (not screen-256color): proper italics + extended key caps.
+# terminfo verified present on this macOS; falls back gracefully elsewhere.
+set -g default-terminal "tmux-256color"
+# Advertise RGB (24-bit) + Synchronized Output (DEC mode 2026) so
+# CLAUDE_CODE_NO_FLICKER=1 can avoid alt-screen and keep scrollback. Needed on
+# tmux 3.2a (Linux); tmux 3.4+ on Mac auto-detects, so these are no-ops there.
 set -ag terminal-features ",xterm-ghostty:RGB:Sync"
+set -ag terminal-features ",tmux-256color:RGB:Sync"
 set -ag terminal-features ",screen-256color:RGB:Sync"
 setw -g mode-keys vi
+
+# ─── Core settings made explicit (robustness) ──────────────
+# These are also provided by tmux-sensible, but hard-coding them keeps the
+# config correct on a fresh machine before TPM has cloned the plugins.
+set -g history-limit 50000
+set -g focus-events on   # neovim autoread / FocusGained-Lost across panes
+# Disambiguate Ctrl/Shift/Alt + key (incl. Ctrl+digit) via CSI-u extended keys.
+# Ghostty supports this; tmux requests it from apps and withdraws on exit.
+set -s extended-keys on
+set -as terminal-features ",xterm-ghostty:extkeys"
 
 # OSC 52 clipboard (works over SSH to sync with local Mac clipboard)
 set -g set-clipboard on
@@ -145,7 +158,8 @@ set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'laktak/tome'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'christoomey/vim-tmux-navigator'
-set -g @plugin 'tmux-plugins/tmux-copycat'
+# tmux-copycat removed: deprecated upstream; native copy-mode search (tmux >=2.4)
+# plus tmux-fuzzback already cover it, and it spawned a background ps-scraper.
 set -g @plugin 'jaclu/tmux-menus'
 set -g @plugin 'jimeh/tmuxifier'
 set -g @plugin 'sainnhe/tmux-fzf'
