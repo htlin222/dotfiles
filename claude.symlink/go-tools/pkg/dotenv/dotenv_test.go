@@ -1,8 +1,8 @@
-package groq
+package dotenv
 
 import "testing"
 
-func TestParseEnvValue(t *testing.T) {
+func TestParse(t *testing.T) {
 	tests := []struct {
 		name    string
 		content string
@@ -19,8 +19,8 @@ func TestParseEnvValue(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parseEnvValue(tt.content, "GROQ_API_KEY"); got != tt.want {
-				t.Errorf("parseEnvValue() = %q, want %q", got, tt.want)
+			if got := Parse(tt.content, "GROQ_API_KEY"); got != tt.want {
+				t.Errorf("Parse() = %q, want %q", got, tt.want)
 			}
 		})
 	}

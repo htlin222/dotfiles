@@ -23,7 +23,7 @@ func TestSummarizeLive(t *testing.T) {
 		t.Fatalf("SummarizeZHTW failed: %v", err)
 	}
 	n := utf8.RuneCountInString(got)
-	if n == 0 || n > 50 {
+	if n == 0 || n > 120 {
 		t.Fatalf("summary length %d out of range: %q", n, got)
 	}
 	t.Logf("summary (%d runes): %s", n, got)

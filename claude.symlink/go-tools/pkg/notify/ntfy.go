@@ -15,6 +15,8 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+
+	"github.com/htlin/claude-tools/pkg/elevenlabs"
 )
 
 func topic() string {
@@ -94,12 +96,54 @@ func playSound() {
 	cmd.Start()
 }
 
-// Say speaks text via macOS TTS (fire-and-forget).
+// sayCmd tracks the playback process started by Say so SaySummary can
+// wait for it and speak afterwards instead of talking over it.
+var sayCmd *exec.Cmd
+
+// Say speaks text via ElevenLabs TTS, falling back to the built-in
+// macOS `say` voice when no API key is configured or synthesis fails.
+// Audio is cached per phrase, so only the first utterance of a given
+// text pays the API round-trip; playback itself is fire-and-forget.
 func Say(text string) {
 	if runtime.GOOS != "darwin" || text == "" {
 		return
 	}
-	cmd := exec.Command("say", "-v", "Samantha", text)
+	var cmd *exec.Cmd
+	if path, err := elevenlabs.FetchToCache(text); err == nil {
+		cmd = exec.Command("afplay", path)
+	} else {
+		cmd = exec.Command("say", "-v", "Samantha", text)
+	}
+	if cmd.Start() == nil {
+		sayCmd = cmd
+	}
+}
+
+// maxSpokenRunes caps how much dynamic text gets spoken aloud.
+const maxSpokenRunes = 300
+
+// SaySummary speaks dynamic per-turn text (e.g. the Groq TLDR) via
+// ElevenLabs, falling back to macOS `say`. Synthesis runs while any
+// in-flight Say clip is still playing; playback then waits for that
+// clip to finish so the two never overlap. Audio is NOT cached —
+// summaries are unique per turn. Blocks until playback has started.
+func SaySummary(text string) {
+	if runtime.GOOS != "darwin" || text == "" {
+		return
+	}
+	if runes := []rune(text); len(runes) > maxSpokenRunes {
+		text = string(runes[:maxSpokenRunes])
+	}
+	var cmd *exec.Cmd
+	if path, err := elevenlabs.FetchTemp(text); err == nil {
+		cmd = exec.Command("afplay", path)
+	} else {
+		cmd = exec.Command("say", "-v", "Samantha", text)
+	}
+	if sayCmd != nil {
+		_ = sayCmd.Wait()
+		sayCmd = nil
+	}
 	cmd.Start()
 }
 

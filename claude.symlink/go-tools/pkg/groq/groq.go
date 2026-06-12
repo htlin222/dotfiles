@@ -13,10 +13,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/htlin/claude-tools/pkg/dotenv"
 )
 
 const (
@@ -32,51 +33,10 @@ const (
 	maxSummaryRunes = 50
 )
 
-// envFile returns the path to the git-ignored .env next to the go-tools
-// sources (~/.claude/go-tools/.env).
-func envFile() string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return ""
-	}
-	return filepath.Join(home, ".claude", "go-tools", ".env")
-}
-
 // APIKey returns the Groq API key from $GROQ_API_KEY, or from the
 // go-tools .env file. Empty string when unavailable.
 func APIKey() string {
-	if k := strings.TrimSpace(os.Getenv("GROQ_API_KEY")); k != "" {
-		return k
-	}
-	data, err := os.ReadFile(envFile())
-	if err != nil {
-		return ""
-	}
-	return parseEnvValue(string(data), "GROQ_API_KEY")
-}
-
-// parseEnvValue extracts the value for key from dotenv-style content.
-// Supports comments, "export " prefixes, and single/double quotes.
-func parseEnvValue(content, key string) string {
-	for _, line := range strings.Split(content, "\n") {
-		line = strings.TrimSpace(line)
-		if line == "" || strings.HasPrefix(line, "#") {
-			continue
-		}
-		line = strings.TrimPrefix(line, "export ")
-		k, v, ok := strings.Cut(line, "=")
-		if !ok || strings.TrimSpace(k) != key {
-			continue
-		}
-		v = strings.TrimSpace(v)
-		if len(v) >= 2 {
-			if (v[0] == '"' && v[len(v)-1] == '"') || (v[0] == '\'' && v[len(v)-1] == '\'') {
-				v = v[1 : len(v)-1]
-			}
-		}
-		return v
-	}
-	return ""
+	return dotenv.Get("GROQ_API_KEY")
 }
 
 func model() string {
@@ -106,8 +66,8 @@ type chatResponse struct {
 	} `json:"choices"`
 }
 
-// SummarizeZHTW condenses text into a Traditional Chinese (zh-TW) summary
-// of at most 50 characters. Returns an error when no API key is configured
+// SummarizeZHTW condenses text into a short English summary
+// of at most 15 words. Returns an error when no API key is configured
 // or the request fails; callers should fall back to the original text.
 func SummarizeZHTW(text string) (string, error) {
 	key := APIKey()
@@ -124,9 +84,9 @@ func SummarizeZHTW(text string) (string, error) {
 		Messages: []message{
 			{
 				Role: "system",
-				Content: "你是通知摘要器。將使用者訊息濃縮成繁體中文（台灣用語）摘要，" +
-					"嚴格限制在 30 個字以內。盡量避免英文檔名或術語，必要時以中文改述。" +
-					"只輸出摘要本身，不要加引號、標籤或任何解釋。",
+				Content: "You are a notification summarizer. Condense the user's message into " +
+					"a plain English summary of at most 15 words. " +
+					"Output only the summary itself — no quotes, labels, or explanations.",
 			},
 			{Role: "user", Content: text},
 		},

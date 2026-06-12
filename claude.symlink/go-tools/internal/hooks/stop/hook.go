@@ -97,7 +97,7 @@ func Run() {
 	// Feature 2: Notification with last assistant message.
 	// Codex's Stop payload may omit last_assistant_message, so fall back
 	// to extracting it from the transcript (Claude or Codex format).
-	// Long messages are condensed to a ≤50-char zh-TW summary via Groq;
+	// Long messages are condensed to a short English summary via Groq;
 	// on any failure we fall back to plain truncation.
 	body := data.LastAssistantMessage
 	msgSource := "payload"
@@ -106,7 +106,7 @@ func Run() {
 		msgSource = "transcript"
 	}
 	if body == "" {
-		body = "對話已完成"
+		body = "Conversation completed"
 		msgSource = "none"
 	}
 	if utf8.RuneCountInString(body) > 50 {
@@ -133,6 +133,11 @@ func Run() {
 		tags = u.Username
 	}
 	notify.SendWithTags(title, body, tags)
+
+	// Feature 2.1: speak the summary aloud after the repo-name clip.
+	// Blocks briefly until playback starts; the audio process itself
+	// outlives the hook.
+	notify.SaySummary(body)
 
 	// Feature 2.5: Save context snapshot for @LAST
 	if data.TranscriptPath != "" || data.LastAssistantMessage != "" {
