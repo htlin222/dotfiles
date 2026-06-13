@@ -1,9 +1,51 @@
 package statusline
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
+
+// rainbowPalette is Claude Code's dark-theme ROYGBIV palette (from the
+// "ultrathink" shimmer effect), used for a static gradient across text.
+var rainbowPalette = [7][3]int{
+	{235, 95, 87},   // red
+	{245, 139, 87},  // orange
+	{250, 195, 95},  // yellow
+	{145, 200, 130}, // green
+	{130, 170, 220}, // blue
+	{155, 130, 200}, // indigo
+	{200, 130, 180}, // violet
+}
+
+// rainbowColor returns the 24-bit ANSI SGR for position p of total,
+// linearly interpolating between adjacent palette stops.
+func rainbowColor(p, total int) string {
+	if total < 2 {
+		total = 2
+	}
+	f := float64(p) / float64(total-1) * float64(len(rainbowPalette)-1)
+	i := int(f)
+	if i >= len(rainbowPalette)-1 {
+		i = len(rainbowPalette) - 2
+	}
+	frac := f - float64(i)
+	a, b := rainbowPalette[i], rainbowPalette[i+1]
+	lerp := func(x, y int) int { return x + int(float64(y-x)*frac) }
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm", lerp(a[0], b[0]), lerp(a[1], b[1]), lerp(a[2], b[2]))
+}
+
+// rainbowSpan colors runes as a slice of a longer gradient: their global
+// positions start at startIdx within a text of total runes.
+func rainbowSpan(runes []rune, startIdx, total int) string {
+	var b strings.Builder
+	for i, r := range runes {
+		b.WriteString(rainbowColor(startIdx+i, total))
+		b.WriteRune(r)
+	}
+	b.WriteString(Reset)
+	return b.String()
+}
 
 func getRamColor(mb int) string {
 	switch {

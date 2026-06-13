@@ -190,9 +190,15 @@ func Render(data *protocol.StatuslineInput) {
 		}
 		const indent = "  " // matches IconLastCmd width
 		lines := wrapPrompt(lastCmd, width-len(indent))
-		fmt.Printf("%s%s%s%s%s\033[K\n", ClearLine, LightGreen, IconLastCmd, lines[0], Reset)
+		// Static rainbow gradient continuous across both wrapped lines
+		l0 := []rune(lines[0])
+		total := len(l0)
 		if len(lines) > 1 {
-			fmt.Printf("%s%s%s%s%s\033[K\n", ClearLine, LightGreen, indent, lines[1], Reset)
+			total += len([]rune(lines[1]))
+		}
+		fmt.Printf("%s%s%s%s%s\033[K\n", ClearLine, Dim, IconLastCmd, Reset, rainbowSpan(l0, 0, total))
+		if len(lines) > 1 {
+			fmt.Printf("%s%s%s%s%s\033[K\n", ClearLine, Dim, indent, Reset, rainbowSpan([]rune(lines[1]), len(l0), total))
 		}
 	}
 
