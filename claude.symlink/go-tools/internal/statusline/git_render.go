@@ -5,19 +5,31 @@ import (
 	"strings"
 )
 
-func renderBranchLine(status *GitStatus, linesAdded, linesRemoved int) {
+func renderBranchLine(status *GitStatus, linesAdded, linesRemoved int, costUSD float64, durationMS int64) {
 	branchLine := status.BranchLine
 
-	// Remove tracking info for display
+	// Remove ahead/behind bracket and the "...origin/branch" upstream
+	// tracking suffix, leaving just the local branch name.
 	displayLine := branchLine
-	if idx := strings.Index(branchLine, " ["); idx != -1 {
-		displayLine = branchLine[:idx]
+	if idx := strings.Index(displayLine, " ["); idx != -1 {
+		displayLine = displayLine[:idx]
+	}
+	if idx := strings.Index(displayLine, "..."); idx != -1 {
+		displayLine = displayLine[:idx]
 	}
 
-	fmt.Printf("%s%s%s%s", Orange, IconBranch, displayLine, Reset)
+	fmt.Printf("%s%s%s%s%s%s", Dim, IconBranch, Reset, Orange, displayLine, Reset)
 
 	// Total session line changes, right after the branch name
 	fmt.Printf(" %s+%d%s%s-%d%s", Green, linesAdded, Reset, Red, linesRemoved, Reset)
+
+	// Session cost and elapsed time
+	if costUSD > 0 {
+		fmt.Printf(" %s$%.1f%s", Gray, costUSD, Reset)
+	}
+	if durationMS > 0 {
+		fmt.Printf(" %s%.1fh%s", Gray, float64(durationMS)/3600000.0, Reset)
+	}
 
 	// Show ahead/behind with dots (spaced)
 	if status.AheadCount > 0 && status.BehindCount > 0 {

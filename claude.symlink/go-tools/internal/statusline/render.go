@@ -71,7 +71,7 @@ const (
 	IconVim         = "◈ "
 	IconLines       = "≡ "
 	IconDepth       = "↕ "
-	IconBranch      = "⎇ "
+	IconBranch      = "．"
 	IconSepRight    = "│"
 	IconCompact     = "⊟"
 	IconTimerSand   = "⧗"
@@ -228,18 +228,30 @@ func Render(data *protocol.StatuslineInput) {
 	// 	fmt.Printf("%s%s%s%s\n", vimColor, IconVim, vimMode, Reset)
 	// }
 
-	// Line: model + context + usage (compact, no icons, no bar)
-	fmt.Printf("%s%s%s%s %s%d%%%s", ClearLine, ClaudeOrange, model, Reset, contextColor, contextPct, Reset)
+	// Line: model + effort + context + usage (compact, no icons, no bar)
+	effort := ""
+	if data.Effort != nil && data.Effort.Level != "" {
+		effort = " " + data.Effort.Level
+	}
+	fmt.Printf("%s%s%s%s%s %s%d%%%s", ClearLine, ClaudeOrange, model, effort, Reset, contextColor, contextPct, Reset)
 	fmt.Printf(" %s[5]%s %s%s", fiveHourColor, fiveHourDisplay, usage.TimeLeft, Reset)
 	fmt.Printf(" %s[W]%s %s%s\033[K\n", weeklyColor, weeklyDisplay, usage.WeeklyResetDate, Reset)
 
 	// Folder + Git branch
 	if gitStatus.BranchLine != "" {
 		fmt.Printf("\n%s", ClearLine)
-		// Folder: yellow text with trailing "/" as folder hint
-		fmt.Printf("%s%s/%s", Yellow, dir, Reset)
-		fmt.Print(" ")
-		renderBranchLine(gitStatus, linesAdded, linesRemoved)
+		// Repo name (yellow), then cwd as "dir/" — skip dir if it equals repo
+		repoName := ""
+		if data.Workspace.Repo != nil {
+			repoName = data.Workspace.Repo.Name
+		}
+		if repoName != "" {
+			fmt.Printf("%s%s%s%s．%s", Yellow, repoName, Reset, Dim, Reset)
+		}
+		if dir != repoName {
+			fmt.Printf("%s%s/%s", Yellow, dir, Reset)
+		}
+		renderBranchLine(gitStatus, linesAdded, linesRemoved, data.Cost.TotalCostUSD, data.Cost.TotalDurationMS)
 	}
 
 	// Git file status

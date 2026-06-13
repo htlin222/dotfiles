@@ -46,6 +46,21 @@ type StatuslineInput struct {
 	Workspace      WorkspaceInfo   `json:"workspace,omitempty"`
 	TranscriptPath string          `json:"transcript_path,omitempty"`
 	RateLimits     *RateLimitsInfo `json:"rate_limits,omitempty"`
+	Effort         *EffortInfo     `json:"effort,omitempty"`
+}
+
+// EffortInfo contains the current reasoning effort level.
+// Absent when the current model does not support the effort parameter.
+type EffortInfo struct {
+	Level string `json:"level,omitempty"` // low, medium, high, xhigh, max
+}
+
+// RepoInfo identifies the repository parsed from the origin remote.
+// Absent outside a git repo or when no origin remote is configured.
+type RepoInfo struct {
+	Host  string `json:"host,omitempty"`
+	Owner string `json:"owner,omitempty"`
+	Name  string `json:"name,omitempty"`
 }
 
 // RateLimitsInfo contains rate limit usage provided in the statusline stdin JSON.
@@ -73,6 +88,7 @@ type CostInfo struct {
 	TotalCostUSD      float64 `json:"total_cost_usd,omitempty"`
 	TotalLinesAdded   int     `json:"total_lines_added,omitempty"`
 	TotalLinesRemoved int     `json:"total_lines_removed,omitempty"`
+	TotalDurationMS   int64   `json:"total_duration_ms,omitempty"`
 }
 
 // VimInfo contains vim mode information.
@@ -97,7 +113,9 @@ type CurrentUsage struct {
 
 // WorkspaceInfo contains workspace information.
 type WorkspaceInfo struct {
-	CurrentDir string `json:"current_dir,omitempty"`
+	CurrentDir string    `json:"current_dir,omitempty"`
+	ProjectDir string    `json:"project_dir,omitempty"`
+	Repo       *RepoInfo `json:"repo,omitempty"`
 }
 
 // UsageAPIResponse represents the response from Anthropic's usage API.
