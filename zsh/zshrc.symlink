@@ -60,7 +60,7 @@ if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
   if [[ -z "$SSH_AUTH_SOCK" && -z "$SSH_CONNECTION" ]]; then
     eval "$(ssh-agent -s)" > /dev/null
   fi
-  [[ -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
+  [[ -z "$SSH_CONNECTION" && -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
 
   # --- 1Password CLI plugins ---
   [[ -f "$HOME/.config/op/plugins.sh" ]] && source "$HOME/.config/op/plugins.sh"
@@ -335,8 +335,9 @@ add-zsh-hook precmd _load_deferred_plugins
 if [[ -z "$SSH_AUTH_SOCK" && -z "$SSH_CONNECTION" ]]; then
   eval "$(ssh-agent -s)" > /dev/null
 fi
-# Background: key add talks to the agent socket (~11ms); nothing needs it at prompt time
-[[ -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
+# Background: key add talks to the agent socket (~11ms); nothing needs it at prompt time.
+# Local only: under SSH a forwarded passphrase-protected key could flash a pinentry.
+[[ -z "$SSH_CONNECTION" && -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
 
 # GPG_TTY: pinentry-curses needs to know the real terminal, else it hangs/guesses
 # (critical over SSH). Point the running agent at this tty too, for `loadkeys`.
