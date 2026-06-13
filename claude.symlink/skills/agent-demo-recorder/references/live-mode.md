@@ -5,9 +5,9 @@ decide the next prompt from its content, and record everything as a `.cast`.
 Use when prompts must react to the inner session's output — impossible with
 VHS, whose tape is fixed before the run.
 
-Requires: `tmux`, `asciinema`, `agg` (for GIF conversion) — install
-commands are in SKILL.md step 1. Demo-directory setup (hook + settings.json)
-is identical to scripted mode — see SKILL.md step 2.
+Requires: `tmux`, `asciinema`, `agg` (for GIF conversion). Install commands and
+demo-directory staging (hook + settings.json, identical to scripted mode) are
+in [setup.md](setup.md).
 
 ## Loop pattern (all commands tested)
 
@@ -81,13 +81,14 @@ timeout = 10
 
 Caveats (Codex is fussier than Claude under VHS — `gen_tape.py --agent codex`
 handles all of these; hand-author only if you must):
+
 - One-time trust: next launch shows a hook review screen — press `t` to
   trust. Do this in a tmux probe before recording, or the review screen
   ruins the take. Re-trust is needed whenever the hook command path changes.
 - Sentinel renders as `• Stop hook (completed)` + `warning: VHS_TURN_DONE_N`.
 - **Ready gate = the status line, not the splash.** Wait for `/% left/`
   (the "5h .. % left · weekly .. % left" status line), NOT `/model to
-  change/`. Codex accepts typed characters into the composer early but DROPS
+change/`. Codex accepts typed characters into the composer early but DROPS
   the submit Enter until the TUI finishes loading — which is when the status
   line appears. Submitting against the splash silently fails.
 - **No word-by-word typing.** Chunked per-word `Type` bursts are read as a
