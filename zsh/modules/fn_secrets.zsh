@@ -126,7 +126,12 @@ secrets-status() {
 }
 
 # ---------- wire into interactive shells only ----------
-if [[ -o interactive ]]; then
+# Skip the eager background load over SSH: pinentry here is pinentry-curses,
+# so a cold passphrase cache makes `pass show` draw a passphrase dialog onto
+# the SSH TTY — and because the kick runs as a background job it fights the
+# foreground prompt, freezing/garbling the login. On SSH, load on demand with
+# `loadkeys` (or `withkeys <cmd>`) instead. Local sessions still pre-warm.
+if [[ -o interactive && -z "$SSH_CONNECTION" ]]; then
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd _secrets_kick_bg
   add-zsh-hook precmd _secrets_check

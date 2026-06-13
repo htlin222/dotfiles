@@ -56,11 +56,11 @@ if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
   export DISABLE_GROWTHBOOK=1
   export ENABLE_LSP_TOOLS=1
 
-  # --- SSH agent ---
-  if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  # --- SSH agent --- (local sessions only; SSH brings its own via -A, or none)
+  if [[ -z "$SSH_AUTH_SOCK" && -z "$SSH_CONNECTION" ]]; then
     eval "$(ssh-agent -s)" > /dev/null
   fi
-  ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null
+  [[ -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
 
   # --- 1Password CLI plugins ---
   [[ -f "$HOME/.config/op/plugins.sh" ]] && source "$HOME/.config/op/plugins.sh"
@@ -330,12 +330,20 @@ add-zsh-hook precmd _load_deferred_plugins
 ### Extra Configs          ###
 ##############################
 
-# SSH Agent for GitLab
-if [[ -z "$SSH_AUTH_SOCK" ]]; then
+# SSH Agent for GitLab — local sessions only. Forwarding-less SSH logins used to
+# spawn an orphan agent per login (leak); SSH should bring its own agent via -A.
+if [[ -z "$SSH_AUTH_SOCK" && -z "$SSH_CONNECTION" ]]; then
   eval "$(ssh-agent -s)" > /dev/null
 fi
 # Background: key add talks to the agent socket (~11ms); nothing needs it at prompt time
 [[ -f ~/.ssh/id_ed25519_gitlab_kfsyscc ]] && { ssh-add -q ~/.ssh/id_ed25519_gitlab_kfsyscc 2>/dev/null &| }
+
+# GPG_TTY: pinentry-curses needs to know the real terminal, else it hangs/guesses
+# (critical over SSH). Point the running agent at this tty too, for `loadkeys`.
+if [[ -t 1 ]]; then
+  export GPG_TTY=$(tty)
+  command -v gpg-connect-agent >/dev/null 2>&1 && { gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 &| }
+fi
 
 export ENABLE_LSP_TOOLS=1
 
