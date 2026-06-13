@@ -12,3 +12,8 @@ fi
 # Auto-terminate idle mosh-server after 24h (tmux holds session state)
 export MOSH_SERVER_NETWORK_TMOUT=86400
 export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
+
+# Stable short hostname for completion-dump filenames.
+# Was unset when .zshrc computes ZSH_COMPDUMP (OMZ sets it too late),
+# producing a malformed '.zcompdump--5.9' and forcing cold rebuilds.
+: ${SHORT_HOST:=${HOST%%.*}}

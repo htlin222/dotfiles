@@ -145,9 +145,13 @@ autoload -Uz compinit
 {
   setopt localoptions extendedglob
   local dump="${ZSH_COMPDUMP}"
-  # Rebuild if older than 1 day
-  if [[ -f "$dump" ]] && [[ $(find "$dump" -mtime +1 2>/dev/null) ]]; then
-    compinit -d "$dump"
+  # Self-contained, fully backgrounded (&!) — logins never pay it, no cron needed.
+  # Rebuild only if the dump is missing or >7d old (fpath rarely changes); -i skips
+  # the compaudit insecure-directory prompt so a backgrounded rebuild never hangs
+  # waiting on the SSH TTY. The foreground compinit -C (above / OMZ) trusts the
+  # cached dump for fast startup; this just self-heals it.
+  if [[ ! -s "$dump" || -n $(find "$dump" -mtime +7 2>/dev/null) ]]; then
+    compinit -i -d "$dump"
   fi
   # Compile if needed
   if [[ -s "$dump" && (! -s "$dump.zwc" || "$dump" -nt "$dump.zwc") ]]; then
