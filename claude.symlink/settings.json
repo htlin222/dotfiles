@@ -65,7 +65,6 @@
 		],
 		"defaultMode": "auto"
 	},
-	"model": "claude-fable-5[1m]",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
 		"SessionStart": [
@@ -252,7 +251,8 @@
 		"swift-lsp@claude-plugins-official": true,
 		"telegram@claude-plugins-official": false,
 		"codex@openai-codex": true,
-		"warp@claude-code-warp": true
+		"warp@claude-code-warp": true,
+		"cloudflare@cloudflare": true
 	},
 	"extraKnownMarketplaces": {
 		"openai-codex": {
@@ -265,6 +265,12 @@
 			"source": {
 				"source": "github",
 				"repo": "warpdotdev/claude-code-warp"
+			}
+		},
+		"cloudflare": {
+			"source": {
+				"source": "github",
+				"repo": "cloudflare/skills"
 			}
 		}
 	},
