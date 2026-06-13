@@ -160,21 +160,6 @@ autoload -Uz compinit
 } &!
 
 ##############################
-### carapace completions   ###
-##############################
-# Rich per-tool completions (flags + descriptions + dynamic args) for ~600
-# CLIs via per-command compdef; commands carapace doesn't know fall through to
-# native zsh completion automatically (no bridge needed). Rendered via fzf-tab.
-# NB: deliberately NO CARAPACE_BRIDGES — bridging re-runs zsh/bash/fish
-# completers for commands carapace already owns, duplicating results (e.g. git
-# 177 -> 286 and a "show all possibilities?" prompt).
-if command -v carapace >/dev/null 2>&1; then
-  zstyle ':completion:*' format $'\e[2;37m%d\e[m'        # dim description headers
-  zstyle ':completion:*:descriptions' format '[%d]'      # keep group desc for fzf-tab
-  source <(carapace _carapace)
-fi
-
-##############################
 ### Oh-My-Zsh and Plugins ###
 ##############################
 
@@ -263,6 +248,23 @@ if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
   source "$ZSH/oh-my-zsh.sh"
 else
   echo "Warning: oh-my-zsh not found at $ZSH" >&2
+fi
+
+##############################
+### carapace completions   ###
+##############################
+# Rich per-tool completions (flags + descriptions + dynamic args) for ~600
+# CLIs via per-command compdef; commands carapace doesn't know fall through to
+# native zsh completion automatically (no bridge needed). Rendered via fzf-tab.
+# Must come after compinit (run by oh-my-zsh above) — compdef doesn't exist
+# before that.
+# NB: deliberately NO CARAPACE_BRIDGES — bridging re-runs zsh/bash/fish
+# completers for commands carapace already owns, duplicating results (e.g. git
+# 177 -> 286 and a "show all possibilities?" prompt).
+if command -v carapace >/dev/null 2>&1; then
+  zstyle ':completion:*' format $'\e[2;37m%d\e[m'        # dim description headers
+  zstyle ':completion:*:descriptions' format '[%d]'      # keep group desc for fzf-tab
+  source <(carapace _carapace)
 fi
 
 ##############################
