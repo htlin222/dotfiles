@@ -93,10 +93,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks branch-guard"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks check-file-exists"
 					}
 				]
 			},
@@ -133,10 +129,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks file-guard"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks check-read-exists"
 					}
 				]
 			},
@@ -281,5 +273,6 @@
 	"remoteControlAtStartup": false,
 	"agentPushNotifEnabled": true,
 	"skipAutoPermissionPrompt": true,
-	"voiceEnabled": true
+	"voiceEnabled": true,
+	"effortLevel": "xhigh"
 }
