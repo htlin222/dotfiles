@@ -43,6 +43,7 @@ typeset -U path PATH fpath FPATH
 #
 #
 # Kiro CLI pre block. Keep at the top of this file.
+# Pairs with the post block + Kiro IDE integration at the END of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
 
 if [[ "$TERM_PROGRAM" == "WarpTerminal" && -z "$WARP_FULL_ZSHRC" ]]; then
@@ -647,8 +648,23 @@ fi
 # Added by Antigravity CLI installer
 export PATH="/Users/htlin/.local/bin:$PATH"
 
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
-
 # kimi-code
 export PATH="/Users/htlin/.kimi-code/bin:$PATH"
+
+##############################
+### Kiro integrations (end) ##
+##############################
+# Two SEPARATE Kiro products, both anchored to the end of the file:
+#   • kiro IDE (VS Code fork): integrated-terminal shell integration; only fires
+#     inside the Kiro terminal ($TERM_PROGRAM == "kiro").
+#   • kiro-cli post block: pairs with the pre block at the TOP of this file (~L45).
+#     pre/post emit DIFFERENT code and must stay split — `init post` wraps the ZLE
+#     widgets/keybindings defined above, so it has to run dead last.
+if [[ "$TERM_PROGRAM" == "kiro" ]] && command -v kiro >/dev/null 2>&1; then
+  _kiro_shell_integration="$(kiro --locate-shell-integration-path zsh 2>/dev/null)"
+  [[ -n "$_kiro_shell_integration" && -f "$_kiro_shell_integration" ]] && . "$_kiro_shell_integration"
+  unset _kiro_shell_integration
+fi
+
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
