@@ -10,13 +10,35 @@ DOTFILES_ROOT=$(pwd -P)
 source "$DOTFILES_ROOT/start/lib/ui.sh"
 source "$DOTFILES_ROOT/start/lib/links.sh"
 
+usage() {
+  cat <<'EOF'
+Usage: start/bootstrap [options]
+
+Full machine setup: Homebrew → oh-my-zsh → symlinks → macOS deps.
+
+Options:
+  -y, --non-interactive   Unattended: never prompt on link conflicts and
+                          pass NONINTERACTIVE=1 to the Homebrew installer
+                          (auto-enabled when there's no TTY)
+      --backup            On conflict, move existing aside to .backup (default)
+      --overwrite         On conflict, replace existing file/link
+      --skip              On conflict, keep existing and skip the link
+  -h, --help              Show this help
+
+Env: DOTFILES_NONINTERACTIVE=1, DOTFILES_ON_CONFLICT=backup|overwrite|skip
+
+Note: Homebrew/macOS may still prompt for your sudo password.
+EOF
+}
+
 install_homebrew() {
   ui_step "Homebrew"
   if command -v brew >/dev/null 2>&1; then
     ui_ok "already installed ${C_DIM}($(command -v brew))${C_RESET}"
   else
     ui_info "installing Homebrew (this may prompt for your password)…"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # NONINTERACTIVE skips the installer's "Press RETURN to continue" prompt.
+    NONINTERACTIVE=${NONINTERACTIVE:-} /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ui_ok "Homebrew installed"
   fi
 }
@@ -34,6 +56,10 @@ install_ohmyzsh() {
 }
 
 main() {
+  links_parse_args "$@"
+  # Propagate non-interactive intent to the Homebrew installer.
+  [ "$noninteractive" = true ] && export NONINTERACTIVE=1
+
   ui_banner "dotfiles bootstrap" "$DOTFILES_ROOT"
 
   if [ "$(uname -s)" = "Darwin" ]; then

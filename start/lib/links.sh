@@ -15,6 +15,39 @@ overwrite_all=false
 backup_all=false
 skip_all=false
 
+# Non-interactive mode: never prompt on conflicts. Auto-enabled when
+# DOTFILES_NONINTERACTIVE=1, or when there's no TTY to prompt on (piped
+# output, CI, agent runs) — which also avoids a `read </dev/tty` failure
+# aborting the script under `set -e`. Resolve flags with links_parse_args.
+if [ "${DOTFILES_NONINTERACTIVE:-}" = 1 ] || [ "${UI_TTY:-true}" = false ]; then
+  noninteractive=true
+else
+  noninteractive=false
+fi
+
+# Conflict policy used in non-interactive mode (non-destructive by default).
+# Override with DOTFILES_ON_CONFLICT=overwrite|backup|skip or the flags.
+on_conflict=${DOTFILES_ON_CONFLICT:-backup}
+
+# links_parse_args ARGS… — parse the common flags shared by the link-aware
+# entry scripts. Calls `usage` (if the caller defined one) for -h/--help.
+links_parse_args() {
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -y | --yes | --non-interactive | --noninteractive)
+        noninteractive=true ;;
+      --overwrite) noninteractive=true; on_conflict=overwrite ;;
+      --backup)    noninteractive=true; on_conflict=backup ;;
+      --skip)      noninteractive=true; on_conflict=skip ;;
+      -h | --help)
+        command -v usage >/dev/null 2>&1 && usage
+        exit 0 ;;
+      *) ui_warn "ignoring unknown option: ${C_BOLD}$1${C_RESET}" ;;
+    esac
+    shift
+  done
+}
+
 ui_home() { # abbreviate $HOME to ~ for display
   case "$1" in
     "$HOME"/*) printf '~%s' "${1#"$HOME"}" ;;
@@ -36,29 +69,38 @@ link_file() { # src dst
     fi
 
     if [ "$overwrite_all" = false ] && [ "$backup_all" = false ] && [ "$skip_all" = false ]; then
-      local current
-      current=$(readlink "$dst" 2>/dev/null || true)
-      printf '\n  %s%s%s %s%s%s exists' \
-        "$C_YELLOW$C_BOLD" "$I_ASK" "$C_RESET" \
-        "$C_BOLD" "$(ui_home "$dst")" "$C_RESET"
-      if [ -n "$current" ]; then
-        printf ' %s(currently → %s)%s' "$C_DIM" "$current" "$C_RESET"
-      fi
-      printf '\n    %s[s]%skip  %s[o]%sverwrite  %s[b]%sackup  %s(capital = apply to all)%s ' \
-        "$C_CYAN" "$C_RESET" "$C_CYAN" "$C_RESET" "$C_CYAN" "$C_RESET" \
-        "$C_DIM" "$C_RESET"
-      read -r -n 1 action </dev/tty
-      echo ''
+      if [ "$noninteractive" = true ]; then
+        # No prompt: apply the configured default policy to every conflict.
+        case "$on_conflict" in
+          overwrite) overwrite_all=true ;;
+          skip)      skip_all=true ;;
+          *)         backup_all=true ;;
+        esac
+      else
+        local current
+        current=$(readlink "$dst" 2>/dev/null || true)
+        printf '\n  %s%s%s %s%s%s exists' \
+          "$C_YELLOW$C_BOLD" "$I_ASK" "$C_RESET" \
+          "$C_BOLD" "$(ui_home "$dst")" "$C_RESET"
+        if [ -n "$current" ]; then
+          printf ' %s(currently → %s)%s' "$C_DIM" "$current" "$C_RESET"
+        fi
+        printf '\n    %s[s]%skip  %s[o]%sverwrite  %s[b]%sackup  %s(capital = apply to all)%s ' \
+          "$C_CYAN" "$C_RESET" "$C_CYAN" "$C_RESET" "$C_CYAN" "$C_RESET" \
+          "$C_DIM" "$C_RESET"
+        read -r -n 1 action </dev/tty
+        echo ''
 
-      case "$action" in
-        o) overwrite=true ;;
-        O) overwrite_all=true ;;
-        b) backup=true ;;
-        B) backup_all=true ;;
-        s) skip=true ;;
-        S) skip_all=true ;;
-        *) skip=true ;;
-      esac
+        case "$action" in
+          o) overwrite=true ;;
+          O) overwrite_all=true ;;
+          b) backup=true ;;
+          B) backup_all=true ;;
+          s) skip=true ;;
+          S) skip_all=true ;;
+          *) skip=true ;;
+        esac
+      fi
     fi
 
     overwrite=${overwrite:-$overwrite_all}

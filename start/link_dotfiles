@@ -10,6 +10,25 @@ DOTFILES_ROOT=$(pwd -P)
 source "$DOTFILES_ROOT/start/lib/ui.sh"
 source "$DOTFILES_ROOT/start/lib/links.sh"
 
+usage() {
+  cat <<'EOF'
+Usage: start/link_dotfiles [options]
+
+Symlink every *.symlink into $HOME. Idempotent; safe to re-run.
+
+Options:
+  -y, --non-interactive   Never prompt on conflicts (auto when no TTY)
+      --backup            On conflict, move existing aside to .backup (default)
+      --overwrite         On conflict, replace existing file/link
+      --skip              On conflict, keep existing and skip the link
+  -h, --help              Show this help
+
+Env: DOTFILES_NONINTERACTIVE=1, DOTFILES_ON_CONFLICT=backup|overwrite|skip
+EOF
+}
+
+links_parse_args "$@"
+
 ui_banner "link dotfiles" "$DOTFILES_ROOT → ~"
 
 install_dotfiles

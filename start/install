@@ -9,6 +9,30 @@ DOTFILES_ROOT=$(pwd -P)
 
 source "$DOTFILES_ROOT/start/lib/ui.sh"
 
+usage() {
+  cat <<'EOF'
+Usage: start/install [options]
+
+Run `brew bundle`, then every topic install.sh installer.
+
+Options:
+  -y, --non-interactive   Unattended (sets NONINTERACTIVE=1 for installers;
+                          auto-enabled when there's no TTY)
+  -h, --help              Show this help
+EOF
+}
+
+# Non-interactive when asked, or when there's no TTY (CI / agent runs).
+[ "${UI_TTY:-true}" = false ] && export NONINTERACTIVE=1
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -y | --yes | --non-interactive | --noninteractive) export NONINTERACTIVE=1 ;;
+    -h | --help) usage; exit 0 ;;
+    *) ui_warn "ignoring unknown option: ${C_BOLD}$1${C_RESET}" ;;
+  esac
+  shift
+done
+
 ui_banner "dotfiles install" "brew bundle + topic installers"
 ui_steps_total 2
 

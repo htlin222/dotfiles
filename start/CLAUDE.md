@@ -1,5 +1,8 @@
 # start/ — installers
 
+See `setup.md` for the human/agent-facing install guide (flags, env vars,
+one-liners).
+
 Four entry points, all built on the shared TUI library in `lib/`:
 
 - `bootstrap` — full machine setup: Homebrew → oh-my-zsh (`--unattended`) →
@@ -23,6 +26,12 @@ Four entry points, all built on the shared TUI library in `lib/`:
   `skip_all` — set before calling to skip prompts), `install_dotfiles`
   (the find loop), `links_summary` (counters). Has an `-ef` self-link guard
   so linking the repo onto itself can't move it away.
+  Non-interactive support: `noninteractive`/`on_conflict` globals (auto-set
+  from `UI_TTY`/`DOTFILES_NONINTERACTIVE`/`DOTFILES_ON_CONFLICT`); when no
+  TTY or `-y`, `link_file` applies `on_conflict` (default `backup`) instead
+  of the `read </dev/tty` prompt. `links_parse_args "$@"` parses the shared
+  flags (`-y`/`--non-interactive`, `--backup`/`--overwrite`/`--skip`,
+  `-h` → calls the caller's `usage`).
 
 ## Constraints
 

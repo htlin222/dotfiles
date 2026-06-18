@@ -11,6 +11,22 @@ DOTFILES_ROOT=$(pwd -P)
 source "$DOTFILES_ROOT/start/lib/ui.sh"
 source "$DOTFILES_ROOT/start/lib/links.sh"
 
+usage() {
+  cat <<'EOF'
+Usage: start/setup_linux.sh [options]
+
+Pop!_OS/apt setup: packages, oh-my-zsh + plugins, TPM, symlinks, chsh.
+Always unattended — link conflicts are backed up, never prompted.
+
+Options:
+  -h, --help   Show this help
+
+Note: `sudo apt` will prompt for your password.
+EOF
+}
+
+case "${1:-}" in -h | --help) usage; exit 0 ;; esac
+
 # Unattended runs: never prompt on conflicts, keep a .backup instead.
 # shellcheck disable=SC2034  # consumed by link_file in links.sh
 backup_all=true
