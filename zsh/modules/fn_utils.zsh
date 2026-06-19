@@ -389,6 +389,34 @@ codextmux() {
   tmux attach -t "$slug"
 }
 
+# Push the local terminal's terminfo to a remote host so tput/clear/vim/tmux
+# stop complaining `unknown terminal "$TERM"` over SSH. Sends ONLY the one
+# terminfo definition (via infocmp | tic) into the remote's ~/.terminfo — no
+# need to install the whole terminal emulator there. Common with Ghostty,
+# WezTerm, kitty, Alacritty whose TERM isn't in older remote terminfo dbs.
+#   fix-ghostty-term casey@host          # fixes current $TERM (e.g. xterm-ghostty)
+#   fix-ghostty-term casey@host wezterm  # fix a specific terminfo entry
+fix-ghostty-term() {
+  local host="$1"
+  local term="${2:-$TERM}"
+  if [[ -z "$host" ]]; then
+    echo "usage: fix-ghostty-term <user@host> [term=\$TERM]" >&2
+    return 1
+  fi
+  if ! infocmp -x "$term" >/dev/null 2>&1; then
+    echo "fix-ghostty-term: no local terminfo for '$term' (nothing to send)" >&2
+    return 1
+  fi
+  # The 'older tic versions may treat the description field as an alias' notice
+  # is a harmless warning, not a failure — the entry still installs.
+  if infocmp -x "$term" | ssh "$host" -- tic -x -; then
+    echo "✓ '$term' terminfo installed on $host — reconnect to verify (tput colors)"
+  else
+    echo "fix-ghostty-term: failed to install '$term' on $host" >&2
+    return 1
+  fi
+}
+
 # Break all panes in current tmux window into separate windows
 break_panes() {
   if [[ -z "$TMUX" ]]; then
