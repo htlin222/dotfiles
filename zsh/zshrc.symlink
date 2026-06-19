@@ -244,6 +244,12 @@ ZSH_WEB_SEARCH_ENGINES=(
   google-pdf "https://www.google.com/search?q=filetype%3Apdf+"
 )
 
+# Stop oh-my-zsh's termsupport from hijacking the tab title: its preexec hook
+# sets the title to the running command and its precmd to $PWD, clobbering the
+# hostname title we set below in _set_term_title. Ghostty's `no-title` only
+# silences Ghostty's own integration, not OMZ's. Must be set before OMZ loads.
+DISABLE_AUTO_TITLE=true
+
 # Load oh-my-zsh
 if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
   source "$ZSH/oh-my-zsh.sh"
