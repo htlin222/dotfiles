@@ -11,16 +11,20 @@ end
 
 return { -- this table will override the default cmp setting
   "hrsh7th/nvim-cmp",
-  event = { "InsertEnter", "CmdlineEnter" },
+  -- Load when a file opens (BufReadPre/BufNewFile) instead of on InsertEnter,
+  -- so cmp + all its sources are fully ready before the first keystroke.
+  -- Otherwise the ~120ms load fires *during* the first insert and the first
+  -- 1-2 characters get no completion. CmdlineEnter keeps `:`/`/` completion lazy.
+  event = { "BufReadPre", "BufNewFile", "InsertEnter", "CmdlineEnter" },
   opts = function()
     local cmp = require "cmp"
     local luasnip = require "luasnip"
     return {
       performance = {
         max_view_entries = 15,
-        debounce = 100,
-        throttle = 50,
-        fetching_timeout = 200,
+        debounce = 30, -- was 100 (default 60); lower = popup updates sooner after typing
+        throttle = 20, -- was 50 (default 30); lower = recomputes faster while typing
+        fetching_timeout = 200, -- max wait for async sources (LSP) before showing what's ready
       },
       window = {
         completion = cmp.config.window.bordered(nil),
