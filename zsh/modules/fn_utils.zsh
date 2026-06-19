@@ -440,3 +440,33 @@ break_panes() {
   echo "Done. Broke into separate windows."
 }
 alias bp='break_panes'
+
+# Parse the bare target host/alias from an ssh(1) argv. Returns it on stdout
+# (empty if argv has only flags). Skips options that take a value, strips a
+# user@ prefix and a :port / trailing suffix. Unit-tested in zsh/tests/.
+_ssh_target_from_args() {
+  local target="" arg
+  local -a takes_arg=(-b -c -D -E -e -F -I -i -J -L -l -m -O -o -p -Q -R -S -W -w)
+  local skip_next=0
+  for arg in "$@"; do
+    if (( skip_next )); then skip_next=0; continue; fi
+    if [[ "$arg" == -* ]]; then
+      (( ${takes_arg[(I)$arg]} )) && skip_next=1
+      continue
+    fi
+    target="$arg"; break
+  done
+  target="${target##*@}"; target="${target%%:*}"
+  print -r -- "$target"
+}
+
+# ssh wrapper — set the terminal/tab title to the SSH target so it shows even
+# when the remote host has no title hook. The remote shell (if it runs the
+# _set_term_title precmd from these dotfiles) refines it to its own %m, and on
+# exit the local precmd restores the local hostname. Doubly robust.
+ssh() {
+  local target; target="$(_ssh_target_from_args "$@")"
+  [[ -n "$target" ]] && print -Pn "\e]0;${target}\a"
+  command ssh "$@"
+  print -Pn '\e]0;%m\a'   # restore local hostname after the session ends
+}

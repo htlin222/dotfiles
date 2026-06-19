@@ -20,8 +20,8 @@ window-padding-x = 3
 window-padding-y = 3
 window-padding-balance = true
 background-opacity = 1.0
-macos-titlebar-style = hidden
-window-decoration = false
+macos-titlebar-style = tabs
+window-decoration = true
 window-save-state = never
 window-inherit-working-directory = true
 window-inherit-font-size = true
@@ -35,7 +35,7 @@ theme = dark:bew-dark,light:bew-light
 # Shell Integration
 # =============================================================================
 shell-integration = zsh
-shell-integration-features = cursor,sudo,title
+shell-integration-features = cursor,sudo,no-title
 # =============================================================================
 # Performance & Scrollback
 # =============================================================================
@@ -79,6 +79,9 @@ clipboard-write = allow
 keybind = cmd+w=close_surface
 keybind = cmd+shift+r=reload_config
 keybind = cmd+q=quit
+
+# 新視窗預設開成分頁（cmd+n 改為 new_tab）
+keybind = cmd+n=new_tab
 
 # Option+Arrow for word navigation
 keybind = alt+left=text:\x1bb

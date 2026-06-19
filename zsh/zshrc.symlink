@@ -333,6 +333,11 @@ _load_deferred_plugins() {
 }
 add-zsh-hook precmd _load_deferred_plugins
 
+# Terminal/tab title = short hostname (overrides Ghostty's pwd-based title).
+# $HOST is zsh-builtin; %m in print -P gives the short hostname.
+_set_term_title() { print -Pn '\e]0;%m\a'; }
+add-zsh-hook precmd _set_term_title
+
 ##############################
 ### Extra Configs          ###
 ##############################
