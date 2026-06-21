@@ -128,8 +128,11 @@ if [[ -n "$_brew_bin" ]]; then
 fi
 unset _brew_bin _brew_env_cache
 
-# Switch input source to ABC on login (macOS) — local sessions only, detached
-if [[ -z $SSH_CONNECTION ]] && command -v im-select >/dev/null 2>&1; then
+# Switch input source to ABC on login (macOS) — interactive local sessions only, detached
+# The interactive guard prevents non-interactive login shells (e.g. tools like
+# Claude Code that spawn `zsh -l -c ...` per command) from yanking the input
+# method on every invocation.
+if [[ -o interactive ]] && [[ -z $SSH_CONNECTION ]] && command -v im-select >/dev/null 2>&1; then
   (im-select com.apple.keylayout.ABC >/dev/null 2>&1 &) &!
 fi
 
