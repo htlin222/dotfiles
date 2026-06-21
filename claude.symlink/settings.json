@@ -217,6 +217,10 @@
 					{
 						"type": "command",
 						"command": "claude-hooks user-prompt"
+					},
+					{
+						"type": "command",
+						"command": "/Users/htlin/.claude/hooks/im-select-abc.sh"
 					}
 				]
 			}
