@@ -247,7 +247,11 @@ if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 # run -b: plugins load in background (~1.3s serially); first prompt is instant.
 # Plugin keybindings/statusbar styling attach within ~1s of server start.
-run -b '~/.tmux/plugins/tpm/tpm'
+# `|| true`: tpm propagates the exit code of the LAST sourced plugin's *.tmux
+# file. On a cold boot (LaunchAgent), continuum's restore branch runs and its
+# tail can exit non-zero -> tmux prints "'~/.tmux/plugins/tpm/tpm' returned 1".
+# Harmless (plugins still load), but `|| true` forces 0 and silences the noise.
+run -b '~/.tmux/plugins/tpm/tpm || true'
 
 # Ref: [gpakosz/.tmux: 🇫🇷 Oh my tmux! My self-contained, pretty & versatile tmux configuration made with ❤️](https://github.com/gpakosz/.tmux)
 # [My .tmux.conf for tmux 2.1 (with fixes for mouse breakage)](https://gist.github.com/subfuzion/814b3360e9f0b2d89c08)
