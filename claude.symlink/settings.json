@@ -65,6 +65,7 @@
 		],
 		"defaultMode": "auto"
 	},
+	"model": "sonnet",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
 		"SessionStart": [
@@ -270,6 +271,7 @@
 			}
 		}
 	},
+	"language": "Chinese",
 	"alwaysThinkingEnabled": true,
 	"effortLevel": "high",
 	"voice": {
@@ -282,6 +284,5 @@
 	"remoteControlAtStartup": false,
 	"agentPushNotifEnabled": true,
 	"skipAutoPermissionPrompt": true,
-	"voiceEnabled": true,
-	"language": "Chinese"
+	"voiceEnabled": true
 }

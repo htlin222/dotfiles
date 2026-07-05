@@ -70,5 +70,6 @@ _freeze/
 .quarto/
 *_files/
 *_cache/
-*.html
-!README.html
+# NOTE: Quarto's rendered HTML already lives under _site/ and _book/ (ignored
+# above). A blanket `*.html` here silently dropped hand-written source HTML in
+# every repo (extension popups, demo pages, etc.), so it was removed.

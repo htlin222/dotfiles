@@ -7,7 +7,7 @@ title = "dotfiles gitleaks config"
 useDefault = true
 
 [allowlist]
-description = "Skip test fixtures and testdata directories"
+description = "Skip test fixtures, testdata directories, and vendored minified assets"
 paths = [
   '''.*_test\.go$''',
   '''.*_test\.py$''',
@@ -19,4 +19,7 @@ paths = [
   '''testdata/''',
   '''fixtures/''',
   '''__fixtures__/''',
+  # ttyd's bundled xterm.js web client (minified); its identifier names
+  # trip generic-api-key's entropy check with no actual secrets present.
+  '''config\.symlink/ttyd/index\.html''',
 ]
