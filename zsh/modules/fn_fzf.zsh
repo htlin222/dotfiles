@@ -274,6 +274,225 @@ PREVIEW_EOF
   command rm -rf "$tmpdir"
 }
 
+# FZF herdr navigator — workspaces >(>)> tabs >(>)> panes (<: back)
+# herdr's workspace/tab/pane hierarchy maps to tmux's session/window/pane,
+# see config.symlink/herdr/README.md. Unlike tmux, herdr's `pane focus` only
+# takes a direction (no target pane id), so jumping to an exact pane does a
+# geometric BFS (pathfind.py) over the tab's layout and replays the resulting
+# left/right/up/down steps as real `herdr pane focus --direction` calls.
+function fzfh() {
+  local tmpdir=$(mktemp -d)
+
+  # --- State ---
+  printf 'workspaces' > "$tmpdir/mode"
+  printf '' > "$tmpdir/current_workspace"
+  printf '' > "$tmpdir/current_tab"
+
+  # --- List: workspaces (~ tmux sessions). Each line is "display\tid". ---
+  cat > "$tmpdir/workspaces" << 'EOF'
+#!/bin/sh
+herdr workspace list 2>/dev/null | jq -r '
+  .result.workspaces[] |
+  [(if .focused then "[32m> " else "[37m  " end)
+    + (.label // .workspace_id)
+    + "  [36m[" + (.tab_count|tostring) + "t/" + (.pane_count|tostring) + "p]"
+    + (if .focused then "  [33m* focused" else "" end)
+    + "  [35m" + (.agent_status // "-") + "[0m",
+   .workspace_id] | @tsv'
+EOF
+
+  # --- List: tabs (~ tmux windows) ---
+  cat > "$tmpdir/tabs" << 'EOF'
+#!/bin/sh
+ws="$1"
+herdr tab list --workspace "$ws" 2>/dev/null | jq -r '
+  .result.tabs[] |
+  [(if .focused then "[32m> " else "[37m  " end)
+    + (.number|tostring) + ": " + (.label // "")
+    + "  [36m[" + (.pane_count|tostring) + "p]"
+    + "  [35m" + (.agent_status // "-") + "[0m",
+   .tab_id] | @tsv'
+EOF
+
+  # --- List: panes ---
+  cat > "$tmpdir/panes" << 'EOF'
+#!/bin/sh
+ws="$1"; tab="$2"
+herdr pane list --workspace "$ws" 2>/dev/null | jq -r --arg tab "$tab" --arg home "$HOME" '
+  .result.panes[] | select(.tab_id == $tab) |
+  [(if .focused then "[32m# " else "[37m  " end)
+    + "[" + (.agent // "-") + "/" + .agent_status + "]  "
+    + (.cwd | sub("^" + $home; "~"))
+    + "[0m",
+   .pane_id] | @tsv'
+EOF
+
+  # --- Universal preview (mode-aware; arg is the hidden id field, not display text) ---
+  cat > "$tmpdir/preview" << 'PREVIEW_EOF'
+#!/bin/sh
+id="$1"; tmpdir="$2"
+mode=$(cat "$tmpdir/mode" 2>/dev/null)
+case "$mode" in
+  workspaces)
+    [ -z "$id" ] && exit 0
+    printf "\033[35m== workspace %s ==\033[0m\n\n" "$id"
+    sh "$tmpdir/tabs" "$id"
+    ;;
+  tabs)
+    ws=$(cat "$tmpdir/current_workspace" 2>/dev/null)
+    [ -z "$id" ] && exit 0
+    printf "\033[35m== tab %s ==\033[0m\n\n" "$id"
+    sh "$tmpdir/panes" "$ws" "$id"
+    ;;
+  panes)
+    [ -z "$id" ] && exit 0
+    printf "\033[35m== pane %s ==\033[0m\n\n" "$id"
+    herdr pane read "$id" --source recent --lines 200 --format ansi 2>/dev/null
+    ;;
+esac
+PREVIEW_EOF
+
+  # --- Pathfinder: BFS from the currently-focused pane to a target pane id over
+  # the tab's rect layout, mirroring what arrow-key nav would do. ---
+  cat > "$tmpdir/pathfind.py" << 'PY'
+import sys, json
+from collections import deque
+
+layout_path, start, target = sys.argv[1], sys.argv[2], sys.argv[3]
+with open(layout_path) as f:
+    data = json.load(f)
+panes = {p["pane_id"]: p["rect"] for p in data["result"]["layout"]["panes"]}
+
+def overlap_v(a, b):
+    return a["y"] < b["y"] + b["height"] and a["y"] + a["height"] > b["y"]
+
+def overlap_h(a, b):
+    return a["x"] < b["x"] + b["width"] and a["x"] + a["width"] > b["x"]
+
+def neighbors(pid):
+    r = panes[pid]
+    cands = {"right": [], "left": [], "down": [], "up": []}
+    for oid, o in panes.items():
+        if oid == pid:
+            continue
+        if o["x"] > r["x"] and overlap_v(o, r):
+            cands["right"].append((o["x"], oid))
+        if o["x"] < r["x"] and overlap_v(o, r):
+            cands["left"].append((-o["x"], oid))
+        if o["y"] > r["y"] and overlap_h(o, r):
+            cands["down"].append((o["y"], oid))
+        if o["y"] < r["y"] and overlap_h(o, r):
+            cands["up"].append((-o["y"], oid))
+    return {d: sorted(v)[0][1] for d, v in cands.items() if v}
+
+if start == target:
+    sys.exit(0)
+if start not in panes or target not in panes:
+    sys.exit(1)
+
+prev = {start: None}
+q = deque([start])
+while q:
+    cur = q.popleft()
+    if cur == target:
+        break
+    for d, nid in neighbors(cur).items():
+        if nid not in prev:
+            prev[nid] = (cur, d)
+            q.append(nid)
+
+if target not in prev:
+    sys.exit(1)
+
+path, node = [], target
+while prev[node] is not None:
+    p, d = prev[node]
+    path.append(d)
+    node = p
+path.reverse()
+print(" ".join(path))
+PY
+
+  chmod +x "$tmpdir"/{workspaces,tabs,panes,preview}
+
+  local fzf_preview_opts
+  if (( ${COLUMNS:-80} < 50 )); then
+    fzf_preview_opts="--preview-window=hidden"
+  else
+    fzf_preview_opts="--preview-window=right:55%:wrap"
+  fi
+
+  local target
+  target=$(sh "$tmpdir/workspaces" | \
+    fzf --ansi --height 80% --layout=reverse \
+      --delimiter=$'\t' --with-nth=1 \
+      --prompt="workspaces > " \
+      --header=$'Enter: focus  right: drill in  left: back' \
+      --preview "sh $tmpdir/preview {2} $tmpdir" \
+      $fzf_preview_opts \
+      --bind "right:transform:
+        mode=\$(cat $tmpdir/mode)
+        case \"\$mode\" in
+          panes) ;;
+          tabs)
+            ws=\$(cat $tmpdir/current_workspace)
+            tab={2}
+            printf '%s' \"\$tab\" > $tmpdir/current_tab
+            printf 'panes' > $tmpdir/mode
+            echo \"reload(sh $tmpdir/panes \$ws \$tab)+change-prompt(\$tab panes > )\" ;;
+          workspaces)
+            wsid={2}
+            printf '%s' \"\$wsid\" > $tmpdir/current_workspace
+            printf 'tabs' > $tmpdir/mode
+            echo \"reload(sh $tmpdir/tabs \$wsid)+change-prompt(\$wsid tabs > )\" ;;
+        esac" \
+      --bind "left:transform:
+        mode=\$(cat $tmpdir/mode)
+        case \"\$mode\" in
+          panes)
+            ws=\$(cat $tmpdir/current_workspace)
+            printf '' > $tmpdir/current_tab
+            printf 'tabs' > $tmpdir/mode
+            echo \"reload(sh $tmpdir/tabs \$ws)+change-prompt(\$ws tabs > )\" ;;
+          tabs)
+            printf '' > $tmpdir/current_workspace
+            printf 'workspaces' > $tmpdir/mode
+            echo \"reload(sh $tmpdir/workspaces)+change-prompt(workspaces > )\" ;;
+        esac"
+  )
+
+  [[ -z "$target" ]] && { command rm -rf "$tmpdir"; return; }
+
+  local final_mode=$(cat "$tmpdir/mode")
+  local id=$(printf '%s' "$target" | awk -F'\t' '{print $NF}')
+  local ws=$(cat "$tmpdir/current_workspace" 2>/dev/null)
+  local tab=$(cat "$tmpdir/current_tab" 2>/dev/null)
+
+  case "$final_mode" in
+    workspaces)
+      herdr workspace focus "$id" >/dev/null
+      ;;
+    tabs)
+      herdr workspace focus "$ws" >/dev/null
+      herdr tab focus "$id" >/dev/null
+      ;;
+    panes)
+      herdr workspace focus "$ws" >/dev/null
+      herdr tab focus "$tab" >/dev/null
+      local current=$(herdr pane list --workspace "$ws" 2>/dev/null | jq -r '.result.panes[] | select(.focused==true) | .pane_id')
+      if [[ -n "$current" && "$current" != "$id" ]]; then
+        herdr pane layout --pane "$current" > "$tmpdir/layout.json" 2>/dev/null
+        local plan=$(python3 "$tmpdir/pathfind.py" "$tmpdir/layout.json" "$current" "$id" 2>/dev/null)
+        local d
+        for d in $plan; do
+          herdr pane focus --direction "$d" >/dev/null 2>&1
+        done
+      fi
+      ;;
+  esac
+  command rm -rf "$tmpdir"
+}
+
 # Delete line from file with fzf
 function delete_line_with_fzf() {
   local file="$1"

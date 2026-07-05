@@ -87,6 +87,10 @@ docs/**/*_files/
 config.symlink/code-server/*
 git/gitconfig.symlink
 
+# herdr runtime state (session.json churns every launch; logs/sockets
+# already skipped via *.log global ignore / git's socket-file handling)
+config.symlink/herdr/session.json
+
 # rclone config contains live R2 credentials
 config.symlink/rclone/rclone.conf
 
