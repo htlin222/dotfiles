@@ -90,10 +90,13 @@ next_tab = "shift+right"       # tmux: S-Right / M-L next-window (prefix+n reass
 # close_tab = "prefix+shift+x"
 # rename_pane = "prefix+shift+p"
 # edit_scrollback = "prefix+e"
-focus_pane_left = ["prefix+h", "alt+left"]    # tmux: h / M-Left
-focus_pane_down = ["prefix+j", "alt+down"]    # tmux: j / M-Down
-focus_pane_up = ["prefix+k", "alt+up"]        # tmux: k / M-Up
-focus_pane_right = ["prefix+l", "alt+right"]  # tmux: l / M-Right
+# ctrl+h/j/k/l direct (vim-tmux-navigator style, no prefix needed).
+# Trade-off: panes no longer receive raw C-h/C-j/C-k/C-l (shell clear-screen,
+# readline kill-line, vim window nav inside a pane, etc.) — herdr eats them.
+focus_pane_left = ["prefix+h", "alt+left", "ctrl+h"]    # tmux: h / M-Left
+focus_pane_down = ["prefix+j", "alt+down", "ctrl+j"]    # tmux: j / M-Down
+focus_pane_up = ["prefix+k", "alt+up", "ctrl+k"]        # tmux: k / M-Up
+focus_pane_right = ["prefix+l", "alt+right", "ctrl+l"]  # tmux: l / M-Right
 # cycle_pane_next = "prefix+tab"
 # cycle_pane_previous = "prefix+shift+tab"
 # last_pane = ""          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth

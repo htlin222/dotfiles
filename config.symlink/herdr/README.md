@@ -37,6 +37,7 @@ So `prefix = "ctrl+a"` is now a first-class setting, no shell hook needed.
 | `prefix+r` | `source-file ~/.tmux.conf` | `reload_config` (moved off herdr's default `prefix+shift+r`, which is now free) |
 | `prefix+c` | `new-window` | `new_tab` (already herdr's default) |
 | `prefix+h/j/k/l` | `select-pane -L/-D/-U/-R` | `focus_pane_left/down/up/right` (already herdr's default) |
+| `ctrl+h/j/k/l` (no prefix) | *(vim-tmux-navigator habit)* | added as extra bindings on `focus_pane_*` — direct pane navigation, no prefix. **Trade-off:** panes no longer receive raw `C-h/j/k/l` (shell clear-screen on `C-l`, readline `C-k`, in-pane vim window nav, etc.); use `prefix+h/j/k/l` or arrows if an app needs those keys |
 | `alt+←/→/↑/↓` (no prefix) | `select-pane` (matches tmux's `alt+←/→/↑/↓`) | added as a second binding on the same `focus_pane_*` actions |
 | `shift+←/→` (no prefix) | `previous-window` / `next-window` | `previous_tab` / `next_tab` (moved off `prefix+p/n`, see below) |
 | `prefix+p` / `prefix+n` | *(no tmux equivalent — workspace-level prev/next)* | `previous_workspace` / `next_workspace` — freed up since tab switching already has `shift+←/→` |
