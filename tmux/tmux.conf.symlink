@@ -35,6 +35,8 @@ set -g history-limit 50000
 # Pass CSI u extended keys through to apps that request them (nvim in Ghostty/kitty).
 # Disambiguates Ctrl/Shift/Alt + key (incl. Ctrl+digit); Ghostty advertises extkeys.
 set -s extended-keys on
+# Emit CSI u form (not the default xterm form) so agent TUIs (Pi, etc.) parse modifiers correctly.
+set -s extended-keys-format csi-u
 set -as terminal-features ",xterm-ghostty:extkeys"
 setw -g mode-keys vi
 

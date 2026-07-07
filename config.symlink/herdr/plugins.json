@@ -1,0 +1,164 @@
+[
+  {
+    "plugin_id": "sessionizer",
+    "name": "Sessionizer",
+    "version": "0.5.1",
+    "min_herdr_version": "0.7.0",
+    "description": "Inspired by ThePrimeagen's tmux-sessionizer: fuzzy pickers to open projects and Git worktrees into Herdr workspaces.",
+    "manifest_path": "/Users/htlin/.dotfiles/config.symlink/herdr/plugins/github/sessionizer-66e03d1ff740/herdr-plugin.toml",
+    "plugin_root": "/Users/htlin/.dotfiles/config.symlink/herdr/plugins/github/sessionizer-66e03d1ff740",
+    "enabled": true,
+    "platforms": [
+      "macos"
+    ],
+    "build": [
+      {
+        "command": [
+          "bun",
+          "install",
+          "--frozen-lockfile"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "open",
+        "title": "Open sessionizer",
+        "command": [
+          "bun",
+          "run",
+          "src/sessionizer/open-pane.ts"
+        ]
+      },
+      {
+        "id": "worktree-open",
+        "title": "Open worktree",
+        "command": [
+          "bun",
+          "run",
+          "src/worktree/open-worktree-pane.ts"
+        ]
+      }
+    ],
+    "panes": [
+      {
+        "id": "sessionizer",
+        "title": "Sessionizer",
+        "placement": "overlay",
+        "command": [
+          "bun",
+          "run",
+          "src/sessionizer/sessionizer-pane.ts"
+        ]
+      },
+      {
+        "id": "worktree",
+        "title": "Worktree",
+        "placement": "overlay",
+        "command": [
+          "bun",
+          "run",
+          "src/worktree/worktree-pane.ts"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "andrewchng",
+      "repo": "herdr-sessionizer",
+      "resolved_commit": "72ee760c9afc552dbdfe7df26794625e58d2b9d7",
+      "managed_path": "/Users/htlin/.config/herdr/plugins/github/sessionizer-66e03d1ff740",
+      "installed_unix_ms": 1783446359402
+    }
+  },
+  {
+    "plugin_id": "jt.command-palette",
+    "name": "Command Palette (fzf)",
+    "version": "0.1.0",
+    "min_herdr_version": "0.7.0",
+    "description": "An fzf command palette for herdr: pops up a fuzzy-searchable list of every action exposed by every installed plugin (via `herdr plugin action list`) and invokes the one you pick. The picker runs in an overlay pane so fzf gets a real TTY; the origin workspace's cwd is forwarded so context-aware actions resolve the right repo.",
+    "manifest_path": "/Users/htlin/.dotfiles/config.symlink/herdr/plugins/github/jt.command-palette-24905dca5f16/herdr-plugin.toml",
+    "plugin_root": "/Users/htlin/.dotfiles/config.symlink/herdr/plugins/github/jt.command-palette-24905dca5f16",
+    "enabled": true,
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "actions": [
+      {
+        "id": "open",
+        "title": "Command palette (all plugin actions)",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "open.sh"
+        ]
+      }
+    ],
+    "panes": [
+      {
+        "id": "palette",
+        "title": "Command palette",
+        "placement": "overlay",
+        "command": [
+          "bash",
+          "-c",
+          "exec \"$HERDR_PLUGIN_ROOT/palette.sh\""
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "JanTvrdik",
+      "repo": "herdr-command-palette",
+      "resolved_commit": "eab940018c2135ac23718efa11e23e9dddcd2a75",
+      "managed_path": "/Users/htlin/.config/herdr/plugins/github/jt.command-palette-24905dca5f16",
+      "installed_unix_ms": 1783446370980
+    }
+  },
+  {
+    "plugin_id": "rmarganti.herdr-pluck",
+    "name": "Herdr Pluck",
+    "version": "0.1.0",
+    "min_herdr_version": "0.7.0",
+    "description": "Inline keyboard hints for copying visible terminal tokens from Herdr panes",
+    "manifest_path": "/Users/htlin/.dotfiles/config.symlink/herdr/plugins/github/rmarganti.herdr-pluck-9cc46c9a5509/herdr-plugin.toml",
+    "plugin_root": "/Users/htlin/.dotfiles/config.symlink/herdr/plugins/github/rmarganti.herdr-pluck-9cc46c9a5509",
+    "enabled": true,
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "build": [
+      {
+        "command": [
+          "./scripts/install-binary.sh"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "pluck",
+        "title": "Pluck visible token",
+        "contexts": [
+          "pane",
+          "workspace"
+        ],
+        "command": [
+          "./bin/herdr-pluck",
+          "open"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "rmarganti",
+      "repo": "herdr-pluck",
+      "resolved_commit": "c94ebe212ed17998aabc40b8015739e60ef1b37b",
+      "managed_path": "/Users/htlin/.config/herdr/plugins/github/rmarganti.herdr-pluck-9cc46c9a5509",
+      "installed_unix_ms": 1783446361085
+    }
+  }
+]
