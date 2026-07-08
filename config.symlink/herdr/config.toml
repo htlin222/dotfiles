@@ -69,7 +69,7 @@ prefix = "ctrl+a"
 # Prefix-mode actions
 # help = "prefix+?"
 # settings = "prefix+s"
-detach = ["prefix+q", "ctrl+q"]        # tmux: bind -n C-q detach-client (no-prefix)
+detach = ["prefix+d", "ctrl+q"]        # tmux: bind -n C-q detach-client (no-prefix)
 reload_config = "prefix+r"             # tmux: bind r source-file ~/.tmux.conf (no shift)
 # open_notification_target = "prefix+o"
 workspace_picker = "prefix+w"          # closest herdr analog to tmux bind T (sesh popup) — no custom command needed

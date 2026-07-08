@@ -1,3 +1,0 @@
-[submodule "claude.symlink/skills/claude-seo"]
-	path = claude.symlink/skills/claude-seo
-	url = https://github.com/AgriciDaniel/claude-seo.git

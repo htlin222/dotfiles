@@ -61,6 +61,7 @@ claude.symlink/*
 !claude.symlink/hooks/
 !claude.symlink/skills/
 claude.symlink/skills/notebooklm/
+claude.symlink/skills/claude-seo/
 !claude.symlink/*.md
 !claude.symlink/settings.json
 !claude.symlink/*.sh
@@ -90,6 +91,7 @@ git/gitconfig.symlink
 # herdr runtime state (session.json churns every launch; logs/sockets
 # already skipped via *.log global ignore / git's socket-file handling)
 config.symlink/herdr/session.json
+config.symlink/herdr/plugins.json
 config.symlink/herdr/plugins/github/
 config.symlink/herdr/plugins/config/
 config.symlink/herdr/release-notes.json

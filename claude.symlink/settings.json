@@ -65,7 +65,7 @@
 		],
 		"defaultMode": "auto"
 	},
-	"model": "sonnet",
+	"model": "opus",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
 		"SessionStart": [
@@ -274,11 +274,13 @@
 	"language": "Chinese",
 	"alwaysThinkingEnabled": true,
 	"effortLevel": "high",
+	"fastMode": true,
 	"voice": {
 		"enabled": true,
 		"mode": "hold"
 	},
 	"skipDangerousModePermissionPrompt": true,
+	"theme": "dark",
 	"editorMode": "vim",
 	"preferredNotifChannel": "terminal_bell",
 	"remoteControlAtStartup": false,

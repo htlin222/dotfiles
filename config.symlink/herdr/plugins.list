@@ -1,0 +1,9 @@
+# herdr plugin manifest — source of truth (tracked in git)
+# format:  owner/repo[/subdir]  <commit-ref>
+# regenerate from a live install with:  make freeze
+JanTvrdik/herdr-command-palette eab940018c2135ac23718efa11e23e9dddcd2a75
+andrewchng/herdr-sessionizer 72ee760c9afc552dbdfe7df26794625e58d2b9d7
+persiyanov/herdr-reviewr e0235105d49274212f68c691ef94edfb6378b76f
+rmarganti/herdr-pluck c94ebe212ed17998aabc40b8015739e60ef1b37b
+smarzban/herdr-file-viewer 3c11c5c36a7235fab23fff7ab4dffaca0d5a416e
+tdi/herdr-worktree-setup cf01280853511e3dd52fc88207641bf250e6b1d0

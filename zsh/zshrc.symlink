@@ -336,6 +336,11 @@ _load_deferred_plugins() {
       source "$plugin_path" 2>/dev/null
     fi
   done
+
+  # Reclaim `pi` for the pi-coding-agent binary. The pnpm plugin (deferred,
+  # sourced just above) sets `alias pi='pnpm init'`, which shadows the binary.
+  # Drop it here, after the plugin loads; `pnpm init` stays reachable as `pini`.
+  unalias pi 2>/dev/null && alias pini='pnpm init'
 }
 add-zsh-hook precmd _load_deferred_plugins
 
@@ -679,3 +684,9 @@ fi
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
+
+# bun completions
+[ -s "/Users/htlin/.bun/_bun" ] && source "/Users/htlin/.bun/_bun"
+
+# kilo
+export PATH=/Users/htlin/.kilo/bin:$PATH
