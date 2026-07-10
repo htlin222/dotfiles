@@ -126,30 +126,32 @@ toggle_sidebar = "prefix+shift+b"  # freed up plain prefix+b for split_vertical 
 # type = "pane" opens a temporary pane and closes it when the command exits.
 
 # tmux: bind -r H/J/K/L resize-pane -L/-D/-U/-R 5 (repeatable, no modal entry)
-# --amount unit is unconfirmed from `herdr pane resize --help`; 5 is a ported
-# guess from tmux's cell count — tune after trying it.
+# --amount is a FRACTION of the split axis (verified: 0.05 moved a 0.60 ratio to
+# 0.65), NOT a cell count — so tmux's 5 meant 500% and slammed to the edge. Aim
+# for ~3 cells per hit: width axis ~206 cols -> 0.015 (L/R), height ~57 rows ->
+# 0.05 (U/D). Bump these if the step still feels too small.
 [[keys.command]]
 key = "prefix+shift+h"
 type = "shell"
-command = "herdr pane resize --direction left --amount 5"
+command = "herdr pane resize --direction left --amount 0.015"
 description = "resize pane left (tmux: prefix+H)"
 
 [[keys.command]]
 key = "prefix+shift+j"
 type = "shell"
-command = "herdr pane resize --direction down --amount 5"
+command = "herdr pane resize --direction down --amount 0.05"
 description = "resize pane down (tmux: prefix+J)"
 
 [[keys.command]]
 key = "prefix+shift+k"
 type = "shell"
-command = "herdr pane resize --direction up --amount 5"
+command = "herdr pane resize --direction up --amount 0.05"
 description = "resize pane up (tmux: prefix+K)"
 
 [[keys.command]]
 key = "prefix+shift+l"
 type = "shell"
-command = "herdr pane resize --direction right --amount 5"
+command = "herdr pane resize --direction right --amount 0.015"
 description = "resize pane right (tmux: prefix+L)"
 
 # tmux: bind a split-window -v -l 3 (small fixed-height stacked split).
