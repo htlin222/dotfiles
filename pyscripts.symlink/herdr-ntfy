@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Watch herdr agent statuses over the socket API and push to ntfy.
+
+Polls `pane.list` on an interval and pushes to an ntfy topic whenever a pane's
+agent transitions INTO an attention state (blocked/done by default). Polling
+covers every pane, including newly-spawned and closed ones, with no event-shape
+guessing, and auto-reconnects if the herdr server restarts.
+
+Env:
+  HERDR_SOCKET_PATH   socket path (default ~/.config/herdr/herdr.sock)
+  HERDR_NTFY_URL      ntfy topic URL
+  HERDR_NTFY_STATES   comma list of statuses to notify on (default blocked,done)
+  HERDR_POLL_SECS     poll interval seconds (default 3)
+"""
+import json
+import os
+import socket
+import subprocess
+import sys
+import time
+
+SOCK = os.environ.get("HERDR_SOCKET_PATH") or os.path.expanduser(
+    "~/.config/herdr/herdr.sock"
+)
+NTFY = os.environ.get("HERDR_NTFY_URL", "https://ntfy.sh/Z4j6AYnONb221NvH")
+NOTIFY_STATES = set(
+    s for s in (os.environ.get("HERDR_NTFY_STATES") or "blocked,done").split(",") if s
+)
+POLL_SECS = float(os.environ.get("HERDR_POLL_SECS", "3"))
+
+
+def rpc(method, params=None):
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+        s.connect(SOCK)
+        s.sendall(
+            (json.dumps({"id": "1", "method": method, "params": params or {}}) + "\n").encode()
+        )
+        line = s.makefile("r").readline()
+        if not line:
+            raise ConnectionError("socket closed")
+        return json.loads(line)
+
+
+def snapshot():
+    """pane_id -> (agent_status, agent_label) for panes that host an agent."""
+    panes = rpc("pane.list", {})["result"]["panes"]
+    return {
+        p["pane_id"]: (p.get("agent_status"), p.get("agent"))
+        for p in panes
+        if p.get("agent")
+    }
+
+
+def push(title, body):
+    subprocess.run(
+        ["curl", "-fsS", "-H", f"Title: {title}", "-d", body, NTFY],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    print(f"[ntfy] {title}: {body}", flush=True)
+
+
+def diff(prev, cur):
+    """Yield (pane_id, agent, status) for transitions INTO a NOTIFY_STATES value."""
+    for pid, (st, agent) in cur.items():
+        old = prev.get(pid, (None, None))[0]
+        if st in NOTIFY_STATES and st != old:
+            yield pid, (agent or "agent"), st
+
+
+def main():
+    print(
+        f"[watch] {SOCK} every {POLL_SECS}s; states={sorted(NOTIFY_STATES)} -> {NTFY}",
+        flush=True,
+    )
+    prev = {}
+    primed = False
+    while True:
+        try:
+            cur = snapshot()
+        except (ConnectionError, FileNotFoundError, OSError) as e:
+            print(f"[reconnect] {e}; retry in 2s", flush=True)
+            time.sleep(2)
+            continue
+        # First successful poll only establishes a baseline (no startup spam).
+        if primed:
+            for pid, agent, st in diff(prev, cur):
+                push(f"herdr: {agent} {st}", f"{pid} → {st}")
+        prev = cur
+        primed = True
+        time.sleep(POLL_SECS)
+
+
+def selftest():
+    s1 = {"w1:p2": ("working", "claude"), "w1:p3": ("idle", "codex")}
+    s2 = {"w1:p2": ("blocked", "claude"), "w1:p3": ("idle", "codex")}
+    s3 = {"w1:p2": ("blocked", "claude"), "w1:p3": ("done", "codex")}
+    global NOTIFY_STATES
+    NOTIFY_STATES = {"blocked", "done"}
+    assert list(diff(s1, s2)) == [("w1:p2", "claude", "blocked")], "detect blocked"
+    assert list(diff(s2, s2)) == [], "no repeat push while still blocked"
+    assert list(diff(s2, s3)) == [("w1:p3", "codex", "done")], "detect done"
+    assert list(diff(s1, s1)) == [], "no push when nothing changes"
+    print("selftest OK")
+
+
+if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        selftest()
+    else:
+        main()
