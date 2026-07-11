@@ -49,6 +49,7 @@ book:
         - chapters/12-version-management.qmd
         - chapters/13-docker.qmd
         - chapters/14-remote-dev.qmd
+        - chapters/18-herdr-tailscale.qmd
     - part: "第五部：進階整合"
       chapters:
         - chapters/15-cli-tools.qmd

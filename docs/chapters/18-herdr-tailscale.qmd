@@ -1,0 +1,186 @@
+# Herdr 跨機器工作流 × Tailscale
+
+## 簡介
+
+Herdr 的 `--remote` 功能讓你能從任何機器遠端控制其他機器上的開發環境。結合 Tailscale 私有網路，你可以安全地在整個機器叢集上無縫工作。
+
+## 為什麼需要這個？
+
+- **統一的開發體驗** — 使用相同的快捷鍵、設定和工作流跨越多台機器
+- **私有安全** — Tailscale 加密連線，無需公網暴露
+- **低延遲** — Tailscale 的 mesh 網路直連各機器
+- **自動發現** — Tailscale DNS 讓機器名直接可用
+
+## 基本概念
+
+你的 Tailscale 網路架構：
+
+```
+┌─────────────────────────────────────────┐
+│         Tailscale 私有網路               │
+├─────────────────────────────────────────┤
+│  goanna (100.71.112.5)   — 主工作機    │
+│  ├→ herdr --remote lizard               │
+│  ├→ herdr --remote chameleon            │
+│  └→ herdr --remote iguana               │
+│                                         │
+│  lizard (100.124.17.118)   — 執行服務  │
+│  ├→ herdr server                        │
+│  └─ 背景 Herdr 實例                     │
+│                                         │
+│  chameleon (100.99.141.125) — 執行服務 │
+│  ├→ herdr server                        │
+│  └─ 背景 Herdr 實例                     │
+│                                         │
+│  iguana (100.124.203.125)   — 執行服務 │
+│  ├→ herdr server                        │
+│  └─ 背景 Herdr 實例                     │
+└─────────────────────────────────────────┘
+```
+
+## 快速開始
+
+### 第一步：設定 SSH 設定
+
+編輯 `~/.ssh/config`，加入 Tailscale 別名：
+
+```ssh
+Host lizard
+    HostName 100.124.17.118
+    User htlin
+    IdentityFile ~/.ssh/id_ed25519
+
+Host chameleon
+    HostName 100.99.141.125
+    User htlin
+    IdentityFile ~/.ssh/id_ed25519
+
+Host iguana
+    HostName 100.124.203.125
+    User htlin
+    IdentityFile ~/.ssh/id_ed25519
+```
+
+### 第二步：在遠端機器啟動 Herdr 服務
+
+在每台遠端機器上：
+
+```bash
+# 方式一：前台運行（測試用）
+herdr server
+
+# 方式二：後台運行
+nohup herdr server &
+```
+
+### 第三步：從主機連線
+
+現在從 `goanna` 連接到任何遠端機器：
+
+```bash
+# 連接到 lizard
+herdr --remote lizard
+
+# 連接到 chameleon
+herdr --remote chameleon
+
+# 創建命名會話
+herdr --remote iguana --session remote-work
+```
+
+## 持久化部署（Systemd）
+
+讓 Herdr 在機器重開後自動啟動。
+
+在每台遠端機器上創建 `/etc/systemd/system/herdr-server.service`：
+
+```ini
+[Unit]
+Description=Herdr Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=htlin
+ExecStart=/usr/local/bin/herdr server
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+然後啟用：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable herdr-server
+sudo systemctl start herdr-server
+
+# 驗證運行中
+sudo systemctl status herdr-server
+```
+
+## 常見命令
+
+```bash
+# 遠端狀態檢查
+herdr --remote lizard status
+herdr --remote lizard status server
+
+# 遠端命令執行
+herdr --remote chameleon -- echo "Hello from chameleon"
+
+# 列出遠端會話
+herdr --remote iguana session list
+
+# 連接到遠端會話
+herdr --remote iguana --session mywork
+```
+
+## 疑難排解
+
+### 連線被拒
+
+```bash
+# 確認 SSH 金鑰已加入 ssh-agent
+ssh-add ~/.ssh/id_ed25519
+
+# 測試 SSH 連線
+ssh lizard echo "OK"
+```
+
+### Herdr Server 未運行
+
+```bash
+# 在遠端檢查
+ssh lizard "ps aux | grep herdr"
+
+# 遠端啟動
+ssh lizard "nohup herdr server &"
+```
+
+### Tailscale 連線問題
+
+```bash
+# 檢查 Tailscale 狀態（本地）
+tailscale status
+
+# 檢查遠端 Tailscale
+ssh lizard "tailscale status"
+
+# 測試 ping
+ping 100.124.17.118
+```
+
+## 下一步
+
+- 設定通知整合（Herdr agent-status watcher）
+- 配置自動會話管理
+- 探索跨機器的任務自動化工作流
+
+## 延伸閱讀
+
+- [Herdr CLI 參考](https://herdr.dev/docs/preview/cli-reference/)
+- [Tailscale SSH](https://tailscale.com/docs/using-tailscale/ssh/)

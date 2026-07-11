@@ -65,20 +65,51 @@
 		],
 		"defaultMode": "auto"
 	},
-	"model": "opus",
+	"model": "fable",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
-		"SessionStart": [
+		"Notification": [
 			{
 				"matcher": "",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks env-validate"
+						"command": "claude-hooks notification"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Write|Edit|MultiEdit|Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks post-tool-use"
+					}
+				]
+			},
+			{
+				"matcher": "Write|Edit|MultiEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks auto-stage"
 					},
 					{
 						"type": "command",
-						"command": "claude-hooks session-hint"
+						"command": "claude-hooks dep-remind"
+					}
+				]
+			}
+		],
+		"PreCompact": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks pre-compact"
 					}
 				]
 			}
@@ -143,37 +174,37 @@
 				]
 			}
 		],
-		"PostToolUse": [
+		"SessionEnd": [
 			{
-				"matcher": "Write|Edit|MultiEdit|Bash",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks post-tool-use"
-					}
-				]
-			},
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks auto-stage"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks dep-remind"
+						"command": "claude-hooks session-end"
 					}
 				]
 			}
 		],
-		"Notification": [
+		"SessionStart": [
 			{
 				"matcher": "",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks notification"
+						"command": "claude-hooks env-validate"
+					},
+					{
+						"type": "command",
+						"command": "claude-hooks session-hint"
+					}
+				]
+			},
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash '/Users/htlin/.claude/hooks/herdr-agent-state.sh' session",
+						"timeout": 10
 					}
 				]
 			}
@@ -200,17 +231,6 @@
 				]
 			}
 		],
-		"PreCompact": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks pre-compact"
-					}
-				]
-			}
-		],
 		"UserPromptSubmit": [
 			{
 				"matcher": "",
@@ -225,16 +245,6 @@
 					}
 				]
 			}
-		],
-		"SessionEnd": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks session-end"
-					}
-				]
-			}
 		]
 	},
 	"statusLine": {
@@ -242,22 +252,16 @@
 		"command": "command -v claude-statusline >/dev/null && claude-statusline || echo '[!] claude-statusline not found. Run: cd ~/.dotfiles/claude.symlink/go-tools && make'"
 	},
 	"enabledPlugins": {
-		"superpowers@superpowers-dev": true,
+		"cloudflare@cloudflare": true,
+		"codex@openai-codex": true,
 		"dev-workflows-frontend@claude-code-workflows": true,
-		"typescript-lsp@claude-plugins-official": true,
+		"superpowers@superpowers-dev": true,
 		"swift-lsp@claude-plugins-official": true,
 		"telegram@claude-plugins-official": false,
-		"codex@openai-codex": true,
-		"warp@claude-code-warp": true,
-		"cloudflare@cloudflare": true
+		"typescript-lsp@claude-plugins-official": true,
+		"warp@claude-code-warp": true
 	},
 	"extraKnownMarketplaces": {
-		"openai-codex": {
-			"source": {
-				"source": "github",
-				"repo": "openai/codex-plugin-cc"
-			}
-		},
 		"claude-code-warp": {
 			"source": {
 				"source": "github",
@@ -268,6 +272,12 @@
 			"source": {
 				"source": "github",
 				"repo": "cloudflare/skills"
+			}
+		},
+		"openai-codex": {
+			"source": {
+				"source": "github",
+				"repo": "openai/codex-plugin-cc"
 			}
 		}
 	},
