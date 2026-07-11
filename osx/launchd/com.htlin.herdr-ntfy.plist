@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.htlin.herdr-ntfy</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/python3</string>
+    <string>/Users/htlin/pyscripts/herdr-ntfy</string>
+  </array>
+  <!-- curl (/usr/bin) + python3 (/opt/homebrew/bin) resolvable from launchd's bare PATH -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/bin:/bin:/opt/homebrew/bin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <!-- Script has its own reconnect loop; KeepAlive is the safety net if it ever exits. -->
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/herdr-ntfy.out</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/herdr-ntfy.err</string>
+</dict>
+</plist>
