@@ -19,9 +19,9 @@ onboarding = false
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
 # Existing manual behavior is unchanged unless this is true.
-# auto_switch = false
-# dark_name = "catppuccin"
-# light_name = "catppuccin-latte"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
 
 # Override individual color tokens on top of the base theme.
 # Accepts: hex (#rrggbb), named colors, rgb(r,g,b), or panel_bg = "reset"
@@ -34,7 +34,10 @@ onboarding = false
 [terminal]
 # Executable used for new interactive panes.
 # Empty means $SHELL, then /bin/sh.
-default_shell = "/usr/bin/zsh"
+# Keep empty: this config is shared across machines and zsh lives at
+# /usr/bin/zsh on Linux but /bin/zsh on macOS — a hardcoded path makes
+# every shell-spawning key (new_tab, split_*) fail silently on the other OS.
+default_shell = ""
 
 # Startup mode for new interactive pane shells: "auto", "login", or "non_login".
 # "auto" uses login shells on macOS and keeps the current behavior elsewhere.
@@ -247,7 +250,9 @@ show_agent_labels_on_pane_borders = true
 # delivery = "off"
 # delay_seconds = 1
 
-delivery = "herdr"
+# Ghostty supports OSC 9 desktop notifications, so agent-state toasts go
+# to macOS Notification Center (complements herdr-ntfy for cross-machine).
+delivery = "terminal"
 [ui.toast.herdr]
 # position = "bottom-right"
 
@@ -287,8 +292,8 @@ delivery = "herdr"
 # Allow launching herdr from inside a herdr-managed pane.
 # allow_nested = false
 # Experimental local Kitty graphics rendering for attached clients.
-# Requires a Kitty graphics-compatible outer terminal.
-# kitty_graphics = false
+# Requires a Kitty graphics-compatible outer terminal (Ghostty qualifies).
+kitty_graphics = true
 # Save recent pane screen history across full server restarts.
 pane_history = true
 # While prefix mode is active, temporarily switch the macOS host input
