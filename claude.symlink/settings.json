@@ -169,7 +169,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "/Users/htlin/.claude/hooks/rtk-rewrite.sh"
+						"command": "$HOME/.claude/hooks/rtk-rewrite.sh"
 					}
 				]
 			}
@@ -203,7 +203,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "bash '/Users/htlin/.claude/hooks/herdr-agent-state.sh' session",
+						"command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
 						"timeout": 10
 					}
 				]
@@ -241,7 +241,7 @@
 					},
 					{
 						"type": "command",
-						"command": "/Users/htlin/.claude/hooks/im-select-abc.sh"
+						"command": "$HOME/.claude/hooks/im-select-abc.sh"
 					}
 				]
 			}
