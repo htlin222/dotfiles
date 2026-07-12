@@ -62,6 +62,15 @@ claude.symlink/*
 !claude.symlink/skills/
 claude.symlink/skills/notebooklm/
 claude.symlink/skills/claude-seo/
+claude.symlink/skills/agents-sdk/
+claude.symlink/skills/cloudflare/
+claude.symlink/skills/cloudflare-email-service/
+claude.symlink/skills/durable-objects/
+claude.symlink/skills/sandbox-sdk/
+claude.symlink/skills/turnstile-spin/
+claude.symlink/skills/web-perf/
+claude.symlink/skills/workers-best-practices/
+claude.symlink/skills/wrangler/
 !claude.symlink/*.md
 !claude.symlink/settings.json
 !claude.symlink/*.sh
