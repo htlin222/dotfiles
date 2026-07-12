@@ -1,300 +1,300 @@
 {
-	"skillListingBudgetFraction": 0.03,
-	"env": {
-		"DISABLE_AUTOUPDATER": "1"
-	},
-	"permissions": {
-		"allow": [
-			"Bash(ls:*)",
-			"Bash(cd:*)",
-			"Bash(cat:*)",
-			"Bash(bat:*)",
-			"Bash(python:*)",
-			"Bash(Rscript:*)",
-			"Bash(brew:*)",
-			"Bash(pwd)",
-			"Bash(mkdir:*)",
-			"Bash(cp:*)",
-			"Bash(mv:*)",
-			"Bash(touch:*)",
-			"Bash(cat:*)",
-			"Bash(head:*)",
-			"Bash(tail:*)",
-			"Bash(less:*)",
-			"Bash(more:*)",
-			"Bash(grep:*)",
-			"Bash(rg:*)",
-			"Bash(awk:*)",
-			"Bash(sed:*)",
-			"Bash(find:*)",
-			"Bash(du:*)",
-			"Bash(df:*)",
-			"Bash(wc:*)",
-			"Bash(cut:*)",
-			"Bash(sort:*)",
-			"Bash(uniq:*)",
-			"Bash(xargs:*)",
-			"Bash(tr:*)",
-			"Bash(split:*)",
-			"Bash(diff:*)",
-			"Bash(cmp:*)",
-			"Bash(tree:*)",
-			"Bash(date)",
-			"Bash(cal)",
-			"Bash(whoami)",
-			"Bash(id)",
-			"Bash(env)",
-			"Bash(export:*)",
-			"Bash(unset:*)",
-			"Bash(alias:*)",
-			"Bash(unalias:*)",
-			"Bash(echo:*)",
-			"Bash(seq:*)",
-			"Bash(printf:*)",
-			"Bash(history)",
-			"Bash(clear)",
-			"Bash(file:*)",
-			"Bash(stat:*)",
-			"Bash(basename:*)",
-			"Bash(dirname:*)",
-			"Bash(pnpm:*)",
-			"Bash(uv venv:*)",
-			"Bash(source:*)",
-			"Bash(uv pip install:*)",
-			"Bash(chmod:*)"
-		],
-		"defaultMode": "auto"
-	},
-	"model": "fable",
-	"enableAllProjectMcpServers": true,
-	"hooks": {
-		"Notification": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks notification"
-					}
-				]
-			}
-		],
-		"PostToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit|Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks post-tool-use"
-					}
-				]
-			},
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks auto-stage"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks dep-remind"
-					}
-				]
-			}
-		],
-		"PreCompact": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks pre-compact"
-					}
-				]
-			}
-		],
-		"PreToolUse": [
-			{
-				"matcher": "Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks check-rm"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks branch-guard"
-					}
-				]
-			},
-			{
-				"matcher": "Write",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks file-guard"
-					}
-				]
-			},
-			{
-				"matcher": "Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks file-guard"
-					}
-				]
-			},
-			{
-				"matcher": "Write|Edit|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks delegate-edits"
-					}
-				]
-			},
-			{
-				"matcher": "Read",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks file-guard"
-					}
-				]
-			},
-			{
-				"matcher": "Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "$HOME/.claude/hooks/rtk-rewrite.sh"
-					}
-				]
-			}
-		],
-		"SessionEnd": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks session-end"
-					}
-				]
-			}
-		],
-		"SessionStart": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks env-validate"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks session-hint"
-					}
-				]
-			},
-			{
-				"matcher": "*",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
-						"timeout": 10
-					}
-				]
-			}
-		],
-		"Stop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks stop"
-					}
-				]
-			}
-		],
-		"SubagentStop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks subagent-stop"
-					}
-				]
-			}
-		],
-		"UserPromptSubmit": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks user-prompt"
-					},
-					{
-						"type": "command",
-						"command": "$HOME/.claude/hooks/im-select-abc.sh"
-					}
-				]
-			}
-		]
-	},
-	"statusLine": {
-		"type": "command",
-		"command": "command -v claude-statusline >/dev/null && claude-statusline || echo '[!] claude-statusline not found. Run: cd ~/.dotfiles/claude.symlink/go-tools && make'"
-	},
-	"enabledPlugins": {
-		"cloudflare@cloudflare": true,
-		"codex@openai-codex": true,
-		"dev-workflows-frontend@claude-code-workflows": true,
-		"superpowers@superpowers-dev": true,
-		"swift-lsp@claude-plugins-official": true,
-		"telegram@claude-plugins-official": false,
-		"typescript-lsp@claude-plugins-official": true,
-		"warp@claude-code-warp": true
-	},
-	"extraKnownMarketplaces": {
-		"claude-code-warp": {
-			"source": {
-				"source": "github",
-				"repo": "warpdotdev/claude-code-warp"
-			}
-		},
-		"cloudflare": {
-			"source": {
-				"source": "github",
-				"repo": "cloudflare/skills"
-			}
-		},
-		"openai-codex": {
-			"source": {
-				"source": "github",
-				"repo": "openai/codex-plugin-cc"
-			}
-		}
-	},
-	"language": "Chinese",
-	"alwaysThinkingEnabled": true,
-	"effortLevel": "high",
-	"fastMode": true,
-	"voice": {
-		"enabled": true,
-		"mode": "hold"
-	},
-	"skipDangerousModePermissionPrompt": true,
-	"theme": "dark",
-	"editorMode": "vim",
-	"preferredNotifChannel": "terminal_bell",
-	"remoteControlAtStartup": false,
-	"agentPushNotifEnabled": true,
-	"skipAutoPermissionPrompt": true,
-	"voiceEnabled": true
+  "skillListingBudgetFraction": 0.03,
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Bash(bat:*)",
+      "Bash(python:*)",
+      "Bash(Rscript:*)",
+      "Bash(brew:*)",
+      "Bash(pwd)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(less:*)",
+      "Bash(more:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(wc:*)",
+      "Bash(cut:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(xargs:*)",
+      "Bash(tr:*)",
+      "Bash(split:*)",
+      "Bash(diff:*)",
+      "Bash(cmp:*)",
+      "Bash(tree:*)",
+      "Bash(date)",
+      "Bash(cal)",
+      "Bash(whoami)",
+      "Bash(id)",
+      "Bash(env)",
+      "Bash(export:*)",
+      "Bash(unset:*)",
+      "Bash(alias:*)",
+      "Bash(unalias:*)",
+      "Bash(echo:*)",
+      "Bash(seq:*)",
+      "Bash(printf:*)",
+      "Bash(history)",
+      "Bash(clear)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(pnpm:*)",
+      "Bash(uv venv:*)",
+      "Bash(source:*)",
+      "Bash(uv pip install:*)",
+      "Bash(chmod:*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "haiku",
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks notification"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks post-tool-use"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks auto-stage"
+          },
+          {
+            "type": "command",
+            "command": "claude-hooks dep-remind"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks pre-compact"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks check-rm"
+          },
+          {
+            "type": "command",
+            "command": "claude-hooks branch-guard"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks file-guard"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks file-guard"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks delegate-edits"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks file-guard"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/htlin/.claude/hooks/rtk-rewrite.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks session-end"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks env-validate"
+          },
+          {
+            "type": "command",
+            "command": "claude-hooks session-hint"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/htlin/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks stop"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks subagent-stop"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-hooks user-prompt"
+          },
+          {
+            "type": "command",
+            "command": "/Users/htlin/.claude/hooks/im-select-abc.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "command -v claude-statusline >/dev/null && claude-statusline || echo '[!] claude-statusline not found. Run: cd ~/.dotfiles/claude.symlink/go-tools && make'"
+  },
+  "enabledPlugins": {
+    "cloudflare@cloudflare": true,
+    "codex@openai-codex": true,
+    "dev-workflows-frontend@claude-code-workflows": true,
+    "superpowers@superpowers-dev": true,
+    "swift-lsp@claude-plugins-official": true,
+    "telegram@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "warp@claude-code-warp": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-warp": {
+      "source": {
+        "source": "github",
+        "repo": "warpdotdev/claude-code-warp"
+      }
+    },
+    "cloudflare": {
+      "source": {
+        "source": "github",
+        "repo": "cloudflare/skills"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
+  },
+  "language": "Chinese",
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "fastMode": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
+  "editorMode": "vim",
+  "preferredNotifChannel": "terminal_bell",
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true
 }
