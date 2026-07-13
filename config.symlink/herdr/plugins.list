@@ -2,6 +2,7 @@
 # format:  owner/repo[/subdir]  <commit-ref>
 # regenerate from a live install with:  make freeze
 JanTvrdik/herdr-command-palette eab940018c2135ac23718efa11e23e9dddcd2a75
+htlin222/herdr-floax 17748bb6531663a0673a890898e6ea8ad82caeae
 andrewchng/herdr-sessionizer 72ee760c9afc552dbdfe7df26794625e58d2b9d7
 persiyanov/herdr-reviewr e0235105d49274212f68c691ef94edfb6378b76f
 rmarganti/herdr-pluck c94ebe212ed17998aabc40b8015739e60ef1b37b

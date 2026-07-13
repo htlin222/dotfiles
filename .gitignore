@@ -102,7 +102,11 @@ git/gitconfig.symlink
 config.symlink/herdr/session.json
 config.symlink/herdr/plugins.json
 config.symlink/herdr/plugins/github/
-config.symlink/herdr/plugins/config/
+# plugin config dirs are runtime state, except config we authored by hand
+config.symlink/herdr/plugins/config/*
+!config.symlink/herdr/plugins/config/herdr-floax/
+config.symlink/herdr/plugins/config/herdr-floax/*
+!config.symlink/herdr/plugins/config/herdr-floax/floax.conf
 config.symlink/herdr/release-notes.json
 config.symlink/herdr/*.log
 config.symlink/herdr/*.sock
