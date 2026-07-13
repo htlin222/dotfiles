@@ -114,6 +114,15 @@ config.symlink/herdr/*.sock
 # rclone config contains live R2 credentials
 config.symlink/rclone/rclone.conf
 
+# bsky-post CLI stores the Bluesky app password + session here
+config.symlink/bsky-cli/
+
+# browser-harness runtime state (pid/log/telemetry/version-cache, no authored config yet)
+config.symlink/browser-harness/runtime/
+config.symlink/browser-harness/tmp/
+config.symlink/browser-harness/telemetry.json
+config.symlink/browser-harness/version-cache.json
+
 # credential files that tools auto-write into ~/.config (symlinked into this repo)
 **/auth.yaml
 **/credentials.json

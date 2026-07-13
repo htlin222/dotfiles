@@ -261,7 +261,10 @@ delivery = "terminal"
 
 [ui.toast.clipboard]
 # enabled = true
-# position = "bottom-center"
+# Moved off bottom-center: on herdr 0.7.1 the toast winks when it sits over a
+# busy repainting pane (fixed upstream in 0.7.2, #555). Bottom-right is
+# quieter. Drop this override after `herdr update`.
+position = "bottom-right"
 
 # Play sounds when agents change state in background workspaces
 [ui.sound]

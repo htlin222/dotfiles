@@ -65,7 +65,7 @@
 		],
 		"defaultMode": "auto"
 	},
-	"model": "fable",
+	"model": "sonnet",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
 		"Notification": [
