@@ -166,14 +166,17 @@ type = "shell"
 command = "herdr pane split --direction down --ratio 0.15"
 description = "small split, approximates tmux prefix+a (-l 3)"
 
-# tmux: bind i -> tmux_popup.sh (a floating popup pane). herdr 0.7.1 has no
-# floating/overlay primitive, only in-layout splits — this is NOT equivalent,
-# just the closest available approximation. See README.
+# tmux: bind i -> tmux_popup.sh (a floating popup pane). herdr core still has
+# no overlay primitive, but the herdr-floax plugin (Tyru5/herdr-floax, pinned
+# in ./plugins.list) provides a true centered floating popup with a persistent
+# scratch shell — a real port of tmux's popup, replacing the old in-layout
+# split approximation. Size/backdrop configurable via
+# plugins/config/herdr-floax/floax.conf. See README.
 [[keys.command]]
 key = "prefix+i"
-type = "shell"
-command = "herdr pane split --direction down --ratio 0.25 --focus"
-description = "quick scratch pane, approximates tmux popup (prefix+i) - not a real overlay"
+type = "plugin_action"
+command = "herdr-floax.toggle"
+description = "floating scratch popup (tmux: prefix+i), via herdr-floax"
 
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
@@ -258,7 +261,10 @@ delivery = "terminal"
 
 [ui.toast.clipboard]
 # enabled = true
-# position = "bottom-center"
+# Moved off bottom-center: on herdr 0.7.1 the toast winks when it sits over a
+# busy repainting pane (fixed upstream in 0.7.2, #555). Bottom-right is
+# quieter. Drop this override after `herdr update`.
+position = "bottom-right"
 
 # Play sounds when agents change state in background workspaces
 [ui.sound]

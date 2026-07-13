@@ -1,4 +1,6 @@
 matches:
+  - trigger: "eil5"
+    replace: "請以五歲小孩能懂的程度，來解釋邏輯、抽象理解、繁體中文作答，不要太長"
   - trigger: "speaker.note"
     replace: "這張圖為什麼要設計成這樣？想傳達的精神是？我在報簡報時怎麼說？"
   - trigger: ".astxt"
@@ -27,8 +29,6 @@ matches:
     replace: "綜合地，(重要) 以哲學概念論述 (偏好當代 i.e. 20世紀後的哲學概念)、社會學、心理學的角度切入去探討，敘事性的評論式寫作、是在保持學理深度的同時允許帶有批判性視角和詮釋性的筆觸、較為延展的哲學性沉思，重點是長，學術地，長段落，有架構地，平靜、客觀，不煽情"
   - trigger: ".anime"
     replace: "這個作品，先從 fandom.com/wiki 或 wikipedia 了解這個作品 從 site: www.reddit.com OR site:https://forum.gamer.com.tw/  OR site:x.com  OR site:https://www.ptt.cc/  OR site:https://forums.animesuki.com/  OR site:https://myanimelist.net/ 來廣度優先地收集觀眾的感想與評論，了解大家在意的點，再綜合地，(重要) 以哲學概念論述 (偏好當代 i.e. 20世紀後的哲學概念)、社會學、心理學的角度切入去探討這個作品，包括角色塑造與認同、世界觀建構、議題探討，人名請用台灣常用的翻釋人名，敘事性的評論式寫作、是在保持學理深度的同時允許帶有批判性視角和詮釋性的筆觸、較為延展的哲學性沉思"
-  - trigger: ".hy"
-    replace: "highlight the high-yield oncology key points for board exams"
   - trigger: ".daily"
     replace: "請將以下資訊撰寫成 ASCO Daily News 風格的專業評論文章：明確定位讀者為腫瘤科臨床醫師與研究者。文章需包含五個部分： (1) 研究背景與臨床問題，簡要交代為何此研究重要；(2) 試驗設計與方法，包括研究類型、受試者人數、主要終點與隨訪；(3) 主要結果與數據摘要，需具體呈現關鍵數據（如 HR、CI、p 值）；(4) 專家評論，著重於臨床意涵、與既有標準治療的比較、以及對未來研究方向的啟發；(5) 研究限制與提醒，避免誇大。語氣需專業、精簡、臨床導向，避免浮誇字眼，兼顧資訊傳遞與批判性分析。"
   - trigger: ".pken"
