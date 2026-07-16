@@ -1,0 +1,15 @@
+# Bookokrat keybindings — user overrides go here.
+#
+# Run `bookokrat --print-default-keybindings` to see every default binding
+# and available action. To override, write one line per binding using dotted
+# TOML keys, or group bindings under a `[context]` header. Examples:
+#
+#   content."j" = "scroll_up"         # reverse scroll direction
+#   global."<C-q>" = "nop"            # disable the Ctrl+Q suspend default
+#
+#   # equivalent grouped form:
+#   [content]
+#   "j" = "scroll_up"
+#
+# Groups `all`, `normal`, `popup` apply across multiple contexts.
+# Use "nop" as the action to disable a default binding.
