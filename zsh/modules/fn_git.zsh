@@ -93,6 +93,7 @@ function gitwt() {
     }' | \
     fzf --ansi --height 80% --layout=reverse \
       --prompt="worktree > " \
+      --with-nth=2 \
       "${preview_opts[@]}" \
       --bind '?:toggle-preview')
 
