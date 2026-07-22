@@ -41,11 +41,11 @@ So `prefix = "ctrl+a"` is now a first-class setting, no shell hook needed.
 | `alt+←/→/↑/↓` (no prefix) | `select-pane` (matches tmux's `alt+←/→/↑/↓`) | added as a second binding on the same `focus_pane_*` actions |
 | `shift+←/→` (no prefix) | `previous-window` / `next-window` | `previous_tab` / `next_tab` (moved off `prefix+p/n`, see below) |
 | `prefix+p` / `prefix+n` | *(no tmux equivalent — workspace-level prev/next)* | `previous_workspace` / `next_workspace` — freed up since tab switching already has `shift+←/→` |
-| `ctrl+q` (no prefix) | `detach-client` | added to `detach` alongside herdr's default `prefix+q` |
+| `ctrl+q` (no prefix) | `detach-client` | sole `detach` binding — `prefix+d` was dropped so it never clashes with shell `C-d`/EOF muscle memory |
 | `prefix+b` | `split-window -h` (side-by-side) | `split_vertical` — tmux's `-h` flag is a side-by-side split, which is what herdr calls a "vertical divider" |
 | `prefix+v` | `split-window -v` (stacked) | `split_horizontal` — same naming inversion, other direction |
 | `shift+↑/↓` (no prefix) | `tmux_claude_nav.sh prev/next` | `previous_agent` / `next_agent` — **native herdr feature**, the custom script is no longer needed |
-| `ctrl+g` (no prefix) | `tmux_claude_switcher.sh` popup | added to `goto` alongside `prefix+g` — herdr's built-in agent/workspace panel replaces the custom popup script |
+| `prefix+g` only | `tmux_claude_switcher.sh` popup | `goto` — `ctrl+g` removed because it collides with Claude Code; herdr's built-in agent/workspace panel replaces the custom popup script |
 | `prefix+T` | `sesh connect $(sesh list \| fzf)` | **not ported as a custom command** — see below |
 
 Because `split_vertical`/`split_horizontal` were reassigned to `b`/`v`,

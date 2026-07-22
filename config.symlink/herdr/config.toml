@@ -73,11 +73,11 @@ prefix = "ctrl+a"
 # Prefix-mode actions
 # help = "prefix+?"
 # settings = "prefix+s"
-detach = ["prefix+d", "ctrl+q"]        # tmux: bind -n C-q detach-client (no-prefix)
+detach = "ctrl+q"                      # tmux: bind -n C-q detach-client (no-prefix); prefix+d dropped so it never clashes with shell C-d/EOF muscle memory
 reload_config = "prefix+r"             # tmux: bind r source-file ~/.tmux.conf (no shift)
 # open_notification_target = "prefix+o"
 workspace_picker = "prefix+w"          # closest herdr analog to tmux bind T (sesh popup) — no custom command needed
-goto = ["prefix+g", "ctrl+g"]          # ctrl+g direct: tmux's Claude-pane-switcher habit; herdr's own agent panel replaces the custom script
+goto = "prefix+g"                      # ctrl+g removed: it collides with Claude Code (cancel/keybinding); herdr's own agent panel replaces the old tmux switcher popup
 # new_workspace = "prefix+shift+n"
 # new_worktree = "prefix+shift+g"
 # open_worktree = ""    # optional, unset by default

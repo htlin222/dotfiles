@@ -58,6 +58,8 @@ link-url = true
 # macOS
 # =============================================================================
 macos-window-shadow = true
+# 讓 Option 當 Meta（送出 ESC 前綴），Claude Code 才收得到 Option+P 之類的 Meta 綁定
+macos-option-as-alt = true
 
 # =============================================================================
 # Behavior
