@@ -41,7 +41,12 @@ if [[ -n "$IS_MAC" ]] && [[ -d "/Applications/Visual Studio Code.app" ]]; then
 elif command -v code &>/dev/null; then
   : # code already in PATH on Linux
 fi
-export NODE_OPTIONS="--no-deprecation --disable-warning=ExperimentalWarning"
+# --disable-warning needs Node >= 20.11; older nodes (e.g. system v12) reject
+# the whole NODE_OPTIONS and every `node` call dies with exit 9. Probe first.
+export NODE_OPTIONS="--no-deprecation"
+if node --disable-warning=ExperimentalWarning -e '' 2>/dev/null; then
+  export NODE_OPTIONS="$NODE_OPTIONS --disable-warning=ExperimentalWarning"
+fi
 export PATH="/usr/bin/python3:$PATH"
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.dotfiles/shellscripts:$PATH"
@@ -51,7 +56,7 @@ export HOMEBREW_NO_ENV_HINTS=1
 export PATH="$HOME/Dropbox/scripts:$PATH"
 # WezTerm path (macOS only)
 [[ -n "$IS_MAC" ]] && export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
-export TMP=$HOME/Dropbox/tmp
+# export TMP=$HOME/Dropbox/tmp  # 移除：避免暫存檔寫進 Dropbox 被同步；改用系統預設 /tmp
 export INBOX=$HOME/Dropbox/inbox
 # export PATH="$HOME/.pyenv/bin:$PATH"
 # export PYENV_ROOT="$HOME/.pyenv"
