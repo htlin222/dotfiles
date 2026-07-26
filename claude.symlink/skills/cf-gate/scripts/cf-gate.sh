@@ -94,6 +94,29 @@ cmd_gate() {
   echo "  allow: ${emails}"
 }
 
+# Make a host (or host/path) publicly reachable, i.e. Access waves everyone
+# through without a login. Use when the origin does its own auth (e.g. a PIN)
+# but a broader Access app on the same hostname would otherwise gate it.
+cmd_bypass() {
+  local host="${1:-}"
+  [[ -n "$host" ]] || die "usage: cf-gate bypass <hostname[/path]>"
+  local body; body="$(jq -n \
+    --arg name "cf-gate: ${host} (public)" --arg domain "$host" \
+    '{name:$name, domain:$domain, type:"self_hosted", session_duration:"24h",
+      app_launcher_visible:false,
+      policies:[{name:"cf-gate bypass", decision:"bypass",
+                 include:[{everyone:{}}]}]}')"
+  local existing; existing="$(app_id_for "$host")"
+  if [[ -n "$existing" ]]; then
+    cf_api PUT "/accounts/${CF_ACCOUNT_ID}/access/apps/${existing}" "$body" >/dev/null
+    echo "✓ updated bypass on ${host} (app ${existing})"
+  else
+    local id; id="$(cf_api POST "/accounts/${CF_ACCOUNT_ID}/access/apps" "$body" | jq -r '.result.id')"
+    echo "✓ bypassed ${host} (app ${id})"
+  fi
+  echo "  allow: everyone (no Access login)"
+}
+
 cmd_ungate() {
   local host="${1:-}"; [[ -n "$host" ]] || die "usage: cf-gate ungate <hostname>"
   local id; id="$(app_id_for "$host")"
@@ -177,6 +200,7 @@ usage() {
 cf-gate — headless Cloudflare Access gates
 
   cf-gate gate   <hostname> [email|@domain ...]   create/update an allow-email gate
+  cf-gate bypass <hostname[/path]>                make it public (no Access login)
   cf-gate ungate <hostname>                       remove the gate
   cf-gate list                                    list all Access apps
   cf-gate status <hostname>                        show the gate's policies
@@ -192,6 +216,7 @@ main() {
   local cmd="${1:-}"; shift || true
   case "$cmd" in
     gate)         cmd_gate "$@" ;;
+    bypass)       cmd_bypass "$@" ;;
     ungate)       cmd_ungate "$@" ;;
     list)         cmd_list "$@" ;;
     status)       cmd_status "$@" ;;

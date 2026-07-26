@@ -7,13 +7,13 @@ protocol. One good diagram per page is plenty; do not decorate.
 
 ## Picking the diagram type
 
-| The thing you're showing                          | Diagram        |
-| ------------------------------------------------- | -------------- |
-| Components / data flow / pipeline stages          | `flowchart`    |
-| A request's round-trip across processes/services  | `sequenceDiagram` |
-| Build/deploy or issue->PR->release state machine  | `stateDiagram-v2` |
-| Data model / table relationships                  | `erDiagram`    |
-| Phases over time (roadmap)                         | `gantt` (sparingly) |
+| The thing you're showing                         | Diagram             |
+| ------------------------------------------------ | ------------------- |
+| Components / data flow / pipeline stages         | `flowchart`         |
+| A request's round-trip across processes/services | `sequenceDiagram`   |
+| Build/deploy or issue->PR->release state machine | `stateDiagram-v2`   |
+| Data model / table relationships                 | `erDiagram`         |
+| Phases over time (roadmap)                       | `gantt` (sparingly) |
 
 ## Patterns
 
@@ -68,5 +68,35 @@ flowchart TB
 - Give nodes short IDs (`A`, `W`, `DB`) and put prose in the label.
 - `LR` (left-right) reads best for pipelines; `TB` (top-bottom) for layered stacks.
 - Match the diagram's language to the page, but keep node IDs ASCII.
-- Preview after pushing: open the page on github.com and confirm it renders (a syntax slip
-  shows as a raw code block, not a diagram).
+- **Quote any label starting with `/`, `(`, `\`, `>` or `-`.** Those characters are _shape_
+  syntax, not text: `API[/api/journals]` is a malformed parallelogram, not a node labelled
+  "/api/journals". `API["/api/journals"]` is. Same for cylinders: prefer `D[("data.json")]`.
+  This one is nasty because a near-miss like `H[/a<br/>b/]` happens to parse — as a shape you
+  did not ask for.
+
+## Validate before you push
+
+A syntax slip renders as a raw code block on github.com, which you only notice if you go
+look. Catch it locally instead — extract every ` ```mermaid ` block and render it:
+
+````bash
+# writes one .mmd per block, then renders each; non-zero exit = bad syntax
+python3 - <<'PY'
+import re, pathlib
+out = pathlib.Path('mmd'); out.mkdir(exist_ok=True)
+for f in pathlib.Path('.').glob('*.md'):
+    for i, b in enumerate(re.findall(r'```mermaid\n(.*?)```', f.read_text(), re.S)):
+        (out / f'{f.stem}-{i}.mmd').write_text(b)
+PY
+for f in mmd/*.mmd; do
+  npx --yes -p @mermaid-js/mermaid-cli mmdc -i "$f" -o "${f%.mmd}.svg" >/dev/null 2>&1 \
+    && echo "OK   $f" || echo "FAIL $f"
+done
+````
+
+Rendering succeeding proves the syntax parses. To also confirm the labels came out as _text_
+rather than being eaten by shape syntax, grep the SVG for them:
+`grep -o '>[^<]\{2,\}</' mmd/foo.svg`.
+
+Keep `mmdc`'s flags simple — `npx` mangles later `-w`/`-b` style flags; `-i` and `-o` are
+enough for validation.
