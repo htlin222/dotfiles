@@ -68,6 +68,7 @@ key = "prefix+shift+h"
 type = "shell"
 command = "herdr pane resize --direction left --amount 5"
 ```
+
 (and `j`/`k`/`l` for down/up/right)
 
 **Unverified:** `--amount`'s unit isn't documented in `herdr pane resize
@@ -83,40 +84,28 @@ try it and adjust if a resize step feels too big/small.
 
 ## Ported via plugin
 
-- **`prefix+i`** (tmux: `tmux_popup.sh`, a *floating* popup pane that
-  doesn't consume the layout) → a **real port** via the
-  [htlin222/herdr-floax](https://github.com/htlin222/herdr-floax) fork
-  of Tyru5/herdr-floax, pinned in `plugins.list`: `type =
-  "plugin_action"`, `command = "herdr-floax.toggle"`. Toggles a
-  centered floating scratch shell (90%×80%, same as the old tmux
-  popup); the shell session persists across toggles. The fork (commit
-  `c002052`, branch `floax-native-popup` = `main`) adds on top of
-  upstream:
-  - **snapshot backdrop** — the toggle script captures every pane of
-    the current tab (`herdr pane layout` + `herdr pane read --format
-    ansi`) and the app paints that content dimmed behind the box
-    (`src/snapshot.rs`), so the popup floats over the *real workspace*
-    (a still of open time; plugins can't composite live panes).
-  - opens as a borderless single-pane **tab** (`--placement tab`)
-    instead of split+zoom, so the backdrop lines up 1:1 (a zoomed
-    split gets a 1-cell herdr pane border that crops/offsets it).
-  - config keys `border` / `border_type` / `box_bg` / `title` —
-    `floax.conf` here sets accent-blue `#89b4fa` plain border and
-    `box_bg #181825` to match herdr's native modal chrome
-    (`render_modal_shell` in herdr's source), and title defaults to
-    the **basename of the launch directory**.
+- **`prefix+i`** (tmux: `tmux_popup.sh`, a floating pane that does not
+  consume the layout) → the
+  [htlin222/herdr-floax](https://github.com/htlin222/herdr-floax) fork,
+  pinned in `plugins.list`: `type = "plugin_action"`, `command =
+"herdr-floax.toggle"`. Herdr 0.7.4 renders it as a **native popup**, so
+  the background is the real, live workspace rather than a still snapshot or
+  synthetic tab. The shell session persists across toggles.
 
-  All knobs live in `plugins/config/herdr-floax/floax.conf` (tracked
-  in git; see the fork's `floax.conf.example`). Building needs a Rust
-  toolchain — note the Homebrew `rust` formula can break when `brew
-  autoremove` drops its `llvm` dep; the rustup toolchain in
-  `~/.cargo/bin` is what `make install` should use. This replaces the
-  old approximation (`herdr pane split --direction down --ratio 0.25
-  --focus`, an in-layout split).
+  Native popups are modal, so floax includes a PTY key router. `prefix+b/v/a`,
+  pane focus/resize keys, workspace/tab navigation, and agent navigation mutate
+  the tiled state behind the popup without closing it. `prefix+i` inside floax
+  dismisses it and reveals the latest focused workspace/tab/pane. Ordinary
+  input and bracketed paste still go byte-for-byte to the scratch shell.
+
+  `plugins/config/herdr-floax/floax.conf` now contains only the 90%×80%
+  geometry; Herdr owns the popup border, background, and theme. Building needs
+  the Rust toolchain in `~/.cargo/bin`. This replaces both the old in-layout
+  split approximation and the fork's previous snapshot compositor.
 
 ## Not ported — no herdr equivalent
 
-- **`prefix+T` → sesh popup.** `sesh` manages *tmux* sessions specifically;
+- **`prefix+T` → sesh popup.** `sesh` manages _tmux_ sessions specifically;
   invoking it from inside herdr would spawn a mismatched tmux session
   rather than switch herdr workspaces. The right herdr-native tool for
   "jump to another named session" is already bound:

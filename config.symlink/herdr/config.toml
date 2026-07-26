@@ -166,12 +166,10 @@ type = "shell"
 command = "herdr pane split --direction down --ratio 0.15"
 description = "small split, approximates tmux prefix+a (-l 3)"
 
-# tmux: bind i -> tmux_popup.sh (a floating popup pane). herdr core still has
-# no overlay primitive, but the herdr-floax plugin (Tyru5/herdr-floax, pinned
-# in ./plugins.list) provides a true centered floating popup with a persistent
-# scratch shell — a real port of tmux's popup, replacing the old in-layout
-# split approximation. Size/backdrop configurable via
-# plugins/config/herdr-floax/floax.conf. See README.
+# tmux: bind i -> tmux_popup.sh. Herdr 0.7.4 provides the native popup; the
+# herdr-floax plugin adds a persistent scratch shell and routes selected host
+# navigation keys to the live tiled workspace while the popup stays open.
+# Geometry is configured in plugins/config/herdr-floax/floax.conf. See README.
 [[keys.command]]
 key = "prefix+i"
 type = "plugin_action"
