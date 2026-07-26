@@ -61,6 +61,9 @@ claude.symlink/*
 !claude.symlink/agents/
 !claude.symlink/hooks/
 !claude.symlink/skills/
+# 歸檔的 skill（見 archived-skills/README.md）：保留在 repo 但不被 Claude Code 載入
+!claude.symlink/archived-skills/
+claude.symlink/archived-skills/claude-seo/
 claude.symlink/skills/notebooklm/
 claude.symlink/skills/claude-seo/
 claude.symlink/skills/agents-sdk/
@@ -131,3 +134,6 @@ config.symlink/browser-harness/version-cache.json
 **/*_token
 **/*.pem
 **/*.key
+# goanna's viewer PIN lives in the LaunchAgent plist (outside this repo); this
+# only guards against a convenience copy being dropped back into ~/.config.
+**/*.pin
