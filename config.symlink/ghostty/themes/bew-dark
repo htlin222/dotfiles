@@ -1,5 +1,8 @@
 background = #191919
 foreground = #eeeeee
+
+# 暗模式下強制前景/背景最低對比，太淡的顏色自動壓亮（保留顏色資訊）
+minimum-contrast = 4.5
 cursor-color = #eeeeee
 cursor-text = #202020
 selection-background = #994444

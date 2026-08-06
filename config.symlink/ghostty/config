@@ -6,6 +6,9 @@ font-family = Noto Sans CJK TC Bold
 font-size = 18
 font-feature = liga
 font-feature = calt
+# macOS 字形加粗描邊，提升清晰度（不夠加 strength，過頭往下）
+font-thicken = true
+font-thicken-strength = 128
 
 # =============================================================================
 # Cursor

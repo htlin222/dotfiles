@@ -1,5 +1,8 @@
 background = #fafafa
 foreground = #1a1a1a
+
+# 亮模式下強制前景/背景最低對比，太淡的顏色自動壓深（保留顏色資訊）
+minimum-contrast = 4.5
 cursor-color = #d02020
 cursor-text = #fafafa
 selection-background = #add6ff
