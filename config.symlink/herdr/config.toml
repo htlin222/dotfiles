@@ -71,8 +71,8 @@ shell_mode = "login"
 prefix = "ctrl+a"
 
 # Prefix-mode actions
-# help = "prefix+?"
-# settings = "prefix+s"
+help = "prefix+?"                      # herdr default, unclaimed by tmux; bound so the gamepad prefix layer can reach it
+settings = "prefix+s"                  # herdr default; README notes tmux-jump had no equivalent, so nothing else wants this key
 detach = "ctrl+q"                      # tmux: bind -n C-q detach-client (no-prefix); prefix+d dropped so it never clashes with shell C-d/EOF muscle memory
 reload_config = "prefix+r"             # tmux: bind r source-file ~/.tmux.conf (no shift)
 # open_notification_target = "prefix+o"
@@ -108,7 +108,7 @@ focus_pane_up = ["prefix+k", "alt+up", "ctrl+k"]        # tmux: k / M-Up
 focus_pane_right = ["prefix+l", "alt+right", "ctrl+l"]  # tmux: l / M-Right
 # cycle_pane_next = "prefix+tab"
 # cycle_pane_previous = "prefix+shift+tab"
-# last_pane = ""          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth
+last_pane = "prefix+tab"  # unset by default; taking the key this line suggested — cycle_pane_next above stays unbound, so nothing clashes
 split_vertical = "prefix+b"      # tmux: bind b split-window -h (side-by-side == herdr's "vertical divider")
 split_horizontal = "prefix+v"    # tmux: bind v split-window -v (stacked == herdr's "horizontal divider")
 # close_pane = "prefix+x"
