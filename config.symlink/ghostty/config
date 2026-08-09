@@ -88,9 +88,17 @@ keybind = cmd+q=quit
 # 新視窗預設開成分頁（cmd+n 改為 new_tab）
 keybind = cmd+n=new_tab
 
-# Option+Arrow for word navigation
-keybind = alt+left=text:\x1bb
-keybind = alt+right=text:\x1bf
+# Option+Arrow 原本綁 word navigation（\x1bb / \x1bf）。拿掉了：Ghostty 的
+# keybind 優先於一切，這兩行會把 alt+←/→ 整個吃掉，於是 herdr 的
+# focus_pane_left/right（config.toml 綁了 alt+left/right，gamepad 外掛的 dpad
+# 也走這條）永遠收不到鍵——左右切 pane 死掉，游標還會在 pane 裡跳字。
+# 上下沒這問題，因為 alt+↑/↓ 沒被覆寫。word jump 改用 M-b / M-f。
+#
+# 注意：光是刪掉那兩行不夠 —— Ghostty 內建預設就是 alt+arrow_left=esc:b，
+# 行為與自訂的 text:\x1bb 相同。必須顯式 unbind 才會回到標準 CSI 編碼
+# （macos-option-as-alt = true → ESC[1;3D/1;3C），herdr 才收得到 alt+←/→。
+keybind = alt+left=unbind
+keybind = alt+right=unbind
 
 # 快速清屏
 keybind = cmd+k=clear_screen
