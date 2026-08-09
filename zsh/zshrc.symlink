@@ -690,3 +690,6 @@ fi
 
 # kilo
 export PATH=/Users/htlin/.kilo/bin:$PATH
+
+# Load secrets (not tracked in git)
+[ -f ~/.secrets ] && source ~/.secrets
