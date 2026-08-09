@@ -6,7 +6,7 @@
     path = ~/.gitconfig-credential
 
 [user]
-	email = hsieh.ting.lin@gmail.com
+	email = 61491860+htlin222@users.noreply.github.com
 	name = Hsiehting Lin
 	useConfigOnly = true
 	signingkey = 5EF303FEF4BD9F0F
