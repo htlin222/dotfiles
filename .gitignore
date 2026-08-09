@@ -107,6 +107,8 @@ config.symlink/herdr/session.json
 config.symlink/herdr/session-history.json
 config.symlink/herdr/plugins.json
 config.symlink/herdr/plugins/github/
+# plugin state dir holds pidfiles and other per-launch runtime data
+config.symlink/herdr/plugins/state/
 # plugin config dirs are runtime state, except config we authored by hand
 config.symlink/herdr/plugins/config/*
 !config.symlink/herdr/plugins/config/herdr-floax/
