@@ -36,7 +36,11 @@ set -g history-limit 50000
 # Disambiguates Ctrl/Shift/Alt + key (incl. Ctrl+digit); Ghostty advertises extkeys.
 set -s extended-keys on
 # Emit CSI u form (not the default xterm form) so agent TUIs (Pi, etc.) parse modifiers correctly.
+# Option only exists in tmux >= 3.5; guard it so older tmux (Ubuntu 24.04 ships
+# 3.4) doesn't error out on every server start.
+%if "#{>=:#{version},3.5}"
 set -s extended-keys-format csi-u
+%endif
 set -as terminal-features ",xterm-ghostty:extkeys"
 setw -g mode-keys vi
 
