@@ -516,8 +516,22 @@ _init_zoxide() {
     fi
   fi
 }
-z()  { _init_zoxide; z "$@" }
-zi() { _init_zoxide; zi "$@" }
+# Dispatch to __zoxide_z, not to `z`: zoxide's init defines `z` as an *alias*,
+# and aliases aren't expanded inside an already-parsed function body — so
+# re-calling `z` here made the first invocation of every shell die with
+# "command not found: z". Fall back to cd when zoxide isn't installed.
+z() {
+  _init_zoxide
+  if (( $+functions[__zoxide_z] )); then
+    __zoxide_z "$@"
+  else
+    builtin cd "$@"
+  fi
+}
+zi() {
+  _init_zoxide
+  (( $+functions[__zoxide_zi] )) && __zoxide_zi "$@"
+}
 
 # Lazy load atuin - triggers on Up arrow or Ctrl+R
 _atuin_loaded=0
