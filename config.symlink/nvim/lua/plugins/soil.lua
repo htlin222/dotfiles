@@ -1,5 +1,8 @@
 return {
   "javiorfo/nvim-soil",
+  -- both repos 404 upstream (author removed them); disabled so lazy stops
+  -- erroring on every startup. Re-enable if a replacement is found.
+  enabled = false,
   -- Optional for puml syntax highlighting:
   dependencies = { "javiorfo/nvim-nyctophilia" },
   ft = { "plantuml" },

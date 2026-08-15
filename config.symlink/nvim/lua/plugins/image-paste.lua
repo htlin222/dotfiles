@@ -1,6 +1,9 @@
 local vim = vim
 return {
   "htlin222/image-paste.nvim",
+  -- private repo: a Codespace's scoped GITHUB_TOKEN gets 403 cloning it,
+  -- which makes lazy error on every startup. Skip it there only.
+  enabled = vim.env.CODESPACES == nil,
   keys = {
     { -- example for lazy-loading on keystroke
       "<leader>pa",

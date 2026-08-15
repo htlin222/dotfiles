@@ -1,9 +1,10 @@
 return { --hop
-  "phaazon/hop.nvim",
+  -- upstream moved: phaazon/hop.nvim was deleted, smoka7 is the live fork
+  "smoka7/hop.nvim",
   -- lazy = false,
   keys = "f",
   -- event = "VeryLazy",
-  branch = "v2", -- optional but strongly recommended
+  -- no v2 branch on the fork; master is the maintained line
   config = function()
     -- you can configure Hop the way you like here; see :h hop-config
     require("hop").setup {
