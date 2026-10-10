@@ -10,55 +10,35 @@ import (
 	"strings"
 
 	"github.com/htlin/claude-tools/internal/protocol"
-	"github.com/htlin/claude-tools/pkg/ansi"
 )
 
 var catBatPattern = regexp.MustCompile(`(?:^|&&|\|\||;|\|)\s*(?:cat|bat)\s+`)
 
-// Run executes the check-file-exists hook.
+// Run executes the check-file-exists hook. Allow = exit 0 with no output.
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
-	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		fmt.Println(protocol.ContinueResponse())
+	if err != nil {
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
 	command := data.ToolInput.Command
-	if command == "" {
-		fmt.Println(protocol.ContinueResponse())
-		return
-	}
-
-	// Check if command uses cat or bat
-	if !catBatPattern.MatchString(command) {
-		fmt.Println(protocol.ContinueResponse())
+	if command == "" || !catBatPattern.MatchString(command) {
 		return
 	}
 
 	filePath := extractFilePath(command)
 	if filePath == "" {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
-	// Resolve path
-	resolved := resolvePath(filePath)
-	if _, err := os.Stat(resolved); os.IsNotExist(err) {
-		reason := fmt.Sprintf("%s%s 檔案不存在: %s%s%s",
-			ansi.BrightRed, ansi.IconCross,
-			ansi.BrightYellow, filePath, ansi.Reset,
-		)
-		fmt.Println(protocol.BlockResponse(reason))
-		return
+	if _, err := os.Stat(resolvePath(filePath)); os.IsNotExist(err) {
+		fmt.Println(protocol.PreToolUseDeny("檔案不存在 (file not found): " + filePath))
 	}
-
-	fmt.Println(protocol.ContinueResponse())
 }
 
 // extractFilePath extracts file path from cat/bat command.

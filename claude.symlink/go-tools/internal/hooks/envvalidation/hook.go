@@ -16,7 +16,6 @@ import (
 
 	"github.com/htlin/claude-tools/internal/config"
 	"github.com/htlin/claude-tools/internal/protocol"
-	"github.com/htlin/claude-tools/pkg/ansi"
 	"github.com/htlin/claude-tools/pkg/metrics"
 )
 
@@ -26,17 +25,16 @@ type ToolConfig struct {
 	Cmd        []string
 	MinVersion string
 	Optional   bool
-	InstallCmd []string // auto-install command (background)
 }
 
 // ToolResult holds the result of a tool check.
 type ToolResult struct {
-	Name            string `json:"name"`
-	Available       bool   `json:"available"`
-	Version         string `json:"version,omitempty"`
-	MeetsRequirement bool  `json:"meets_requirement"`
-	Optional        bool   `json:"optional"`
-	Error           string `json:"error,omitempty"`
+	Name             string `json:"name"`
+	Available        bool   `json:"available"`
+	Version          string `json:"version,omitempty"`
+	MeetsRequirement bool   `json:"meets_requirement"`
+	Optional         bool   `json:"optional"`
+	Error            string `json:"error,omitempty"`
 }
 
 // ProjectRequirement maps a config file to required tools.
@@ -58,10 +56,10 @@ var RequiredTools = []ToolConfig{
 
 // ProcessorTools are optional formatters/linters used by hooks.
 var ProcessorTools = []ToolConfig{
-	{Name: "biome", Cmd: []string{"biome", "--version"}, Optional: true, InstallCmd: []string{"pnpm", "install", "-g", "@biomejs/biome"}},
-	{Name: "prettier", Cmd: []string{"prettier", "--version"}, Optional: true, InstallCmd: []string{"pnpm", "install", "-g", "prettier"}},
-	{Name: "eslint", Cmd: []string{"eslint", "--version"}, Optional: true, InstallCmd: []string{"pnpm", "install", "-g", "eslint"}},
-	{Name: "shellcheck", Cmd: []string{"shellcheck", "--version"}, Optional: true, InstallCmd: []string{"brew", "install", "shellcheck"}},
+	{Name: "biome", Cmd: []string{"biome", "--version"}, Optional: true},
+	{Name: "prettier", Cmd: []string{"prettier", "--version"}, Optional: true},
+	{Name: "eslint", Cmd: []string{"eslint", "--version"}, Optional: true},
+	{Name: "shellcheck", Cmd: []string{"shellcheck", "--version"}, Optional: true},
 }
 
 // EnhancerTools are optional CLI tools that enhance Claude Code capabilities.
@@ -95,14 +93,12 @@ func Run() {
 	startTime := time.Now()
 
 	input, err := io.ReadAll(os.Stdin)
-	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		fmt.Println(protocol.ContinueResponse())
+	if err != nil {
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
@@ -115,7 +111,6 @@ func Run() {
 
 	// Only run full validation on startup/clear
 	if source != "startup" && source != "clear" {
-		fmt.Println(protocol.ContinueWithMessage("Success"))
 		return
 	}
 
@@ -130,11 +125,7 @@ func Run() {
 	// Log results
 	logValidation(cwd, source, sessionID, results, projectMissing)
 
-	// Auto-install missing processor tools in background
-	installMissing(results)
-
-	// Build report
-	report, hasIssues, installing := formatReport(results, projectMissing)
+	report, hasIssues := formatReport(results, projectMissing)
 
 	// Log metrics
 	executionTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0
@@ -144,11 +135,9 @@ func Run() {
 		"has_issues": hasIssues,
 	})
 
-	if hasIssues || len(installing) > 0 {
-		fmt.Println(protocol.ContinueWithMessage(report))
-	} else {
-		fmt.Println(protocol.ContinueWithMessage(
-			ansi.BrightGreen + ansi.IconCheck + " 開發環境檢查通過" + ansi.Reset))
+	// Report only problems (user-only systemMessage); success is silent.
+	if hasIssues {
+		fmt.Println(protocol.SystemMessage(report))
 	}
 }
 
@@ -279,75 +268,55 @@ func checkProjectRequirements(cwd string) []string {
 	return missing
 }
 
-// installMissing auto-installs missing processor tools in background.
-func installMissing(results []ToolResult) {
-	for i, r := range results {
-		if r.Available || !r.Optional {
-			continue
-		}
-		// Find matching config with install command
-		for _, tc := range ProcessorTools {
-			if tc.Name == r.Name && len(tc.InstallCmd) > 0 {
-				if _, err := exec.LookPath(tc.InstallCmd[0]); err == nil {
-					cmd := exec.Command(tc.InstallCmd[0], tc.InstallCmd[1:]...)
-					cmd.Stdout = nil
-					cmd.Stderr = nil
-					cmd.Start() // fire-and-forget
-					// Mark so we can report
-					results[i].Error = "installing"
-				}
-				break
-			}
-		}
-	}
-}
-
-// formatReport builds the ANSI-formatted validation report.
-func formatReport(results []ToolResult, projectMissing []string) (string, bool, []string) {
+// formatReport builds the plain-text validation report (missing required
+// tools, outdated versions, project-required tools, missing hook
+// formatters/linters). hasIssues=false means the report is empty.
+func formatReport(results []ToolResult, projectMissing []string) (string, bool) {
 	var issues []string
-	var installing []string
 
 	for _, r := range results {
 		if !r.Available && !r.Optional {
-			issues = append(issues, fmt.Sprintf("%s%s %s: not found%s",
-				ansi.BrightRed, ansi.IconCross, r.Name, ansi.Reset))
+			issues = append(issues, fmt.Sprintf("- %s: not found", r.Name))
 		} else if r.Available && !r.MeetsRequirement {
-			issues = append(issues, fmt.Sprintf("%s%s %s: version outdated (%s)%s",
-				ansi.BrightYellow, ansi.IconWarning, r.Name, r.Version, ansi.Reset))
-		}
-		if r.Error == "installing" {
-			installing = append(installing, r.Name)
+			issues = append(issues, fmt.Sprintf("- %s: version outdated (%s)", r.Name, r.Version))
 		}
 	}
 
 	for _, m := range projectMissing {
-		issues = append(issues, fmt.Sprintf("%s%s %s%s",
-			ansi.BrightCyan, ansi.IconFolder, m, ansi.Reset))
+		issues = append(issues, "- missing "+m)
 	}
 
-	hasIssues := len(issues) > 0
+	// Formatters/linters the post-tool-use hook would use. Not installed
+	// automatically (no side effects at session start) — just reported.
+	processorNames := make(map[string]bool, len(ProcessorTools))
+	for _, tc := range ProcessorTools {
+		processorNames[tc.Name] = true
+	}
+	var missingProcessors []string
+	for _, r := range results {
+		if !r.Available && processorNames[r.Name] {
+			missingProcessors = append(missingProcessors, r.Name)
+		}
+	}
+	if len(missingProcessors) > 0 {
+		issues = append(issues, "- hook formatters/linters not installed: "+strings.Join(missingProcessors, ", "))
+	}
+
+	if len(issues) == 0 {
+		return "", false
+	}
 
 	var sb strings.Builder
-	if hasIssues {
-		sb.WriteString(ansi.BrightYellow + ansi.IconWarning + " 環境檢查發現問題:" + ansi.Reset + "\n")
-		limit := 5
-		if len(issues) < limit {
-			limit = len(issues)
-		}
-		sb.WriteString(strings.Join(issues[:limit], "\n"))
-		if len(issues) > 5 {
-			sb.WriteString(fmt.Sprintf("\n%s...還有 %d 個問題%s", ansi.Dim, len(issues)-5, ansi.Reset))
-		}
-	} else {
-		sb.WriteString(ansi.BrightGreen + ansi.IconCheck + " 開發環境檢查通過" + ansi.Reset)
+	sb.WriteString("環境檢查發現問題:\n")
+	limit := 5
+	if len(issues) < limit {
+		limit = len(issues)
 	}
-
-	if len(installing) > 0 {
-		sb.WriteString(fmt.Sprintf("\n%s%s 背景安裝中: %s%s",
-			ansi.BrightMagenta, ansi.IconSync, strings.Join(installing, ", "), ansi.Reset))
+	sb.WriteString(strings.Join(issues[:limit], "\n"))
+	if len(issues) > 5 {
+		sb.WriteString(fmt.Sprintf("\n...還有 %d 個問題", len(issues)-5))
 	}
-
-	return sb.String(), hasIssues, installing
+	return sb.String(), true
 }
 
 // writeEnvVars writes PROJECT_NAME and SESSION_SOURCE to CLAUDE_ENV_FILE.
@@ -387,16 +356,5 @@ func logValidation(cwd, source, sessionID string, results []ToolResult, projectM
 		"project_missing": projectMissing,
 	}
 
-	data, err := json.Marshal(entry)
-	if err != nil {
-		return
-	}
-
-	f, err := os.OpenFile(filepath.Join(config.LogDir, "env_validation.jsonl"),
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return
-	}
-	defer f.Close()
-	f.Write(append(data, '\n'))
+	_ = metrics.AppendJSONL(filepath.Join(config.LogDir, "env_validation.jsonl"), entry)
 }

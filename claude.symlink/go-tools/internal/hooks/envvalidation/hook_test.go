@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -265,76 +266,64 @@ func TestWriteEnvVars_EmptyCwd(t *testing.T) {
 
 // --- formatReport ---
 
-func TestFormatReport_AllOK(t *testing.T) {
-	results := []ToolResult{
-		{Name: "git", Available: true, MeetsRequirement: true},
-		{Name: "node", Available: true, MeetsRequirement: true, Optional: true},
+func TestFormatReport(t *testing.T) {
+	tests := []struct {
+		name           string
+		results        []ToolResult
+		projectMissing []string
+		wantIssues     bool
+		wantContains   []string
+	}{
+		{"all ok", []ToolResult{
+			{Name: "git", Available: true, MeetsRequirement: true},
+			{Name: "node", Available: true, MeetsRequirement: true, Optional: true},
+		}, nil, false, nil},
+		{"missing required", []ToolResult{
+			{Name: "git", Available: false, Error: "not found"},
+		}, nil, true, []string{"git: not found"}},
+		{"missing optional non-processor is silent", []ToolResult{
+			{Name: "ruff", Available: false, Optional: true, Error: "not found"},
+			{Name: "sd", Available: false, Optional: true, Error: "not found"},
+		}, nil, false, nil},
+		{"missing processor tool is reported, not installed", []ToolResult{
+			{Name: "biome", Available: false, Optional: true, Error: "biome not found"},
+			{Name: "shellcheck", Available: false, Optional: true, Error: "shellcheck not found"},
+		}, nil, true, []string{"biome, shellcheck"}},
+		{"outdated version", []ToolResult{
+			{Name: "node", Available: true, MeetsRequirement: false, Version: "v16.0.0"},
+		}, nil, true, []string{"node: version outdated (v16.0.0)"}},
+		{"project missing", nil, []string{"ruby (required by Gemfile)"}, true, []string{"ruby (required by Gemfile)"}},
 	}
 
-	report, hasIssues, installing := formatReport(results, nil)
-
-	if hasIssues {
-		t.Error("expected no issues")
-	}
-	if len(installing) > 0 {
-		t.Error("expected nothing installing")
-	}
-	if report == "" {
-		t.Error("expected non-empty report")
-	}
-}
-
-func TestFormatReport_MissingRequired(t *testing.T) {
-	results := []ToolResult{
-		{Name: "git", Available: false, Optional: false, Error: "not found"},
-	}
-
-	_, hasIssues, _ := formatReport(results, nil)
-	if !hasIssues {
-		t.Error("expected issues for missing required tool")
-	}
-}
-
-func TestFormatReport_MissingOptionalNoIssue(t *testing.T) {
-	results := []ToolResult{
-		{Name: "ruff", Available: false, Optional: true, Error: "not found"},
-	}
-
-	_, hasIssues, _ := formatReport(results, nil)
-	if hasIssues {
-		t.Error("expected no issues for missing optional tool")
-	}
-}
-
-func TestFormatReport_OutdatedVersion(t *testing.T) {
-	results := []ToolResult{
-		{Name: "node", Available: true, MeetsRequirement: false, Version: "v16.0.0"},
-	}
-
-	_, hasIssues, _ := formatReport(results, nil)
-	if !hasIssues {
-		t.Error("expected issues for outdated version")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			report, hasIssues := formatReport(tt.results, tt.projectMissing)
+			if hasIssues != tt.wantIssues {
+				t.Errorf("hasIssues = %v, want %v (report=%q)", hasIssues, tt.wantIssues, report)
+			}
+			if !hasIssues && report != "" {
+				t.Errorf("expected empty report when no issues, got %q", report)
+			}
+			if strings.Contains(report, "\x1b[") {
+				t.Errorf("report contains ANSI escapes: %q", report)
+			}
+			for _, want := range tt.wantContains {
+				if !strings.Contains(report, want) {
+					t.Errorf("report %q missing %q", report, want)
+				}
+			}
+		})
 	}
 }
 
-func TestFormatReport_ProjectMissing(t *testing.T) {
-	results := []ToolResult{}
-	missing := []string{"ruby (required by Gemfile)"}
-
-	_, hasIssues, _ := formatReport(results, missing)
-	if !hasIssues {
-		t.Error("expected issues for project missing tools")
+func TestFormatReport_CapsAtFive(t *testing.T) {
+	var results []ToolResult
+	for _, n := range []string{"a", "b", "c", "d", "e", "f", "g"} {
+		results = append(results, ToolResult{Name: n})
 	}
-}
-
-func TestFormatReport_Installing(t *testing.T) {
-	results := []ToolResult{
-		{Name: "biome", Available: false, Optional: true, Error: "installing"},
-	}
-
-	_, _, installing := formatReport(results, nil)
-	if len(installing) != 1 || installing[0] != "biome" {
-		t.Errorf("expected installing=[biome], got %v", installing)
+	report, _ := formatReport(results, nil)
+	if !strings.Contains(report, "還有 2 個問題") {
+		t.Errorf("expected overflow note for 7 issues, got %q", report)
 	}
 }
 

@@ -304,19 +304,7 @@ func logCompactionEvent(cwd, snapshotFile string) {
 		"snapshot_file": snapshotFile,
 	}
 
-	data, err := json.Marshal(entry)
-	if err != nil {
-		return
-	}
-
-	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return
-	}
-	defer f.Close()
-
-	f.Write(data)
-	f.Write([]byte("\n"))
+	_ = metrics.AppendJSONL(logFile, entry)
 }
 
 func outputJSON(cont bool, systemMsg string) {

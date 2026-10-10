@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/htlin/claude-tools/internal/protocol"
 )
@@ -27,37 +26,18 @@ var depFiles = map[string]string{
 // Run executes the dep-remind hook.
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
-	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		fmt.Println(protocol.ContinueResponse())
+	if err != nil {
 		return
 	}
 
 	var data protocol.HookInput
-	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
+	if err := json.Unmarshal(input, &data); err != nil || data.ToolInput.FilePath == "" {
 		return
 	}
 
-	// Collect file paths from tool input
-	var paths []string
-	if data.ToolInput.FilePath != "" {
-		paths = append(paths, data.ToolInput.FilePath)
+	base := filepath.Base(data.ToolInput.FilePath)
+	if installCmd, ok := depFiles[base]; ok {
+		fmt.Println(protocol.PostToolUseContext(
+			fmt.Sprintf("%s was modified — run `%s` before relying on the new dependencies.", base, installCmd)))
 	}
-	for _, edit := range data.ToolInput.Edits {
-		if edit.FilePath != "" {
-			paths = append(paths, edit.FilePath)
-		}
-	}
-
-	// Check if any edited file is a dependency file
-	for _, p := range paths {
-		base := filepath.Base(p)
-		if installCmd, ok := depFiles[base]; ok {
-			fmt.Println(protocol.ContinueWithMessage(
-				fmt.Sprintf("📦 %s 已修改 — 記得執行: `%s`", base, installCmd)))
-			return
-		}
-	}
-
-	fmt.Println(protocol.ContinueResponse())
 }

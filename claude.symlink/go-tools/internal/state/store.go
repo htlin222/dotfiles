@@ -11,14 +11,11 @@ import (
 
 // State represents the persistent hook state.
 type State struct {
-	SessionStart          string   `json:"session_start,omitempty"`
-	PromptCount           int      `json:"prompt_count,omitempty"`
-	PromptHashes          []string `json:"prompt_hashes,omitempty"`
-	LastGitCheck          int      `json:"last_git_check,omitempty"`
-	LastContextSuggestion int      `json:"last_context_suggestion,omitempty"`
-	LastPressureCheck     int      `json:"last_pressure_check,omitempty"`
-	QingPersona           string   `json:"qing_persona,omitempty"`
-	MainSessionID         string   `json:"main_session_id,omitempty"`
+	SessionStart      string `json:"session_start,omitempty"`
+	PromptCount       int    `json:"prompt_count,omitempty"`
+	LastGitCheck      int    `json:"last_git_check,omitempty"`
+	LastPressureCheck int    `json:"last_pressure_check,omitempty"`
+	QingPersona       string `json:"qing_persona,omitempty"`
 }
 
 var (
@@ -62,22 +59,4 @@ func Save(state *State) error {
 	}
 
 	return os.WriteFile(config.StateFile(), data, 0644)
-}
-
-// AddPromptHash adds a prompt hash to the state, keeping only the last 50.
-func (s *State) AddPromptHash(hash string) {
-	s.PromptHashes = append(s.PromptHashes, hash)
-	if len(s.PromptHashes) > 50 {
-		s.PromptHashes = s.PromptHashes[len(s.PromptHashes)-50:]
-	}
-}
-
-// HasPromptHash checks if a prompt hash already exists.
-func (s *State) HasPromptHash(hash string) bool {
-	for _, h := range s.PromptHashes {
-		if h == hash {
-			return true
-		}
-	}
-	return false
 }

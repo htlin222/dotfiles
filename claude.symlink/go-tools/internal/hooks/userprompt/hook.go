@@ -2,10 +2,7 @@
 package userprompt
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -29,20 +26,26 @@ import (
 	"github.com/htlin/claude-tools/pkg/patterns"
 )
 
-// errStopWalk signals filepath.Walk to stop walking (Go 1.18 compatible alternative to filepath.SkipAll)
-var errStopWalk = errors.New("stop walking")
+// maxSnapshotBytes caps the @LAST injection so one keyword can't flood the context.
+const maxSnapshotBytes = 16 * 1024
 
-// Project types for detection
-var projectTypes = map[string]struct {
-	Files   []string
-	Message string
-}{
-	"node":   {[]string{"package.json"}, "Node.js 專案"},
-	"python": {[]string{"pyproject.toml", "setup.py", "requirements.txt"}, "Python 專案"},
-	"rust":   {[]string{"Cargo.toml"}, "Rust 專案"},
-	"go":     {[]string{"go.mod"}, "Go 專案"},
-	"ruby":   {[]string{"Gemfile"}, "Ruby 專案"},
-	"java":   {[]string{"pom.xml", "build.gradle"}, "Java 專案"},
+var (
+	// @last / @img must stand alone as a token, not be part of an email or path.
+	lastRe = regexp.MustCompile(`(?i)(?:^|\s)@last\b`)
+	imgRe  = regexp.MustCompile(`(?i)(?:^|\s)@img(?:(\d+)(?:-(\d+))?|\s+x(\d+)|\s+(\d+)(m|h))?\b`)
+)
+
+// syntheticPrefixes mark turns the harness injects rather than the user typing.
+var syntheticPrefixes = []string{"<task-notification>", "<system-reminder>"}
+
+func isSyntheticPrompt(prompt string) bool {
+	p := strings.TrimSpace(prompt)
+	for _, prefix := range syntheticPrefixes {
+		if strings.HasPrefix(p, prefix) {
+			return true
+		}
+	}
+	return false
 }
 
 // Run executes the user prompt hook.
@@ -67,7 +70,6 @@ func Run() {
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
@@ -75,10 +77,19 @@ func Run() {
 	cwd := data.CWD
 	sessionID := data.SessionID
 
+	// Harness-generated turns (background task notifications etc.) also fire
+	// UserPromptSubmit. They are not the user's words: don't log them, and
+	// don't let text inside them (e.g. "@LAST") trigger context injection.
+	if isSyntheticPrompt(prompt) {
+		return
+	}
+
 	// Load state
 	st, _ := state.Load()
 	st.PromptCount++
 
+	// messages are user-only notices (systemMessage); they never reach the
+	// model. Model-relevant content goes through buildContext.
 	var messages []string
 
 	// Feature: Qing dynasty court roleplay (env QING=true)
@@ -93,8 +104,7 @@ func Run() {
 		}
 		qingPersona = st.QingPersona
 		if qingPersona != "" && st.PromptCount == 1 {
-			messages = append(messages, fmt.Sprintf("%s👑%s 清宮模式已啟動（QING=true）",
-				ansi.BrightYellow, ansi.Reset))
+			messages = append(messages, "👑 清宮模式已啟動（QING=true）")
 		}
 	}
 
@@ -119,8 +129,11 @@ func Run() {
 
 	// Feature 0: @LAST context injection
 	var snapshotContent string
-	if strings.Contains(strings.ToUpper(prompt), "@LAST") {
+	if lastRe.MatchString(prompt) {
 		if content, err := snapshot.Consume(cwd); err == nil && content != "" {
+			if len(content) > maxSnapshotBytes {
+				content = content[:maxSnapshotBytes] + "\n…(snapshot truncated)"
+			}
 			snapshotContent = content
 			messages = append(messages, "✅ 前次上下文已載入")
 		} else {
@@ -138,7 +151,6 @@ func Run() {
 		screenshotDir = "/tmp/screenshot"
 	}
 	var imgPaths []string
-	imgRe := regexp.MustCompile(`(?i)@img(?:(\d+)(?:-(\d+))?|\s+x(\d+)|\s+(\d+)(m|h))?`)
 	if allMatches := imgRe.FindAllStringSubmatch(prompt, -1); len(allMatches) > 0 {
 		allFiles, err := findSortedFiles(screenshotDir)
 		if err != nil || len(allFiles) == 0 {
@@ -233,42 +245,12 @@ func Run() {
 
 	// Feature 1: Check for dangerous patterns
 	if warning := patterns.CheckDangerousPatterns(prompt); warning != "" {
-		messages = append(messages, fmt.Sprintf("%s%s%s %s - 請確認這是你想要的操作",
-			ansi.BrightRed, ansi.IconWarning, ansi.Reset, warning))
+		messages = append(messages, "⚠️ "+warning+" - 請確認這是你想要的操作")
 	}
 
 	// Feature 8: Token estimation warning
 	if warning := patterns.CheckTokenHeavy(prompt); warning != "" {
-		messages = append(messages, fmt.Sprintf("%s%s%s %s",
-			ansi.BrightYellow, ansi.IconWarning, ansi.Reset, warning))
-	}
-
-	// Feature 10: Tool efficiency hint
-	if nativeTool := patterns.CheckToolEfficiency(prompt); nativeTool != "" {
-		messages = append(messages, fmt.Sprintf("%s%s%s Hint: prefer native %s tool over bash command",
-			ansi.BrightCyan, ansi.IconSearch, ansi.Reset, nativeTool))
-	}
-
-	// Feature 12: Complex task delegation hint
-	if patterns.CheckComplexTask(prompt) {
-		messages = append(messages, fmt.Sprintf("%s%s%s Complex task detected: consider using Task agents to delegate work",
-			ansi.BrightMagenta, ansi.IconRocket, ansi.Reset))
-	} else if patterns.CheckImplementationTask(prompt) {
-		messages = append(messages, fmt.Sprintf("%s%s%s Implementation task detected: delegate edits to Task agents to preserve context",
-			ansi.BrightMagenta, ansi.IconRocket, ansi.Reset))
-	}
-
-	// Feature 3: Suggest skill if applicable
-	if suggestion := patterns.SuggestSkill(prompt); suggestion != "" {
-		messages = append(messages, fmt.Sprintf("%s%s%s %s",
-			ansi.BrightCyan, ansi.IconMagic, ansi.Reset, suggestion))
-	}
-
-	// Feature 5: Smart context loading (first few prompts only)
-	if st.PromptCount <= 3 {
-		if contextSuggestion := checkLargeProject(cwd, st); contextSuggestion != "" {
-			messages = append(messages, contextSuggestion)
-		}
+		messages = append(messages, "⚠️ "+warning)
 	}
 
 	// Feature 6: Git status reminder
@@ -276,21 +258,11 @@ func Run() {
 		messages = append(messages, gitReminder)
 	}
 
-	// Feature 7: Similar prompt detection
-	if similarWarning := checkSimilarPrompt(prompt, st); similarWarning != "" {
-		messages = append(messages, similarWarning)
-	}
-
 	// Feature 9: Time reminder (every 10 prompts)
 	if st.PromptCount%10 == 0 {
 		if timeReminder := checkTimeReminder(st); timeReminder != "" {
 			messages = append(messages, timeReminder)
 		}
-	}
-
-	// Feature 11: Model efficiency hint (every 20 prompts)
-	if st.PromptCount%20 == 0 {
-		messages = append(messages, "💡 Tip: delegate Edit-heavy tasks to Task(model:haiku) to save context")
 	}
 
 	// Feature 13: Context pressure monitor (every 5 prompts, uses real data from statusline)
@@ -304,28 +276,16 @@ func Run() {
 	// Save state
 	state.Save(st)
 
-	// Build additionalContext
-	var contextParts []string
-	if qingPersona != "" {
-		contextParts = append(contextParts, "\n---\n"+qingPersona)
+	// Output: additionalContext (model) + systemMessage (user only).
+	if out := protocol.UserPromptResponse(
+		buildContext(qingPersona, snapshotContent, imgPaths),
+		ansi.Strip(strings.Join(messages, "\n")),
+	); out != "" {
+		fmt.Println(out)
 	}
-	if snapshotContent != "" {
-		contextParts = append(contextParts, "\n---\n## Previous Session Context\n"+snapshotContent)
-	}
-	if len(imgPaths) > 0 {
-		var imgLines []string
-		imgLines = append(imgLines, "\n---\n## Screenshot")
-		for _, p := range imgPaths {
-			imgLines = append(imgLines, "Please read and analyze this image file: "+p)
-		}
-		contextParts = append(contextParts, strings.Join(imgLines, "\n"))
-	}
-	contextParts = append(contextParts, messages...)
 
-	// Output response
-	fmt.Println(protocol.UserPromptResponse(strings.Join(contextParts, "\n")))
-
-	// Log metrics
+	// Log metrics (the per-prompt event log was dropped: it duplicated this
+	// entry plus prompts.jsonl).
 	executionTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0
 	metrics.LogMetrics("user_prompt", "UserPromptSubmit", executionTimeMS, true, map[string]any{
 		"session_id":       sessionID,
@@ -333,58 +293,26 @@ func Run() {
 		"estimated_tokens": metrics.EstimateTokens(prompt),
 		"messages_count":   len(messages),
 	})
-
-	metrics.LogEvent("UserPromptSubmit", "user_prompt", sessionID, cwd, map[string]any{
-		"prompt_preview": truncate(redactedPrompt, 100),
-		"suggestions":    messages,
-	})
 }
 
-func checkLargeProject(cwd string, st *state.State) string {
-	if cwd == "" {
-		return ""
+// buildContext assembles the model-facing additionalContext: QING persona,
+// @LAST snapshot and @IMG screenshot paths only. Returns "" when none apply.
+func buildContext(qingPersona, snapshotContent string, imgPaths []string) string {
+	var parts []string
+	if qingPersona != "" {
+		parts = append(parts, "---\n"+qingPersona)
 	}
-
-	// Don't suggest too frequently
-	if st.LastContextSuggestion > 0 {
-		promptsSince := st.PromptCount - st.LastContextSuggestion
-		if promptsSince < 10 {
-			return ""
-		}
+	if snapshotContent != "" {
+		parts = append(parts, "---\n## Previous Session Context\n"+snapshotContent)
 	}
-
-	// Count files (rough estimate)
-	skipDirs := map[string]bool{
-		".git": true, "node_modules": true, "__pycache__": true,
-		".venv": true, "venv": true, "dist": true, "build": true, ".next": true,
+	if len(imgPaths) > 0 {
+		lines := []string{"---\n## Screenshot"}
+		for _, p := range imgPaths {
+			lines = append(lines, "Please read and analyze this image file: "+p)
+		}
+		parts = append(parts, strings.Join(lines, "\n"))
 	}
-
-	fileCount := 0
-	filepath.Walk(cwd, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return nil
-		}
-		if info.IsDir() {
-			if skipDirs[info.Name()] {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		fileCount++
-		if fileCount > 100 {
-			return errStopWalk
-		}
-		return nil
-	})
-
-	if fileCount > 100 {
-		st.LastContextSuggestion = st.PromptCount
-		return fmt.Sprintf("%s%s%s 大型專案偵測（100+ 檔案），建議先執行 %s/prime%s 載入 context",
-			ansi.BrightYellow, ansi.IconFolder, ansi.Reset,
-			ansi.BrightCyan, ansi.Reset)
-	}
-
-	return ""
+	return ansi.Strip(strings.Join(parts, "\n\n"))
 }
 
 func checkGitStatus(cwd string, st *state.State) string {
@@ -426,28 +354,8 @@ func checkGitStatus(cwd string, st *state.State) string {
 	}
 
 	if changeCount > 10 {
-		return fmt.Sprintf("%s%s%s Git: %s%d%s 個未提交變更，建議適時 commit",
-			ansi.BrightYellow, ansi.IconGit, ansi.Reset,
-			ansi.BrightWhite, changeCount, ansi.Reset)
+		return fmt.Sprintf("Git: %d 個未提交變更，建議適時 commit", changeCount)
 	}
-
-	return ""
-}
-
-func checkSimilarPrompt(prompt string, st *state.State) string {
-	// Create a simple hash of the prompt (normalized)
-	normalized := regexp.MustCompile(`\s+`).ReplaceAllString(strings.ToLower(strings.TrimSpace(prompt)), " ")
-	hash := md5.Sum([]byte(normalized))
-	promptHash := hex.EncodeToString(hash[:])[:8]
-
-	// Check for similar match
-	if st.HasPromptHash(promptHash) {
-		return fmt.Sprintf("%s%s%s 偵測到相似問題，可參考之前的對話紀錄",
-			ansi.BrightCyan, ansi.IconSync, ansi.Reset)
-	}
-
-	// Add to history
-	st.AddPromptHash(promptHash)
 
 	return ""
 }
@@ -458,8 +366,7 @@ func checkTimeReminder(st *state.State) string {
 
 	// Late night check (23:00 - 05:00)
 	if now.Hour() >= 23 || now.Hour() < 5 {
-		messages = append(messages, fmt.Sprintf("%s%s%s 深夜了，注意休息",
-			ansi.BrightMagenta, ansi.IconClock, ansi.Reset))
+		messages = append(messages, "🌙 深夜了，注意休息")
 	}
 
 	// Long session check
@@ -468,9 +375,7 @@ func checkTimeReminder(st *state.State) string {
 		if err == nil {
 			duration := now.Sub(startTime).Hours()
 			if duration > 2 {
-				messages = append(messages, fmt.Sprintf("%s%s%s 已工作 %s%.1f%s 小時，建議休息一下",
-					ansi.BrightYellow, ansi.IconHourglass, ansi.Reset,
-					ansi.BrightWhite, duration, ansi.Reset))
+				messages = append(messages, fmt.Sprintf("⏳ 已工作 %.1f 小時，建議休息一下", duration))
 			}
 		}
 	} else {
@@ -478,7 +383,7 @@ func checkTimeReminder(st *state.State) string {
 	}
 
 	if len(messages) > 0 {
-		return strings.Join(messages, fmt.Sprintf(" %s│%s ", ansi.Dim, ansi.Reset))
+		return strings.Join(messages, " │ ")
 	}
 
 	return ""
@@ -527,13 +432,6 @@ func findSortedFiles(dir string) ([]string, error) {
 	return result, nil
 }
 
-func truncate(s string, maxLen int) string {
-	if len(s) <= maxLen {
-		return s
-	}
-	return s[:maxLen]
-}
-
 // captureToTurso mirrors the prompt into a libSQL DB at ~/.claude/state/prompts.db.
 // Always writes locally; if TURSO_DATABASE_URL/TURSO_AUTH_TOKEN are set, the
 // client is an embedded replica and we kick off a detached `claude-hooks
@@ -562,4 +460,3 @@ func captureToTurso(prompt, sessionID, cwd string) {
 	cmd.SysProcAttr = detachSysProcAttr()
 	_ = cmd.Start()
 }
-

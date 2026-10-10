@@ -1,91 +1,51 @@
 package sessionhint
 
 import (
-	"bytes"
-	"encoding/json"
-	"os"
-	"os/exec"
 	"strings"
 	"testing"
 )
 
-type hookOutput struct {
-	Continue      bool   `json:"continue"`
-	SystemMessage string `json:"systemMessage"`
-}
+func TestBuildMessage(t *testing.T) {
+	const qingText = "我在大清當皇帝"
+	const lastText = "@LAST"
 
-func TestRun_StartupWithoutQING(t *testing.T) {
-	if _, err := exec.LookPath("claude-hooks"); err != nil {
-		t.Skip("claude-hooks not in PATH")
+	tests := []struct {
+		name         string
+		source       string
+		qing         string
+		snapshot     bool
+		wantEmpty    bool
+		wantContains []string
+		wantAbsent   []string
+	}{
+		{"startup plain", "startup", "", false, true, nil, []string{qingText, lastText}},
+		{"startup with QING", "startup", "true", false, false, []string{qingText}, []string{lastText}},
+		{"QING case-insensitive", "startup", "TRUE", false, false, []string{qingText}, nil},
+		{"clear with snapshot", "clear", "", true, false, []string{lastText}, []string{qingText}},
+		{"clear without snapshot", "clear", "", false, true, nil, nil},
+		{"startup with snapshot gives no hint", "startup", "", true, true, nil, nil},
+		{"no delegation reminder", "clear", "true", true, false, []string{qingText, lastText}, []string{"delegation", "MultiEdit"}},
 	}
 
-	input, _ := json.Marshal(map[string]string{
-		"session_id": "test-session-1",
-		"source":     "startup",
-	})
-
-	cmd := exec.Command("claude-hooks", "session-hint")
-	cmd.Stdin = bytes.NewReader(input)
-	cmd.Env = filterEnv(os.Environ(), "QING")
-
-	out, err := cmd.Output()
-	if err != nil {
-		t.Fatalf("claude-hooks session-hint failed: %v", err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := buildMessage(tt.source, tt.qing, tt.snapshot)
+			if tt.wantEmpty != (got == "") {
+				t.Fatalf("buildMessage() = %q, wantEmpty=%v", got, tt.wantEmpty)
+			}
+			if strings.Contains(got, "\x1b[") {
+				t.Errorf("ANSI escape in %q", got)
+			}
+			for _, s := range tt.wantContains {
+				if !strings.Contains(got, s) {
+					t.Errorf("want %q in %q", s, got)
+				}
+			}
+			for _, s := range tt.wantAbsent {
+				if strings.Contains(got, s) {
+					t.Errorf("did not want %q in %q", s, got)
+				}
+			}
+		})
 	}
-
-	var result hookOutput
-	if err := json.Unmarshal(out, &result); err != nil {
-		t.Fatalf("failed to parse output JSON: %v\nraw output: %s", err, out)
-	}
-
-	if !strings.Contains(result.SystemMessage, "Smart delegation") {
-		t.Errorf("expected systemMessage to contain %q, got %q", "Smart delegation", result.SystemMessage)
-	}
-	if strings.Contains(result.SystemMessage, "\u6211\u5728\u5927\u6e05\u7576\u7687\u5e1d") {
-		t.Errorf("expected systemMessage NOT to contain Qing text, got %q", result.SystemMessage)
-	}
-}
-
-func TestRun_StartupWithQING(t *testing.T) {
-	if _, err := exec.LookPath("claude-hooks"); err != nil {
-		t.Skip("claude-hooks not in PATH")
-	}
-
-	input, _ := json.Marshal(map[string]string{
-		"session_id": "test-session-2",
-		"source":     "startup",
-	})
-
-	cmd := exec.Command("claude-hooks", "session-hint")
-	cmd.Stdin = bytes.NewReader(input)
-	cmd.Env = append(filterEnv(os.Environ(), "QING"), "QING=true")
-
-	out, err := cmd.Output()
-	if err != nil {
-		t.Fatalf("claude-hooks session-hint failed: %v", err)
-	}
-
-	var result hookOutput
-	if err := json.Unmarshal(out, &result); err != nil {
-		t.Fatalf("failed to parse output JSON: %v\nraw output: %s", err, out)
-	}
-
-	if !strings.Contains(result.SystemMessage, "\u6211\u5728\u5927\u6e05\u7576\u7687\u5e1d") {
-		t.Errorf("expected systemMessage to contain Qing text, got %q", result.SystemMessage)
-	}
-	if !strings.Contains(result.SystemMessage, "Smart delegation") {
-		t.Errorf("expected systemMessage to contain %q, got %q", "Smart delegation", result.SystemMessage)
-	}
-}
-
-// filterEnv returns a copy of env with the named variable removed.
-func filterEnv(env []string, name string) []string {
-	prefix := name + "="
-	out := make([]string, 0, len(env))
-	for _, e := range env {
-		if !strings.HasPrefix(e, prefix) {
-			out = append(out, e)
-		}
-	}
-	return out
 }

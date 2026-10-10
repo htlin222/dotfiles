@@ -25,23 +25,18 @@ func Run() {
 	busy.CleanupStale()
 
 	input, err := io.ReadAll(os.Stdin)
-	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		fmt.Println(protocol.ContinueResponse())
+	if err != nil {
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
-	// Reset state on new session or clear (prevents zombie accumulation)
-	// Preserve the main session ID so delegate-edits can detect the main session
+	// Reset per-session state on new session or clear (prevents zombie accumulation)
 	if data.Source == "startup" || data.Source == "clear" {
-		state.Save(&state.State{
-			MainSessionID: data.SessionID,
-		})
+		state.Save(&state.State{})
 	}
 
 	// Record session start timestamp for shell access
@@ -51,25 +46,25 @@ func Run() {
 		os.WriteFile(config.SessionStartTimeFileForPane(pane), ts, 0644)
 	}
 
-	// Build startup messages
+	if msg := buildMessage(data.Source, os.Getenv("QING"), snapshot.IsAvailable(data.CWD)); msg != "" {
+		fmt.Println(protocol.SystemMessage(msg))
+	}
+}
+
+// buildMessage returns the user-facing (systemMessage) startup notice,
+// or "" when there is nothing to say.
+func buildMessage(source, qing string, snapshotAvailable bool) string {
 	var msgs []string
 
 	// Qing dynasty court mode
-	if strings.EqualFold(os.Getenv("QING"), "true") {
+	if strings.EqualFold(qing, "true") {
 		msgs = append(msgs, "👑 我在大清當皇帝")
 	}
 
-	// Delegation reminder (adapts to FORCE_DELEGATION env)
-	if strings.EqualFold(os.Getenv("FORCE_DELEGATION"), "true") {
-		msgs = append(msgs, "🔄 Strict delegation: ALL source code edits must use Task subagents. Direct edits allowed only for: *.md, settings.json, Makefile, .gitignore, go-tools/**")
-	} else {
-		msgs = append(msgs, "🔄 Smart delegation: small edits (Edit, ≤3 MultiEdits, ≤100-line Write) OK directly. Large edits → use Task subagents.")
-	}
-
 	// @LAST hint after /clear
-	if data.Source == "clear" && snapshot.IsAvailable(data.CWD) {
+	if source == "clear" && snapshotAvailable {
 		msgs = append(msgs, "💡 前次對話快照可用，輸入 @LAST 載入前次上下文")
 	}
 
-	fmt.Println(protocol.ContinueWithMessage(strings.Join(msgs, "\n")))
+	return strings.Join(msgs, "\n")
 }

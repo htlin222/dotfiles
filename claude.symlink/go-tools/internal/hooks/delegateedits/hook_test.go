@@ -1,6 +1,11 @@
 package delegateedits
 
-import "testing"
+import (
+	"strings"
+	"testing"
+
+	"github.com/htlin/claude-tools/internal/protocol"
+)
 
 func TestIsAllowed(t *testing.T) {
 	tests := []struct {
@@ -38,6 +43,40 @@ func TestIsAllowed(t *testing.T) {
 			got := isAllowed(tt.path)
 			if got != tt.want {
 				t.Errorf("isAllowed(%q) = %v, want %v", tt.path, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDecide(t *testing.T) {
+	big := strings.Repeat("x\n", maxWriteLines) // maxWriteLines+1 lines
+	small := strings.Repeat("x\n", maxWriteLines-1)
+	src := "/home/user/project/main.go"
+
+	tests := []struct {
+		name      string
+		input     protocol.HookInput
+		force     bool
+		wantBlock bool
+	}{
+		{"main session big Write", protocol.HookInput{ToolName: "Write", ToolInput: protocol.ToolInput{FilePath: src, Content: big}}, false, true},
+		{"main session small Write", protocol.HookInput{ToolName: "Write", ToolInput: protocol.ToolInput{FilePath: src, Content: small}}, false, false},
+		{"main session Edit", protocol.HookInput{ToolName: "Edit", ToolInput: protocol.ToolInput{FilePath: src}}, false, false},
+		{"subagent big Write", protocol.HookInput{ToolName: "Write", AgentID: "a1", AgentType: "general-purpose", ToolInput: protocol.ToolInput{FilePath: src, Content: big}}, false, false},
+		{"subagent Edit in force mode", protocol.HookInput{ToolName: "Edit", AgentID: "a1", ToolInput: protocol.ToolInput{FilePath: src}}, true, false},
+		{"main session Edit in force mode", protocol.HookInput{ToolName: "Edit", ToolInput: protocol.ToolInput{FilePath: src}}, true, true},
+		{"allowlisted big Write", protocol.HookInput{ToolName: "Write", ToolInput: protocol.ToolInput{FilePath: "/p/README.md", Content: big}}, false, false},
+		{"allowlisted in force mode", protocol.HookInput{ToolName: "Edit", ToolInput: protocol.ToolInput{FilePath: "/p/Makefile"}}, true, false},
+		{"non-write tool", protocol.HookInput{ToolName: "Read", ToolInput: protocol.ToolInput{FilePath: src}}, true, false},
+		{"MultiEdit no longer handled", protocol.HookInput{ToolName: "MultiEdit", ToolInput: protocol.ToolInput{FilePath: src}}, true, false},
+		{"no file path", protocol.HookInput{ToolName: "Write", ToolInput: protocol.ToolInput{Content: big}}, false, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := decide(&tt.input, tt.force) != ""
+			if got != tt.wantBlock {
+				t.Errorf("decide() blocked=%v, want %v", got, tt.wantBlock)
 			}
 		})
 	}
