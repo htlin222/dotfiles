@@ -37,17 +37,7 @@ install: build
 	@echo "Installed!"
 	@echo ""
 	@echo "Make sure $(INSTALL_DIR) is in your PATH"
-	@echo "Update ~/.claude/settings.json:"
-	@echo '  "hooks": {'
-	@echo '    "UserPromptSubmit": [{"matcher": ".*", "hooks": ["command:$(HOOKS_BIN) user-prompt"]}],'
-	@echo '    "PreToolUse": ['
-	@echo '      {"matcher": "^Bash$$", "hooks": ["command:$(HOOKS_BIN) check-rm"]},'
-	@echo '      {"matcher": "^(Read|Write|Edit|MultiEdit)$$", "hooks": ["command:$(HOOKS_BIN) file-guard"]}'
-	@echo '    ],'
-	@echo '    "PostToolUse": [{"matcher": "^(Write|Edit|MultiEdit|Bash)$$", "hooks": ["command:$(HOOKS_BIN) post-tool-use"]}],'
-	@echo '    "Stop": [{"matcher": ".*", "hooks": ["command:$(HOOKS_BIN) stop"]}]'
-	@echo '  },'
-	@echo '  "statusline": {"enabled": true, "command": "$(STATUSLINE_BIN)"}'
+	@echo "Hook wiring lives in ~/.claude/settings.json (hooks block) and ~/.codex/config.toml — see CLAUDE.md."
 
 # Setup PATH in shell config (works on macOS and Linux)
 setup-path:

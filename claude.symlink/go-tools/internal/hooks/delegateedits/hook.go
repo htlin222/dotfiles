@@ -11,14 +11,10 @@ import (
 	"strings"
 
 	"github.com/htlin/claude-tools/internal/protocol"
-	"github.com/htlin/claude-tools/internal/state"
 )
 
-// Thresholds for "large" edits that should be delegated.
-const (
-	maxMultiEdits = 5   // MultiEdit with more than this many edits → delegate
-	maxWriteLines = 500 // Write with more than this many lines → delegate
-)
+// maxWriteLines: a Write with more lines than this is "large" → delegate.
+const maxWriteLines = 500
 
 // allowedExtensions are file extensions always allowed directly.
 var allowedExtensions = map[string]bool{
@@ -41,119 +37,68 @@ var allowedPathContains = []string{
 	"/.claude/plans/",
 }
 
-// Run executes the delegate-edits PreToolUse hook.
+// Run executes the delegate-edits PreToolUse hook. Allow = exit 0, no output.
 // Set FORCE_DELEGATION=true to block ALL direct source-code edits in main session.
-// Default (unset or false): only large edits are blocked.
+// Default (unset or false): only large Writes are blocked.
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
-	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		fmt.Println(protocol.ContinueResponse())
+	if err != nil {
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
+	if reason := decide(&data, strings.EqualFold(os.Getenv("FORCE_DELEGATION"), "true")); reason != "" {
+		fmt.Println(protocol.PreToolUseDeny(reason))
+	}
+}
+
+// decide returns a deny reason, or "" to allow.
+func decide(data *protocol.HookInput, forceMode bool) string {
 	// Only act on write-type tools
-	if data.ToolName != "Write" && data.ToolName != "Edit" && data.ToolName != "MultiEdit" {
-		fmt.Println(protocol.ContinueResponse())
-		return
+	if data.ToolName != "Write" && data.ToolName != "Edit" {
+		return ""
 	}
 
-	// Load state to get main session ID
-	st, err := state.Load()
-	if err != nil || st.MainSessionID == "" {
-		fmt.Println(protocol.ContinueResponse())
-		return
+	// Subagent tool calls carry agent_id; the main session's do not.
+	if data.AgentID != "" {
+		return ""
 	}
 
-	// If this is NOT the main session (subagent), always allow
-	if data.SessionID != st.MainSessionID {
-		fmt.Println(protocol.ContinueResponse())
-		return
+	filePath := data.ToolInput.FilePath
+	if filePath == "" || isAllowed(filePath) {
+		return ""
 	}
-
-	// --- Main session: check allowlist first ---
-	var filePaths []string
-	if data.ToolName == "MultiEdit" {
-		for _, edit := range data.ToolInput.Edits {
-			if edit.FilePath != "" {
-				filePaths = append(filePaths, edit.FilePath)
-			}
-		}
-	} else if data.ToolInput.FilePath != "" {
-		filePaths = []string{data.ToolInput.FilePath}
-	}
-
-	if len(filePaths) == 0 {
-		fmt.Println(protocol.ContinueResponse())
-		return
-	}
-
-	// Allowlisted files are always permitted
-	allAllowed := true
-	for _, fp := range filePaths {
-		if !isAllowed(fp) {
-			allAllowed = false
-			break
-		}
-	}
-	if allAllowed {
-		fmt.Println(protocol.ContinueResponse())
-		return
-	}
-
-	// --- FORCE_DELEGATION mode: block everything except allowlisted ---
-	forceMode := strings.EqualFold(os.Getenv("FORCE_DELEGATION"), "true")
 
 	if forceMode {
-		msg := fmt.Sprintf(
-			"🔄 DELEGATE (FORCE_DELEGATION=true): Use a Task agent to modify source code.\n\n"+
-				"  Task → \"Edit %s: [describe the change]\"\n\n"+
+		return fmt.Sprintf(
+			"DELEGATE (FORCE_DELEGATION=true): use a subagent (Agent/Task tool) to modify source code.\n\n"+
+				"  Agent → \"Edit %s: [describe the change]\"\n\n"+
 				"Unset FORCE_DELEGATION to allow small direct edits.",
-			filepath.Base(filePaths[0]),
+			filepath.Base(filePath),
 		)
-		fmt.Println(protocol.BlockResponse(msg))
-		return
 	}
 
-	// --- Default mode: size-based — small edits pass, large edits blocked ---
-
-	// Edit (single replacement in one file) is always small → allow
+	// Default mode: Edit (single replacement) is always small → allow.
 	if data.ToolName == "Edit" {
-		fmt.Println(protocol.ContinueResponse())
-		return
-	}
-
-	// MultiEdit: allow if few edits
-	if data.ToolName == "MultiEdit" && len(data.ToolInput.Edits) <= maxMultiEdits {
-		fmt.Println(protocol.ContinueResponse())
-		return
+		return ""
 	}
 
 	// Write: allow if content is small
-	if data.ToolName == "Write" {
-		lines := strings.Count(data.ToolInput.Content, "\n") + 1
-		if lines <= maxWriteLines {
-			fmt.Println(protocol.ContinueResponse())
-			return
-		}
+	if lines := strings.Count(data.ToolInput.Content, "\n") + 1; lines <= maxWriteLines {
+		return ""
 	}
 
-	// Large edit → suggest delegation
-	msg := fmt.Sprintf(
-		"🔄 Large edit detected — consider using a Task agent to preserve context window.\n\n"+
-			"  Task → \"Edit %s: [describe the change]\"\n\n"+
-			"Small edits (Edit, ≤%d MultiEdits, ≤%d-line Write) are allowed directly.\n"+
-			"Set FORCE_DELEGATION=true to block all direct source edits.",
-		filepath.Base(filePaths[0]),
-		maxMultiEdits,
+	return fmt.Sprintf(
+		"Large Write detected — use a subagent (Agent/Task tool) to preserve the main context window.\n\n"+
+			"  Agent → \"Write %s: [describe the change]\"\n\n"+
+			"Small edits (any Edit, ≤%d-line Write) are allowed directly.",
+		filepath.Base(filePath),
 		maxWriteLines,
 	)
-	fmt.Println(protocol.BlockResponse(msg))
 }
 
 // isAllowed checks if a file path is in the allowlist for direct main-session edits.

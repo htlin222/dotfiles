@@ -1,7 +1,8 @@
 {
 	"skillListingBudgetFraction": 0.03,
 	"env": {
-		"DISABLE_AUTOUPDATER": "1"
+		"DISABLE_AUTOUPDATER": "1",
+		"CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/prompt-kit"
 	},
 	"permissions": {
 		"allow": [
@@ -68,48 +69,44 @@
 	"model": "opus",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
-		"Notification": [
+		"SessionStart": [
 			{
-				"matcher": "",
+				"matcher": "startup|clear",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks notification"
-					}
-				]
-			}
-		],
-		"PostToolUse": [
-			{
-				"matcher": "Write|Edit|MultiEdit|Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks post-tool-use"
+						"command": "claude-hooks env-validate",
+						"timeout": 15
 					}
 				]
 			},
 			{
-				"matcher": "Write|Edit|MultiEdit",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks auto-stage"
+						"command": "claude-hooks session-hint",
+						"timeout": 10
 					},
 					{
 						"type": "command",
-						"command": "claude-hooks dep-remind"
+						"command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
+						"timeout": 10
 					}
 				]
 			}
 		],
-		"PreCompact": [
+		"UserPromptSubmit": [
 			{
-				"matcher": "",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks pre-compact"
+						"command": "claude-hooks user-prompt",
+						"timeout": 15
+					},
+					{
+						"type": "command",
+						"command": "$HOME/.claude/hooks/im-select-abc.sh",
+						"timeout": 5
 					}
 				]
 			}
@@ -120,47 +117,56 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks check-rm"
+						"command": "claude-hooks check-rm",
+						"timeout": 5
 					},
 					{
 						"type": "command",
-						"command": "claude-hooks branch-guard"
+						"command": "claude-hooks branch-guard",
+						"timeout": 5
+					},
+					{
+						"type": "command",
+						"command": "$HOME/.claude/hooks/rtk-rewrite.sh",
+						"timeout": 10
 					}
 				]
 			},
 			{
-				"matcher": "Write",
+				"matcher": "Read|Write|Edit",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks file-guard"
+						"command": "claude-hooks file-guard",
+						"timeout": 5
 					}
 				]
 			},
 			{
-				"matcher": "Edit|MultiEdit",
+				"matcher": "Write|Edit",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks file-guard"
+						"command": "claude-hooks delegate-edits",
+						"timeout": 5
 					}
 				]
-			},
+			}
+		],
+		"PostToolUse": [
 			{
-				"matcher": "Write|Edit|MultiEdit",
+				"matcher": "Write|Edit",
 				"hooks": [
 					{
 						"type": "command",
-						"command": "claude-hooks delegate-edits"
-					}
-				]
-			},
-			{
-				"matcher": "Read",
-				"hooks": [
+						"command": "claude-hooks post-tool-use",
+						"timeout": 45,
+						"statusMessage": "Formatting & linting"
+					},
 					{
 						"type": "command",
-						"command": "claude-hooks file-guard"
+						"command": "claude-hooks dep-remind",
+						"timeout": 5
 					}
 				]
 			},
@@ -169,7 +175,53 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "$HOME/.claude/hooks/rtk-rewrite.sh"
+						"command": "claude-hooks post-tool-use",
+						"async": true
+					}
+				]
+			}
+		],
+		"PreCompact": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks pre-compact",
+						"timeout": 30
+					}
+				]
+			}
+		],
+		"Notification": [
+			{
+				"matcher": "permission_prompt|idle_prompt|elicitation_dialog|agent_needs_input",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks notification",
+						"async": true
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks stop",
+						"async": true
+					}
+				]
+			}
+		],
+		"SubagentStop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "claude-hooks subagent-stop",
+						"async": true
 					}
 				]
 			}
@@ -180,68 +232,6 @@
 					{
 						"type": "command",
 						"command": "claude-hooks session-end"
-					}
-				]
-			}
-		],
-		"SessionStart": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks env-validate"
-					},
-					{
-						"type": "command",
-						"command": "claude-hooks session-hint"
-					}
-				]
-			},
-			{
-				"matcher": "*",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
-						"timeout": 10
-					}
-				]
-			}
-		],
-		"Stop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks stop"
-					}
-				]
-			}
-		],
-		"SubagentStop": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks subagent-stop"
-					}
-				]
-			}
-		],
-		"UserPromptSubmit": [
-			{
-				"matcher": "",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "claude-hooks user-prompt"
-					},
-					{
-						"type": "command",
-						"command": "$HOME/.claude/hooks/im-select-abc.sh"
 					}
 				]
 			}

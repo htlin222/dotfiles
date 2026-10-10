@@ -17,6 +17,11 @@ type HookInput struct {
 	ToolResult     any       `json:"tool_result,omitempty"`
 	ToolResponse   any       `json:"tool_response,omitempty"`
 
+	// Subagent identity: present only when the hook fires inside a subagent
+	// (Task/Agent tool); absent in the main session.
+	AgentID   string `json:"agent_id,omitempty"`
+	AgentType string `json:"agent_type,omitempty"`
+
 	// Stop hook fields (provided by Claude Code for Stop events only)
 	StopHookActive       bool   `json:"stop_hook_active,omitempty"`
 	LastAssistantMessage string `json:"last_assistant_message,omitempty"`
@@ -24,17 +29,9 @@ type HookInput struct {
 
 // ToolInput contains tool-specific input parameters.
 type ToolInput struct {
-	FilePath string      `json:"file_path,omitempty"`
-	Command  string      `json:"command,omitempty"`
-	Content  string      `json:"content,omitempty"`
-	Edits    []EditEntry `json:"edits,omitempty"`
-}
-
-// EditEntry represents a single edit in MultiEdit operations.
-type EditEntry struct {
-	FilePath  string `json:"file_path,omitempty"`
-	OldString string `json:"old_string,omitempty"`
-	NewString string `json:"new_string,omitempty"`
+	FilePath string `json:"file_path,omitempty"`
+	Command  string `json:"command,omitempty"` // Bash command, or Codex apply_patch body
+	Content  string `json:"content,omitempty"`
 }
 
 // StatuslineInput contains JSON input from Claude Code for statusline.

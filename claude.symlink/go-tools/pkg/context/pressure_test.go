@@ -81,6 +81,9 @@ func TestCheckPressure_Levels(t *testing.T) {
 		if !tt.wantEmpty && got == "" {
 			t.Errorf("CheckPressure() at %d%% = empty, want non-empty", tt.pct)
 		}
+		if strings.Contains(got, "\x1b") {
+			t.Errorf("CheckPressure() at %d%% contains ANSI escapes: %q", tt.pct, got)
+		}
 		if tt.wantContain != "" && !strings.Contains(got, tt.wantContain) {
 			t.Errorf("CheckPressure() at %d%% = %q, want to contain %q", tt.pct, got, tt.wantContain)
 		}

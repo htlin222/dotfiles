@@ -16,54 +16,42 @@ import (
 // Files larger than this are allowed through (fail-open).
 const maxScanSize = 1 << 20
 
-// Run executes the file guard hook.
+// Run executes the file guard hook. Allow = exit 0 with no output.
 func Run() {
 	input, err := io.ReadAll(os.Stdin)
-	if err != nil || len(strings.TrimSpace(string(input))) == 0 {
-		fmt.Println(protocol.ContinueResponse())
+	if err != nil {
 		return
 	}
 
 	var data protocol.HookInput
 	if err := json.Unmarshal(input, &data); err != nil {
-		fmt.Println(protocol.ContinueResponse())
 		return
 	}
 
-	// Only check file-based tools. Codex reports patch edits as apply_patch.
-	if data.ToolName != "Read" && data.ToolName != "Write" && data.ToolName != "Edit" && data.ToolName != "MultiEdit" && data.ToolName != "apply_patch" {
-		fmt.Println(protocol.ContinueResponse())
-		return
-	}
-
-	// Get file paths
+	// Get file paths. Codex reports patch edits as apply_patch with the
+	// patch body in tool_input.command.
 	var filePaths []string
-	if data.ToolName == "apply_patch" {
+	switch data.ToolName {
+	case "apply_patch":
 		filePaths = extractApplyPatchFilePaths(data.ToolInput.Command)
-	} else if data.ToolName == "MultiEdit" {
-		for _, edit := range data.ToolInput.Edits {
-			if edit.FilePath != "" {
-				filePaths = append(filePaths, edit.FilePath)
-			}
+	case "Read", "Write", "Edit":
+		if data.ToolInput.FilePath != "" {
+			filePaths = []string{data.ToolInput.FilePath}
 		}
-	} else if data.ToolInput.FilePath != "" {
-		filePaths = []string{data.ToolInput.FilePath}
+	default:
+		return
 	}
 
-	// Check each file path
 	for _, filePath := range filePaths {
-		if result := checkFile(filePath, &data); result != "" {
-			fmt.Println(result)
+		if reason := checkFile(filePath, &data); reason != "" {
+			fmt.Println(protocol.PreToolUseDeny(reason))
 			return
 		}
 	}
-
-	// All checks passed
-	fmt.Println(protocol.ContinueResponse())
 }
 
 // checkFile evaluates a single file path through the 3-tier system.
-// Returns a block response string if blocked, empty string if allowed.
+// Returns the deny reason if blocked, empty string if allowed.
 func checkFile(filePath string, data *protocol.HookInput) string {
 	// Step 1: Exclusions always pass
 	if patterns.IsExcluded(filePath) {
@@ -72,14 +60,12 @@ func checkFile(filePath string, data *protocol.HookInput) string {
 
 	// Step 2: Directory block — always block sensitive directories
 	if matched, reason := patterns.MatchesDirectoryBlock(filePath); matched {
-		return protocol.BlockResponse(
-			fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason))
+		return fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason)
 	}
 
 	// Step 3: Always-block — binary/opaque files
 	if matched, reason := patterns.MatchesAlwaysBlock(filePath); matched {
-		return protocol.BlockResponse(
-			fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason))
+		return fmt.Sprintf("BLOCKED: Access to sensitive file denied — %s (%s). Add to .agentignore exceptions if needed.", filePath, reason)
 	}
 
 	// Step 4: Content-scan — text configs scanned for actual secrets
@@ -91,7 +77,7 @@ func checkFile(filePath string, data *protocol.HookInput) string {
 	return ""
 }
 
-// scanContent scans file content for secrets. Returns block response if secrets found, empty if clean.
+// scanContent scans file content for secrets. Returns the deny reason if secrets found, empty if clean.
 func scanContent(filePath string, data *protocol.HookInput) string {
 	var content string
 
@@ -103,7 +89,7 @@ func scanContent(filePath string, data *protocol.HookInput) string {
 		// when the target path is in the content-scan tier.
 		content = data.ToolInput.Command
 	} else {
-		// For Read/Edit/MultiEdit, scan existing file on disk
+		// For Read/Edit, scan existing file on disk
 		var err error
 		content, err = readFileForScan(filePath)
 		if err != nil {
@@ -117,8 +103,7 @@ func scanContent(filePath string, data *protocol.HookInput) string {
 	}
 
 	if hasSensitive, description := patterns.HasSensitiveContent(content); hasSensitive {
-		return protocol.BlockResponse(
-			fmt.Sprintf("BLOCKED: Sensitive content detected in %s (%s). Add to .agentignore exceptions if needed.", filePath, description))
+		return fmt.Sprintf("BLOCKED: Sensitive content detected in %s (%s). Add to .agentignore exceptions if needed.", filePath, description)
 	}
 
 	// Content is clean — allow

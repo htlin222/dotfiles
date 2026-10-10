@@ -61,6 +61,10 @@ claude.symlink/*
 !claude.symlink/agents/
 !claude.symlink/hooks/
 !claude.symlink/skills/
+# TypeScript mods (loaded via env.CLAUDE_CODE_PLUGIN_DIRS in settings.json)
+!claude.symlink/mods/
+claude.symlink/mods/*/.claude-plugin/types/
+claude.symlink/mods/*/tsconfig.json
 # 歸檔的 skill（見 archived-skills/README.md）：保留在 repo 但不被 Claude Code 載入
 !claude.symlink/archived-skills/
 claude.symlink/archived-skills/claude-seo/
