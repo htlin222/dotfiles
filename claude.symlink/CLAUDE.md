@@ -26,16 +26,16 @@ Config/docs (.md, CLAUDE.md, plans/\*, settings.json, Makefile, .gitignore, go-t
 
 ### 硬規則
 
-| 情境 | 做法 |
-| --- | --- |
-| 開新分支 | 先 `git pull origin develop`，再從最新 `develop` 切出 |
-| 開 PR | base **一律** `develop`；絕不直接對 `main` 開 PR（hotfix 除外） |
-| 合進 `develop` | **squash merge**（1 ticket = 1 commit） |
-| `develop` → `main` | **merge commit**（保留批次邊界），不 squash |
-| 直接 push `develop`/`main` | ❌ 禁止，一律走 PR |
-| 送審前 | 先 rebase 到最新 `develop` 或按 GitHub "Update branch"，避免用舊基底過 CI |
-| 合併條件 | CI 全綠 + ≥1 approve |
-| 分支壽命 | >2–3 天就該拆小；合併後刪除 head branch |
+| 情境                       | 做法                                                                      |
+| -------------------------- | ------------------------------------------------------------------------- |
+| 開新分支                   | 先 `git pull origin develop`，再從最新 `develop` 切出                     |
+| 開 PR                      | base **一律** `develop`；絕不直接對 `main` 開 PR（hotfix 除外）           |
+| 合進 `develop`             | **squash merge**（1 ticket = 1 commit）                                   |
+| `develop` → `main`         | **merge commit**（保留批次邊界），不 squash                               |
+| 直接 push `develop`/`main` | ❌ 禁止，一律走 PR                                                        |
+| 送審前                     | 先 rebase 到最新 `develop` 或按 GitHub "Update branch"，避免用舊基底過 CI |
+| 合併條件                   | CI 全綠 + ≥1 approve                                                      |
+| 分支壽命                   | >2–3 天就該拆小；合併後刪除 head branch                                   |
 
 ### 發版批次
 
@@ -85,6 +85,16 @@ Config/docs (.md, CLAUDE.md, plans/\*, settings.json, Makefile, .gitignore, go-t
 **導入順序**（既有專案缺什麼就從上往下補）：
 分支命名+PR → lint 自動化 → unit test+CI → 部署腳本化 → integration/E2E → AI 輔助。
 紀律未成立就先上 AI，放大的會是錯誤流入正式環境的速度。
+
+**按需插入的關卡**（不是每次都跑，命中條件才跑）：
+
+| 條件                                                                          | Skill                                                          |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 要寫框架專屬程式碼（routing / 資料抓取 / 表單 / 驗證 / 狀態管理）             | `/source-check` — 從 lock 檔確認版本、抓官方文件、附來源       |
+| 跨模組邊界，或主張了編譯器驗證不到的性質（thread-safe / idempotent / 不變量） | `/doubt` — commit 前用乾淨 context 證偽，不要等 `/code-review` |
+| 功能要上正式機，含 retry / queue / 外部呼叫                                   | `/observability` — telemetry 跟測試一樣是跟功能一起寫          |
+| 要移除舊系統、舊 API，或改資料庫欄位                                          | `/deprecate` — schema 一律 expand/contract，絕不就地 rename    |
+| 任務跨多個 session                                                            | `/dev-docs` — 讓下一個 session 不用重新考古                    |
 
 ## On-Demand (use --verbose or when needed)
 
@@ -182,3 +192,5 @@ for qid in QID_LIST:
 - 5 題：5-10 分鐘
 - 50 題：30-45 分鐘
 - 500 題：3-5 小時（取決於 OpenEvidence API 速度）
+
+ALWAYS ask questions via mcp**spokenly**ask_user_dictation (load via ToolSearch if needed), never as plain text. I use Spokenly for voice input.
