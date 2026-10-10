@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-
-	"github.com/htlin/claude-tools/pkg/ansi"
 )
 
 // Thresholds for context pressure warnings (percentage).
@@ -104,24 +102,15 @@ func CheckPressure() string {
 
 	level := GetLevel(pct)
 
+	// Plain text: shown to the user via systemMessage, which does not
+	// render ANSI escapes.
 	switch level {
 	case PressureCritical:
-		return fmt.Sprintf("%s%s%s Context %s%d%%%s full - strongly recommend %s/compact%s or new session",
-			ansi.BrightRed, ansi.IconWarning, ansi.Reset,
-			ansi.BrightRed, pct, ansi.Reset,
-			ansi.BrightCyan, ansi.Reset)
-
+		return fmt.Sprintf("⚠️ Context %d%% full - strongly recommend /compact or new session", pct)
 	case PressureHigh:
-		return fmt.Sprintf("%s%s%s Context %s%d%%%s full - consider %s/compact%s soon",
-			ansi.BrightYellow, ansi.IconWarning, ansi.Reset,
-			ansi.BrightYellow, pct, ansi.Reset,
-			ansi.BrightCyan, ansi.Reset)
-
+		return fmt.Sprintf("⚠️ Context %d%% full - consider /compact soon", pct)
 	case PressureWarning:
-		return fmt.Sprintf("%s%s%s Context %s%d%%%s - approaching limit, monitor usage",
-			ansi.Dim, ansi.IconInfo, ansi.Reset,
-			ansi.BrightWhite, pct, ansi.Reset)
-
+		return fmt.Sprintf("ℹ️ Context %d%% - approaching limit, monitor usage", pct)
 	default:
 		return ""
 	}

@@ -56,19 +56,7 @@ func logSubagentCompletion(sessionID, cwd, project string) {
 		"cwd":        cwd,
 	}
 
-	data, err := json.Marshal(entry)
-	if err != nil {
-		return
-	}
-
-	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return
-	}
-	defer f.Close()
-
-	f.Write(data)
-	f.Write([]byte("\n"))
+	_ = metrics.AppendJSONL(logFile, entry)
 
 	fmt.Fprintf(os.Stderr, "subagent done [%s]\n", project)
 }

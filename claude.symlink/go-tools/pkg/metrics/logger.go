@@ -11,29 +11,29 @@ import (
 
 // MetricsEntry represents a hook metrics log entry.
 type MetricsEntry struct {
-	Timestamp       string  `json:"timestamp"`
-	Hook            string  `json:"hook"`
-	EventType       string  `json:"event_type"`
-	ExecutionTimeMS float64 `json:"execution_time_ms"`
-	InputSize       int     `json:"input_size,omitempty"`
-	OutputSize      int     `json:"output_size,omitempty"`
-	Success         bool    `json:"success"`
-	Error           string  `json:"error,omitempty"`
-	Performance     string  `json:"performance,omitempty"`
+	Timestamp       string         `json:"timestamp"`
+	Hook            string         `json:"hook"`
+	EventType       string         `json:"event_type"`
+	ExecutionTimeMS float64        `json:"execution_time_ms"`
+	InputSize       int            `json:"input_size,omitempty"`
+	OutputSize      int            `json:"output_size,omitempty"`
+	Success         bool           `json:"success"`
+	Error           string         `json:"error,omitempty"`
+	Performance     string         `json:"performance,omitempty"`
 	Extra           map[string]any `json:"extra,omitempty"`
 }
 
 // EventEntry represents a hook event log entry.
 type EventEntry struct {
-	Timestamp  string         `json:"timestamp"`
-	EventType  string         `json:"event_type"`
-	Hook       string         `json:"hook"`
-	SessionID  string         `json:"session_id,omitempty"`
-	Project    string         `json:"project,omitempty"`
-	CWD        string         `json:"cwd,omitempty"`
-	ToolName   string         `json:"tool_name,omitempty"`
-	Decision   string         `json:"decision,omitempty"`
-	Metadata   map[string]any `json:"metadata,omitempty"`
+	Timestamp string         `json:"timestamp"`
+	EventType string         `json:"event_type"`
+	Hook      string         `json:"hook"`
+	SessionID string         `json:"session_id,omitempty"`
+	Project   string         `json:"project,omitempty"`
+	CWD       string         `json:"cwd,omitempty"`
+	ToolName  string         `json:"tool_name,omitempty"`
+	Decision  string         `json:"decision,omitempty"`
+	Metadata  map[string]any `json:"metadata,omitempty"`
 }
 
 // LogMetrics logs hook execution metrics.
@@ -61,7 +61,7 @@ func LogMetrics(hookName, eventType string, executionTimeMS float64, success boo
 		entry.Performance = "ok"
 	}
 
-	return appendJSONL(config.MetricsLogFile(), entry)
+	return AppendJSONL(config.MetricsLogFile(), entry)
 }
 
 // LogEvent logs a hook event for observability.
@@ -93,7 +93,7 @@ func LogEvent(eventType, hookName, sessionID, cwd string, metadata map[string]an
 		Metadata:  metadata,
 	}
 
-	return appendJSONL(config.EventsLogFile(), entry)
+	return AppendJSONL(config.EventsLogFile(), entry)
 }
 
 // LogEdit logs a file edit to edits.jsonl.
@@ -121,7 +121,7 @@ func LogEdit(filePath, toolName, cwd, sessionID string) error {
 		"session_id": sessionID,
 	}
 
-	return appendJSONL(config.EditsLogFile(), entry)
+	return AppendJSONL(config.EditsLogFile(), entry)
 }
 
 // LogBashCommand logs a bash command to bash_commands.jsonl.
@@ -154,7 +154,7 @@ func LogBashCommand(command, cwd string, exitCode int) error {
 		"exit_code": exitCode,
 	}
 
-	return appendJSONL(config.BashLogFile(), entry)
+	return AppendJSONL(config.BashLogFile(), entry)
 }
 
 // LogPrompt logs a user prompt to prompts.jsonl.
@@ -175,6 +175,7 @@ func LogPrompt(cwd, prompt string) error {
 		"prompt":    truncatedPrompt,
 	}
 
+	// Not rotated: prompts.jsonl is the user's prompt history.
 	return appendJSONL(config.PromptsLogFile(), entry)
 }
 
@@ -193,7 +194,7 @@ func LogSession(sessionID, cwd, projectName string, stats map[string]int, transc
 		"transcript_backup": transcriptBackup,
 	}
 
-	return appendJSONL(config.SessionLogFile(), entry)
+	return AppendJSONL(config.SessionLogFile(), entry)
 }
 
 // EstimateTokens estimates token count from text.
@@ -214,6 +215,27 @@ func EstimateTokens(text string) int {
 	return asciiCount/4 + int(float64(cjkCount)*1.5)
 }
 
+// MaxLogSize is the size above which a jsonl log is rotated to "<name>.1".
+const MaxLogSize = 10 << 20 // 10MB
+
+// AppendJSONL appends entry as one JSON line, rotating the file first when
+// it exceeds MaxLogSize (the previous "<name>.1" is overwritten). At most
+// ~2×MaxLogSize is kept per log.
+func AppendJSONL(filename string, entry any) error {
+	rotateIfLarge(filename, MaxLogSize)
+	return appendJSONL(filename, entry)
+}
+
+// rotateIfLarge renames filename to filename+".1" when it is larger than
+// limit. Errors are ignored: logging must never fail a hook.
+func rotateIfLarge(filename string, limit int64) {
+	if info, err := os.Stat(filename); err == nil && info.Size() > limit {
+		_ = os.Rename(filename, filename+".1")
+	}
+}
+
+// appendJSONL appends without rotation. Used directly only for prompts.jsonl,
+// which is the user's prompt history and must not be rotated away.
 func appendJSONL(filename string, entry any) error {
 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
