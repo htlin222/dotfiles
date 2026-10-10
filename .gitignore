@@ -78,6 +78,9 @@ claude.symlink/skills/sandbox-sdk/
 claude.symlink/skills/turnstile-spin/
 claude.symlink/skills/web-perf/
 claude.symlink/skills/workers-best-practices/
+# cloud-synced skills and the skill trash are runtime state managed by Claude Code
+claude.symlink/skills/synced/
+claude.symlink/skills/.trash/
 claude.symlink/skills/wrangler/
 !claude.symlink/*.md
 !claude.symlink/settings.json
@@ -127,6 +130,21 @@ config.symlink/rclone/rclone.conf
 
 # bsky-post CLI stores the Bluesky app password + session here
 config.symlink/bsky-cli/
+
+# outlook-todo CLI stores the MS To Do OAuth token (auto-rotating refresh
+# token) here — machine-specific secret, never commit
+config.symlink/outlook-todo/
+
+# OAuth client secrets / tokens — machine-specific secrets, never commit
+config.symlink/polish-screen-record/client_secret.json
+config.symlink/polish-screen-record/token.json
+config.symlink/sponge-bob/turso.json
+
+# colab-cli runtime state (run history, sessions, lock files, update check)
+config.symlink/colab-cli/
+
+# herdr per-session runtime state (logs, sockets, session json)
+config.symlink/herdr/sessions/
 
 # browser-harness runtime state (pid/log/telemetry/version-cache, no authored config yet)
 config.symlink/browser-harness/runtime/
