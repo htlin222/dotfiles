@@ -707,3 +707,6 @@ export PATH=/Users/htlin/.kilo/bin:$PATH
 
 # Load secrets (not tracked in git)
 [ -f ~/.secrets ] && source ~/.secrets
+
+# Added by Antigravity IDE
+export PATH="/Users/htlin/.antigravity-ide/antigravity-ide/bin:$PATH"
