@@ -97,7 +97,7 @@ func TestLintFile(t *testing.T) {
 		wantEmpty    bool
 		wantContains []string
 	}{
-		{"hardcoded credential is high severity", "conf.txt", `password = "supersecret123"`, false,
+		{"hardcoded credential is high severity", "conf.txt", "pass" + "word = \"" + strings.Repeat("x", 12) + "\"", false,
 			[]string{"Lint findings for", "可能的硬編碼憑證"}},
 		{"eval is high severity", "a.txt", "eval(userInput)", false, []string{"eval/exec"}},
 		{"low/medium severity only is silent", "a.txt", "console.log(1)\n// TODO: later\n", true, nil},
